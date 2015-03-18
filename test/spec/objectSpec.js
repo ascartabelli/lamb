@@ -1,0 +1,255 @@
+var lamb = require("../../dist/lamb.js");
+
+describe("lamb.object", function () {
+    describe("get", function () {
+        it("should return the value of the given object property", function () {
+            var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
+
+            expect(lamb.get(obj, "bar")).toBe(2);
+        });
+    });
+
+    describe("getFromPath", function () {
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+
+        it("should retrieve a nested object property using the supplied path", function () {
+            expect(lamb.getFromPath(obj, "a")).toBe(2);
+            expect(lamb.getFromPath(obj, "b.a")).toBe(3);
+            expect(lamb.getFromPath(obj, "b.b")).toBe(obj.b.b);
+        });
+
+        it("should be able to retrieve values from arrays and array-like objects", function () {
+            expect(lamb.getFromPath(obj, "b.b.0")).toBe(4);
+            expect(lamb.getFromPath(obj, "b.c.0")).toBe("f");
+        });
+
+        it("should accept a custom path separator", function () {
+            expect(lamb.getFromPath(obj, "b->b->0", "->")).toBe(4);
+            expect(lamb.getFromPath(obj, "c.d/e.f", "/")).toBe(6);
+        });
+
+        it("should return undefined for a unknown property in an existent object", function () {
+            expect(lamb.getFromPath(obj, "b.a.z")).not.toBeDefined();
+        });
+
+        it("should throw an error if a non existent object is requested in the path", function () {
+            expect(function () {lamb.getFromPath(obj, "b.z.a")}).toThrow();
+        });
+    });
+
+    describe("getKey", function () {
+        it("should build a function returning the specified property for any given object", function () {
+            var objs  = [{"id" : 1}, {"id" : 2}, {"id" : 3}, {"id" : 4}, {"id" : 5}, {}];
+            var getID = lamb.getKey("id");
+
+            expect(objs.map(getID)).toEqual([1, 2, 3, 4, 5, void(0)]);
+        });
+    });
+
+    describe("Property checking", function () {
+        var obj = {"foo" : "bar"};
+
+        describe("has", function () {
+            it("should check the existence of the property in an object", function () {
+                expect(lamb.has(obj, "toString")).toBe(true);
+                expect(lamb.has(obj, "foo")).toBe(true);
+                expect(lamb.has(obj, "baz")).toBe(false);
+            });
+        });
+
+        describe("hasKey", function () {
+            it("should build a function expecting an object to check for the existence of the given property", function () {
+                var hasToString = lamb.hasKey("toString");
+                var hasFoo = lamb.hasKey("foo");
+                var hasBaz = lamb.hasKey("baz");
+
+                expect(hasToString(obj)).toBe(true);
+                expect(hasFoo(obj)).toBe(true);
+                expect(hasBaz(obj)).toBe(false);
+            });
+        });
+
+        describe("hasOwn", function () {
+            it("should check the existence of an owned property in an object", function () {
+                expect(lamb.hasOwn(obj, "toString")).toBe(false);
+                expect(lamb.hasOwn(obj, "foo")).toBe(true);
+                expect(lamb.hasOwn(obj, "baz")).toBe(false);
+            });
+        });
+
+        describe("hasOwnKey", function () {
+            it("should build a function expecting an object to check for the ownership of the given property", function () {
+                var hasOwnToString = lamb.hasOwnKey("toString");
+                var hasOwnFoo = lamb.hasOwnKey("foo");
+                var hasOwnBaz = lamb.hasOwnKey("baz");
+
+                expect(hasOwnToString(obj)).toBe(false);
+                expect(hasOwnFoo(obj)).toBe(true);
+                expect(hasOwnBaz(obj)).toBe(false);
+            });
+        });
+    });
+
+    describe("hasKeyValue", function () {
+        it("should build a function that checks if an object holds the desired key / value pair", function () {
+            var persons = [
+                {"name": "Jane", "surname": "Doe"},
+                {"name": "John", "surname": "Doe"},
+                {"name": "Mario", "surname": "Rossi"}
+            ];
+
+            var isDoe = lamb.hasKeyValue("surname", "Doe");
+
+            expect(persons.map(isDoe)).toEqual([true, true, false]);
+        });
+    });
+
+    describe("Property filtering", function () {
+        var simpleObj = {"foo" : 1, "bar" : 2, "baz" : 3};
+
+        var persons = [
+            {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York"},
+            {"name": "John", "surname": "Doe", "age": 40, "city" : "London"},
+            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
+            {"name": "Paolo", "surname": "Bianchi", "age": 15, "city": "Amsterdam"}
+        ];
+
+        var agesAndCities = [
+            {"age": 12, "city" : "New York"},
+            {"age": 40, "city" : "London"},
+            {"age": 18, "city": "Rome"},
+            {"age": 15, "city": "Amsterdam"}
+        ];
+
+        var names = [
+            {"name": "Jane", "surname": "Doe"},
+            {"name": "John", "surname": "Doe"},
+            {"name": "Mario", "surname": "Rossi"},
+            {"name": "Paolo", "surname": "Bianchi"}
+        ];
+
+        var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
+
+        describe("pick", function () {
+            it("should return an object having only the specified properties of the source object (if they exist)", function () {
+
+                var expected = {"foo" : 1, "baz" : 3};
+                var result = lamb.pick(simpleObj, ["foo", "baz", "foobaz"]);
+
+                expect(result).toEqual(expected);
+            });
+        });
+
+        describe("pickIf", function () {
+            it("should pick object properties using a predicate", function () {
+                expect(persons.map(lamb.pickIf(isNameKey))).toEqual(names);
+            });
+        });
+
+        describe("skip", function () {
+            it("should return a copy of the given object without the specified properties", function () {
+                var expected = {"foo" : 1};
+                var result = lamb.skip(simpleObj, ["bar", "baz"]);
+
+                expect(result).toEqual(expected);
+            });
+        });
+
+        describe("skipIf", function () {
+            it("should skip object properties using a predicate", function () {
+                expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
+            });
+        });
+    });
+
+    describe("Object validation", function () {
+        var persons = [
+            {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York", "email": "jane@doe", "login": {"user.name": "", "password" : "jane", "passwordConfirm": "janE"}},
+            {"name": "John", "surname": "Doe", "age": 40, "city" : "London", "email": "john@doe"},
+            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome", "email": "mario@rossi.it"},
+            {"name": "Paolo", "surname": "Bianchi", "age": 15, "city": "Amsterdam", "email": "paolo@bianchi.nl"}
+        ];
+
+        var isAdult = function (age) { return age >= 18; };
+        var isRequired = function (v) { return v.length > 0; };
+        var isValidMail = function (mail) {
+            return /^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/.test(mail);
+        };
+        var isValidPassword = function (pwd) { return pwd.length > 5; };
+
+        var mailCheck = lamb.checker(isValidMail, "Must have a valid mail", ["email"]);
+        var ageCheck = lamb.checker(isAdult, "Must be at least 18 years old", ["age"]);
+        var pwdCheck = lamb.checker(isValidPassword, "Passwords must have at least six characters", ["login.password"]);
+        var userNameCheck = lamb.checker(isRequired, "The username is a required field", ["login/user.name"], "/");
+        var pwdConfirmCheck = lamb.checker(lamb.is, "Passwords don't match", ["login.password", "login.passwordConfirm"]);
+
+        describe("checker", function () {
+            it("should build a function to validate the given properties of an object", function () {
+                expect(mailCheck(persons[0])).toEqual(["Must have a valid mail", ["email"]]);
+                expect(mailCheck(persons[2])).toEqual([]);
+            });
+
+            it("should accept string paths as property names", function () {
+                expect(pwdCheck(persons[0])).toEqual(["Passwords must have at least six characters", ["login.password"]]);
+                expect(userNameCheck(persons[0])).toEqual(["The username is a required field", ["login/user.name"]]);
+            });
+
+            it("should be possible to make a checker involving more than one property", function () {
+                expect(pwdConfirmCheck(persons[0])).toEqual(["Passwords don't match", ["login.password", "login.passwordConfirm"]]);
+            });
+        });
+
+        describe("validate", function () {
+            it("should validate an object with the given set of checkers", function () {
+                expect(lamb.validate(persons[0], [mailCheck, ageCheck])).toEqual([
+                    ["Must have a valid mail", ["email"]],
+                    ["Must be at least 18 years old", ["age"]]
+                ]);
+                expect(lamb.validate(persons[1], [mailCheck, ageCheck])).toEqual([
+                    ["Must have a valid mail", ["email"]]
+                ]);
+                expect(lamb.validate(persons[2], [mailCheck, ageCheck])).toEqual([]);
+            });
+        });
+
+        describe("validateWith", function () {
+            it("should build a validator to be reused with different objects", function () {
+                var personValidator = lamb.validateWith([mailCheck, ageCheck]);
+
+                expect(persons.map(personValidator)).toEqual([
+                    [
+                        ["Must have a valid mail", ["email"]],
+                        ["Must be at least 18 years old", ["age"]]
+                    ],
+                    [
+                        ["Must have a valid mail", ["email"]]
+                    ],
+                    [],
+                    [
+                        ["Must be at least 18 years old", ["age"]]
+                    ]
+                ]);
+            });
+        });
+    });
+
+    describe("values", function () {
+        it("should return an array of values of the given object own properties", function () {
+            function Foo () {
+            }
+            Foo.prototype = {
+                bar : "bar"
+            }
+
+            function Bar () {
+                this.foo = "foo";
+                this.baz = "baz";
+            }
+            Bar.prototype = new Foo();
+
+            var obj = new Bar();
+
+            expect(lamb.values(obj)).toEqual(["foo", "baz"]);
+        });
+    });
+});
