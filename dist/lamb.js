@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.6.2
+ * @version 0.6.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.6.2";
+    lamb._version =  "0.6.3";
     
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -101,7 +101,7 @@
      * Creates generic functions out of methods.
      * @memberof module:lamb
      * @category Core
-     * @author Someone in Mozilla probably: first seen as "unbind" in the [Add-on SDK]{@link https://github.com/mozilla/addon-sdk}.
+     * @author [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
      * @function
      * @example
      * // Lamb's "filter" is actually implemented like this
@@ -255,7 +255,7 @@
     var reduce = generic(_arrayProto.reduce);
     
     /**
-     * Same as {@link module:lamb.reduce}, but starts the fold operation from the last element instead.<br/>
+     * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
      * It's a generic version of [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}.
      * @memberof module:lamb
      * @category Array
@@ -1631,7 +1631,7 @@
     
     /**
      * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
-     * Note that the function accepts multiple <code>keyPaths</code> as a mean to compare their values. In
+     * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
      * other words all the received <code>keyPaths</code> will be passed as arguments to the <code>predicate</code>
      * to run the test.<br/>
      * If you want to run the same single property check with multiple properties, you should build

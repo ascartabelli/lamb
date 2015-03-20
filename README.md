@@ -30,22 +30,15 @@ or
 
 You can find the source map for the minified file in the same folder.
 
-## Documentation
+## Documentation.
 
-For the time being just run: 
+A first version of the API documentation is [now online](https://ascartabelli.github.io/lamb/).
 
-```bash 
-npm run docs
-```
-
-The documentation will be generated in a `docs` folder with the default JSDoc template.  
-Soon I'll write (or find) a suitable template and create some "gh-pages".
-
-## Semantic Versioning
+## Semantic Versioning.
 
 Lamb uses [semantic versioning](http://semver.org/) and please be aware that, as long as the major version is `0`, any
 bump in the minor version could involve some breaking changes in the API.  
-In any case a changelog will be added here starting from the next release.
+You can refer to the [changelog](#changelog) to see if your code may be affected.
 
 ## Frequently self-asked questions.
 
@@ -63,7 +56,7 @@ In any case a changelog will be added here starting from the next release.
   
 - ***What about ES4 environments?***  
   In my make-believe world they don't exist, but in case I can be proven wrong you can load some shims / polyfills before my
-  library. There's plenty of those in the [Javascript Reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/), 
+  library. There's plenty of those in the [JavaScript Reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/), 
   and there are many pre-made packages as well [out there](https://github.com/es-shims/es5-shim/).
   
 - ***Are there plans for the future?***  
@@ -73,3 +66,11 @@ In any case a changelog will be added here starting from the next release.
 - ***Why "Lamb"?***  
   See the main header: because it's docile like a lamb.
   
+## <a name="changelog"></a> Changelog
+
+- **v0.6.3 - *2015/03/20***  
+  - The documentation is now online
+  - Minor fixes in doc comments
+  
+- **v0.6.2 - *2015/03/18***  
+  - First public release

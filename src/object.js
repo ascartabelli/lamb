@@ -1,7 +1,7 @@
 
 /**
  * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
- * Note that the function accepts multiple <code>keyPaths</code> as a mean to compare their values. In
+ * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
  * other words all the received <code>keyPaths</code> will be passed as arguments to the <code>predicate</code>
  * to run the test.<br/>
  * If you want to run the same single property check with multiple properties, you should build

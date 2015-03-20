@@ -80,7 +80,7 @@ var map = generic(_arrayProto.map);
 var reduce = generic(_arrayProto.reduce);
 
 /**
- * Same as {@link module:lamb.reduce}, but starts the fold operation from the last element instead.<br/>
+ * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
  * It's a generic version of [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}.
  * @memberof module:lamb
  * @category Array

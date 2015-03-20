@@ -4,10 +4,15 @@
     "name": "Andrea Scartabelli"
   },
   "description": "A lightweight, and docile, JavaScript library to help embracing functional programming.",
+  "homepage": "https://ascartabelli.github.io/lamb/",
   "keywords": [
     "functional",
     "utility",
     "library",
+    "server",
+    "client",
+    "browser",
+    "node.js",
     "es5",
     "javascript"
   ],
@@ -22,11 +27,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "dist": "gulp && npm run docs",
-    "docs": "gulp concat && rm -rf ./docs/* && ./node_modules/.bin/jsdoc ./dist/lamb.js -R ./README.md -r -p -d ./docs",
     "test": "gulp test"
   },
-  "version": "0.6.2",
+  "version": "0.6.3",
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-concat": "^2.4.3",
@@ -39,7 +42,6 @@
     "gulp-rename": "^1.2.0",
     "gulp-sourcemaps": "^1.3.0",
     "gulp-uglify": "^1.1.0",
-    "jsdoc": "^3.3.0-beta2",
     "sinon": "^1.12.1"
   },
   "dependencies": {}

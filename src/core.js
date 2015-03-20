@@ -80,7 +80,7 @@ function compose () {
  * Creates generic functions out of methods.
  * @memberof module:lamb
  * @category Core
- * @author Someone in Mozilla probably: first seen as "unbind" in the [Add-on SDK]{@link https://github.com/mozilla/addon-sdk}.
+ * @author [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
  * @function
  * @example
  * // Lamb's "filter" is actually implemented like this
