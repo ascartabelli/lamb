@@ -175,6 +175,120 @@ function flatten (array, doShallow) {
 }
 
 /**
+ * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
+ * criterion to generate keys and values.
+ * @example
+ * var persons = [
+ *     {"name": "Jane", "city": "New York"},
+ *     {"name": "John", "city": "New York"},
+ *     {"name": "Mario", "city": "Rome"},
+ *     {"name": "Paolo"}
+ * ];
+ * var getCity = _.getKey("city");
+ * var personsByCity = _.group(persons, getCity);
+ *
+ * // "personsByCity" holds:
+ * // {
+ * //     "New York": [
+ * //         {"name": "Jane", "city": "New York"},
+ * //         {"name": "John", "city": "New York"}
+ * //     ],
+ * //     "Rome": [
+ * //         {"name": "Mario", "city": "Rome"}
+ * //     ],
+ * //     "undefined": [
+ * //         {"name": "Paolo"}
+ * //     ]
+ * // }
+ *
+ * @example <caption>Adding a custom value for missing keys</caption>
+ *
+ * var getCityOrUnknown = _.condition(
+ *     _.hasKey("city"),
+ *     getCity,
+ *     _.always("Unknown")
+ * );
+ *
+ * personsByCity = _.group(persons, getCityOrUnknown);
+ *
+ * // "personsByCity" now holds:
+ * // {
+ * //     "New York": [
+ * //         {"name": "Jane", "city": "New York"},
+ * //         {"name": "John", "city": "New York"}
+ * //     ],
+ * //     "Rome": [
+ * //         {"name": "Mario", "city": "Rome"}
+ * //     ],
+ * //     "Unknown": [
+ * //         {"name": "Paolo"}
+ * //     ]
+ * // }
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @param {ListIteratorCallback} iteratee
+ * @param {Object} [iterateeContext]
+ * @returns {Object}
+ */
+function group (arrayLike, iteratee, iterateeContext) {
+   var result = {};
+    var len = arrayLike.length;
+
+    for (var i = 0, element; i < len; i++) {
+        element = arrayLike[i];
+        var key = iteratee.call(iterateeContext, element, i, arrayLike);
+
+        if (key in result) {
+            result[key].push(element);
+        } else {
+            result[key] = [element];
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Using the provided iteratee, and its optional context, builds a [partial application]{@link module:lamb.partial}
+ * of {@link module:lamb.group|group} expecting the array-like object to act upon.
+ * @example
+ * var persons = [
+ *     {"name": "Jane", "age": 12},
+ *     {"name": "John", "age": 40},
+ *     {"name": "Mario", "age": 18},
+ *     {"name": "Paolo", "age": 15}
+ * ];
+ *
+ * var getAgeStatus = function (person) { return person.age > 20 ? "over 20" : "under 20"; };
+ * var groupByAgeStatus = _.groupBy(getAgeStatus);
+ *
+ * var personsByAgeStatus = groupByAgeStatus(persons);
+ *
+ * // "personsByAgeStatus" holds:
+ * // {
+ * //     "under 20": [
+ * //         {"name": "Jane", "age": 12},
+ * //         {"name": "Mario", "age": 18},
+ * //         {"name": "Paolo", "age": 15}
+ * //     ],
+ * //     "over 20": [
+ * //         {"name": "John", "age": 40}
+ * //     ]
+ * // }
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ListIteratorCallback} iteratee
+ * @param {Object} [iterateeContext]
+ * @returns {Function}
+ */
+function groupBy (iteratee, iterateeContext) {
+    return partial(group, _, iteratee, iterateeContext);
+}
+
+/**
  * Returns an array of every item present in all given arrays.
  * @example
  * var a1 = [1, 2, 3, 4];
@@ -451,6 +565,8 @@ lamb.dropN = dropN;
 lamb.dropWhile = dropWhile;
 lamb.flatMap = flatMap;
 lamb.flatten = flatten;
+lamb.group = group;
+lamb.groupBy = groupBy;
 lamb.intersection = intersection;
 lamb.insert = insert;
 lamb.list = list;

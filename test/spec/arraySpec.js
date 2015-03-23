@@ -140,6 +140,66 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("group / groupBy", function () {
+        var persons = [
+            {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
+            {"name": "John", "surname": "Doe", "age": 40, "city": "New York"},
+            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
+            {"name": "Paolo", "surname": "Bianchi", "age": 15}
+        ];
+
+        var personsByAgeGroup = {
+            "under20": [
+                {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
+                {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
+                {"name": "Paolo", "surname": "Bianchi", "age": 15}
+            ],
+            "over20": [
+                {"name": "John", "surname": "Doe", "age": 40, "city": "New York"}
+            ]
+        };
+
+        var personsByCity = {
+            "New York": [
+                {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
+                {"name": "John", "surname": "Doe", "age": 40, "city": "New York"}
+            ],
+            "Rome": [
+                {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"}
+            ],
+            "undefined": [
+                {"name": "Paolo", "surname": "Bianchi", "age": 15}
+            ]
+        };
+
+        it("should build an object using the provided iteratee to group the list with the desired criterion", function () {
+            var fakeContext = {};
+            var splitByAgeGroup = function (person, idx, list) {
+                expect(this).toBe(fakeContext);
+                expect(list).toBe(persons);
+                expect(persons[idx]).toBe(person);
+                return person.age > 20 ? "over20" : "under20";
+            };
+            var getCity = lamb.getKey("city");
+
+            expect(lamb.group(persons, splitByAgeGroup, fakeContext)).toEqual(personsByAgeGroup);
+            expect(lamb.groupBy(splitByAgeGroup, fakeContext)(persons)).toEqual(personsByAgeGroup);
+            expect(lamb.group(persons, getCity)).toEqual(personsByCity);
+            expect(lamb.groupBy(getCity)(persons)).toEqual(personsByCity);
+        });
+
+        it("should work with array-like objects", function () {
+            var evenAndOdd = function (n) { return n % 2 === 0 ? "even" : "odd"; };
+            var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            var result = {"even": [2, 4, 6, 8, 10], "odd": [1, 3, 5, 7, 9]};
+            var argsTest = function () {
+                return lamb.group(arguments, evenAndOdd);
+            };
+
+            expect(argsTest.apply(null, numbers)).toEqual(result);
+        });
+    });
+
     describe("intersection", function () {
         it("should throw an exception if no arguments are supplied", function () {
             expect(lamb.intersection).toThrow();
@@ -246,10 +306,10 @@ describe("lamb.array", function () {
 
         it("should return an array of values taken from the given property of the source array elements", function () {
             var sourceArray = [
-                {"foo" : 1, "bar" : 2, "baz" : 3},
-                {"foo" : 34, "bar" : 22, "baz" : 73},
-                {"foo" : 45, "bar" : 21, "baz" : 83},
-                {"foo" : 65, "bar" : 92, "baz" : 39}
+                {"foo": 1, "bar": 2, "baz": 3},
+                {"foo": 34, "bar": 22, "baz": 73},
+                {"foo": 45, "bar": 21, "baz": 83},
+                {"foo": 65, "bar": 92, "baz": 39}
             ];
 
             expect(lamb.pluck(sourceArray, "bar")).toEqual([2, 22, 21, 92]);
@@ -268,15 +328,15 @@ describe("lamb.array", function () {
         var persons = [
             {"name": "John", "surname" :"Doe"},
             {"name": "john", "surname" :"doe"},
-            {"name" :"Mario", "surname" :"Rossi"},
-            {"name" :"jane", "surname":"doe"}
+            {"name": "Mario", "surname": "Rossi"},
+            {"name": "jane", "surname": "doe"}
         ];
 
         var personsByCaseInsensitiveNameAsc = [
-            {"name" :"jane", "surname":"doe"},
-            {"name": "John", "surname" :"Doe"},
-            {"name": "john", "surname" :"doe"},
-            {"name" :"Mario", "surname" :"Rossi"}
+            {"name": "jane", "surname": "doe"},
+            {"name": "John", "surname": "Doe"},
+            {"name": "john", "surname": "doe"},
+            {"name": "Mario", "surname": "Rossi"}
         ];
 
         var mixed = ["1", "10", 1, false, "20", "15"];
@@ -371,18 +431,18 @@ describe("lamb.array", function () {
             };
 
             var data = [
-                {"id" : "1", "name" : "foo"},
-                {"id" : "1", "name" : "foo"},
-                {"id" : "2", "name" : "bar"},
-                {"id" : "3", "name" : "baz"},
-                {"id" : "2", "name" : "bar"},
-                {"id" : "1", "name" : "foo"}
+                {"id": "1", "name": "foo"},
+                {"id": "1", "name": "foo"},
+                {"id": "2", "name": "bar"},
+                {"id": "3", "name": "baz"},
+                {"id": "2", "name": "bar"},
+                {"id": "1", "name": "foo"}
             ];
 
             var expectedResult = [
-                {"id" : "1", "name" : "foo"},
-                {"id" : "2", "name" : "bar"},
-                {"id" : "3", "name" : "baz"}
+                {"id": "1", "name": "foo"},
+                {"id": "2", "name": "bar"},
+                {"id": "3", "name": "baz"}
             ];
 
             expect(lamb.uniques(data, iteratee)).toEqual(expectedResult);
