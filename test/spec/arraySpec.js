@@ -50,6 +50,46 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("find / findIndex", function () {
+        var persons = [
+            {"name": "Jane", "surname": "Doe", "age": 12},
+            {"name": "John", "surname": "Doe", "age": 40},
+            {"name": "Mario", "surname": "Rossi", "age": 18},
+            {"name": "Paolo", "surname": "Bianchi", "age": 40}
+        ];
+
+        var fakeContext = {};
+        var testString = "Hello world";
+
+        var isVowel = function (char, idx, s) {
+            expect(this).toBe(fakeContext);
+            expect(s[idx]).toBe(testString[idx]);
+            return "AEIOUaeiou".indexOf(char) !== -1;
+        };
+
+        describe("find", function () {
+            it("should find an element in an array-like object by using the given predicate", function () {
+                expect(lamb.find(persons, lamb.hasKeyValue("age", 40))).toEqual(persons[1]);
+                expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
+            });
+
+            it("should return `undefined` if there is no element satisfying the predicate", function () {
+                expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBe(void 0);
+            });
+        });
+
+        describe("findIndex", function () {
+            it("should find the index of an element in an array-like object by usign the given predicate", function () {
+                expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 40))).toBe(1);
+                expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
+            });
+
+            it("should return `-1` if there is no element satisfying the predicate", function () {
+                expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
+            });
+        });
+    });
+
     describe("flatMap", function () {
         it("should behave like map if the mapping function returns a non array value", function () {
             var double = function (n) { return n * 2; };

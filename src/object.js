@@ -180,7 +180,7 @@ var hasKeyValue = function (key, value) {
 /**
  * Verifies if an object has the specified property and that the property isn't inherited through
  * the prototype chain.<br/>
- * @example <caption>Comparison con <code>has</code>.</caption>
+ * @example <caption>Comparison with <code>has</code>.</caption>
  * var user = {name: "john"};
  *
  * _.has(user, "name") // => true
