@@ -8,7 +8,7 @@ function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
         } else {
             return _currier(fn, arity, isRightCurry, slicer, args);
         }
-    }
+    };
 }
 
 function _curry (fn, arity, isRightCurry, isAutoCurry) {

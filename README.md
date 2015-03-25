@@ -68,6 +68,12 @@ You can refer to the [changelog](#changelog) to see if your code may be affected
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.7.0 - *2015/03/25***
+  - **Fully compatible with previous 0.x versions**
+  - Added the `group` and `groupBy` functions
+  - Added the `find` and `findIndex` functions
+  - Some long due performance improvements on `curry`, `curryable` and `partial`
+  
 - **v0.6.3 - *2015/03/20***  
   - The documentation is now online
   - Minor fixes in doc comments
