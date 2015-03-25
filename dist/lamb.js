@@ -155,15 +155,19 @@
     
         return function () {
             var lastArgumentIdx = 0;
-            var newArgs = args.concat();
+            var newArgs = [];
+            var argsLen = args.length;
     
-            for (var i = 0, len = newArgs.length; i < len; i++) {
-                if (newArgs[i] === _) {
-                    newArgs[i] = arguments[lastArgumentIdx++];
-                }
+            for (var i = 0, boundArg; i < argsLen; i++) {
+                boundArg = args[i];
+                newArgs[i] = boundArg === _ ? arguments[lastArgumentIdx++] : boundArg;
             }
     
-            return fn.apply(this, newArgs.concat(slice(arguments, lastArgumentIdx)));
+            for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
+                newArgs.push(arguments[lastArgumentIdx]);
+            }
+    
+            return fn.apply(this, newArgs);
         };
     }
     
@@ -953,34 +957,28 @@
     lamb.uniques = uniques;
     
     
-    function _currier (fn, arity, slicer) {
+    function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
         return function () {
-            var args = slicer(arguments);
+            var args = argsHolder.concat(slicer(arguments));
     
             if (args.length >= arity) {
-                return fn.apply(this, args);
+                return fn.apply(this, isRightCurry ? args.reverse() : args);
             } else {
-                return _currier(
-                    apply(partial, [fn].concat(args)),
-                    arity - args.length,
-                    slicer
-                );
+                return _currier(fn, arity, isRightCurry, slicer, args);
             }
-        };
+        }
     }
     
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
-        var slicer = isAutoCurry ? slice : partial(slice, _, 0, 1);
+        var slicer = isAutoCurry ? slice : function (a) {
+            return a.length ? [a[0]] : [];
+        };
     
         if ((arity | 0) !== arity) {
             arity = fn.length;
         }
     
-        if (isRightCurry) {
-            fn = flip(fn);
-        }
-    
-        return _currier(fn, arity, slicer);
+        return _currier(fn, arity, isRightCurry, slicer, []);
     }
     
     /**
@@ -1052,7 +1050,7 @@
      * multiplyBy10()(5) // => 50
      * multiplyBy10()()(2) // => 20
      * halve(3) // => 1.5
-     * have(3, 7) // => 1.5
+     * halve(3, 7) // => 1.5
      *
      * @memberof module:lamb
      * @category Function
@@ -1259,7 +1257,7 @@
     
     /**
      * Returns a function that will invoke the passed function at most once in the given timespan.<br/>
-     * The first call in this case happens has soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
+     * The first call in this case happens as soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
      * for a different behaviour where the first call is delayed.
      * @example
      * var log = _.throttle(console.log.bind(console), 5000);
@@ -1704,7 +1702,7 @@
     }
     
     /**
-     * Generates a random integer between two given integers (both included).
+     * Generates a random integer between two given integers, both included.
      * Note that no safety measure is taken if the provided arguments aren't integers, so
      * you may end up with unexpected (not really) results.
      * For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
@@ -1774,7 +1772,7 @@
     
     /**
      * Generates a sequence of values of the desired length with the provided iteratee.
-     * The values being iterated (and received by the iteratee) are the results generated so far.
+     * The values being iterated, and received by the iteratee, are the results generated so far.
      * @example
      * var fibonacci = function (n, idx, list) {
      *     return n + (list[idx - 1] || 0);
@@ -1893,7 +1891,7 @@
     /**
      * Gets a nested property value from an object using the given path.<br/>
      * The path is a string with property names separated by dots by default, but
-     * it can be defined with the optional third parameter.
+     * it can be customised with the optional third parameter.
      * @example
      * var user = {
      *     name: "John",

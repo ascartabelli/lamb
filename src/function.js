@@ -1,32 +1,26 @@
 
-function _currier (fn, arity, slicer) {
+function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
     return function () {
-        var args = slicer(arguments);
+        var args = argsHolder.concat(slicer(arguments));
 
         if (args.length >= arity) {
-            return fn.apply(this, args);
+            return fn.apply(this, isRightCurry ? args.reverse() : args);
         } else {
-            return _currier(
-                apply(partial, [fn].concat(args)),
-                arity - args.length,
-                slicer
-            );
+            return _currier(fn, arity, isRightCurry, slicer, args);
         }
-    };
+    }
 }
 
 function _curry (fn, arity, isRightCurry, isAutoCurry) {
-    var slicer = isAutoCurry ? slice : partial(slice, _, 0, 1);
+    var slicer = isAutoCurry ? slice : function (a) {
+        return a.length ? [a[0]] : [];
+    };
 
     if ((arity | 0) !== arity) {
         arity = fn.length;
     }
 
-    if (isRightCurry) {
-        fn = flip(fn);
-    }
-
-    return _currier(fn, arity, slicer);
+    return _currier(fn, arity, isRightCurry, slicer, []);
 }
 
 /**
@@ -98,7 +92,7 @@ function aritize (fn, arity) {
  * multiplyBy10()(5) // => 50
  * multiplyBy10()()(2) // => 20
  * halve(3) // => 1.5
- * have(3, 7) // => 1.5
+ * halve(3, 7) // => 1.5
  *
  * @memberof module:lamb
  * @category Function
@@ -305,7 +299,7 @@ function tapArgs (fn) {
 
 /**
  * Returns a function that will invoke the passed function at most once in the given timespan.<br/>
- * The first call in this case happens has soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
+ * The first call in this case happens as soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
  * for a different behaviour where the first call is delayed.
  * @example
  * var log = _.throttle(console.log.bind(console), 5000);

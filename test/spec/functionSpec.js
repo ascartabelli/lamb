@@ -47,7 +47,6 @@ describe("lamb.function", function () {
     });
 
     describe("currying", function () {
-        var _ = lamb;
         var fooSubtract = function (a, b, c) {
             return a - b - c;
         };
@@ -58,6 +57,39 @@ describe("lamb.function", function () {
         });
 
         describe("curry", function () {
+            it("should allow currying by always returning a function with an arity of one", function () {
+                var curriedSub = lamb.curry(fooSubtract);
+                var curriedSpy = lamb.curry(subtractSpy, 3);
+
+                expect(curriedSub(1)(2)(3)).toBe(-4);
+                expect(curriedSub(1, 5)(2)(3)).toBe(-4);
+                expect(curriedSpy()(1)()()(2)()(3)).toBe(-4);
+                expect(subtractSpy.calls.count()).toBe(1);
+            });
+
+            it("should allow right currying when the proper parameter is set", function () {
+                var rightCurried = lamb.curry(fooSubtract, null, true);
+                expect(rightCurried(1, 5)(2)()(3)).toBe(0);
+                expect(rightCurried(1)(2)(3)).toBe(0);
+            });
+
+            it("should return reusable partially applied functions", function () {
+                var minusTen = lamb.curry(fooSubtract, null, true)(5)(5);
+
+                expect(minusTen(11)).toBe(1);
+                expect(minusTen(21)).toBe(11);
+            });
+
+            it("should accept undefined arguments, but empty calls shouldn't consume the arity", function () {
+                var curriedList = lamb.curry(lamb.list, 4);
+
+                expect(curriedList("a", "z")()("b")("c")("d")).toEqual(["a", "b", "c", "d"]);
+                expect(curriedList("a")(undefined)("c")()("d")).toEqual(["a", undefined, "c", "d"]);
+                expect(curriedList("a")(undefined)("c")(undefined)).toEqual(["a", undefined, "c", undefined]);
+            });
+        });
+
+        describe("curryable", function () {
             it("should build an \"auto-curried\" function that allows us to consume its arity in any moment", function () {
                 var curriedSub = lamb.curryable(fooSubtract);
                 var curriedSpy = lamb.curryable(subtractSpy, 3);
@@ -94,32 +126,6 @@ describe("lamb.function", function () {
             it("should build a function equivalent to the given one, if it's variadic and with an arity of zero", function () {
                 expect(lamb.curryable(lamb.list)(1, 2, 3)).toEqual(lamb.list(1, 2, 3));
                 expect(lamb.curryable(lamb.list)(1, 2, 3, 4, 5), 0).toEqual(lamb.list(1, 2, 3, 4, 5));
-            });
-        });
-
-        describe("curryByOne", function () {
-            it("should allow currying by always returning a function with an arity of one", function () {
-                var curriedSub = lamb.curry(fooSubtract);
-                var curriedSpy = lamb.curry(subtractSpy, 3);
-
-                expect(curriedSub(1)(2)(3)).toBe(-4);
-                expect(curriedSub(1, 5)(2)(3)).toBe(-4);
-                expect(curriedSpy()(1)()()(2)()(3)).toBe(-4);
-                expect(subtractSpy.calls.count()).toBe(1);
-            });
-
-            it("should allow right currying when the proper parameter is set", function () {
-                var rightCurried = lamb.curry(fooSubtract, null, true);
-                expect(rightCurried(1, 5)(2)()(3)).toBe(0);
-                expect(rightCurried(1)(2)(3)).toBe(0);
-            });
-
-            it("should accept undefined arguments, but empty calls shouldn't consume the arity", function () {
-                var curriedList = lamb.curry(lamb.list, 4);
-
-                expect(curriedList("a", "z")()("b")("c")("d")).toEqual(["a", "b", "c", "d"]);
-                expect(curriedList("a")(undefined)("c")()("d")).toEqual(["a", undefined, "c", "d"]);
-                expect(curriedList("a")(undefined)("c")(undefined)).toEqual(["a", undefined, "c", undefined]);
             });
         });
     });

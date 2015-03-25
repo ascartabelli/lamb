@@ -66,7 +66,7 @@ function get (obj, key) {
 /**
  * Gets a nested property value from an object using the given path.<br/>
  * The path is a string with property names separated by dots by default, but
- * it can be defined with the optional third parameter.
+ * it can be customised with the optional third parameter.
  * @example
  * var user = {
  *     name: "John",

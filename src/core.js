@@ -134,15 +134,19 @@ function partial (fn) {
 
     return function () {
         var lastArgumentIdx = 0;
-        var newArgs = args.concat();
+        var newArgs = [];
+        var argsLen = args.length;
 
-        for (var i = 0, len = newArgs.length; i < len; i++) {
-            if (newArgs[i] === _) {
-                newArgs[i] = arguments[lastArgumentIdx++];
-            }
+        for (var i = 0, boundArg; i < argsLen; i++) {
+            boundArg = args[i];
+            newArgs[i] = boundArg === _ ? arguments[lastArgumentIdx++] : boundArg;
         }
 
-        return fn.apply(this, newArgs.concat(slice(arguments, lastArgumentIdx)));
+        for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
+            newArgs.push(arguments[lastArgumentIdx]);
+        }
+
+        return fn.apply(this, newArgs);
     };
 }
 

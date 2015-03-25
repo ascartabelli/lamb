@@ -67,7 +67,7 @@ function multiply (a, b) {
 }
 
 /**
- * Generates a random integer between two given integers (both included).
+ * Generates a random integer between two given integers, both included.
  * Note that no safety measure is taken if the provided arguments aren't integers, so
  * you may end up with unexpected (not really) results.
  * For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
@@ -137,7 +137,7 @@ function remainder (a, b) {
 
 /**
  * Generates a sequence of values of the desired length with the provided iteratee.
- * The values being iterated (and received by the iteratee) are the results generated so far.
+ * The values being iterated, and received by the iteratee, are the results generated so far.
  * @example
  * var fibonacci = function (n, idx, list) {
  *     return n + (list[idx - 1] || 0);
