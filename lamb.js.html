@@ -28,7 +28,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.6.3
+ * @version 0.7.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -45,7 +45,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.6.3";
+    lamb._version =  "0.7.0";
     
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -182,15 +182,19 @@
     
         return function () {
             var lastArgumentIdx = 0;
-            var newArgs = args.concat();
+            var newArgs = [];
+            var argsLen = args.length;
     
-            for (var i = 0, len = newArgs.length; i &lt; len; i++) {
-                if (newArgs[i] === _) {
-                    newArgs[i] = arguments[lastArgumentIdx++];
-                }
+            for (var i = 0, boundArg; i &lt; argsLen; i++) {
+                boundArg = args[i];
+                newArgs[i] = boundArg === _ ? arguments[lastArgumentIdx++] : boundArg;
             }
     
-            return fn.apply(this, newArgs.concat(slice(arguments, lastArgumentIdx)));
+            for (var len = arguments.length; lastArgumentIdx &lt; len; lastArgumentIdx++) {
+                newArgs.push(arguments[lastArgumentIdx]);
+            }
+    
+            return fn.apply(this, newArgs);
         };
     }
     
@@ -456,6 +460,76 @@
     }
     
     /**
+     * Searches for an element satisfying the predicate in the given array-like object and returns it if
+     * the search is successful. Returns &lt;code>undefined&lt;/code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.find(persons, _.hasKeyValue("age", 40)) // => {"name": "John", "surname": "Doe", "age": 40}
+     * _.find(persons, _.hasKeyValue("age", 41)) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {*}
+     */
+    function find (arrayLike, predicate, predicateContext) {
+        var result;
+    
+        for (var i = 0, len = arrayLike.length, element; i &lt; len; i++) {
+            element = arrayLike[i];
+    
+            if (predicate.call(predicateContext, element, i, arrayLike)) {
+                result = element;
+                break;
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Searches for an element satisfying the predicate in the given array-like object and returns its
+     * index if the search is successful. Returns &lt;code>-1&lt;/code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.findIndex(persons, _.hasKeyValue("age", 40)) // => 1
+     * _.findIndex(persons, _.hasKeyValue("age", 41)) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Number}
+     */
+    function findIndex (arrayLike, predicate, predicateContext) {
+        var result = -1;
+    
+        for (var i = 0, len = arrayLike.length; i &lt; len; i++) {
+            if (predicate.call(predicateContext, arrayLike[i], i, arrayLike)) {
+                result = i;
+                break;
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
      * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
      * be concatenated, rather than pushed, to the final result.
      * @example &lt;caption>showing the difference with map&lt;/caption>
@@ -491,6 +565,120 @@
      */
     function flatten (array, doShallow) {
         return (doShallow ? _shallowFlatten : _flatten)(array);
+    }
+    
+    /**
+     * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
+     * criterion to generate keys and values.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "city": "New York"},
+     *     {"name": "John", "city": "New York"},
+     *     {"name": "Mario", "city": "Rome"},
+     *     {"name": "Paolo"}
+     * ];
+     * var getCity = _.getKey("city");
+     * var personsByCity = _.group(persons, getCity);
+     *
+     * // "personsByCity" holds:
+     * // {
+     * //     "New York": [
+     * //         {"name": "Jane", "city": "New York"},
+     * //         {"name": "John", "city": "New York"}
+     * //     ],
+     * //     "Rome": [
+     * //         {"name": "Mario", "city": "Rome"}
+     * //     ],
+     * //     "undefined": [
+     * //         {"name": "Paolo"}
+     * //     ]
+     * // }
+     *
+     * @example &lt;caption>Adding a custom value for missing keys&lt;/caption>
+     *
+     * var getCityOrUnknown = _.condition(
+     *     _.hasKey("city"),
+     *     getCity,
+     *     _.always("Unknown")
+     * );
+     *
+     * personsByCity = _.group(persons, getCityOrUnknown);
+     *
+     * // "personsByCity" now holds:
+     * // {
+     * //     "New York": [
+     * //         {"name": "Jane", "city": "New York"},
+     * //         {"name": "John", "city": "New York"}
+     * //     ],
+     * //     "Rome": [
+     * //         {"name": "Mario", "city": "Rome"}
+     * //     ],
+     * //     "Unknown": [
+     * //         {"name": "Paolo"}
+     * //     ]
+     * // }
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} iteratee
+     * @param {Object} [iterateeContext]
+     * @returns {Object}
+     */
+    function group (arrayLike, iteratee, iterateeContext) {
+       var result = {};
+        var len = arrayLike.length;
+    
+        for (var i = 0, element; i &lt; len; i++) {
+            element = arrayLike[i];
+            var key = iteratee.call(iterateeContext, element, i, arrayLike);
+    
+            if (key in result) {
+                result[key].push(element);
+            } else {
+                result[key] = [element];
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Using the provided iteratee, and its optional context, builds a [partial application]{@link module:lamb.partial}
+     * of {@link module:lamb.group|group} expecting the array-like object to act upon.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "age": 12},
+     *     {"name": "John", "age": 40},
+     *     {"name": "Mario", "age": 18},
+     *     {"name": "Paolo", "age": 15}
+     * ];
+     *
+     * var getAgeStatus = function (person) { return person.age > 20 ? "over 20" : "under 20"; };
+     * var groupByAgeStatus = _.groupBy(getAgeStatus);
+     *
+     * var personsByAgeStatus = groupByAgeStatus(persons);
+     *
+     * // "personsByAgeStatus" holds:
+     * // {
+     * //     "under 20": [
+     * //         {"name": "Jane", "age": 12},
+     * //         {"name": "Mario", "age": 18},
+     * //         {"name": "Paolo", "age": 15}
+     * //     ],
+     * //     "over 20": [
+     * //         {"name": "John", "age": 40}
+     * //     ]
+     * // }
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ListIteratorCallback} iteratee
+     * @param {Object} [iterateeContext]
+     * @returns {Function}
+     */
+    function groupBy (iteratee, iterateeContext) {
+        return partial(group, _, iteratee, iterateeContext);
     }
     
     /**
@@ -601,6 +789,15 @@
     /**
      * "Plucks" the specified key from a list of objects.
      * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
+     * ];
+     *
+     * _.pluck(persons, "age") // => [12, 40, 18, 15]
+     *
      * var lists = [
      *     [1, 2],
      *     [3, 4, 5],
@@ -768,8 +965,12 @@
     lamb.drop = drop;
     lamb.dropN = dropN;
     lamb.dropWhile = dropWhile;
+    lamb.find = find;
+    lamb.findIndex = findIndex;
     lamb.flatMap = flatMap;
     lamb.flatten = flatten;
+    lamb.group = group;
+    lamb.groupBy = groupBy;
     lamb.intersection = intersection;
     lamb.insert = insert;
     lamb.list = list;
@@ -783,34 +984,28 @@
     lamb.uniques = uniques;
     
     
-    function _currier (fn, arity, slicer) {
+    function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
         return function () {
-            var args = slicer(arguments);
+            var args = argsHolder.concat(slicer(arguments));
     
             if (args.length >= arity) {
-                return fn.apply(this, args);
+                return fn.apply(this, isRightCurry ? args.reverse() : args);
             } else {
-                return _currier(
-                    apply(partial, [fn].concat(args)),
-                    arity - args.length,
-                    slicer
-                );
+                return _currier(fn, arity, isRightCurry, slicer, args);
             }
         };
     }
     
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
-        var slicer = isAutoCurry ? slice : partial(slice, _, 0, 1);
+        var slicer = isAutoCurry ? slice : function (a) {
+            return a.length ? [a[0]] : [];
+        };
     
         if ((arity | 0) !== arity) {
             arity = fn.length;
         }
     
-        if (isRightCurry) {
-            fn = flip(fn);
-        }
-    
-        return _currier(fn, arity, slicer);
+        return _currier(fn, arity, isRightCurry, slicer, []);
     }
     
     /**
@@ -882,7 +1077,7 @@
      * multiplyBy10()(5) // => 50
      * multiplyBy10()()(2) // => 20
      * halve(3) // => 1.5
-     * have(3, 7) // => 1.5
+     * halve(3, 7) // => 1.5
      *
      * @memberof module:lamb
      * @category Function
@@ -1089,7 +1284,7 @@
     
     /**
      * Returns a function that will invoke the passed function at most once in the given timespan.&lt;br/>
-     * The first call in this case happens has soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
+     * The first call in this case happens as soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
      * for a different behaviour where the first call is delayed.
      * @example
      * var log = _.throttle(console.log.bind(console), 5000);
@@ -1534,7 +1729,7 @@
     }
     
     /**
-     * Generates a random integer between two given integers (both included).
+     * Generates a random integer between two given integers, both included.
      * Note that no safety measure is taken if the provided arguments aren't integers, so
      * you may end up with unexpected (not really) results.
      * For example &lt;code>randomInt(0.1, 1.2)&lt;/code> could be &lt;code>2&lt;/code>.
@@ -1604,7 +1799,7 @@
     
     /**
      * Generates a sequence of values of the desired length with the provided iteratee.
-     * The values being iterated (and received by the iteratee) are the results generated so far.
+     * The values being iterated, and received by the iteratee, are the results generated so far.
      * @example
      * var fibonacci = function (n, idx, list) {
      *     return n + (list[idx - 1] || 0);
@@ -1723,7 +1918,7 @@
     /**
      * Gets a nested property value from an object using the given path.&lt;br/>
      * The path is a string with property names separated by dots by default, but
-     * it can be defined with the optional third parameter.
+     * it can be customised with the optional third parameter.
      * @example
      * var user = {
      *     name: "John",
@@ -1837,7 +2032,7 @@
     /**
      * Verifies if an object has the specified property and that the property isn't inherited through
      * the prototype chain.&lt;br/>
-     * @example &lt;caption>Comparison con &lt;code>has&lt;/code>.&lt;/caption>
+     * @example &lt;caption>Comparison with &lt;code>has&lt;/code>.&lt;/caption>
      * var user = {name: "john"};
      *
      * _.has(user, "name") // => true
@@ -2377,13 +2572,13 @@
 </div>
 
 <nav id="main-navigation">
-    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getFromPath">getFromPath</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.typeOf">typeOf</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getFromPath">getFromPath</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.typeOf">typeOf</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Fri Mar 20 2015 11:47:27 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Wed Mar 25 2015 11:56:53 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
