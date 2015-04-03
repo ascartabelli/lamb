@@ -23,40 +23,40 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("getFromPath", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
-
-        it("should retrieve a nested object property using the supplied path", function () {
-            expect(lamb.getFromPath(obj, "a")).toBe(2);
-            expect(lamb.getFromPath(obj, "b.a")).toBe(3);
-            expect(lamb.getFromPath(obj, "b.b")).toBe(obj.b.b);
-        });
-
-        it("should be able to retrieve values from arrays and array-like objects", function () {
-            expect(lamb.getFromPath(obj, "b.b.0")).toBe(4);
-            expect(lamb.getFromPath(obj, "b.c.0")).toBe("f");
-        });
-
-        it("should accept a custom path separator", function () {
-            expect(lamb.getFromPath(obj, "b->b->0", "->")).toBe(4);
-            expect(lamb.getFromPath(obj, "c.d/e.f", "/")).toBe(6);
-        });
-
-        it("should return undefined for a unknown property in an existent object", function () {
-            expect(lamb.getFromPath(obj, "b.a.z")).not.toBeDefined();
-        });
-
-        it("should throw an error if a non existent object is requested in the path", function () {
-            expect(function () {lamb.getFromPath(obj, "b.z.a")}).toThrow();
-        });
-    });
-
     describe("getKey", function () {
         it("should build a function returning the specified property for any given object", function () {
             var objs  = [{"id" : 1}, {"id" : 2}, {"id" : 3}, {"id" : 4}, {"id" : 5}, {}];
             var getID = lamb.getKey("id");
 
             expect(objs.map(getID)).toEqual([1, 2, 3, 4, 5, void(0)]);
+        });
+    });
+
+    describe("getWithPath", function () {
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+
+        it("should retrieve a nested object property using the supplied path", function () {
+            expect(lamb.getWithPath(obj, "a")).toBe(2);
+            expect(lamb.getWithPath(obj, "b.a")).toBe(3);
+            expect(lamb.getWithPath(obj, "b.b")).toBe(obj.b.b);
+        });
+
+        it("should be able to retrieve values from arrays and array-like objects", function () {
+            expect(lamb.getWithPath(obj, "b.b.0")).toBe(4);
+            expect(lamb.getWithPath(obj, "b.c.0")).toBe("f");
+        });
+
+        it("should accept a custom path separator", function () {
+            expect(lamb.getWithPath(obj, "b->b->0", "->")).toBe(4);
+            expect(lamb.getWithPath(obj, "c.d/e.f", "/")).toBe(6);
+        });
+
+        it("should return undefined for a unknown property in an existent object", function () {
+            expect(lamb.getWithPath(obj, "b.a.z")).not.toBeDefined();
+        });
+
+        it("should throw an error if a non existent object is requested in the path", function () {
+            expect(function () {lamb.getWithPath(obj, "b.z.a")}).toThrow();
         });
     });
 
@@ -298,7 +298,7 @@ describe("lamb.object", function () {
     });
 
     describe("values", function () {
-        it("should return an array of values of the given object own properties", function () {
+        it("should return an array of values of the given object enumerable properties", function () {
             function Foo () {
             }
             Foo.prototype = {
@@ -313,7 +313,7 @@ describe("lamb.object", function () {
 
             var obj = new Bar();
 
-            expect(lamb.values(obj)).toEqual(["foo", "baz"]);
+            expect(lamb.values(obj)).toEqual(["foo", "baz", "bar"]);
         });
     });
 });

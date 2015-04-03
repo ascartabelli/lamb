@@ -32,14 +32,14 @@
  * @category Object
  * @param {Function} predicate - The predicate to test the object properties
  * @param {String} message - The error message
- * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getFromPath|paths}, to test.
+ * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getWithPath|paths}, to test.
  * @param {String} [pathSeparator="."]
  * @returns {Array<String, String[]>} An error in the form <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
  */
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
         var errors = [];
-        var getValues = partial(getFromPath, obj, _, pathSeparator);
+        var getValues = partial(getWithPath, obj, _, pathSeparator);
 
         return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
     };
@@ -88,39 +88,6 @@ function get (obj, key) {
 }
 
 /**
- * Gets a nested property value from an object using the given path.<br/>
- * The path is a string with property names separated by dots by default, but
- * it can be customised with the optional third parameter.
- * @example
- * var user = {
- *     name: "John",
- *     surname: "Doe",
- *     login: {
- *         user.name: "jdoe",
- *         password: "abc123"
- *     }
- * };
- *
- * // same as _.get if no path is involved
- * _.getFromPath(user, "name") // => "John"
- *
- * _.getFromPath(user, "login.password") // => "abc123";
- * _.getFromPath(user, "login/user.name", "/") // => "jdoe"
- * _.getFromPath(user, "name.foo") // => undefined
- * _.getFromPath(user, "name.foo.bar") // => throws a TypeError
- *
- * @memberof module:lamb
- * @category Object
- * @param {Object|ArrayLike} obj
- * @param {String} path
- * @param {String} [separator="."]
- * @returns {*}
- */
-function getFromPath (obj, path, separator) {
-    return path.split(separator || ".").reduce(get, obj);
-}
-
-/**
  * A curried version of {@link module:lamb.get|get}.<br/>
  * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
  * @example
@@ -138,6 +105,39 @@ function getFromPath (obj, path, separator) {
  * @returns {Function}
  */
 var getKey = _curry(get, 2, true);
+
+/**
+ * Gets a nested property value from an object using the given path.<br/>
+ * The path is a string with property names separated by dots by default, but
+ * it can be customised with the optional third parameter.
+ * @example
+ * var user = {
+ *     name: "John",
+ *     surname: "Doe",
+ *     login: {
+ *         user.name: "jdoe",
+ *         password: "abc123"
+ *     }
+ * };
+ *
+ * // same as _.get if no path is involved
+ * _.getWithPath(user, "name") // => "John"
+ *
+ * _.getWithPath(user, "login.password") // => "abc123";
+ * _.getWithPath(user, "login/user.name", "/") // => "jdoe"
+ * _.getWithPath(user, "name.foo") // => undefined
+ * _.getWithPath(user, "name.foo.bar") // => throws a TypeError
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @param {Object|ArrayLike} obj
+ * @param {String} path
+ * @param {String} [separator="."]
+ * @returns {*}
+ */
+function getWithPath (obj, path, separator) {
+    return path.split(separator || ".").reduce(get, obj);
+}
 
 /**
  * Verifies the existence of a property in an object.
@@ -477,7 +477,7 @@ function validate (obj, checkers) {
 var validateWith = _curry(validate, 2, true);
 
 /**
- * Generates an array with the values of the enumerable own properties of the given object.
+ * Generates an array with the values of the enumerable properties of the given object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
  *
@@ -489,12 +489,10 @@ var validateWith = _curry(validate, 2, true);
  * @returns {Array}
  */
 function values (obj) {
-    var keys = Object.keys(obj);
-    var keysLen = keys.length;
     var result = [];
 
-    for (var i = 0; i < keysLen; i++) {
-        result[i] = obj[keys[i]];
+    for(var prop in obj) {
+        result.push(obj[prop]);
     }
 
     return result;
@@ -503,8 +501,8 @@ function values (obj) {
 lamb.checker = checker;
 lamb.fromPairs = fromPairs;
 lamb.get = get;
-lamb.getFromPath = getFromPath;
 lamb.getKey = getKey;
+lamb.getWithPath = getWithPath;
 lamb.has = has;
 lamb.hasKey = hasKey;
 lamb.hasKeyValue = hasKeyValue;
