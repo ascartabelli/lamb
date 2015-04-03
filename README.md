@@ -37,8 +37,8 @@ A first version of the API documentation is [now online](https://ascartabelli.gi
 ## Semantic Versioning.
 
 Lamb uses [semantic versioning](http://semver.org/) and please be aware that, as long as the major version is `0`, any
-bump in the minor version could involve some breaking changes in the API.  
-You can refer to the [changelog](#changelog) to see if your code may be affected.
+bump in the minor version could involve a breaking change in the API.  
+You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## Frequently self-asked questions.
 
@@ -67,6 +67,11 @@ You can refer to the [changelog](#changelog) to see if your code may be affected
   See the main header: because it's docile like a lamb.
   
 ## <a name="changelog"></a> Changelog
+
+- **v0.8.0 - *2015/04/03***
+  - **API change:** the `values` function now picks from all enumerable properties, even inherited
+  - **API change:** renamed `getFromPath` to `getWithPath`
+  - Added `fromPairs`, `immutable`, `make`, `pairs`, `tear`
 
 - **v0.7.0 - *2015/03/25***
   - **Fully compatible with previous 0.x versions**
