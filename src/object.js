@@ -1,4 +1,20 @@
 
+function _immutable (obj, seen) {
+    if (seen.indexOf(obj) === -1) {
+        seen.push(Object.freeze(obj));
+
+        Object.getOwnPropertyNames(obj).forEach(function (key) {
+            var value = obj[key];
+
+            if (typeof value === "object" && !isNull(value)) {
+                _immutable(value, seen);
+            }
+        });
+    }
+
+    return obj;
+}
+
 /**
  * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
  * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
@@ -242,6 +258,39 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  * @returns {Function}
  */
 var hasOwnKey = _curry(hasOwn, 2, true);
+
+/**
+ * Makes an object immutable by recursively calling [Object.freeze]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze}
+ * on its members.<br/>
+ * Any attempt to extend or modify the object can throw a <code>TypeError</code> or fail silently,
+ * depending on the environment and the [strict mode]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode} directive.
+ * @example
+ * var user = _.immutable({
+ *     name: "John",
+ *     surname: "Doe",
+ *     login: {
+ *         username: "jdoe",
+ *         password: "abc123"
+ *     },
+ *     luckyNumbers: [13, 17]
+ * });
+ *
+ * // Any of these statements will fail and possibly
+ * // throw a TypeError (see the function description)
+ * user.name = "Joe";
+ * delete user.name;
+ * user.newProperty = [];
+ * user.login.password = "foo";
+ * user.luckyNumbers.push(-13);
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @param {Object} obj
+ * @returns {Object}
+ */
+function immutable (obj) {
+    return _immutable(obj, []);
+}
 
 /**
  * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
@@ -508,6 +557,7 @@ lamb.hasKey = hasKey;
 lamb.hasKeyValue = hasKeyValue;
 lamb.hasOwn = hasOwn;
 lamb.hasOwnKey = hasOwnKey;
+lamb.immutable = immutable;
 lamb.make = make;
 lamb.pairs = pairs;
 lamb.pick = pick;
