@@ -1871,6 +1871,30 @@
     }
     
     /**
+     * Builds an object from a list of key / value pairs like the one
+     * returned by [pairs]{@link module:lamb.pairs}.<br/>
+     * In case of duplicate keys the last key / value pair is used.
+     * @example
+     * _.fromPairs([["a", 1], ["b", 2], ["c", 3]]) // => {"a": 1, "b": 2, "c": 3}
+     * _.fromPairs([["a", 1], ["b", 2], ["a", 3]]) // => {"a": 3, "b": 2}
+     * _.fromPairs([[1], [void 0, 2], [null, 3]]) // => {"1": undefined, "undefined": 2, "null": 3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Array<Array<String, *>>} pairsList
+     * @returns {Object}
+     */
+    function fromPairs (pairsList) {
+        var result = {};
+    
+        pairsList.forEach(function (pair) {
+            result[pair[0]] = pair[1];
+        });
+    
+        return result;
+    }
+    
+    /**
      * Returns the value of the object property with the given key.
      * @example
      * var user {name: "John"};
@@ -2045,6 +2069,55 @@
     var hasOwnKey = _curry(hasOwn, 2, true);
     
     /**
+     * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
+     * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
+     * If more values than keys are supplied, the extra values will be ignored.<br/>
+     * See also [tear]{@link module:lamb.tear} for the reverse operation.
+     * @example
+     * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
+     * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
+     * _.make(["a", "b"], [1, 2, 3]) // => {a: 1, b: 2}
+     * _.make([null, void 0, 2], [1, 2, 3]) // => {"null": 1, "undefined": 2, "2": 3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {String[]} keys
+     * @param {Array} values
+     * @returns {Object}
+     */
+    function make (keys, values) {
+        var result = {};
+        var valuesLen = values.length;
+    
+        for (var i = 0, len = keys.length; i < len; i++) {
+            result[keys[i]] = i < valuesLen ? values[i] : void 0;
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
+     * See also [fromPairs]{@link module:lamb.fromPairs} for the reverse operation.
+     * @example
+     * _.pairs({a: 1, b: 2, c: 3}) // => [["a", 1], ["b", 2], ["c", 3]]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object} obj
+     * @returns {Array<Array<String, *>>}
+     */
+    function pairs (obj) {
+        var result = [];
+    
+        for (var prop in obj) {
+            result.push([prop, obj[prop]]);
+        }
+    
+        return result;
+    }
+    
+    /**
      * Returns an object containing only the specified properties of the given object.<br/>
      * Non existent properties will be ignored.
      * @example
@@ -2146,6 +2219,31 @@
     }
     
     /**
+     * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
+     * the other containing the corresponding values.<br/>
+     * Although this "tearing apart" may sound as a rather violent process, the source object will be unharmed.<br/>
+     * See also [make]{@link module:lamb.make} for the reverse operation.
+     * @example
+     * _.tear({a: 1, b: 2, c: 3}) // => [["a", "b", "c"], [1, 2, 3]]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object} obj
+     * @returns {Array<Array<String>, Array<*>>}
+     */
+    function tear (obj) {
+        var keys = [];
+        var values = [];
+    
+        for (var prop in obj) {
+            keys.push(prop);
+            values.push(obj[prop]);
+        }
+    
+        return [keys, values];
+    }
+    
+    /**
      * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
      * @example
      * var hasContent = function (s) { return s.trim().length > 0; };
@@ -2228,6 +2326,7 @@
     }
     
     lamb.checker = checker;
+    lamb.fromPairs = fromPairs;
     lamb.get = get;
     lamb.getFromPath = getFromPath;
     lamb.getKey = getKey;
@@ -2236,10 +2335,13 @@
     lamb.hasKeyValue = hasKeyValue;
     lamb.hasOwn = hasOwn;
     lamb.hasOwnKey = hasOwnKey;
+    lamb.make = make;
+    lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
     lamb.skip = skip;
     lamb.skipIf = skipIf;
+    lamb.tear = tear;
     lamb.validate = validate;
     lamb.validateWith = validateWith;
     lamb.values = values;

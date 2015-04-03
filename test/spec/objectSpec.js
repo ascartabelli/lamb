@@ -1,6 +1,20 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.object", function () {
+    describe("fromPairs", function () {
+        it("should build an object from a list of key / value pairs", function () {
+            expect(lamb.fromPairs([["a", 1], ["b", 2], ["c", 3]])).toEqual({a: 1, b: 2, c: 3});
+        });
+
+        it("should use the last key / value pair in case of duplicate keys", function () {
+            expect(lamb.fromPairs([["a", 1], ["b", 2], ["a", 3]])).toEqual({a: 3, b: 2});
+        });
+
+        it("should convert missing or non string keys to strings and missing values to `undefined`", function () {
+            expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
+        });
+    });
+
     describe("get", function () {
         it("should return the value of the given object property", function () {
             var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
@@ -104,6 +118,40 @@ describe("lamb.object", function () {
         });
     });
 
+    describe("make", function () {
+        it("should build an object with the given keys and values lists", function () {
+            expect(lamb.make(["a", "b", "c"], [1, 2, 3])).toEqual({a: 1, b: 2, c: 3});
+        });
+
+        it("should create undefined values if the keys list is longer", function () {
+            expect(lamb.make(["a", "b", "c"], [1, 2])).toEqual({a: 1, b: 2, c: void 0});
+        });
+
+        it("should ignore extra values if the keys list is shorter", function () {
+            expect(lamb.make(["a", "b"], [1, 2, 3])).toEqual({a: 1, b: 2});
+        });
+
+        it("should convert non string keys to strings", function () {
+            expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({"null": 1, "undefined": 2, "2": 3});
+        });
+    });
+
+    describe("pairs", function () {
+        it("should convert an object in a list of key / value pairs", function () {
+            expect(lamb.pairs({a: 1, b: 2, c: 3})).toEqual([["a", 1], ["b", 2], ["c", 3]]);
+        });
+
+        it("should use all the enumerable properties of the source object, inherited or not", function () {
+            var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+            var foo = Object.create(baseFoo, {
+                c: {value: 3},
+                d: {value: 4, enumerable: true}
+            });
+
+            expect(lamb.pairs(foo)).toEqual([["d", 4], ["a", 1]]);
+        });
+    });
+
     describe("Property filtering", function () {
         var simpleObj = {"foo" : 1, "bar" : 2, "baz" : 3};
 
@@ -159,6 +207,22 @@ describe("lamb.object", function () {
             it("should skip object properties using a predicate", function () {
                 expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
             });
+        });
+    });
+
+    describe("tear", function () {
+        it("should transform an object in two lists, one containing its keys, the other containing the corresponding values", function () {
+            expect(lamb.tear({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
+        });
+
+        it("should use all the enumerable properties of the source object, inherited or not", function () {
+            var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+            var foo = Object.create(baseFoo, {
+                c: {value: 3},
+                d: {value: 4, enumerable: true}
+            });
+
+            expect(lamb.tear(foo)).toEqual([["d", "a"], [4, 1]]);
         });
     });
 
