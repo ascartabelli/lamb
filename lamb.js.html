@@ -28,7 +28,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.7.0
+ * @version 0.8.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -45,7 +45,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.7.0";
+    lamb._version =  "0.8.0";
     
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1851,6 +1851,22 @@
     lamb.subtract = subtract;
     
     
+    function _immutable (obj, seen) {
+        if (seen.indexOf(obj) === -1) {
+            seen.push(Object.freeze(obj));
+    
+            Object.getOwnPropertyNames(obj).forEach(function (key) {
+                var value = obj[key];
+    
+                if (typeof value === "object" &amp;&amp; !isNull(value)) {
+                    _immutable(value, seen);
+                }
+            });
+        }
+    
+        return obj;
+    }
+    
     /**
      * Builds a &lt;code>checker&lt;/code> function meant to be used with {@link module:lamb.validate|validate}.&lt;br/>
      * Note that the function accepts multiple &lt;code>keyPaths&lt;/code> as a means to compare their values. In
@@ -1884,17 +1900,41 @@
      * @category Object
      * @param {Function} predicate - The predicate to test the object properties
      * @param {String} message - The error message
-     * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getFromPath|paths}, to test.
+     * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getWithPath|paths}, to test.
      * @param {String} [pathSeparator="."]
      * @returns {Array&lt;String, String[]>} An error in the form &lt;code>["message", ["propertyA", "propertyB"]]&lt;/code> or an empty array.
      */
     function checker (predicate, message, keyPaths, pathSeparator) {
         return function (obj) {
             var errors = [];
-            var getValues = partial(getFromPath, obj, _, pathSeparator);
+            var getValues = partial(getWithPath, obj, _, pathSeparator);
     
             return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
         };
+    }
+    
+    /**
+     * Builds an object from a list of key / value pairs like the one
+     * returned by [pairs]{@link module:lamb.pairs}.&lt;br/>
+     * In case of duplicate keys the last key / value pair is used.
+     * @example
+     * _.fromPairs([["a", 1], ["b", 2], ["c", 3]]) // => {"a": 1, "b": 2, "c": 3}
+     * _.fromPairs([["a", 1], ["b", 2], ["a", 3]]) // => {"a": 3, "b": 2}
+     * _.fromPairs([[1], [void 0, 2], [null, 3]]) // => {"1": undefined, "undefined": 2, "null": 3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Array&lt;Array&lt;String, *>>} pairsList
+     * @returns {Object}
+     */
+    function fromPairs (pairsList) {
+        var result = {};
+    
+        pairsList.forEach(function (pair) {
+            result[pair[0]] = pair[1];
+        });
+    
+        return result;
     }
     
     /**
@@ -1916,39 +1956,6 @@
     }
     
     /**
-     * Gets a nested property value from an object using the given path.&lt;br/>
-     * The path is a string with property names separated by dots by default, but
-     * it can be customised with the optional third parameter.
-     * @example
-     * var user = {
-     *     name: "John",
-     *     surname: "Doe",
-     *     login: {
-     *         user.name: "jdoe",
-     *         password: "abc123"
-     *     }
-     * };
-     *
-     * // same as _.get if no path is involved
-     * _.getFromPath(user, "name") // => "John"
-     *
-     * _.getFromPath(user, "login.password") // => "abc123";
-     * _.getFromPath(user, "login/user.name", "/") // => "jdoe"
-     * _.getFromPath(user, "name.foo") // => undefined
-     * _.getFromPath(user, "name.foo.bar") // => throws a TypeError
-     *
-     * @memberof module:lamb
-     * @category Object
-     * @param {Object|ArrayLike} obj
-     * @param {String} path
-     * @param {String} [separator="."]
-     * @returns {*}
-     */
-    function getFromPath (obj, path, separator) {
-        return path.split(separator || ".").reduce(get, obj);
-    }
-    
-    /**
      * A curried version of {@link module:lamb.get|get}.&lt;br/>
      * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
      * @example
@@ -1966,6 +1973,39 @@
      * @returns {Function}
      */
     var getKey = _curry(get, 2, true);
+    
+    /**
+     * Gets a nested property value from an object using the given path.&lt;br/>
+     * The path is a string with property names separated by dots by default, but
+     * it can be customised with the optional third parameter.
+     * @example
+     * var user = {
+     *     name: "John",
+     *     surname: "Doe",
+     *     login: {
+     *         user.name: "jdoe",
+     *         password: "abc123"
+     *     }
+     * };
+     *
+     * // same as _.get if no path is involved
+     * _.getWithPath(user, "name") // => "John"
+     *
+     * _.getWithPath(user, "login.password") // => "abc123";
+     * _.getWithPath(user, "login/user.name", "/") // => "jdoe"
+     * _.getWithPath(user, "name.foo") // => undefined
+     * _.getWithPath(user, "name.foo.bar") // => throws a TypeError
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object|ArrayLike} obj
+     * @param {String} path
+     * @param {String} [separator="."]
+     * @returns {*}
+     */
+    function getWithPath (obj, path, separator) {
+        return path.split(separator || ".").reduce(get, obj);
+    }
     
     /**
      * Verifies the existence of a property in an object.
@@ -2072,6 +2112,88 @@
     var hasOwnKey = _curry(hasOwn, 2, true);
     
     /**
+     * Makes an object immutable by recursively calling [Object.freeze]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze}
+     * on its members.&lt;br/>
+     * Any attempt to extend or modify the object can throw a &lt;code>TypeError&lt;/code> or fail silently,
+     * depending on the environment and the [strict mode]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode} directive.
+     * @example
+     * var user = _.immutable({
+     *     name: "John",
+     *     surname: "Doe",
+     *     login: {
+     *         username: "jdoe",
+     *         password: "abc123"
+     *     },
+     *     luckyNumbers: [13, 17]
+     * });
+     *
+     * // Any of these statements will fail and possibly
+     * // throw a TypeError (see the function description)
+     * user.name = "Joe";
+     * delete user.name;
+     * user.newProperty = [];
+     * user.login.password = "foo";
+     * user.luckyNumbers.push(-13);
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object} obj
+     * @returns {Object}
+     */
+    function immutable (obj) {
+        return _immutable(obj, []);
+    }
+    
+    /**
+     * Builds an object from the two given lists, using the first one as keys and the last one as values.&lt;br/>
+     * If the list of keys is longer than the values one, the keys will be created with &lt;code>undefined&lt;/code> values.&lt;br/>
+     * If more values than keys are supplied, the extra values will be ignored.&lt;br/>
+     * See also [tear]{@link module:lamb.tear} for the reverse operation.
+     * @example
+     * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
+     * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
+     * _.make(["a", "b"], [1, 2, 3]) // => {a: 1, b: 2}
+     * _.make([null, void 0, 2], [1, 2, 3]) // => {"null": 1, "undefined": 2, "2": 3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {String[]} keys
+     * @param {Array} values
+     * @returns {Object}
+     */
+    function make (keys, values) {
+        var result = {};
+        var valuesLen = values.length;
+    
+        for (var i = 0, len = keys.length; i &lt; len; i++) {
+            result[keys[i]] = i &lt; valuesLen ? values[i] : void 0;
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Converts an object into an array of key / value pairs of its enumerable properties.&lt;br/>
+     * See also [fromPairs]{@link module:lamb.fromPairs} for the reverse operation.
+     * @example
+     * _.pairs({a: 1, b: 2, c: 3}) // => [["a", 1], ["b", 2], ["c", 3]]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object} obj
+     * @returns {Array&lt;Array&lt;String, *>>}
+     */
+    function pairs (obj) {
+        var result = [];
+    
+        for (var prop in obj) {
+            result.push([prop, obj[prop]]);
+        }
+    
+        return result;
+    }
+    
+    /**
      * Returns an object containing only the specified properties of the given object.&lt;br/>
      * Non existent properties will be ignored.
      * @example
@@ -2173,6 +2295,31 @@
     }
     
     /**
+     * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
+     * the other containing the corresponding values.&lt;br/>
+     * Although this "tearing apart" may sound as a rather violent process, the source object will be unharmed.&lt;br/>
+     * See also [make]{@link module:lamb.make} for the reverse operation.
+     * @example
+     * _.tear({a: 1, b: 2, c: 3}) // => [["a", "b", "c"], [1, 2, 3]]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {Object} obj
+     * @returns {Array&lt;Array&lt;String>, Array&lt;*>>}
+     */
+    function tear (obj) {
+        var keys = [];
+        var values = [];
+    
+        for (var prop in obj) {
+            keys.push(prop);
+            values.push(obj[prop]);
+        }
+    
+        return [keys, values];
+    }
+    
+    /**
      * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
      * @example
      * var hasContent = function (s) { return s.trim().length > 0; };
@@ -2231,7 +2378,7 @@
     var validateWith = _curry(validate, 2, true);
     
     /**
-     * Generates an array with the values of the enumerable own properties of the given object.
+     * Generates an array with the values of the enumerable properties of the given object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
      *
@@ -2243,30 +2390,33 @@
      * @returns {Array}
      */
     function values (obj) {
-        var keys = Object.keys(obj);
-        var keysLen = keys.length;
         var result = [];
     
-        for (var i = 0; i &lt; keysLen; i++) {
-            result[i] = obj[keys[i]];
+        for(var prop in obj) {
+            result.push(obj[prop]);
         }
     
         return result;
     }
     
     lamb.checker = checker;
+    lamb.fromPairs = fromPairs;
     lamb.get = get;
-    lamb.getFromPath = getFromPath;
     lamb.getKey = getKey;
+    lamb.getWithPath = getWithPath;
     lamb.has = has;
     lamb.hasKey = hasKey;
     lamb.hasKeyValue = hasKeyValue;
     lamb.hasOwn = hasOwn;
     lamb.hasOwnKey = hasOwnKey;
+    lamb.immutable = immutable;
+    lamb.make = make;
+    lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
     lamb.skip = skip;
     lamb.skipIf = skipIf;
+    lamb.tear = tear;
     lamb.validate = validate;
     lamb.validateWith = validateWith;
     lamb.values = values;
@@ -2572,13 +2722,13 @@
 </div>
 
 <nav id="main-navigation">
-    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getFromPath">getFromPath</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.typeOf">typeOf</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getWithPath">getWithPath</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.typeOf">typeOf</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Wed Mar 25 2015 11:56:53 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Fri Apr 03 2015 16:13:53 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
