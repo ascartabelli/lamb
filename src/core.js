@@ -85,7 +85,7 @@ function compose () {
  * @example
  * // Lamb's "filter" is actually implemented like this
  * var filter = _.generic(Array.prototype.filter);
- * var isLowerCase = function (s) { return s.toUpperCase() !== s; };
+ * var isLowerCase = function (s) { return s.toLowerCase() === s; };
  *
  * filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
  *

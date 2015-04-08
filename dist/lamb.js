@@ -106,7 +106,7 @@
      * @example
      * // Lamb's "filter" is actually implemented like this
      * var filter = _.generic(Array.prototype.filter);
-     * var isLowerCase = function (s) { return s.toUpperCase() !== s; };
+     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
      *
      * filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
      *
@@ -182,7 +182,7 @@
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code> test.<br/>
      * It's a generic version of [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}.
      * @example
-     * var isLowerCase = function (s) { return s.toUpperCase() !== s; };
+     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
      *
      * _.filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
      *
@@ -430,6 +430,28 @@
         return function (arrayLike) {
             return slice(arrayLike, _findSliceEndIndex(arrayLike, predicate, predicateContext));
         };
+    }
+    
+    /**
+     * Returns a partial application of {@link module:lamb.filter|filter} that uses the given predicate and
+     * the optional context to build a function expecting the array-like object to act upon.
+     * @example
+     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+     * var getLowerCaseEntries = _.filterWith(isLowerCase);
+     *
+     * getLowerCaseEntries(["Foo", "bar", "baZ"]) // => ["bar"]
+     *
+     * // array-like objects can be used as well
+     * getLowerCaseEntries("fooBAR") // => ["f", "o", "o"]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Function}
+     */
+    function filterWith (predicate, predicateContext) {
+        return partial(filter, _, predicate, predicateContext);
     }
     
     /**
@@ -741,8 +763,8 @@
     }
     
     /**
-     * A curried version of {@link module:lamb.map|map} that uses the given iteratee to build a
-     * function expecting the array-like object to act upon.
+     * Returns a partial application of {@link module:lamb.map|map} that uses the given iteratee and
+     * the optional context to build a function expecting the array-like object to act upon.
      * @example
      * var square = function (n) { return n * n; };
      * var getSquares = _.mapWith(square);
@@ -938,6 +960,7 @@
     lamb.drop = drop;
     lamb.dropN = dropN;
     lamb.dropWhile = dropWhile;
+    lamb.filterWith = filterWith;
     lamb.find = find;
     lamb.findIndex = findIndex;
     lamb.flatMap = flatMap;
@@ -1472,7 +1495,7 @@
      * _.is(testObject, testObject) // => true
      * _.is("foo", "foo") // => true
      * _.is(0, -0) // => false
-     * _.is(0 / 0, NaN) => true
+     * _.is(0 / 0, NaN) // => true
      *
      * @memberof module:lamb
      * @category Logic

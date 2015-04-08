@@ -3,7 +3,7 @@
  * Builds an array comprised of all values of the array-like object passing the <code>predicate</code> test.<br/>
  * It's a generic version of [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}.
  * @example
- * var isLowerCase = function (s) { return s.toUpperCase() !== s; };
+ * var isLowerCase = function (s) { return s.toLowerCase() === s; };
  *
  * _.filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
  *

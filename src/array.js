@@ -137,6 +137,28 @@ function dropWhile (predicate, predicateContext) {
 }
 
 /**
+ * Returns a partial application of {@link module:lamb.filter|filter} that uses the given predicate and
+ * the optional context to build a function expecting the array-like object to act upon.
+ * @example
+ * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+ * var getLowerCaseEntries = _.filterWith(isLowerCase);
+ *
+ * getLowerCaseEntries(["Foo", "bar", "baZ"]) // => ["bar"]
+ *
+ * // array-like objects can be used as well
+ * getLowerCaseEntries("fooBAR") // => ["f", "o", "o"]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ListIteratorCallback} predicate
+ * @param {Object} [predicateContext]
+ * @returns {Function}
+ */
+function filterWith (predicate, predicateContext) {
+    return partial(filter, _, predicate, predicateContext);
+}
+
+/**
  * Searches for an element satisfying the predicate in the given array-like object and returns it if
  * the search is successful. Returns <code>undefined</code> otherwise.
  * @example
@@ -445,8 +467,8 @@ function list () {
 }
 
 /**
- * A curried version of {@link module:lamb.map|map} that uses the given iteratee to build a
- * function expecting the array-like object to act upon.
+ * Returns a partial application of {@link module:lamb.map|map} that uses the given iteratee and
+ * the optional context to build a function expecting the array-like object to act upon.
  * @example
  * var square = function (n) { return n * n; };
  * var getSquares = _.mapWith(square);
@@ -642,6 +664,7 @@ lamb.difference = difference;
 lamb.drop = drop;
 lamb.dropN = dropN;
 lamb.dropWhile = dropWhile;
+lamb.filterWith = filterWith;
 lamb.find = find;
 lamb.findIndex = findIndex;
 lamb.flatMap = flatMap;

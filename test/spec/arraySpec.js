@@ -50,6 +50,20 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("filterWith", function () {
+        it("should build a partial application of `filter` expecting the array-like object to act upon", function () {
+            var fakeContext = {};
+            var isLowerCase = function (s) {
+                expect(this).toBe(fakeContext);
+                return s.toLowerCase() === s;
+            };
+
+            var getLowerCaseEls = lamb.filterWith(isLowerCase, fakeContext);
+            expect(getLowerCaseEls(["Foo", "bar", "baZ"])).toEqual(["bar"]);
+            expect(getLowerCaseEls("fooBAR")).toEqual(["f", "o", "o"]);
+        });
+    });
+
     describe("find / findIndex", function () {
         var persons = [
             {"name": "Jane", "surname": "Doe", "age": 12},
@@ -327,8 +341,13 @@ describe("lamb.array", function () {
     });
 
     describe("mapWith", function () {
-        it("should accept a mapping function and return a curried version of map expecting the array to operate upon as argument", function () {
-            var makeDoubles = lamb.mapWith(function (n) { return n * 2; });
+        it("should accept a mapping function and return a partially applied version of map expecting the array to operate upon as argument", function () {
+            var fakeContext = {};
+            var double = function (n) {
+                expect(this).toBe(fakeContext);
+                return n * 2;
+            };
+            var makeDoubles = lamb.mapWith(double, fakeContext);
             var numbers = [1, 2, 3, 4, 5];
 
             expect(makeDoubles(numbers)).toEqual([2, 4, 6, 8, 10]);

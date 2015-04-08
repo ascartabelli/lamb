@@ -147,7 +147,7 @@ function condition (predicate, trueFn, falseFn) {
  * _.is(testObject, testObject) // => true
  * _.is("foo", "foo") // => true
  * _.is(0, -0) // => false
- * _.is(0 / 0, NaN) => true
+ * _.is(0 / 0, NaN) // => true
  *
  * @memberof module:lamb
  * @category Logic
