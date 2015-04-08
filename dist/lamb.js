@@ -2264,6 +2264,29 @@
     }
     
     /**
+     * Merges the enumerable properties of the provided sources into a new object.<br/>
+     * In case of key homonymy each source has precedence over the previous one.
+     * @example
+     * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @param {...Object} source
+     * @returns {Object}
+     */
+    function merge () {
+        var result = {};
+    
+        _.forEach(arguments, function (source) {
+            for (var key in source) {
+                result[key] = source[key];
+            }
+        });
+    
+        return result;
+    }
+    
+    /**
      * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
      * See also [fromPairs]{@link module:lamb.fromPairs} for the reverse operation.
      * @example
@@ -2502,6 +2525,7 @@
     lamb.hasOwnKey = hasOwnKey;
     lamb.immutable = immutable;
     lamb.make = make;
+    lamb.merge = merge;
     lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
