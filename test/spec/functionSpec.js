@@ -67,17 +67,11 @@ describe("lamb.function", function () {
                 expect(subtractSpy.calls.count()).toBe(1);
             });
 
-            it("should allow right currying when the proper parameter is set", function () {
-                var rightCurried = lamb.curry(fooSubtract, null, true);
-                expect(rightCurried(1, 5)(2)()(3)).toBe(0);
-                expect(rightCurried(1)(2)(3)).toBe(0);
-            });
-
             it("should return reusable partially applied functions", function () {
-                var minusTen = lamb.curry(fooSubtract, null, true)(5)(5);
+                var subtractFromTen = lamb.curry(fooSubtract)(11)(1);
 
-                expect(minusTen(11)).toBe(1);
-                expect(minusTen(21)).toBe(11);
+                expect(subtractFromTen(2)).toBe(8);
+                expect(subtractFromTen(22)).toBe(-12);
             });
 
             it("should accept undefined arguments, but empty calls shouldn't consume the arity", function () {
@@ -86,6 +80,22 @@ describe("lamb.function", function () {
                 expect(curriedList("a", "z")()("b")("c")("d")).toEqual(["a", "b", "c", "d"]);
                 expect(curriedList("a")(undefined)("c")()("d")).toEqual(["a", undefined, "c", "d"]);
                 expect(curriedList("a")(undefined)("c")(undefined)).toEqual(["a", undefined, "c", undefined]);
+            });
+        });
+
+        describe("curryRight", function () {
+            it("should allow currying from the rightmost argument", function () {
+                var rightCurriedSub = lamb.curryRight(fooSubtract);
+
+                expect(rightCurriedSub(1, 5)(2)()(3)).toBe(0);
+                expect(rightCurriedSub(1)(2)(3)).toBe(0);
+            });
+
+            it("should return reusable partially applied functions", function () {
+                var minusTen = lamb.curryRight(fooSubtract)(5)(5);
+
+                expect(minusTen(11)).toBe(1);
+                expect(minusTen(21)).toBe(11);
             });
         });
 
@@ -101,18 +111,11 @@ describe("lamb.function", function () {
                 expect(subtractSpy.calls.count()).toBe(1);
             });
 
-            it("should allow right currying when the proper parameter is set", function () {
-                var rightCurried = lamb.curryable(fooSubtract, null, true);
-
-                expect(rightCurried(1, 2)()(3)).toBe(0);
-                expect(rightCurried(1, 2, 3)).toBe(0);
-            });
-
             it("should return reusable partially applied functions", function () {
-                var minusTen = lamb.curryable(fooSubtract, null, true)(5, 5);
+                var subtractFromTen = lamb.curryable(fooSubtract)(11, 1);
 
-                expect(minusTen(11)).toBe(1);
-                expect(minusTen(21)).toBe(11);
+                expect(subtractFromTen(2)).toBe(8);
+                expect(subtractFromTen(22)).toBe(-12);
             });
 
             it("should accept undefined arguments, but empty calls shouldn't consume the arity", function () {
@@ -126,6 +129,22 @@ describe("lamb.function", function () {
             it("should build a function equivalent to the given one, if it's variadic and with an arity of zero", function () {
                 expect(lamb.curryable(lamb.list)(1, 2, 3)).toEqual(lamb.list(1, 2, 3));
                 expect(lamb.curryable(lamb.list)(1, 2, 3, 4, 5), 0).toEqual(lamb.list(1, 2, 3, 4, 5));
+            });
+        });
+
+        describe("curryableRight", function () {
+            it("should build an \"auto-curried\" function and start currying from the rightmost argument", function () {
+                var rightCurried = lamb.curryableRight(fooSubtract);
+
+                expect(rightCurried(1, 2)()(3)).toBe(0);
+                expect(rightCurried(1, 2, 3)).toBe(0);
+            });
+
+            it("should return reusable partially applied functions", function () {
+                var minusTen = lamb.curryableRight(fooSubtract)(5, 5);
+
+                expect(minusTen(11)).toBe(1);
+                expect(minusTen(21)).toBe(11);
             });
         });
     });

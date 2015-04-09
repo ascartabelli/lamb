@@ -11,8 +11,6 @@ function _findSliceEndIndex (arrayLike, predicate, predicateContext) {
 }
 
 function _flatten (array, output) {
-    output = output || [];
-
     array.forEach(function (value) {
         if (Array.isArray(value)) {
             _flatten(value, output);
@@ -22,10 +20,6 @@ function _flatten (array, output) {
     });
 
     return output;
-}
-
-function _shallowFlatten (array) {
-    return _arrayProto.concat.apply([], array);
 }
 
 function _getInsertionIndex (array, element, comparer, reader, start, end) {
@@ -72,7 +66,7 @@ function _getInsertionIndex (array, element, comparer, reader, start, end) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = _shallowFlatten(slice(arguments, 1));
+    var rest = shallowFlatten(slice(arguments, 1));
     return array.filter(function (item) {
         return rest.indexOf(item) === -1;
     });
@@ -231,7 +225,7 @@ function findIndex (arrayLike, predicate, predicateContext) {
 /**
  * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
  * be concatenated, rather than pushed, to the final result.
- * @example <caption>showing the difference with map</caption>
+ * @example <caption>showing the difference with <code>map</code></caption>
  * var words = ["foo", "bar"];
  * var toCharArray = function (s) { return s.split(""); };
  *
@@ -246,24 +240,23 @@ function findIndex (arrayLike, predicate, predicateContext) {
  * @param {Object} [iterateeContext]
  * @returns {Array}
  */
-var flatMap = compose(_shallowFlatten, map);
+var flatMap = compose(shallowFlatten, map);
 
 /**
- * Flattens an array.
- * @example
+ * Flattens an array. See also {@link module:lamb.shallowFlatten|shallowFlatten}.
+ * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
  * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
- * _.flatten(arr, true) // => [1, 2, 3, 4, [5, 6], 7, 8]
+ * _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]
  *
  * @memberof module:lamb
  * @category Array
  * @param {Array} array
- * @param {Boolean} [doShallow=false] - Whether to flatten only the first "level" of the array or not.
  * @returns {Array}
  */
-function flatten (array, doShallow) {
-    return (doShallow ? _shallowFlatten : _flatten)(array);
+function flatten (array) {
+    return _flatten(array, []);
 }
 
 /**
@@ -516,6 +509,24 @@ function pluck (arrayLike, key) {
 }
 
 /**
+ * Flattens the "first level" of an array.<br/>
+ * See also {@link module:lamb.flatten|flatten}.
+ * @example <caption>showing the difference with <code>flatten</code></caption>
+ * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
+ *
+ * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
+ * _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {Array} array
+ * @returns {Array}
+ */
+function shallowFlatten (array) {
+    return _arrayProto.concat.apply([], array);
+}
+
+/**
  * Generates a function to sort arrays of complex values.
  * @example
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
@@ -676,6 +687,7 @@ lamb.insert = insert;
 lamb.list = list;
 lamb.mapWith = mapWith;
 lamb.pluck = pluck;
+lamb.shallowFlatten = shallowFlatten;
 lamb.sorter = sorter;
 lamb.take = take;
 lamb.takeN = takeN;

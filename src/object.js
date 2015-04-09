@@ -131,7 +131,7 @@ var getKey = _curry(get, 2, true);
  *     name: "John",
  *     surname: "Doe",
  *     login: {
- *         user.name: "jdoe",
+ *         "user.name": "jdoe",
  *         password: "abc123"
  *     }
  * };

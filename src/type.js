@@ -42,12 +42,12 @@ function isNull (value) {
  *
  * @memberof module:lamb
  * @category Type
- * @param {String} type
+ * @param {String} typeTag
  * @returns {Function}
  */
-function isType (type) {
+function isType (typeName) {
     return function (value) {
-        return typeOf(value) === type;
+        return type(value) === typeName;
     };
 }
 
@@ -71,15 +71,23 @@ function isUndefined (value) {
 /**
  * Retrieves the "type tag" from the given value.
  * @example
- * _.typeOf(Object.prototype.toString) // => "Function"
- * _.typeOf(/a/) // => "RegExp"
+ * var x = 5;
+ * var y = new Number(5);
+ *
+ * typeof x // => "number"
+ * typeof y // => "object"
+ * _.type(x) // => "Number"
+ * _.type(y) // => "Number"
+ *
+ * _.type(Object.prototype.toString) // => "Function"
+ * _.type(/a/) // => "RegExp"
  *
  * @memberof module:lamb
  * @category Type
  * @param {*} value
  * @returns {String}
  */
-function typeOf (value) {
+function type (value) {
     return _objectProto.toString.call(value).replace(/^\[\w+\s+|\]$/g, "");
 }
 
@@ -87,4 +95,4 @@ lamb.isNil = isNil;
 lamb.isNull = isNull;
 lamb.isType = isType;
 lamb.isUndefined = isUndefined;
-lamb.typeOf = typeOf;
+lamb.type = type;

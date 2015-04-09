@@ -175,16 +175,10 @@ describe("lamb.array", function () {
             expect(lamb.flatten).toThrow();
         });
 
-        it("should return a deep flattened array of arrays by default", function () {
+        it("should return a deep flattened array", function () {
             var input = [[1, [2, [3, ["a", ["b", ["c"]]]]]]];
 
             expect(lamb.flatten(input)).toEqual([1, 2, 3, "a", "b", "c"]);
-        });
-
-        it("should return a shallow flattened array of arrays when called with doShallow = true", function () {
-            var input = [[1, [2, [3, ["a", ["b", ["c"]]]]]]];
-
-            expect(lamb.flatten(input, true)).toEqual([1, [2, [3, ["a", ["b", ["c"]]]]]]);
         });
 
         it("shouldn't flatten an array that is a value in an object", function () {
@@ -380,6 +374,22 @@ describe("lamb.array", function () {
             ];
 
             expect(lamb.pluck(lists, "length")).toEqual([2, 3, 1]);
+        });
+    });
+
+    describe("shallowFlatten", function () {
+        it("should return a shallow flattened array", function () {
+            var a1 = [[1, [2, [3, ["a", ["b", ["c"]]]]]]];
+            var a2 = [1, 2, [3, 4, [5, 6]], 7, 8];
+
+            expect(lamb.shallowFlatten(a1)).toEqual([1, [2, [3, ["a", ["b", ["c"]]]]]]);
+            expect(lamb.shallowFlatten(a2)).toEqual([1, 2, 3, 4, [5, 6], 7, 8]);
+        });
+
+        it("shouldn't flatten an array that is a value in an object", function () {
+            var input = ["a", "b", {"c" : ["d"]}];
+
+            expect(lamb.shallowFlatten(input)).toEqual(input);
         });
     });
 

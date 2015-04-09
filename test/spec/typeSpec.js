@@ -38,27 +38,27 @@ describe("lamb.type", function () {
         });
     });
 
-    describe("typeOf", function () {
+    describe("type", function () {
         it("should extract the \"type tag\" from the given value", function () {
-            var getArgsType = function () { return lamb.typeOf(arguments); };
+            var getArgsType = function () { return lamb.type(arguments); };
             expect(getArgsType()).toBe("Arguments");
-            expect(lamb.typeOf(void 0)).toBe("Undefined");
-            expect(lamb.typeOf(null)).toBe("Null");
-            expect(lamb.typeOf(NaN)).toBe("Number");
-            expect(lamb.typeOf(0)).toBe("Number");
-            expect(lamb.typeOf(new Number())).toBe("Number");
-            expect(lamb.typeOf("")).toBe("String");
-            expect(lamb.typeOf(new String("foo"))).toBe("String");
-            expect(lamb.typeOf(/a/)).toBe("RegExp");
-            expect(lamb.typeOf(new RegExp())).toBe("RegExp");
-            expect(lamb.typeOf(new Date())).toBe("Date");
-            expect(lamb.typeOf(function () {})).toBe("Function");
-            expect(lamb.typeOf(new Function())).toBe("Function");
-            expect(lamb.typeOf([1, 2, 3])).toBe("Array");
-            expect(lamb.typeOf(new Array())).toBe("Array");
-            expect(lamb.typeOf(Object.create(null))).toBe("Object");
-            expect(lamb.typeOf({})).toBe("Object");
-            expect(lamb.typeOf(new getArgsType())).toBe("Object");
+            expect(lamb.type(void 0)).toBe("Undefined");
+            expect(lamb.type(null)).toBe("Null");
+            expect(lamb.type(NaN)).toBe("Number");
+            expect(lamb.type(0)).toBe("Number");
+            expect(lamb.type(new Number())).toBe("Number");
+            expect(lamb.type("")).toBe("String");
+            expect(lamb.type(new String("foo"))).toBe("String");
+            expect(lamb.type(/a/)).toBe("RegExp");
+            expect(lamb.type(new RegExp())).toBe("RegExp");
+            expect(lamb.type(new Date())).toBe("Date");
+            expect(lamb.type(function () {})).toBe("Function");
+            expect(lamb.type(new Function())).toBe("Function");
+            expect(lamb.type([1, 2, 3])).toBe("Array");
+            expect(lamb.type(new Array())).toBe("Array");
+            expect(lamb.type(Object.create(null))).toBe("Object");
+            expect(lamb.type({})).toBe("Object");
+            expect(lamb.type(new getArgsType())).toBe("Object");
         });
     });
 });

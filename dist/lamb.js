@@ -307,8 +307,6 @@
     }
     
     function _flatten (array, output) {
-        output = output || [];
-    
         array.forEach(function (value) {
             if (Array.isArray(value)) {
                 _flatten(value, output);
@@ -318,10 +316,6 @@
         });
     
         return output;
-    }
-    
-    function _shallowFlatten (array) {
-        return _arrayProto.concat.apply([], array);
     }
     
     function _getInsertionIndex (array, element, comparer, reader, start, end) {
@@ -368,7 +362,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = _shallowFlatten(slice(arguments, 1));
+        var rest = shallowFlatten(slice(arguments, 1));
         return array.filter(function (item) {
             return rest.indexOf(item) === -1;
         });
@@ -527,7 +521,7 @@
     /**
      * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
      * be concatenated, rather than pushed, to the final result.
-     * @example <caption>showing the difference with map</caption>
+     * @example <caption>showing the difference with <code>map</code></caption>
      * var words = ["foo", "bar"];
      * var toCharArray = function (s) { return s.split(""); };
      *
@@ -542,24 +536,23 @@
      * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    var flatMap = compose(_shallowFlatten, map);
+    var flatMap = compose(shallowFlatten, map);
     
     /**
-     * Flattens an array.
-     * @example
+     * Flattens an array. See also {@link module:lamb.shallowFlatten|shallowFlatten}.
+     * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
      * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
      *
      * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
-     * _.flatten(arr, true) // => [1, 2, 3, 4, [5, 6], 7, 8]
+     * _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]
      *
      * @memberof module:lamb
      * @category Array
      * @param {Array} array
-     * @param {Boolean} [doShallow=false] - Whether to flatten only the first "level" of the array or not.
      * @returns {Array}
      */
-    function flatten (array, doShallow) {
-        return (doShallow ? _shallowFlatten : _flatten)(array);
+    function flatten (array) {
+        return _flatten(array, []);
     }
     
     /**
@@ -812,6 +805,24 @@
     }
     
     /**
+     * Flattens the "first level" of an array.<br/>
+     * See also {@link module:lamb.flatten|flatten}.
+     * @example <caption>showing the difference with <code>flatten</code></caption>
+     * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
+     *
+     * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
+     * _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {Array} array
+     * @returns {Array}
+     */
+    function shallowFlatten (array) {
+        return _arrayProto.concat.apply([], array);
+    }
+    
+    /**
      * Generates a function to sort arrays of complex values.
      * @example
      * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
@@ -972,6 +983,7 @@
     lamb.list = list;
     lamb.mapWith = mapWith;
     lamb.pluck = pluck;
+    lamb.shallowFlatten = shallowFlatten;
     lamb.sorter = sorter;
     lamb.take = take;
     lamb.takeN = takeN;
@@ -1059,19 +1071,36 @@
     }
     
     /**
-     * Transforms the evaluation of the given function in the evaluation of a sequence of functions expecting
-     * only one argument. Each function of the sequence is a partial application of the original one, which
-     * will be applied when the specified (or derived) arity is consumed.<br/>
-     * See also {@link module:lamb.curryable|curryable} and {@link module:lamb.partial|partial}.
+     * Transforms the evaluation of the given function in the evaluation of a sequence of functions
+     * expecting only one argument. Each function of the sequence is a partial application of the
+     * original one, which will be applied when the specified (or derived) arity is consumed.<br/>
+     * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
+     * for right currying.<br/>
+     * See also {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * and {@link module:lamb.partial|partial}.
      * @example
      * var multiplyBy = _.curry(_.multiply);
      * var multiplyBy10 = multiplyBy(10);
-     * var divideBy = _.curry(_.divide, 2, true);
-     * var halve = divideBy(2);
      *
      * multiplyBy10(5) // => 50
      * multiplyBy10()(5) // => 50
      * multiplyBy10()()(2) // => 20
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {Function} fn
+     * @param {?Number} [arity=fn.length]
+     * @returns {Function}
+     */
+    function curry (fn, arity) {
+        return _curry(fn, arity, false);
+    }
+    
+    /**
+     * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
+     * @example
+     * var divideBy = _.curryRight(_.divide, 2);
+     * var halve = divideBy(2);
      * halve(3) // => 1.5
      * halve(3, 7) // => 1.5
      *
@@ -1079,20 +1108,22 @@
      * @category Function
      * @param {Function} fn
      * @param {?Number} [arity=fn.length]
-     * @param {Boolean} [isRightCurry=false] - Whether to start currying from the rightmost argument or not.
      * @returns {Function}
      */
-    function curry (fn, arity, isRightCurry) {
-        return _curry(fn, arity, isRightCurry);
+    function curryRight (fn, arity) {
+        return _curry(fn, arity, true);
     }
     
     /**
      * Builds an auto-curried function. The resulting function can be called multiple times with
      * any number of arguments, and the original function will be applied only when the specified
      * (or derived) arity is consumed.<br/>
+     * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
+     * for right currying.<br/>
      * Note that you can pass undefined values as arguments explicitly, if you are so inclined, but empty
      * calls doesn't consume the arity.<br/>
-     * See also {@link module:lamb.curry|curry} and {@link module:lamb.partial|partial}.
+     * See also {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight} and
+     * {@link module:lamb.partial|partial}.
      * @example
      * var collectFourElements = _.curryable(_.list, 4);
      *
@@ -1105,11 +1136,30 @@
      * @category Function
      * @param {Function} fn
      * @param {?Number} [arity=fn.length]
-     * @param {Boolean} [isRightCurry=false] - Whether to start currying from the rightmost argument or not.
      * @returns {Function}
      */
-    function curryable (fn, arity, isRightCurry) {
-        return _curry(fn, arity, isRightCurry, true);
+    function curryable (fn, arity) {
+        return _curry(fn, arity, false, true);
+    }
+    
+    /**
+     * Same as {@link module:lamb.curryable|curryable}, but currying starts from the rightmost argument.
+     * @example
+     * var collectFourElements = _.curryableRight(_.list, 4);
+     *
+     * collectFourElements(2)(3)(4)(5) // => [5, 4, 3, 2]
+     * collectFourElements(2)(3, 4)(5) // => [5, 4, 3, 2]
+     * collectFourElements(2, 3, 4, 5) // => [5, 4, 3, 2]
+     * collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {Function} fn
+     * @param {?Number} [arity=fn.length]
+     * @returns {Function}
+     */
+    function curryableRight (fn, arity) {
+        return _curry(fn, arity, true, true);
     }
     
     /**
@@ -1202,7 +1252,7 @@
         return function (target) {
             var args = slice(arguments, 1);
             var method = target[methodName];
-            return typeOf(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
+            return type(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
         };
     }
     
@@ -1336,7 +1386,9 @@
     lamb.applyArgs = applyArgs;
     lamb.aritize = aritize;
     lamb.curry = curry;
+    lamb.curryRight = curryRight;
     lamb.curryable = curryable;
+    lamb.curryableRight = curryableRight;
     lamb.debounce = debounce;
     lamb.flip = flip;
     lamb.invoker = invoker;
@@ -1979,7 +2031,7 @@
      *     name: "John",
      *     surname: "Doe",
      *     login: {
-     *         user.name: "jdoe",
+     *         "user.name": "jdoe",
      *         password: "abc123"
      *     }
      * };
@@ -2557,12 +2609,12 @@
      *
      * @memberof module:lamb
      * @category Type
-     * @param {String} type
+     * @param {String} typeTag
      * @returns {Function}
      */
-    function isType (type) {
+    function isType (typeName) {
         return function (value) {
-            return typeOf(value) === type;
+            return type(value) === typeName;
         };
     }
     
@@ -2586,15 +2638,23 @@
     /**
      * Retrieves the "type tag" from the given value.
      * @example
-     * _.typeOf(Object.prototype.toString) // => "Function"
-     * _.typeOf(/a/) // => "RegExp"
+     * var x = 5;
+     * var y = new Number(5);
+     *
+     * typeof x // => "number"
+     * typeof y // => "object"
+     * _.type(x) // => "Number"
+     * _.type(y) // => "Number"
+     *
+     * _.type(Object.prototype.toString) // => "Function"
+     * _.type(/a/) // => "RegExp"
      *
      * @memberof module:lamb
      * @category Type
      * @param {*} value
      * @returns {String}
      */
-    function typeOf (value) {
+    function type (value) {
         return _objectProto.toString.call(value).replace(/^\[\w+\s+|\]$/g, "");
     }
     
@@ -2602,7 +2662,7 @@
     lamb.isNull = isNull;
     lamb.isType = isType;
     lamb.isUndefined = isUndefined;
-    lamb.typeOf = typeOf;
+    lamb.type = type;
     
     /* istanbul ignore next */
     if (typeof exports === "object") {
