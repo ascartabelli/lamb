@@ -68,6 +68,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.9.0 - *2015/04/10***
+  - **API change:** dropped the boolean parameter in `flatten` and added `shallowFlatten`
+  - **API change:** dropped the boolean parameter in `curry` and `curryable`, added `curryRight` and `curryableRight`
+  - **API change:** renamed `typeOf` to `type` to avoid confusion with the operator
+  - Added the `filterWith` function
+
 - **v0.8.0 - *2015/04/03***
   - **API change:** the `values` function now picks from all enumerable properties, even inherited
   - **API change:** renamed `getFromPath` to `getWithPath`
