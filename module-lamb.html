@@ -59,7 +59,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.9.0</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>0.10.0</li></ul></dd>
     
 
     
@@ -266,7 +266,7 @@ can be useful as a strategy pattern for functions, to mimic conditional logic an
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1431">line 1431</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1474">line 1474</a>
     </li></ul></dd>
     
 
@@ -463,7 +463,7 @@ filterWithDefault({}, isEven)) // => "Not implemented"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1723">line 1723</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1766">line 1766</a>
     </li></ul></dd>
     
 
@@ -634,7 +634,7 @@ The arguments passed to the resulting function are applied to every predicate un
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1467">line 1467</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1510">line 1510</a>
     </li></ul></dd>
     
 
@@ -988,7 +988,7 @@ The arguments passed to the resulting function are applied to every predicate un
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1497">line 1497</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1540">line 1540</a>
     </li></ul></dd>
     
 
@@ -1578,6 +1578,168 @@ data.map(_.aritize(getDashIndex, 1)) // = > [1, 2, 1]</code></pre>
 
     
 
+    <h4 class="name" id=".binary"><span class="type-signature"></span>binary<span class="signature">(fn)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+
+<span class="category-label"><a href="#cat-Function">Function</a></span>
+
+</h4>
+
+    
+
+
+
+<div class="description">
+    Builds a function that passes only two arguments to the given function.<br/>
+It's simply a shortcut for a common use case of <a href="module-lamb.html#.aritize">aritize</a>,
+exposed for convenience.<br/>
+See also <a href="module-lamb.html#.unary">unary</a>.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#function">function</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1087">line 1087</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#function">function</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>_.list(1, 2, 3, 4, 5) // => [1, 2, 3, 4, 5]
+_.binary(_.list)(1, 2, 3, 4, 5) // => [1, 2]</code></pre>
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".checker"><span class="type-signature"></span>checker<span class="signature">(predicate, message, keyPaths, pathSeparator<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#Array">Array</a>.&lt;<a href="global.html#String">String</a>, <a href="global.html#Array">Array</a>.&lt;<a href="global.html#String">String</a>>>}</span>
 
 <span class="category-label"><a href="#cat-Object">Object</a></span>
@@ -1812,7 +1974,7 @@ multiple <code>checker</code>s and combine them with <a href="module-lamb.html#.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1955">line 1955</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1998">line 1998</a>
     </li></ul></dd>
     
 
@@ -2255,7 +2417,7 @@ use <a href="module-lamb.html#.adapter">adapter</a> to build more complex behavi
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1531">line 1531</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1574">line 1574</a>
     </li></ul></dd>
     
 
@@ -2321,7 +2483,7 @@ halveIfEven(6) // => 3</code></pre>
 
     
 
-    <h4 class="name" id=".curry"><span class="type-signature"></span>curry<span class="signature">(fn, arity<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+    <h4 class="name" id=".curry"><span class="type-signature"></span>curry<span class="signature">(fn, arity<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -2432,8 +2594,6 @@ and <a href="module-lamb.html#.partial">partial</a>.
                 
 
                 
-                    &lt;nullable><br>
-                
 
                 
                 </td>
@@ -2488,7 +2648,7 @@ and <a href="module-lamb.html#.partial">partial</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1095">line 1095</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1115">line 1115</a>
     </li></ul></dd>
     
 
@@ -2547,7 +2707,7 @@ multiplyBy10()()(2) // => 20</code></pre>
 
     
 
-    <h4 class="name" id=".curryable"><span class="type-signature"></span>curryable<span class="signature">(fn, arity<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+    <h4 class="name" id=".curryable"><span class="type-signature"></span>curryable<span class="signature">(fn, arity<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -2660,8 +2820,6 @@ See also <a href="module-lamb.html#.curry">curry</a>, <a href="module-lamb.html#
                 
 
                 
-                    &lt;nullable><br>
-                
 
                 
                 </td>
@@ -2716,7 +2874,7 @@ See also <a href="module-lamb.html#.curry">curry</a>, <a href="module-lamb.html#
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1141">line 1141</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1161">line 1161</a>
     </li></ul></dd>
     
 
@@ -2775,7 +2933,7 @@ collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]</code></pre>
 
     
 
-    <h4 class="name" id=".curryableRight"><span class="type-signature"></span>curryableRight<span class="signature">(fn, arity<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+    <h4 class="name" id=".curryableRight"><span class="type-signature"></span>curryableRight<span class="signature">(fn, arity<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -2880,8 +3038,6 @@ collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]</code></pre>
                 
 
                 
-                    &lt;nullable><br>
-                
 
                 
                 </td>
@@ -2936,7 +3092,7 @@ collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1161">line 1161</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1181">line 1181</a>
     </li></ul></dd>
     
 
@@ -2995,7 +3151,7 @@ collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]</code></pre>
 
     
 
-    <h4 class="name" id=".curryRight"><span class="type-signature"></span>curryRight<span class="signature">(fn, arity<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+    <h4 class="name" id=".curryRight"><span class="type-signature"></span>curryRight<span class="signature">(fn, arity<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -3100,8 +3256,6 @@ collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]</code></pre>
                 
 
                 
-                    &lt;nullable><br>
-                
 
                 
                 </td>
@@ -3156,7 +3310,7 @@ collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1113">line 1113</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1133">line 1133</a>
     </li></ul></dd>
     
 
@@ -3341,7 +3495,7 @@ See also <a href="module-lamb.html#.throttle">throttle</a> for a different behav
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1185">line 1185</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1205">line 1205</a>
     </li></ul></dd>
     
 
@@ -3738,7 +3892,7 @@ _.difference(a1, a2, a3) // => []</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1738">line 1738</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1781">line 1781</a>
     </li></ul></dd>
     
 
@@ -5780,7 +5934,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1212">line 1212</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1232">line 1232</a>
     </li></ul></dd>
     
 
@@ -6166,7 +6320,7 @@ In case of duplicate keys the last key / value pair is used.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1978">line 1978</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2021">line 2021</a>
     </li></ul></dd>
     
 
@@ -6521,7 +6675,7 @@ filter("fooBAR", isLowerCase) // => ["f", "o", "o"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2002">line 2002</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2045">line 2045</a>
     </li></ul></dd>
     
 
@@ -6683,7 +6837,7 @@ Receives a property name and builds a function expecting the object from which w
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2023">line 2023</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2066">line 2066</a>
     </li></ul></dd>
     
 
@@ -6941,7 +7095,7 @@ it can be customised with the optional third parameter.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2054">line 2054</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2097">line 2097</a>
     </li></ul></dd>
     
 
@@ -7639,7 +7793,7 @@ var personsByAgeStatus = groupByAgeStatus(persons);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2078">line 2078</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2121">line 2121</a>
     </li></ul></dd>
     
 
@@ -7807,7 +7961,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2099">line 2099</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2142">line 2142</a>
     </li></ul></dd>
     
 
@@ -7993,7 +8147,7 @@ hasName(user2) // => false</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2116">line 2116</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2159">line 2159</a>
     </li></ul></dd>
     
 
@@ -8178,7 +8332,7 @@ the prototype chain.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2141">line 2141</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2184">line 2184</a>
     </li></ul></dd>
     
 
@@ -8347,7 +8501,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2160">line 2160</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2203">line 2203</a>
     </li></ul></dd>
     
 
@@ -8684,7 +8838,7 @@ depending on the environment and the <a href="https://developer.mozilla.org/en-U
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2191">line 2191</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2234">line 2234</a>
     </li></ul></dd>
     
 
@@ -9408,7 +9562,7 @@ between the aforementioned functions: for a more standard behaviour see also <a 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1249">line 1249</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1269">line 1269</a>
     </li></ul></dd>
     
 
@@ -9603,7 +9757,7 @@ Differences are that <code>0</code> and <code>-0</code> aren't the same value an
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1558">line 1558</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1601">line 1601</a>
     </li></ul></dd>
     
 
@@ -9808,7 +9962,7 @@ _.is(0 / 0, NaN) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1594">line 1594</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1637">line 1637</a>
     </li></ul></dd>
     
 
@@ -10019,7 +10173,7 @@ Regarding equality, beware that this is simply a wrapper for the native operator
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1614">line 1614</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1657">line 1657</a>
     </li></ul></dd>
     
 
@@ -10222,7 +10376,7 @@ _.isGTE(-0, 0) // true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1640">line 1640</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1683">line 1683</a>
     </li></ul></dd>
     
 
@@ -10433,7 +10587,7 @@ Regarding equality, beware that this is simply a wrapper for the native operator
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1660">line 1660</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1703">line 1703</a>
     </li></ul></dd>
     
 
@@ -10595,7 +10749,7 @@ _.isLTE(-0, 0) // true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2584">line 2584</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2651">line 2651</a>
     </li></ul></dd>
     
 
@@ -10780,7 +10934,7 @@ _.isNil() // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1677">line 1677</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1720">line 1720</a>
     </li></ul></dd>
     
 
@@ -10939,7 +11093,7 @@ _.isNot(0, -0) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2598">line 2598</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2665">line 2665</a>
     </li></ul></dd>
     
 
@@ -11099,7 +11253,7 @@ _.isNull(false) // => false</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2615">line 2615</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2682">line 2682</a>
     </li></ul></dd>
     
 
@@ -11260,7 +11414,7 @@ isString(new String("Hi")) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2633">line 2633</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2700">line 2700</a>
     </li></ul></dd>
     
 
@@ -11616,7 +11770,7 @@ See also <a href="module-lamb.html#.tear">tear</a> for the reverse operation.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2212">line 2212</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2255">line 2255</a>
     </li></ul></dd>
     
 
@@ -12037,7 +12191,7 @@ getSquareRoots(4, 9, 16) // => [2, 3, 4]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1278">line 1278</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1298">line 1298</a>
     </li></ul></dd>
     
 
@@ -12304,6 +12458,177 @@ getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]</code></pre>
 
     
 
+    <h4 class="name" id=".merge"><span class="type-signature"></span>merge<span class="signature">(&hellip;source)</span><span class="type-signature"> &rarr; {<a href="global.html#Object">Object</a>}</span>
+
+<span class="category-label"><a href="#cat-Object">Object</a></span>
+
+</h4>
+
+    
+
+
+
+<div class="description">
+    Merges the enumerable properties of the provided sources into a new object.<br/>
+In case of key homonymy each source has precedence over the previous one.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2277">line 2277</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>_.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}</code></pre>
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".modulo"><span class="type-signature"></span>modulo<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="global.html#Number">Number</a>}</span>
 
 <span class="category-label"><a href="#cat-Math">Math</a></span>
@@ -12433,7 +12758,7 @@ the dividend is not kept, unlike the <a href="module-lamb.html#.remainder">remai
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1760">line 1760</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1803">line 1803</a>
     </li></ul></dd>
     
 
@@ -12625,7 +12950,7 @@ _.remainder(-5, 3) // => -2</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1775">line 1775</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1818">line 1818</a>
     </li></ul></dd>
     
 
@@ -12783,7 +13108,7 @@ _.remainder(-5, 3) // => -2</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1693">line 1693</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1736">line 1736</a>
     </li></ul></dd>
     
 
@@ -13035,7 +13360,7 @@ isOdd(4) // => false</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2495">line 2495</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2562">line 2562</a>
     </li></ul></dd>
     
 
@@ -13289,7 +13614,7 @@ _.padLeft("", "-", 5) // => "-----"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2517">line 2517</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2584">line 2584</a>
     </li></ul></dd>
     
 
@@ -13454,7 +13779,7 @@ See also <a href="module-lamb.html#.fromPairs">fromPairs</a> for the reverse ope
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2234">line 2234</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2300">line 2300</a>
     </li></ul></dd>
     
 
@@ -13841,7 +14166,7 @@ Non existent properties will be ignored.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2259">line 2259</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2325">line 2325</a>
     </li></ul></dd>
     
 
@@ -14046,7 +14371,7 @@ The properties satisfying the predicate will be included in the resulting object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2286">line 2286</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2352">line 2352</a>
     </li></ul></dd>
     
 
@@ -14220,7 +14545,7 @@ See also <a href="module-lamb.html#.compose">compose</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1297">line 1297</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1317">line 1317</a>
     </li></ul></dd>
     
 
@@ -14603,7 +14928,7 @@ For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1794">line 1794</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1837">line 1837</a>
     </li></ul></dd>
     
 
@@ -14852,7 +15177,7 @@ but not including, <code>limit</code>, using the given <code>step</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1814">line 1814</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1857">line 1857</a>
     </li></ul></dd>
     
 
@@ -15499,7 +15824,7 @@ keeps the sign of the dividend and may lead to some unexpected results.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1844">line 1844</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1887">line 1887</a>
     </li></ul></dd>
     
 
@@ -15692,7 +16017,7 @@ this function doesn't throw a RangeError if <code>count</code> is negative, but 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2536">line 2536</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2603">line 2603</a>
     </li></ul></dd>
     
 
@@ -15958,7 +16283,7 @@ The values being iterated, and received by the iteratee, are the results generat
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1866">line 1866</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1909">line 1909</a>
     </li></ul></dd>
     
 
@@ -16307,7 +16632,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2314">line 2314</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2380">line 2380</a>
     </li></ul></dd>
     
 
@@ -16512,7 +16837,7 @@ The properties satisfying the predicate will be omitted in the resulting object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2341">line 2341</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2407">line 2407</a>
     </li></ul></dd>
     
 
@@ -17209,7 +17534,7 @@ weights.sort(asNumbers) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1887">line 1887</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1930">line 1930</a>
     </li></ul></dd>
     
 
@@ -17950,7 +18275,7 @@ If a "tapper" isn't found the argument is passed as it is.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1316">line 1316</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1336">line 1336</a>
     </li></ul></dd>
     
 
@@ -18115,7 +18440,7 @@ See also <a href="module-lamb.html#.make">make</a> for the reverse operation.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2358">line 2358</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2424">line 2424</a>
     </li></ul></dd>
     
 
@@ -18273,7 +18598,7 @@ See also <a href="module-lamb.html#.make">make</a> for the reverse operation.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2559">line 2559</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2626">line 2626</a>
     </li></ul></dd>
     
 
@@ -18459,7 +18784,7 @@ for a different behaviour where the first call is delayed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1349">line 1349</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1369">line 1369</a>
     </li></ul></dd>
     
 
@@ -18622,7 +18947,7 @@ log("Hello world"); // console logs "Hello world"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2657">line 2657</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2724">line 2724</a>
     </li></ul></dd>
     
 
@@ -18677,6 +19002,169 @@ _.type(y) // => "Number"
 
 _.type(Object.prototype.toString) // => "Function"
 _.type(/a/) // => "RegExp"</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".unary"><span class="type-signature"></span>unary<span class="signature">(fn)</span><span class="type-signature"> &rarr; {<a href="global.html#function">function</a>}</span>
+
+<span class="category-label"><a href="#cat-Function">Function</a></span>
+
+</h4>
+
+    
+
+
+
+<div class="description">
+    Builds a function that passes only one argument to the given function.<br/>
+It's simply a shortcut for a common use case of <a href="module-lamb.html#.aritize">aritize</a>,
+exposed for convenience.<br/>
+See also <a href="module-lamb.html#.binary">binary</a>.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#function">function</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1400">line 1400</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#function">function</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
+
+weights.map(_.unary(parseInt)) // => [2, 10, 1, 7]</code></pre>
 
 
 
@@ -19231,7 +19719,7 @@ _.uniques(data, _.getKey("id")) // => [{id: "1"}, {id: "4"}, {"id": 5}]</code></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2393">line 2393</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2459">line 2459</a>
     </li></ul></dd>
     
 
@@ -19406,7 +19894,7 @@ returning a function expecting the object to validate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2426">line 2426</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2492">line 2492</a>
     </li></ul></dd>
     
 
@@ -19577,7 +20065,7 @@ validateUser(user2) // => [["Surname is required", ["surname"]], ["Must be at le
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2440">line 2440</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2506">line 2506</a>
     </li></ul></dd>
     
 
@@ -19764,7 +20252,7 @@ you can also easily build new functions from existent ones.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1383">line 1383</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1424">line 1424</a>
     </li></ul></dd>
     
 
@@ -19831,13 +20319,13 @@ arrayMax([4, 5, 2, 6, 1]) // => 6</code></pre>
 </div>
 
 <nav id="main-navigation">
-    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getWithPath">getWithPath</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.binary">binary</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.unary">unary</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getWithPath">getWithPath</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.merge">merge</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Fri Apr 10 2015 11:09:15 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Wed Apr 15 2015 11:57:55 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
