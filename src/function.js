@@ -78,6 +78,26 @@ function aritize (fn, arity) {
 }
 
 /**
+ * Builds a function that passes only two arguments to the given function.<br/>
+ * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
+ * exposed for convenience.<br/>
+ * See also {@link module:lamb.unary|unary}.
+ * @example
+ * _.list(1, 2, 3, 4, 5) // => [1, 2, 3, 4, 5]
+ * _.binary(_.list)(1, 2, 3, 4, 5) // => [1, 2]
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function binary (fn) {
+    return function (a, b) {
+        return fn(a, b);
+    };
+}
+
+/**
  * Transforms the evaluation of the given function in the evaluation of a sequence of functions
  * expecting only one argument. Each function of the sequence is a partial application of the
  * original one, which will be applied when the specified (or derived) arity is consumed.<br/>
@@ -96,7 +116,7 @@ function aritize (fn, arity) {
  * @memberof module:lamb
  * @category Function
  * @param {Function} fn
- * @param {?Number} [arity=fn.length]
+ * @param {Number} [arity=fn.length]
  * @returns {Function}
  */
 function curry (fn, arity) {
@@ -114,7 +134,7 @@ function curry (fn, arity) {
  * @memberof module:lamb
  * @category Function
  * @param {Function} fn
- * @param {?Number} [arity=fn.length]
+ * @param {Number} [arity=fn.length]
  * @returns {Function}
  */
 function curryRight (fn, arity) {
@@ -142,7 +162,7 @@ function curryRight (fn, arity) {
  * @memberof module:lamb
  * @category Function
  * @param {Function} fn
- * @param {?Number} [arity=fn.length]
+ * @param {Number} [arity=fn.length]
  * @returns {Function}
  */
 function curryable (fn, arity) {
@@ -162,7 +182,7 @@ function curryable (fn, arity) {
  * @memberof module:lamb
  * @category Function
  * @param {Function} fn
- * @param {?Number} [arity=fn.length]
+ * @param {Number} [arity=fn.length]
  * @returns {Function}
  */
 function curryableRight (fn, arity) {
@@ -370,6 +390,27 @@ function throttle (fn, timespan) {
 }
 
 /**
+ * Builds a function that passes only one argument to the given function.<br/>
+ * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
+ * exposed for convenience.<br/>
+ * See also {@link module:lamb.binary|binary}.
+ * @example
+ * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
+ *
+ * weights.map(_.unary(parseInt)) // => [2, 10, 1, 7]
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function unary (fn) {
+    return function (a) {
+        return fn(a);
+    };
+}
+
+/**
  * Wraps the function <code>fn</code> inside a <code>wrapper</code> function.<br/>
  * This allows to conditionally execute <code>fn</code>, to tamper with its arguments or return value
  * and to run code before and after its execution.<br/>
@@ -392,6 +433,7 @@ var wrap = aritize(flip(partial), 2);
 lamb.apply = apply;
 lamb.applyArgs = applyArgs;
 lamb.aritize = aritize;
+lamb.binary = binary;
 lamb.curry = curry;
 lamb.curryRight = curryRight;
 lamb.curryable = curryable;
@@ -403,4 +445,5 @@ lamb.mapArgs = mapArgs;
 lamb.pipe = pipe;
 lamb.tapArgs = tapArgs;
 lamb.throttle = throttle;
+lamb.unary = unary;
 lamb.wrap = wrap;

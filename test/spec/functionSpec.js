@@ -46,6 +46,18 @@ describe("lamb.function", function () {
         });
     });
 
+    describe("binary", function () {
+        it("should build a function that passes only two arguments to the given one", function () {
+            spyOn(lamb, "list").and.callThrough();
+
+            var binaryList = lamb.binary(lamb.list);
+
+            expect(binaryList.length).toBe(2);
+            expect(binaryList(1, 2, 3)).toEqual([1, 2]);
+            expect(lamb.list.calls.argsFor(0)).toEqual([1, 2]);
+        });
+    });
+
     describe("currying", function () {
         var fooSubtract = function (a, b, c) {
             return a - b - c;
@@ -261,6 +273,18 @@ describe("lamb.function", function () {
             expect(r3 === 42).toBe(true);
 
             clock.restore();
+        });
+    });
+
+    describe("unary", function () {
+        it("should build a function that passes only one argument to the given one", function () {
+            spyOn(lamb, "list").and.callThrough();
+
+            var unaryList = lamb.unary(lamb.list);
+
+            expect(unaryList.length).toBe(1);
+            expect(unaryList(1, 2, 3)).toEqual([1]);
+            expect(lamb.list.calls.argsFor(0)).toEqual([1]);
         });
     });
 
