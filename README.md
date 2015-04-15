@@ -68,6 +68,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.10.0 - *2015/04/15***
+  - **Fully compatible with version 0.9.x**
+  - Added `merge` function
+  - Added `binary` and `unary` as shortcuts for common use cases of `aritize`
+
 - **v0.9.0 - *2015/04/10***
   - **API change:** dropped the boolean parameter in `flatten` and added `shallowFlatten`
   - **API change:** dropped the boolean parameter in `curry` and `curryable`, added `curryRight` and `curryableRight`
