@@ -126,7 +126,7 @@ function curry (fn, arity) {
 /**
  * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
  * @example
- * var divideBy = _.curryRight(_.divide, 2);
+ * var divideBy = _.curryRight(_.divide);
  * var halve = divideBy(2);
  * halve(3) // => 1.5
  * halve(3, 7) // => 1.5

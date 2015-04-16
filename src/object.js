@@ -334,7 +334,7 @@ function make (keys, values) {
 function merge () {
     var result = {};
 
-    _.forEach(arguments, function (source) {
+    forEach(arguments, function (source) {
         for (var key in source) {
             result[key] = source[key];
         }

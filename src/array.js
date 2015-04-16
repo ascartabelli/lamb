@@ -479,7 +479,7 @@ function mapWith (iteratee, iterateeContext) {
 }
 
 /**
- * "Plucks" the specified key from a list of objects.
+ * "Plucks" the values of the specified key from a list of objects.
  * @example
  * var persons = [
  *     {"name": "Jane", "surname": "Doe", "age": 12},

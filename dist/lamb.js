@@ -775,7 +775,7 @@
     }
     
     /**
-     * "Plucks" the specified key from a list of objects.
+     * "Plucks" the values of the specified key from a list of objects.
      * @example
      * var persons = [
      *     {"name": "Jane", "surname": "Doe", "age": 12},
@@ -1119,7 +1119,7 @@
     /**
      * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
      * @example
-     * var divideBy = _.curryRight(_.divide, 2);
+     * var divideBy = _.curryRight(_.divide);
      * var halve = divideBy(2);
      * halve(3) // => 1.5
      * halve(3, 7) // => 1.5
@@ -1449,11 +1449,11 @@
      * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
-     * var filterString = _.condition(
-     *     _.isType("String"),
-     *     _.compose(_.invoker("join", ""), _.filter)
+     * var filterString = _.compose(_.invoker("join", ""), _.filter);
+     * var filterAdapter = _.adapter(
+     *     _.invoker("filter"),
+     *     _.condition(_.isType("String"), filterString)
      * );
-     * var filterAdapter = _.adapter(_.invoker("filter"), filterString);
      *
      * filterAdapter([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
      * filterAdapter("123456", isEven)) // => "246"
@@ -2277,7 +2277,7 @@
     function merge () {
         var result = {};
     
-        _.forEach(arguments, function (source) {
+        forEach(arguments, function (source) {
             for (var key in source) {
                 result[key] = source[key];
             }

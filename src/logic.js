@@ -6,11 +6,11 @@
  * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
- * var filterString = _.condition(
- *     _.isType("String"),
- *     _.compose(_.invoker("join", ""), _.filter)
+ * var filterString = _.compose(_.invoker("join", ""), _.filter);
+ * var filterAdapter = _.adapter(
+ *     _.invoker("filter"),
+ *     _.condition(_.isType("String"), filterString)
  * );
- * var filterAdapter = _.adapter(_.invoker("filter"), filterString);
  *
  * filterAdapter([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
  * filterAdapter("123456", isEven)) // => "246"
