@@ -496,6 +496,66 @@ function mapWith (iteratee, iterateeContext) {
 }
 
 /**
+ * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,
+ * the others with the remaining elements.
+ * @example
+ * var isEven = function (n) { return n % 2 === 0; };
+ * var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+ *
+ * _.partition(numbers, isEven) // => [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @param {ListIteratorCallback} predicate
+ * @param {Object} [predicateContext]
+ * @returns {Array<Array<*>, Array<*>>}
+ */
+function partition (arrayLike, predicate, predicateContext) {
+    var result = [[], []];
+    var len = arrayLike.length;
+
+    for (var i = 0, el; i < len; i++) {
+        el = arrayLike[i];
+        result[predicate.call(predicateContext, el, i, arrayLike) ? 0 : 1].push(el);
+    }
+
+    return result;
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.partition|partition} using the given predicate and the optional context.
+ * The resulting function expects the array-like object to act upon.
+ * @example
+ * var users = [
+ *     {"name": "Jane", "surname": "Doe", "active": false},
+ *     {"name": "John", "surname": "Doe", "active": true},
+ *     {"name": "Mario", "surname": "Rossi", "active": true},
+ *     {"name": "Paolo", "surname": "Bianchi", "active": false}
+ * ];
+ * var isActive = _.hasKeyValue("active", true);
+ * var splitByActiveStatus = _.partitionWith(isActive);
+ *
+ * splitByActiveStatus(users) // =>
+ * // [[
+ * //     {"name": "John", "surname": "Doe", "active": true},
+ * //     {"name": "Mario", "surname": "Rossi", "active": true}
+ * // ], [
+ * //     {"name": "Jane", "surname": "Doe", "active": false},
+ * //     {"name": "Paolo", "surname": "Bianchi", "active": false}
+ * // ]]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ListIteratorCallback} predicate
+ * @param {Object} [predicateContext]
+ * @returns {Function}
+ */
+function partitionWith (predicate, predicateContext) {
+    return partial(partition, _, predicate, predicateContext);
+}
+
+/**
  * "Plucks" the values of the specified key from a list of objects.
  * @example
  * var persons = [
@@ -705,6 +765,8 @@ lamb.intersection = intersection;
 lamb.insert = insert;
 lamb.list = list;
 lamb.mapWith = mapWith;
+lamb.partition = partition;
+lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.shallowFlatten = shallowFlatten;
 lamb.sorter = sorter;

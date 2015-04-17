@@ -365,6 +365,54 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("partition / partitionWith", function () {
+        it("should split an array-like objects in two lists; one with the elements satisfying the predicate, the other with the remaining elements", function () {
+            var persons = [
+                {"name": "Jane", "surname": "Doe", "active": false},
+                {"name": "John", "surname": "Doe", "active": true},
+                {"name": "Mario", "surname": "Rossi", "active": true},
+                {"name": "Paolo", "surname": "Bianchi", "active": false}
+            ];
+
+            var fooIsActive = function (el, idx, list) {
+                expect(list[idx]).toBe(el);
+                expect(list).toBe(persons);
+
+                return el.active;
+            };
+
+            var result = [
+                [{"name": "John", "surname": "Doe", "active": true}, {"name": "Mario", "surname": "Rossi", "active": true}],
+                [{"name": "Jane", "surname": "Doe", "active": false}, {"name": "Paolo", "surname": "Bianchi", "active": false}]
+            ];
+
+            expect(lamb.partition(persons, fooIsActive)).toEqual(result);
+            expect(lamb.partitionWith(fooIsActive)(persons)).toEqual(result);
+        });
+
+        it("should accept a context object for the predicate", function () {
+            var fakeContext = {};
+            var isEven = function (n) {
+                expect(this).toBe(fakeContext);
+                return n % 2 === 0;
+            };
+            var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            var result = [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]];
+
+            expect(lamb.partition(numbers, isEven, fakeContext)).toEqual(result);
+            expect(lamb.partitionWith(isEven, fakeContext)(numbers)).toEqual(result);
+        });
+
+        it("should work with array-like objects", function () {
+            var isVowel = function (char) { return ~"aeiou".indexOf(char); };
+            var testString = "Hello world";
+            var result = [["e", "o", "o"], ["H", "l", "l", " ", "w", "r", "l", "d"]];
+
+            expect(lamb.partition(testString, isVowel)).toEqual(result);
+            expect(lamb.partitionWith(isVowel)(testString)).toEqual(result);
+        });
+    });
+
     describe("pluck", function () {
         it("should throw an exception if no arguments are supplied", function () {
             expect(lamb.pluck).toThrow();
