@@ -1,6 +1,4 @@
 
-var _concat = generic(_arrayProto.concat);
-
 function _findSliceEndIndex (arrayLike, predicate, predicateContext) {
     var idx = -1;
     var len = arrayLike.length;
@@ -243,6 +241,25 @@ function findIndex (arrayLike, predicate, predicateContext) {
 var flatMap = compose(shallowFlatten, map);
 
 /**
+ * Builds a partial application of {@link module:lamb.flatMap|flatMap} using the given iteratee
+ * and the optional context. The resulting function expects the array to act upon.
+ * @example
+ * var toCharArray = function (s) { return s.split(""); };
+ * var wordsToCharArray = _.flatMapWith(toCharArray);
+ *
+ * wordsToCharArray(["foo", "bar"]) // => ["f", "o", "o", "b", "a", "r"]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ListIteratorCallback} iteratee
+ * @param {Object} [iterateeContext]
+ * @returns {Function}
+ */
+function flatMapWith (iteratee, iterateeContext) {
+    return partial(flatMap, _, iteratee, iterateeContext);
+}
+
+/**
  * Flattens an array. See also {@link module:lamb.shallowFlatten|shallowFlatten}.
  * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
@@ -460,8 +477,8 @@ function list () {
 }
 
 /**
- * Returns a partial application of {@link module:lamb.map|map} that uses the given iteratee and
- * the optional context to build a function expecting the array-like object to act upon.
+ * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the optional context.
+ * The resulting function expects the array-like object to act upon.
  * @example
  * var square = function (n) { return n * n; };
  * var getSquares = _.mapWith(square);
@@ -614,17 +631,18 @@ function takeWhile (predicate, predicateContext) {
 }
 
 /**
- * Returns a list of every unique element present in the given arrays.
+ * Returns a list of every unique element present in the given array-like objects.
  * @example
  * _.union([1, 2, 3, 2], [3, 4], [1, 5]) // => [1, 2, 3, 4, 5]
+ * _.union("abc", "bcd", "cde") // => ["a", "b", "c", "d", "e"]
  *
  * @memberof module:lamb
  * @category Array
  * @function
- * @param {...Array} array
+ * @param {...ArrayLike} arrayLike
  * @returns {Array}
  */
-var union = compose(uniques, _concat);
+var union = compose(uniques, flatMapWith(unary(slice)), list);
 
 /**
  * Returns an array comprised of the unique elements of the given array-like object.
@@ -679,6 +697,7 @@ lamb.filterWith = filterWith;
 lamb.find = find;
 lamb.findIndex = findIndex;
 lamb.flatMap = flatMap;
+lamb.flatMapWith = flatMapWith;
 lamb.flatten = flatten;
 lamb.group = group;
 lamb.groupBy = groupBy;

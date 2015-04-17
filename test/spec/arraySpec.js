@@ -104,12 +104,14 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("flatMap", function () {
+    describe("flatMap / flatMapWith", function () {
         it("should behave like map if the mapping function returns a non array value", function () {
             var double = function (n) { return n * 2; };
             var arr = [1, 2, 3, 4, 5];
+            var result = [2, 4, 6, 8, 10];
 
-            expect(lamb.flatMap(arr, double)).toEqual([2, 4, 6, 8, 10]);
+            expect(lamb.flatMap(arr, double)).toEqual(result);
+            expect(lamb.flatMapWith(double)(arr)).toEqual(result);
         });
 
         it("should concatenate arrays returned by the mapping function to the result", function () {
@@ -117,8 +119,10 @@ describe("lamb.array", function () {
                 return s.split("");
             };
             var arr = ["foo", "bar", "baz"];
+            var result = ["f", "o", "o", "b", "a", "r", "b", "a", "z"];
 
-            expect(lamb.flatMap(arr, splitString)).toEqual(["f", "o", "o", "b", "a", "r", "b", "a", "z"]);
+            expect(lamb.flatMap(arr, splitString)).toEqual(result);
+            expect(lamb.flatMapWith(splitString)(arr)).toEqual(result);
         });
 
         it("should not flatten nested arrays", function () {
@@ -126,12 +130,16 @@ describe("lamb.array", function () {
                 return String(s) === s ? s.split("") : [[s, "not a string"]];
             };
             var arr = ["foo", "bar", 5, "baz"];
+            var result = ["f", "o", "o", "b", "a", "r", [5, "not a string"], "b", "a", "z"];
 
-            expect(lamb.flatMap(arr, splitString)).toEqual(["f", "o", "o", "b", "a", "r", [5, "not a string"], "b", "a", "z"]);
+            expect(lamb.flatMap(arr, splitString)).toEqual(result);
+            expect(lamb.flatMapWith(splitString)(arr)).toEqual(result);
 
             var arr2 = ["foo", ["bar", ["baz"]]];
+            var result = ["foo", "bar", ["baz"]];
 
-            expect(lamb.flatMap(arr2, lamb.identity)).toEqual(["foo", "bar", ["baz"]]);
+            expect(lamb.flatMap(arr2, lamb.identity)).toEqual(result);
+            expect(lamb.flatMapWith(lamb.identity)(arr2)).toEqual(result);
         });
 
         it("should accept a context object to be used in the mapping function", function () {
@@ -145,28 +153,37 @@ describe("lamb.array", function () {
                 },
                 values: [1, 2, 3, 4, 5]
             };
+            var indexes = [0, 1, 2];
+            var result = [1, 2, 2, 4, 3, 6]
 
-            expect(fooObject.getValuesAndDoublesAtIndexes([0, 1, 2])).toEqual([1, 2, 2, 4, 3, 6]);
+            expect(fooObject.getValuesAndDoublesAtIndexes(indexes)).toEqual(result);
+            expect(lamb.flatMapWith(fooObject.getAtIndexAndDouble, fooObject)(indexes)).toEqual(result);
         });
 
         it("should work on array-like objects", function () {
             var toUpperCase = lamb.generic(String.prototype.toUpperCase);
-            expect(lamb.flatMap("hello world", toUpperCase)).toEqual(["H", "E", "L", "L", "O", " ", "W", "O", "R", "L", "D"]);
+            var testString = "hello world";
+            var result = ["H", "E", "L", "L", "O", " ", "W", "O", "R", "L", "D"];
+
+            expect(lamb.flatMap(testString, toUpperCase)).toEqual(result);
+            expect(lamb.flatMapWith(toUpperCase)(testString)).toEqual(result);
         });
 
         it("should return an empty array if is supplied with a non array value", function () {
             expect(lamb.flatMap({}, lamb.identity)).toEqual([]);
-            expect(lamb.flatMap(1, lamb.identity)).toEqual([]);
-            expect(lamb.flatMap(NaN, lamb.identity)).toEqual([]);
+            expect(lamb.flatMapWith(lamb.identity)({})).toEqual([]);
         });
 
         it("should throw an error if called with null of undefined in place of the array", function () {
             expect(function () {lamb.flatMap(null, lamb.identity);}).toThrow();
             expect(lamb.flatMap).toThrow();
+            expect(function () {lamb.flatMapWith(lamb.identity)(null);}).toThrow();
+            expect(lamb.flatMapWith(lamb.identity)).toThrow();
         });
 
         it("should throw an error if not supplied with a mapper function", function () {
             expect(function () {lamb.flatMap([1, 2, 3]);}).toThrow();
+            expect(function () {lamb.flatMapWith()([1, 2, 3]);}).toThrow();
         });
     });
 
@@ -465,8 +482,8 @@ describe("lamb.array", function () {
     });
 
     describe("union", function () {
-        it("should throw an exception if no arguments are supplied", function () {
-            expect(lamb.union).toThrow();
+        it("should return an empty array if no arguments are supplied", function () {
+            expect(lamb.union()).toEqual([]);
         });
 
         it("should return a list of every unique element present in the given arrays", function () {
@@ -478,8 +495,14 @@ describe("lamb.array", function () {
                 [5],
                 [6, 7, 3, 1],
                 [2, 8, 3],
-                [9, 0]
-            )).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+                [9, 0],
+                [2, [2, 3]],
+                [3, [2, 3]]
+            )).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, [2, 3], [2, 3]]);
+        });
+
+        it("should work with array-like objects", function () {
+            expect(lamb.union("abc", "bcd", "cde")).toEqual(["a", "b", "c", "d", "e"]);
         });
     });
 

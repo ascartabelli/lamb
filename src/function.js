@@ -57,7 +57,9 @@ function apply (fn, args) {
 var applyArgs = _curry(apply, 2, true);
 
 /**
- * Builds a function that passes only the specified amount of arguments to the given function.
+ * Builds a function that passes only the specified amount of arguments to the given function.<br/>
+ * See also {@link module:lamb.binary|binary} and {@link module:lamb.unary|unary} for common use
+ * cases shortcuts.
  * @example
  * var data = ["1-2", "13-5", "6-23"];
  * var getDashIndex = _.invoker("indexOf", "-");
@@ -428,7 +430,7 @@ function unary (fn) {
  * @param {Function} wrapper
  * @returns {Function}
  */
-var wrap = aritize(flip(partial), 2);
+var wrap = binary(flip(partial));
 
 lamb.apply = apply;
 lamb.applyArgs = applyArgs;
