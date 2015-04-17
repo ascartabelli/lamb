@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.10.0
+ * @version 0.11.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.10.0";
+    lamb._version =  "0.11.0";
     
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -820,7 +820,7 @@
     }
     
     /**
-     * Builds a partial application of {@link module:lamb.partition|partition} usign the given predicate and the optional context.
+     * Builds a partial application of {@link module:lamb.partition|partition} using the given predicate and the optional context.
      * The resulting function expects the array-like object to act upon.
      * @example
      * var users = [

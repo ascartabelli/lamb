@@ -68,6 +68,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.11.0 - *2015/04/17***
+  - **Fully compatible with versions down to 0.9.x**
+  - The `union` function now can work with array-like objects
+  - Added `flatMapWith`, `partition`, `partitionWith`
+
 - **v0.10.0 - *2015/04/15***
   - **Fully compatible with version 0.9.x**
   - Added `merge` function
