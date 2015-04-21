@@ -1,6 +1,18 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.object", function () {
+    describe("enumerables", function () {
+        it("should build an array with all the enumerables keys of an object", function () {
+            var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+            var foo = Object.create(baseFoo, {
+                c: {value: 3},
+                d: {value: 4, enumerable: true}
+            });
+
+            expect(lamb.enumerables(foo)).toEqual(["d", "a"]);
+        });
+    });
+
     describe("fromPairs", function () {
         it("should build an object from a list of key / value pairs", function () {
             expect(lamb.fromPairs([["a", 1], ["b", 2], ["c", 3]])).toEqual({a: 1, b: 2, c: 3});

@@ -62,6 +62,33 @@ function checker (predicate, message, keyPaths, pathSeparator) {
 }
 
 /**
+ * Creates an array with all the enumerable properties of the given object.
+ * @example <caption>showing the difference with <code>Object.keys</code></caption>
+ * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+ * var foo = Object.create(baseFoo, {
+ *     c: {value: 3},
+ *     d: {value: 4, enumerable: true}
+ * });
+ *
+ * Object.keys(foo) // => ["d"]
+ * _.enumerables(foo) // => ["d", "a"]
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @param {Object} obj
+ * @returns {String[]}
+ */
+function enumerables (obj) {
+    var keys = [];
+
+    for (var key in obj) {
+        keys.push(key);
+    }
+
+    return keys;
+}
+
+/**
  * Builds an object from a list of key / value pairs like the one
  * returned by [pairs]{@link module:lamb.pairs}.<br/>
  * In case of duplicate keys the last key / value pair is used.
@@ -571,6 +598,7 @@ function values (obj) {
 }
 
 lamb.checker = checker;
+lamb.enumerables = enumerables;
 lamb.fromPairs = fromPairs;
 lamb.get = get;
 lamb.getKey = getKey;
