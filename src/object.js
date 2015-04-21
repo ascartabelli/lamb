@@ -41,6 +41,10 @@ var _tearFrom = _curry(function  (getKeys, obj) {
     }, [[], []]);
 });
 
+var _valuesFrom = _curry(function (getKeys, obj) {
+    return getKeys(obj).map(partial(get, obj));
+});
+
 /**
  * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
  * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
@@ -433,6 +437,26 @@ var mergeOwn = partial(_merge, Object.keys);
 var ownPairs = _pairsFrom(Object.keys);
 
 /**
+ * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
+ * taken into account.<br/>
+ * @example <caption>showing the difference with <code>values</code></caption>
+ * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * var foo = Object.create(baseFoo, {
+ *     c: {value: 3, enumerable: true}
+ * });
+ *
+ * _.values(foo) // => [3, 2, 1]
+ * _.ownValues(foo) // => [3]
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @function
+ * @param {Object} obj
+ * @returns {Array}
+ */
+var ownValues = _valuesFrom(Object.keys);
+
+/**
  * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
  * See also {@link module:lamb.ownPairs|ownPairs} for picking only the own enumerable
  * properties and {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
@@ -644,7 +668,8 @@ function validate (obj, checkers) {
 var validateWith = _curry(validate, 2, true);
 
 /**
- * Generates an array with the values of the enumerable properties of the given object.
+ * Generates an array with the values of the enumerable properties of the given object.<br/>
+ * See also {@link module:lamb.ownValues|ownValues} for picking only the own properties of the object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
  *
@@ -652,18 +677,11 @@ var validateWith = _curry(validate, 2, true);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @param {Object} obj
  * @returns {Array}
  */
-function values (obj) {
-    var result = [];
-
-    for(var prop in obj) {
-        result.push(obj[prop]);
-    }
-
-    return result;
-}
+var values = _valuesFrom(enumerables);
 
 lamb.checker = checker;
 lamb.enumerables = enumerables;
@@ -681,6 +699,7 @@ lamb.make = make;
 lamb.merge = merge;
 lamb.mergeOwn = mergeOwn;
 lamb.ownPairs = ownPairs;
+lamb.ownValues = ownValues;
 lamb.pairs = pairs;
 lamb.pick = pick;
 lamb.pickIf = pickIf;
