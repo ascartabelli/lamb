@@ -2041,6 +2041,10 @@
         return obj;
     }
     
+    function _keyToPair (key) {
+        return [key, this[key]];
+    }
+    
     function _merge (getKeys) {
         return reduce(slice(arguments, 1), function (result, source) {
             forEach(getKeys(source), function (key) {
@@ -2050,6 +2054,10 @@
             return result;
         }, {});
     }
+    
+    var _pairsFrom = _curry(function (getKeys, obj) {
+        return getKeys(obj).map(_keyToPair, obj);
+    });
     
     /**
      * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
@@ -2126,7 +2134,7 @@
     
     /**
      * Builds an object from a list of key / value pairs like the one
-     * returned by [pairs]{@link module:lamb.pairs}.<br/>
+     * returned by [pairs]{@link module:lamb.pairs} or {@link module:lamb.ownPairs|ownPairs}.<br/>
      * In case of duplicate keys the last key / value pair is used.
      * @example
      * _.fromPairs([["a", 1], ["b", 2], ["c", 3]]) // => {"a": 1, "b": 2, "c": 3}
@@ -2422,25 +2430,40 @@
     var mergeOwn = partial(_merge, Object.keys);
     
     /**
+     * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
+     * taken into account.<br/>
+     * See also {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
+     * @example <caption>showing the difference with <code>pairs</code></caption>
+     * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+     * var foo = Object.create(baseFoo, {
+     *     c: {value: 3, enumerable: true}
+     * });
+     *
+     * _.pairs(foo) // => [["c", 3], ["b", 2], ["a", 1]]
+     * _.ownPairs(foo) // => [["c", 3]]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @param {Object} obj
+     * @returns {Array<Array<String, *>>}
+     */
+    var ownPairs = _pairsFrom(Object.keys);
+    
+    /**
      * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
-     * See also [fromPairs]{@link module:lamb.fromPairs} for the reverse operation.
+     * See also {@link module:lamb.ownPairs|ownPairs} for picking only the own enumerable
+     * properties and {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
      * @example
      * _.pairs({a: 1, b: 2, c: 3}) // => [["a", 1], ["b", 2], ["c", 3]]
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
-    function pairs (obj) {
-        var result = [];
-    
-        for (var prop in obj) {
-            result.push([prop, obj[prop]]);
-        }
-    
-        return result;
-    }
+    var pairs = _pairsFrom(enumerables);
     
     /**
      * Returns an object containing only the specified properties of the given object.<br/>
@@ -2663,6 +2686,7 @@
     lamb.make = make;
     lamb.merge = merge;
     lamb.mergeOwn = mergeOwn;
+    lamb.ownPairs = ownPairs;
     lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;

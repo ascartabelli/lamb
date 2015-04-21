@@ -264,19 +264,31 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("pairs", function () {
-        it("should convert an object in a list of key / value pairs", function () {
-            expect(lamb.pairs({a: 1, b: 2, c: 3})).toEqual([["a", 1], ["b", 2], ["c", 3]]);
+    describe("ownPairs / pairs", function () {
+        var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+        var foo = Object.create(baseFoo, {
+            c: {value: 3},
+            d: {value: 4, enumerable: true}
         });
 
-        it("should use all the enumerable properties of the source object, inherited or not", function () {
-            var baseFoo = Object.create({a: 1}, {b: {value: 2}});
-            var foo = Object.create(baseFoo, {
-                c: {value: 3},
-                d: {value: 4, enumerable: true}
-            });
+        it("should convert an object in a list of key / value pairs", function () {
+            var source = {a: 1, b: 2, c: 3};
+            var result = [["a", 1], ["b", 2], ["c", 3]];
 
-            expect(lamb.pairs(foo)).toEqual([["d", 4], ["a", 1]]);
+            expect(lamb.pairs(source)).toEqual(result);
+            expect(lamb.ownPairs(source)).toEqual(result);
+        });
+
+        describe("ownPairs", function () {
+            it("should use only the own enumerable properties of the source object", function () {
+                expect(lamb.ownPairs(foo)).toEqual([["d", 4]]);
+            });
+        });
+
+        describe("pairs", function () {
+            it("should use all the enumerable properties of the source object, inherited or not", function () {
+                expect(lamb.pairs(foo)).toEqual([["d", 4], ["a", 1]]);
+            });
         });
     });
 
