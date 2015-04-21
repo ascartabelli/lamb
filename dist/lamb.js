@@ -2041,6 +2041,16 @@
         return obj;
     }
     
+    function _merge (getKeys) {
+        return reduce(slice(arguments, 1), function (result, source) {
+            forEach(getKeys(source), function (key) {
+                result[key] = source[key];
+            });
+    
+            return result;
+        }, {});
+    }
+    
     /**
      * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
      * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
@@ -2375,26 +2385,41 @@
     
     /**
      * Merges the enumerable properties of the provided sources into a new object.<br/>
-     * In case of key homonymy each source has precedence over the previous one.
+     * In case of key homonymy each source has precedence over the previous one.<br/>
+     * See also {@link module:lamb.mergeOwn|mergeOwn} for merging only own properties of
+     * the given sources.
      * @example
      * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @param {...Object} source
      * @returns {Object}
      */
-    function merge () {
-        var result = {};
+    var merge = partial(_merge, enumerables);
     
-        forEach(arguments, function (source) {
-            for (var key in source) {
-                result[key] = source[key];
-            }
-        });
-    
-        return result;
-    }
+    /**
+     * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
+     * @example <caption>showing the difference with <code>merge</code></caption>
+     * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+     * var foo = Object.create(baseFoo, {
+     *     c: {value: 3, enumerable: true}
+     * });
+     *
+     * var bar = {d: 4};
+     *
+     * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
+     * _.mergeOwn(foo, bar) // => {c: 3, d: 4}
+     *
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @param {...Object} source
+     * @returns {Object}
+     */
+    var mergeOwn = partial(_merge, Object.keys);
     
     /**
      * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
@@ -2637,6 +2662,7 @@
     lamb.immutable = immutable;
     lamb.make = make;
     lamb.merge = merge;
+    lamb.mergeOwn = mergeOwn;
     lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;

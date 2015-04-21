@@ -216,24 +216,18 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("merge", function () {
-        it("should merge the enumerable properties of the provided sources into a new object without mutating them", function () {
-            // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
+    describe("merge / mergeOwn", function () {
+        var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+        var foo = Object.create(baseFoo, {
+            c: {value: 3, enumerable: true}
+        });
 
-            var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
-            var foo = Object.create(baseFoo, {
-                c: {value: 3, enumerable: true}
-            });
+        var bar = {d: 4};
 
-            var bar = {d: 4};
+        var fooEquivalent = {a: 1, b: 2, c: 3, z: 5};
 
-            var newObj = lamb.merge(foo, bar);
-
-            expect(newObj).toEqual({a: 1, b: 2, c: 3, d: 4});
-            expect(newObj.z).not.toBeDefined();
-
-            var fooEquivalent = {a: 1, b: 2, c: 3, z: 5};
-
+        // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
+        afterEach(function () {
             for (var key in fooEquivalent) {
                 expect(foo[key]).toEqual(fooEquivalent[key]);
             }
@@ -241,8 +235,32 @@ describe("lamb.object", function () {
             expect(bar).toEqual({d: 4});
         });
 
-        it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
-            expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+        describe("merge", function () {
+            it("should merge the enumerable properties of the provided sources into a new object without mutating them", function () {
+                var newObj = lamb.merge(foo, bar);
+
+                expect(newObj).toEqual({a: 1, b: 2, c: 3, d: 4});
+                expect(newObj.z).not.toBeDefined();
+            });
+
+            it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
+                expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+            });
+        });
+
+        describe("mergeOwn", function () {
+            it("should merge the enumerable own properties of the provided sources into a new object without mutating them", function () {
+                var newObj = lamb.mergeOwn(foo, bar);
+
+                expect(newObj).toEqual({c: 3, d: 4});
+                expect(newObj.a).not.toBeDefined();
+                expect(newObj.b).not.toBeDefined();
+                expect(newObj.z).not.toBeDefined();
+            });
+
+            it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
+                expect(lamb.mergeOwn({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+            });
         });
     });
 
