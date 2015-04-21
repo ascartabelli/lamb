@@ -413,13 +413,15 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("pluck", function () {
-        it("should throw an exception if no arguments are supplied", function () {
+    describe("pluck / pluckKey", function () {
+        it("should throw an exception if no array-like object is supplied", function () {
             expect(lamb.pluck).toThrow();
+            expect(lamb.pluckKey("foo")).toThrow();
         });
 
         it("should return a list of undefined values if no property is specified", function () {
             expect(lamb.pluck([1, 2, 3, 4])).toEqual([void 0, void 0, void 0, void 0]);
+            expect(lamb.pluckKey()([1, 2, 3, 4])).toEqual([void 0, void 0, void 0, void 0]);
         });
 
         it("should return an array of values taken from the given property of the source array elements", function () {
@@ -431,6 +433,7 @@ describe("lamb.array", function () {
             ];
 
             expect(lamb.pluck(sourceArray, "bar")).toEqual([2, 22, 21, 92]);
+            expect(lamb.pluckKey("bar")(sourceArray)).toEqual([2, 22, 21, 92]);
 
             var lists = [
                 [1, 2],
@@ -439,6 +442,7 @@ describe("lamb.array", function () {
             ];
 
             expect(lamb.pluck(lists, "length")).toEqual([2, 3, 1]);
+            expect(lamb.pluckKey("length")(lists)).toEqual([2, 3, 1]);
         });
     });
 

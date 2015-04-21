@@ -586,6 +586,30 @@ function pluck (arrayLike, key) {
 }
 
 /**
+ * A curried version of {@link module:lamb.pluck|pluck} expecting the key to retrieve to
+ * build a function waiting for the array-like object to act upon.
+ * @example
+ * var persons = [
+ *     {"name": "Jane", "surname": "Doe", "age": 12},
+ *     {"name": "John", "surname": "Doe", "age": 40},
+ *     {"name": "Mario", "surname": "Rossi", "age": 18},
+ *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
+ * ];
+ * var getAges = _.pluckKey("age");
+ *
+ * getAges(persons) // => [12, 40, 18, 15]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @param {String} key
+ * @returns {Function}
+ */
+function pluckKey (key) {
+    return mapWith(getKey(key));
+}
+
+/**
  * Flattens the "first level" of an array.<br/>
  * See also {@link module:lamb.flatten|flatten}.
  * @example <caption>showing the difference with <code>flatten</code></caption>
@@ -768,6 +792,7 @@ lamb.mapWith = mapWith;
 lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
+lamb.pluckKey = pluckKey;
 lamb.shallowFlatten = shallowFlatten;
 lamb.sorter = sorter;
 lamb.take = take;
