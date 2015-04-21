@@ -33,6 +33,14 @@ var _pairsFrom = _curry(function (getKeys, obj) {
     return getKeys(obj).map(_keyToPair, obj);
 });
 
+var _tearFrom = _curry(function  (getKeys, obj) {
+    return getKeys(obj).reduce(function (result, key) {
+        result[0].push(key);
+        result[1].push(obj[key]);
+        return result;
+    }, [[], []]);
+});
+
 /**
  * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
  * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
@@ -341,7 +349,7 @@ function immutable (obj) {
  * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
  * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
  * If more values than keys are supplied, the extra values will be ignored.<br/>
- * See also [tear]{@link module:lamb.tear} for the reverse operation.
+ * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for the reverse operation.
  * @example
  * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
  * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
@@ -544,26 +552,38 @@ function skipIf (predicate, predicateContext) {
  * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
  * the other containing the corresponding values.<br/>
  * Although this "tearing apart" may sound as a rather violent process, the source object will be unharmed.<br/>
- * See also [make]{@link module:lamb.make} for the reverse operation.
+ * See also {@link module:lamb.tearOwn|tearOwn} for picking only the own enumerable properties and
+ * {@link module:lamb.make|make} for the reverse operation.
  * @example
  * _.tear({a: 1, b: 2, c: 3}) // => [["a", "b", "c"], [1, 2, 3]]
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @param {Object} obj
  * @returns {Array<Array<String>, Array<*>>}
  */
-function tear (obj) {
-    var keys = [];
-    var values = [];
+var tear = _tearFrom(enumerables);
 
-    for (var prop in obj) {
-        keys.push(prop);
-        values.push(obj[prop]);
-    }
-
-    return [keys, values];
-}
+/**
+ * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are taken into account.<br/>
+ * See also {@link module:lamb.make|make} for the reverse operation.
+ * @example <caption>showing the difference with <code>tear</code></caption>
+ * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * var foo = Object.create(baseFoo, {
+ *     c: {value: 3, enumerable: true}
+ * });
+ *
+ * _.tear(foo) // => [["c", "b", "a"], [3, 2, 1]]
+ * _.tearOwn(foo) // => [["c"], [3]]
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @function
+ * @param {Object} obj
+ * @returns {Array<Array<String>, Array<*>>}
+ */
+var tearOwn = _tearFrom(Object.keys);
 
 /**
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
@@ -667,6 +687,7 @@ lamb.pickIf = pickIf;
 lamb.skip = skip;
 lamb.skipIf = skipIf;
 lamb.tear = tear;
+lamb.tearOwn = tearOwn;
 lamb.validate = validate;
 lamb.validateWith = validateWith;
 lamb.values = values;

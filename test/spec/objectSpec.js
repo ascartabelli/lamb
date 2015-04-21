@@ -350,19 +350,28 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("tear", function () {
-        it("should transform an object in two lists, one containing its keys, the other containing the corresponding values", function () {
-            expect(lamb.tear({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
+    describe("tear / tearOwn", function () {
+        var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+        var foo = Object.create(baseFoo, {
+            c: {value: 3},
+            d: {value: 4, enumerable: true}
         });
 
-        it("should use all the enumerable properties of the source object, inherited or not", function () {
-            var baseFoo = Object.create({a: 1}, {b: {value: 2}});
-            var foo = Object.create(baseFoo, {
-                c: {value: 3},
-                d: {value: 4, enumerable: true}
-            });
+        it("should transform an object in two lists, one containing its keys, the other containing the corresponding values", function () {
+            expect(lamb.tear({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
+            expect(lamb.tearOwn({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
+        });
 
-            expect(lamb.tear(foo)).toEqual([["d", "a"], [4, 1]]);
+        describe("tear", function () {
+            it("should use all the enumerable properties of the source object, inherited or not", function () {
+                expect(lamb.tear(foo)).toEqual([["d", "a"], [4, 1]]);
+            });
+        });
+
+        describe("tearOwn", function () {
+            it("should use only the own enumerable properties of the source object", function () {
+                expect(lamb.tearOwn(foo)).toEqual([["d"], [4]]);
+            });
         });
     });
 
