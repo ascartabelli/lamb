@@ -143,6 +143,19 @@ describe("lamb.logic", function () {
         });
     });
 
+    describe("isSVZ", function () {
+        it("should verify the equality of two values using the \"SameValueZero\" comparison", function () {
+            var o = {foo: "bar"};
+
+            expect(lamb.isSVZ(o, o)).toBe(true);
+            expect(lamb.isSVZ(o, {foo: "bar"})).toBe(false);
+            expect(lamb.isSVZ(42, 42)).toBe(true);
+            expect(lamb.isSVZ([], [])).toBe(false);
+            expect(lamb.isSVZ(0, -0)).toBe(true);
+            expect(lamb.isSVZ(NaN, NaN)).toBe(true);
+        });
+    });
+
     describe("not", function () {
         it("should reverse the truthiness of the given predicate", function () {
             var isOdd = lamb.not(isEven);

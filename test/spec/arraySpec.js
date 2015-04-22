@@ -93,7 +93,7 @@ describe("lamb.array", function () {
         });
 
         describe("findIndex", function () {
-            it("should find the index of an element in an array-like object by usign the given predicate", function () {
+            it("should find the index of an element in an array-like object by using the given predicate", function () {
                 expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 40))).toBe(1);
                 expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
             });

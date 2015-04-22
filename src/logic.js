@@ -136,10 +136,11 @@ function condition (predicate, trueFn, falseFn) {
 }
 
 /**
- * Verifies that the two supplied values are the same value using strict
- * equality. Note that this doesn't behave as the strict equality operator,
- * but rather as a shim of ES6's [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
- * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.
+ * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
+ * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
+ * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
+ * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.<br/>
+ * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
  * @example
  * var testObject = {};
  *
@@ -156,17 +157,7 @@ function condition (predicate, trueFn, falseFn) {
  * @returns {Boolean}
  */
 function is (a, b) {
-    var result;
-
-    if (a === 0 && b === 0) {
-        result = 1 / a === 1 / b;
-    } else if (a !== a) {
-        result = b !== b;
-    } else {
-        result = a === b;
-    }
-
-    return result;
+    return a === 0 && b === 0 ? 1 / a === 1 / b : isSVZ(a, b);
 }
 
 /**
@@ -277,6 +268,30 @@ function isLTE (a, b) {
 var isNot = not(is);
 
 /**
+ * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
+ * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
+ * considered the same value too.<br/>
+ * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
+ * @example
+ * var testObject = {};
+ *
+ * _.isSVZ({}, testObject) // => false
+ * _.isSVZ(testObject, testObject) // => true
+ * _.isSVZ("foo", "foo") // => true
+ * _.isSVZ(0, -0) // => true
+ * _.isSVZ(0 / 0, NaN) // => true
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @param {*} a
+ * @param {*} b
+ * @returns {Boolean}
+ */
+function isSVZ (a, b) {
+    return a !== a ? b !== b : a === b;
+}
+
+/**
  * Returns a predicate that negates the given one.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
@@ -306,4 +321,5 @@ lamb.isGTE = isGTE;
 lamb.isLT = isLT;
 lamb.isLTE = isLTE;
 lamb.isNot = isNot;
+lamb.isSVZ = isSVZ;
 lamb.not = not;
