@@ -68,6 +68,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.12.0 - *2015/04/22***
+  - **Fully compatible with versions down to 0.9.x**
+  - Added `enumerables` and `pluckKey`
+  - Added `mergeOwn`, `ownPairs`, `ownValues` and `tearOwn`
+
 - **v0.11.0 - *2015/04/17***
   - **Fully compatible with versions down to 0.9.x**
   - The `union` function now can work with array-like objects
