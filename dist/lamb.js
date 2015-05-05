@@ -1892,6 +1892,24 @@
     }
     
     /**
+     * "Clamps" a number within the given limits.
+     * @example
+     * _.clamp(-5, 0, 10) // => 0
+     * _.clamp(5, 0, 10) // => 5
+     * _.clamp(15, 0, 10) // => 10
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} n
+     * @param {Number} min
+     * @param {Number} max
+     * @returns {Number}
+     */
+    function clamp (n, min, max) {
+        return n < min ? min : n > max ? max : n;
+    }
+    
+    /**
      * Divides two numbers.
      * @example
      * _.divide(5, 2) // => 2.5
@@ -2056,6 +2074,7 @@
     }
     
     lamb.add = add;
+    lamb.clamp = clamp;
     lamb.divide = divide;
     lamb.modulo = modulo;
     lamb.multiply = multiply;

@@ -8,6 +8,20 @@ describe("lamb.math", function () {
         });
     });
 
+    describe("clamp", function () {
+        it("should clamp a number within the given limits", function () {
+            expect(lamb.clamp(0, -5, 5)).toBe(0);
+            expect(lamb.clamp(-5, -5, 5)).toBe(-5);
+            expect(lamb.clamp(5, -5, 5)).toBe(5);
+            expect(lamb.clamp(-6, -5, 5)).toBe(-5);
+            expect(lamb.clamp(6, -5, 5)).toBe(5);
+            expect(lamb.clamp(0, 0, 0)).toBe(0);
+            expect(Object.is(lamb.clamp(-0, 0, 0), -0)).toBe(true);
+            expect(Object.is(lamb.clamp(0, -0, 0), 0)).toBe(true);
+            expect(Object.is(lamb.clamp(0, 0, -0), 0)).toBe(true);
+        });
+    });
+
     describe("divide", function () {
         it("should divide two numbers", function () {
             expect(lamb.divide(15, 3)).toBe(5);
