@@ -45,15 +45,16 @@ describe("lamb.array", function () {
         });
 
         it("should return an array of items present only in the first of the given arrays", function () {
-            var a1 = [1, 2, 3, 4];
-            var a2 = [2, 3, 4, 5];
+            var a1 = [0, 1, 2, 3, 4, NaN];
+            var a2 = [-0, 2, 3, 4, 5, NaN];
             var a3 = [4, 5, 1];
             var a4 = [6, 7];
 
             expect(lamb.difference(a1)).toEqual(a1);
             expect(lamb.difference(a1, a2)).toEqual([1]);
             expect(lamb.difference(a1, a2, a3)).toEqual([]);
-            expect(lamb.difference(a1, a3, a4)).toEqual([2, 3]);
+            expect(lamb.difference(a1, a3, a4)).toEqual([0, 2, 3, NaN]);
+            expect(Object.is(0, lamb.difference(a1, a3, a4)[0])).toBe(true);
         });
     });
 
@@ -309,16 +310,19 @@ describe("lamb.array", function () {
         });
 
         it("should return an array of every item present in all given arrays", function () {
-            var a1 = [1, 2, 3, 4];
-            var a2 = [2, 3, 4, 5];
-            var a3 = [4, 5, 1];
+            var a1 = [0, 1, 2, 3, 4, NaN];
+            var a2 = [-0, 2, 2, 3, 4, 5];
+            var a3 = [4, 5, 1, NaN];
             var a4 = [6, 7];
 
             expect(lamb.intersection(a1)).toEqual(a1);
-            expect(lamb.intersection(a1, a2)).toEqual([2, 3, 4]);
+            expect(lamb.intersection(a2)).toEqual([-0, 2, 3, 4, 5]);
+            expect(Object.is(-0, lamb.intersection(a2)[0])).toBe(true);
+            expect(lamb.intersection(a1, a2)).toEqual([0, 2, 3, 4]);
+            expect(Object.is(0, lamb.intersection(a1, a2)[0])).toBe(true);
             expect(lamb.intersection(a1, a2, a3)).toEqual([4]);
             expect(lamb.intersection(a1, a2, a3, a4)).toEqual([]);
-            expect(lamb.intersection(a1, a3)).toEqual([1, 4]);
+            expect(lamb.intersection(a1, a3)).toEqual([1, 4, NaN]);
         });
     });
 
@@ -603,7 +607,8 @@ describe("lamb.array", function () {
 
         it("should return the unique elements of an array of simple values", function () {
             expect(lamb.uniques([])).toEqual([]);
-            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, 2, 1, 1])).toEqual([0, 2, 3, 4, 1]);
+            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, -0, 2, NaN, 1, 1, NaN])).toEqual([0, 2, 3, 4, NaN, 1]);
+            expect(Object.is(0, lamb.uniques([0, -0])[0])).toBe(true);
             expect(lamb.uniques(["foo", "bar", "bar", "baz"])).toEqual(["foo", "bar", "baz"]);
         });
 

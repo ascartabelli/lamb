@@ -344,7 +344,7 @@
     }
     
     /**
-     * Builds a predicate that check if an array-like object contains the given value.<br/>
+     * Builds a predicate to check if an array-like object contains the given value.<br/>
      * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
      * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
      * See also {@link module:lamb.isIn|isIn} for an uncurried version.
@@ -366,7 +366,8 @@
     }
     
     /**
-     * Returns an array of items present only in the first of the given arrays.
+     * Returns an array of items present only in the first of the given arrays.<br/>
+     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 4, 5];
@@ -383,9 +384,8 @@
      */
     function difference (array) {
         var rest = shallowFlatten(slice(arguments, 1));
-        return array.filter(function (item) {
-            return rest.indexOf(item) === -1;
-        });
+        var isInRest = partial(isIn, rest, _, 0);
+        return array.filter(not(isInRest));
     }
     
     /**
@@ -709,7 +709,8 @@
     }
     
     /**
-     * Returns an array of every item present in all given arrays.
+     * Returns an array of every item present in all given arrays.<br/>
+     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 5, 4, 6];
@@ -726,9 +727,7 @@
     function intersection () {
         var rest = slice(arguments, 1);
         return uniques(arguments[0]).filter(function (item) {
-            return rest.every(function (other) {
-                return other.indexOf(item) !== -1;
-            });
+            return rest.every(contains(item));
         });
     }
     
@@ -1081,8 +1080,9 @@
     var union = compose(uniques, flatMapWith(unary(slice)), list);
     
     /**
-     * Returns an array comprised of the unique elements of the given array-like object.
-     * Can work with lists of complex objects if supplied with an iteratee.
+     * Returns an array comprised of the unique elements of the given array-like object.<br/>
+     * Can work with lists of complex objects if supplied with an iteratee.<br/>
+     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example <caption>with simple values</caption>
      * _.uniques([1, 2, 2, 3, 4, 3, 5, 1]) // => [1, 2, 3, 4, 5]
      *
@@ -1116,7 +1116,7 @@
         for (var i = 0; i < arrayLike.length; i++) {
             value = iteratee.call(iterateeContext, arrayLike[i], i , arrayLike);
     
-            if (seen.indexOf(value) === -1) {
+            if (!isIn(seen, value)) {
                 seen.push(value);
                 result.push(arrayLike[i]);
             }
