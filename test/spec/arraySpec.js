@@ -1,6 +1,44 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.array", function () {
+    describe("contains / isIn", function () {
+        var testArray = ["foo", NaN, 0, 12];
+
+        it("should verify if a value is contained in an array using the \"SameValueZero\" comparison", function () {
+            expect(lamb.contains(12)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, 12)).toBe(true);
+            expect(lamb.contains(NaN)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, NaN)).toBe(true);
+            expect(lamb.contains(0)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, 0)).toBe(true);
+            expect(lamb.contains(-0)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, -0)).toBe(true);
+            expect(lamb.contains(15)(testArray)).toBe(false);
+            expect(lamb.isIn(testArray, 15)).toBe(false);
+        });
+
+        it("should start the check from the beginning of the array if the \"fromIndex\" parameter is not specified", function () {
+            expect(lamb.contains("foo")(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, "foo")).toBe(true);
+        });
+
+        it("should be able to start checking from a specific index", function () {
+            expect(lamb.contains("foo", 0)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, "foo", 0)).toBe(true);
+            expect(lamb.contains(12, 2)(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, 12, 2)).toBe(true);
+            expect(lamb.contains("foo", 1)(testArray)).toBe(false);
+            expect(lamb.isIn(testArray, "foo", 1)).toBe(false);
+        });
+
+        it("should work with array-like objects", function () {
+            expect(lamb.contains("f")("foo")).toBe(true);
+            expect(lamb.isIn("foo", "f")).toBe(true);
+            expect(lamb.contains("f", 1)("foo")).toBe(false);
+            expect(lamb.isIn("foo", "f", 1)).toBe(false);
+        });
+    });
+
     describe("difference", function () {
         it("should throw an exception if no arguments are supplied", function () {
             expect(lamb.difference).toThrow();

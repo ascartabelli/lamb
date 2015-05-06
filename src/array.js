@@ -48,6 +48,28 @@ function _getInsertionIndex (array, element, comparer, reader, start, end) {
 }
 
 /**
+ * Builds a predicate that check if an array-like object contains the given value.<br/>
+ * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+ * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
+ * See also {@link module:lamb.isIn|isIn} for an uncurried version.
+ * @example
+ * var containsNaN = _.contains(NaN, 0);
+ *
+ * containsNaN([0, 1, 2, 3, NaN]) // => true
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {*} value
+ * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+ * @returns {Function}
+ */
+function contains (value, fromIndex) {
+    return function (arrayLike) {
+        return isIn(arrayLike, value, fromIndex);
+    }
+}
+
+/**
  * Returns an array of items present only in the first of the given arrays.
  * @example
  * var a1 = [1, 2, 3, 4];
@@ -463,6 +485,40 @@ function insert (array, element, comparer, reader) {
 }
 
 /**
+ * Checks if an array-like object contains the given value.<br/>
+ * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+ * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
+ * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
+ * @example
+ * var numbers = [0, 1, 2, 3, NaN];
+ *
+ * _.isIn(numbers, 1) // => true
+ * _.isIn(numbers, 0) // => true
+ * _.isIn(numbers, -0) // => true
+ * _.isIn(numbers, NaN) // => true
+ * _.isIn(numbers, 2, 3) // => false
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @param {*} value
+ * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+ * @returns {Boolean}
+ */
+function isIn (arrayLike, value, fromIndex) {
+    var result = false;
+
+    for (var i = fromIndex | 0, len = arrayLike.length; i < len; i++) {
+        if (isSVZ(value, arrayLike[i])) {
+            result = true;
+            break;
+        }
+    }
+
+    return result;
+}
+
+/**
  * Generates an array with the values passed as arguments.
  * @example
  * _.list(1, 2, 3) // => [1, 2, 3]
@@ -773,6 +829,7 @@ function uniques (arrayLike, iteratee, iterateeContext) {
     return result;
 }
 
+lamb.contains = contains;
 lamb.difference = difference;
 lamb.drop = drop;
 lamb.dropN = dropN;
@@ -787,6 +844,7 @@ lamb.group = group;
 lamb.groupBy = groupBy;
 lamb.intersection = intersection;
 lamb.insert = insert;
+lamb.isIn = isIn;
 lamb.list = list;
 lamb.mapWith = mapWith;
 lamb.partition = partition;
