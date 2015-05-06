@@ -28,7 +28,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.12.0
+ * @version 0.13.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -45,7 +45,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.12.0";
+    lamb._version =  "0.13.0";
     
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -371,7 +371,30 @@
     }
     
     /**
-     * Returns an array of items present only in the first of the given arrays.
+     * Builds a predicate to check if an array-like object contains the given value.&lt;br/>
+     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * check for &lt;code>NaN&lt;/code>, but &lt;code>0&lt;/code> and &lt;code>-0&lt;/code> are the same value.&lt;br/>
+     * See also {@link module:lamb.isIn|isIn} for an uncurried version.
+     * @example
+     * var containsNaN = _.contains(NaN, 0);
+     *
+     * containsNaN([0, 1, 2, 3, NaN]) // => true
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {*} value
+     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+     * @returns {Function}
+     */
+    function contains (value, fromIndex) {
+        return function (arrayLike) {
+            return isIn(arrayLike, value, fromIndex);
+        };
+    }
+    
+    /**
+     * Returns an array of items present only in the first of the given arrays.&lt;br/>
+     * Note that since version &lt;code>0.13.0&lt;/code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 4, 5];
@@ -388,9 +411,8 @@
      */
     function difference (array) {
         var rest = shallowFlatten(slice(arguments, 1));
-        return array.filter(function (item) {
-            return rest.indexOf(item) === -1;
-        });
+        var isInRest = partial(isIn, rest, _, 0);
+        return array.filter(not(isInRest));
     }
     
     /**
@@ -714,7 +736,8 @@
     }
     
     /**
-     * Returns an array of every item present in all given arrays.
+     * Returns an array of every item present in all given arrays.&lt;br/>
+     * Note that since version &lt;code>0.13.0&lt;/code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 5, 4, 6];
@@ -731,9 +754,7 @@
     function intersection () {
         var rest = slice(arguments, 1);
         return uniques(arguments[0]).filter(function (item) {
-            return rest.every(function (other) {
-                return other.indexOf(item) !== -1;
-            });
+            return rest.every(contains(item));
         });
     }
     
@@ -782,6 +803,40 @@
     function insert (array, element, comparer, reader) {
         var result = array.concat();
         result.splice(_getInsertionIndex(array, element, comparer, reader), 0, element);
+        return result;
+    }
+    
+    /**
+     * Checks if an array-like object contains the given value.&lt;br/>
+     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * check for &lt;code>NaN&lt;/code>, but &lt;code>0&lt;/code> and &lt;code>-0&lt;/code> are the same value.&lt;br/>
+     * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
+     * @example
+     * var numbers = [0, 1, 2, 3, NaN];
+     *
+     * _.isIn(numbers, 1) // => true
+     * _.isIn(numbers, 0) // => true
+     * _.isIn(numbers, -0) // => true
+     * _.isIn(numbers, NaN) // => true
+     * _.isIn(numbers, 2, 3) // => false
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {*} value
+     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+     * @returns {Boolean}
+     */
+    function isIn (arrayLike, value, fromIndex) {
+        var result = false;
+    
+        for (var i = fromIndex | 0, len = arrayLike.length; i &lt; len; i++) {
+            if (isSVZ(value, arrayLike[i])) {
+                result = true;
+                break;
+            }
+        }
+    
         return result;
     }
     
@@ -1052,8 +1107,9 @@
     var union = compose(uniques, flatMapWith(unary(slice)), list);
     
     /**
-     * Returns an array comprised of the unique elements of the given array-like object.
-     * Can work with lists of complex objects if supplied with an iteratee.
+     * Returns an array comprised of the unique elements of the given array-like object.&lt;br/>
+     * Can work with lists of complex objects if supplied with an iteratee.&lt;br/>
+     * Note that since version &lt;code>0.13.0&lt;/code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example &lt;caption>with simple values&lt;/caption>
      * _.uniques([1, 2, 2, 3, 4, 3, 5, 1]) // => [1, 2, 3, 4, 5]
      *
@@ -1087,7 +1143,7 @@
         for (var i = 0; i &lt; arrayLike.length; i++) {
             value = iteratee.call(iterateeContext, arrayLike[i], i , arrayLike);
     
-            if (seen.indexOf(value) === -1) {
+            if (!isIn(seen, value)) {
                 seen.push(value);
                 result.push(arrayLike[i]);
             }
@@ -1096,6 +1152,7 @@
         return result;
     }
     
+    lamb.contains = contains;
     lamb.difference = difference;
     lamb.drop = drop;
     lamb.dropN = dropN;
@@ -1110,6 +1167,7 @@
     lamb.groupBy = groupBy;
     lamb.intersection = intersection;
     lamb.insert = insert;
+    lamb.isIn = isIn;
     lamb.list = list;
     lamb.mapWith = mapWith;
     lamb.partition = partition;
@@ -1714,10 +1772,11 @@
     }
     
     /**
-     * Verifies that the two supplied values are the same value using strict
-     * equality. Note that this doesn't behave as the strict equality operator,
-     * but rather as a shim of ES6's [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
-     * Differences are that &lt;code>0&lt;/code> and &lt;code>-0&lt;/code> aren't the same value and, finally, &lt;code>NaN&lt;/code> is equal to itself.
+     * Verifies that the two supplied values are the same value using the "SameValue" comparison.&lt;br/>
+     * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
+     * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
+     * Differences are that &lt;code>0&lt;/code> and &lt;code>-0&lt;/code> aren't the same value and, finally, &lt;code>NaN&lt;/code> is equal to itself.&lt;br/>
+     * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
      * @example
      * var testObject = {};
      *
@@ -1734,17 +1793,7 @@
      * @returns {Boolean}
      */
     function is (a, b) {
-        var result;
-    
-        if (a === 0 &amp;&amp; b === 0) {
-            result = 1 / a === 1 / b;
-        } else if (a !== a) {
-            result = b !== b;
-        } else {
-            result = a === b;
-        }
-    
-        return result;
+        return a === 0 &amp;&amp; b === 0 ? 1 / a === 1 / b : isSVZ(a, b);
     }
     
     /**
@@ -1855,6 +1904,30 @@
     var isNot = not(is);
     
     /**
+     * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.&lt;br/>
+     * With this comparison &lt;code>NaN&lt;/code> is equal to itself, but &lt;code>0&lt;/code> and &lt;code>-0&lt;/code> are
+     * considered the same value too.&lt;br/>
+     * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
+     * @example
+     * var testObject = {};
+     *
+     * _.isSVZ({}, testObject) // => false
+     * _.isSVZ(testObject, testObject) // => true
+     * _.isSVZ("foo", "foo") // => true
+     * _.isSVZ(0, -0) // => true
+     * _.isSVZ(0 / 0, NaN) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {*} a
+     * @param {*} b
+     * @returns {Boolean}
+     */
+    function isSVZ (a, b) {
+        return a !== a ? b !== b : a === b;
+    }
+    
+    /**
      * Returns a predicate that negates the given one.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
@@ -1884,6 +1957,7 @@
     lamb.isLT = isLT;
     lamb.isLTE = isLTE;
     lamb.isNot = isNot;
+    lamb.isSVZ = isSVZ;
     lamb.not = not;
     
     
@@ -1900,6 +1974,24 @@
      */
     function add (a, b) {
         return a + b;
+    }
+    
+    /**
+     * "Clamps" a number within the given limits.
+     * @example
+     * _.clamp(-5, 0, 10) // => 0
+     * _.clamp(5, 0, 10) // => 5
+     * _.clamp(15, 0, 10) // => 10
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} n
+     * @param {Number} min
+     * @param {Number} max
+     * @returns {Number}
+     */
+    function clamp (n, min, max) {
+        return n &lt; min ? min : n > max ? max : n;
     }
     
     /**
@@ -2067,6 +2159,7 @@
     }
     
     lamb.add = add;
+    lamb.clamp = clamp;
     lamb.divide = divide;
     lamb.modulo = modulo;
     lamb.multiply = multiply;
@@ -3098,13 +3191,13 @@
 </div>
 
 <nav id="main-navigation">
-    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatMapWith">flatMapWith</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.partition">partition</a></li><li><a href="module-lamb.html#.partitionWith">partitionWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.pluckKey">pluckKey</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.binary">binary</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.unary">unary</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.enumerables">enumerables</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getWithPath">getWithPath</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.merge">merge</a></li><li><a href="module-lamb.html#.mergeOwn">mergeOwn</a></li><li><a href="module-lamb.html#.ownPairs">ownPairs</a></li><li><a href="module-lamb.html#.ownValues">ownValues</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.tearOwn">tearOwn</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.contains">contains</a></li><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatMapWith">flatMapWith</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.isIn">isIn</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.partition">partition</a></li><li><a href="module-lamb.html#.partitionWith">partitionWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.pluckKey">pluckKey</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.binary">binary</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.unary">unary</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.isSVZ">isSVZ</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.clamp">clamp</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.sequence">sequence</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.enumerables">enumerables</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.get">get</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getWithPath">getWithPath</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.merge">merge</a></li><li><a href="module-lamb.html#.mergeOwn">mergeOwn</a></li><li><a href="module-lamb.html#.ownPairs">ownPairs</a></li><li><a href="module-lamb.html#.ownValues">ownValues</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.tearOwn">tearOwn</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#String">String</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Wed Apr 22 2015 10:30:14 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Wed May 06 2015 14:44:45 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
