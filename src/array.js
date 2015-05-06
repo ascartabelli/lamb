@@ -66,7 +66,7 @@ function _getInsertionIndex (array, element, comparer, reader, start, end) {
 function contains (value, fromIndex) {
     return function (arrayLike) {
         return isIn(arrayLike, value, fromIndex);
-    }
+    };
 }
 
 /**

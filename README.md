@@ -68,6 +68,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.13.0 - *2015/05/06***
+  - **API change:** `difference`, `intersection` and `uniques` now use the "SameValueZero" comparison
+  - Added `clamp`, `contains`, `isIn`, `isSVZ`
+
 - **v0.12.0 - *2015/04/22***
   - **Fully compatible with versions down to 0.9.x**
   - Added `enumerables` and `pluckKey`
