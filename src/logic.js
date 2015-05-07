@@ -152,6 +152,8 @@ function condition (predicate, trueFn, falseFn) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}
@@ -283,6 +285,8 @@ var isNot = not(is);
  *
  * @memberof module:lamb
  * @category Logic
+ * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}

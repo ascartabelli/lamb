@@ -1841,6 +1841,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -1972,6 +1974,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -2727,9 +2731,9 @@
      * The properties satisfying the predicate will be included in the resulting object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
-     * var pickIfIstring = _.pickIf(_.isType("String"));
+     * var pickIfIsString = _.pickIf(_.isType("String"));
      *
-     * pickIfIstring(user) // => {name: "john", surname: "doe"}
+     * pickIfIsString(user) // => {name: "john", surname: "doe"}
      *
      * @memberof module:lamb
      * @category Object

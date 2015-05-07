@@ -16,6 +16,13 @@ Require it in node.js:
 var lamb = require("lamb");
 ```
 
+It's useful to alias it to have a shorter symbol, like ```_```, as I did throughout the documentation: it's cleaner and the 
+```lamb``` object itself can be used as a placeholder argument in [partial application](https://ascartabelli.github.io/lamb/module-lamb.html#.partial).
+
+```javascript
+var _ = require("lamb");
+```
+
 In a browser, simply include the version you want from the `dist` folder:
 
 ```html
