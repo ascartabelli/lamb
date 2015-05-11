@@ -387,7 +387,7 @@ describe("lamb.array", function () {
             expect(lamb.list()).toEqual([]);
         });
 
-        it("should return build an array with the passed arguments", function () {
+        it("should build an array with the passed arguments", function () {
             expect(lamb.list(1, 2, 3)).toEqual([1, 2, 3]);
             expect(lamb.list(null, void 0)).toEqual([null, void 0]);
         });
@@ -633,6 +633,70 @@ describe("lamb.array", function () {
             ];
 
             expect(lamb.uniques(data, iteratee)).toEqual(expectedResult);
+        });
+    });
+
+    describe("transpose / zip", function () {
+        var a1 = [1, 2, 3, 4];
+        var a2 = [5, 6, 7];
+        var a3 = [8, 9];
+
+        var r1 = [[1], [2], [3], [4]];
+        var r2 = [[1, 5], [2, 6], [3, 7]];
+        var r3 = [[1, 5, 8], [2, 6, 9]];
+
+
+
+        describe("transpose", function () {
+            it("should throw an error if no arguments are supplied", function () {
+                expect(lamb.transpose).toThrow();
+            });
+
+            it("should transpose a matrix", function () {
+                expect(lamb.transpose([])).toEqual([]);
+                expect(lamb.transpose([1, 2, 3])).toEqual([]);
+                expect(lamb.transpose(r1)).toEqual([a1]);
+                expect(lamb.transpose(r2)).toEqual([[1, 2, 3], [5, 6, 7]]);
+                expect(lamb.transpose(r3)).toEqual([[1, 2], [5, 6], [8, 9]]);
+            });
+
+            it("should work with array-like objects", function () {
+                var fn = function () {
+                    return lamb.transpose(arguments);
+                };
+
+                expect(fn("abc", [1, 2, 3])).toEqual([["a", 1], ["b", 2], ["c", 3]]);
+            });
+        });
+
+        describe("zip", function () {
+            it("should pair items with the same index in the received lists", function () {
+                expect(lamb.zip()).toEqual([]);
+                expect(lamb.zip([])).toEqual([]);
+                expect(lamb.zip(a1)).toEqual(r1);
+                expect(lamb.zip(a1, a2)).toEqual(r2);
+                expect(lamb.zip(a1, a2, a3)).toEqual(r3);
+                expect(lamb.zip(a1, NaN)).toEqual([]);
+            });
+
+            it("should work with array-like objects", function () {
+                expect(lamb.zip(a1, "abc")).toEqual([[1, "a"], [2, "b"], [3, "c"]]);
+            });
+        });
+    });
+
+    describe("zipWithIndex", function () {
+        it("should throw an error if no arguments are supplied", function () {
+            expect(lamb.zipWithIndex).toThrow();
+        });
+
+        it("should pair the received values with their index", function () {
+            expect(lamb.zipWithIndex([])).toEqual([]);
+            expect(lamb.zipWithIndex([1, 2, 3, 4])).toEqual([[1, 0], [2, 1], [3, 2], [4, 3]]);
+        });
+
+        it("should work with array-like objects", function () {
+            expect(lamb.zipWithIndex("abcd")).toEqual([["a", 0], ["b", 1], ["c", 2], ["d", 3]]);
         });
     });
 });

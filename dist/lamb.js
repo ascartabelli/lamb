@@ -1066,6 +1066,48 @@
     }
     
     /**
+     * Transposes a matrix. Can also be used to reverse a {@link module:lamb.zip|zip} operation.<br/>
+     * Just like {@link module:lamb.zip|zip}, the received array-like objects will be truncated to the
+     * shortest length.
+     * @example <caption>transposing a matrix</caption>
+     * _.transpose([
+     *     [1, 2, 3],
+     *     [4, 5, 6],
+     *     [7, 8, 9]
+     * ]) // =>
+     * // [
+     * //     [1, 4, 7],
+     * //     [2, 5, 8],
+     * //     [3, 6, 9]
+     * // ]
+     *
+     * @example <caption>showing the relationship with <code>zip</code></caption>
+     * var zipped = _.zip(["a", "b", "c"], [1, 2, 3]); // => [["a", 1], ["b", 2], ["c", 3]]
+     *
+     * _.transpose(zipped) // => [["a", "b", "c"], [1, 2, 3]]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike<ArrayLike<*>>} arrayLike
+     * @returns {Array<Array<*>>}
+     */
+    function transpose (arrayLike) {
+        var result = [];
+        var minLen = apply(Math.min, pluck(arrayLike, "length")) | 0;
+        var len = arrayLike.length;
+    
+        for (var i = 0, j; i < minLen; i++) {
+            result.push([]);
+    
+            for (j = 0; j < len; j++) {
+                result[i][j] = arrayLike[j][i];
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
      * Returns a list of every unique element present in the given array-like objects.
      * @example
      * _.union([1, 2, 3, 2], [3, 4], [1, 5]) // => [1, 2, 3, 4, 5]
@@ -1125,6 +1167,41 @@
         return result;
     }
     
+    /**
+     * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
+     * The received array-like objects will be truncated to the shortest length.<br/>
+     * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose} for the reverse operation.
+     * @example
+     * _.zip(
+     *     ["a", "b", "c"],
+     *     [1, 2, 3],
+     *     [true, false, true]
+     * ) // => [["a", 1, true], ["b", 2, false], ["c", 3, true]]
+     *
+     * _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @param {...ArrayLike} arrayLike
+     * @returns {Array<Array<*>>}
+     */
+    var zip = compose(transpose, list);
+    
+    /**
+     * "{@link module:lamb.zip|Zips}" an array-like object by pairing its values with their index.
+     * @example
+     * _.zipWithIndex(["a", "b", "c"]) // => [["a", 0], ["b", 1], ["c", 2]]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @returns {Array<Array<*, Number>>}
+     */
+    function zipWithIndex (arrayLike) {
+        return transpose([arrayLike, range(0, arrayLike.length)]);
+    }
+    
     lamb.contains = contains;
     lamb.difference = difference;
     lamb.drop = drop;
@@ -1152,8 +1229,11 @@
     lamb.take = take;
     lamb.takeN = takeN;
     lamb.takeWhile = takeWhile;
+    lamb.transpose = transpose;
     lamb.union = union;
     lamb.uniques = uniques;
+    lamb.zip = zip;
+    lamb.zipWithIndex = zipWithIndex;
     
     
     function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
