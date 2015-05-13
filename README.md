@@ -75,6 +75,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   
 ## <a name="changelog"></a> Changelog
 
+- **v0.14.0 - *2015/05/13***
+  - **Fully compatible with versions down to 0.13.x**
+  - Added `transpose`, `zip`, `zipWithIndex`
+
 - **v0.13.0 - *2015/05/06***
   - **API change:** `difference`, `intersection` and `uniques` now use the "SameValueZero" comparison
   - Added `clamp`, `contains`, `isIn`, `isSVZ`
