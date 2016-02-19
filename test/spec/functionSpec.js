@@ -188,6 +188,30 @@ describe("lamb.function", function () {
         });
     });
 
+    describe("invokerOn", function () {
+        it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
+            var someArray = [1, 2, 3, 4, 5];
+            var someString = "foo bar";
+            var callOnSomeArray = lamb.invokerOn(someArray);
+            var callOnSomeString = lamb.invokerOn(someString);
+
+            spyOn(someArray, "slice").and.callThrough();
+            spyOn(someArray, "join").and.callThrough();
+
+            expect(callOnSomeArray("slice", 1, 3)).toEqual([2, 3]);
+            expect(someArray.slice.calls.count()).toBe(1);
+            expect(someArray.slice.calls.first().object).toBe(someArray);
+
+            expect(callOnSomeArray("join", "")).toBe("12345");
+            expect(someArray.join.calls.count()).toBe(1);
+            expect(someArray.join.calls.first().object).toBe(someArray);
+
+            expect(callOnSomeString("slice", 1, 3)).toBe("oo");
+            expect(callOnSomeString("toUpperCase")).toBe("FOO BAR");
+            expect(callOnSomeString("foo")).toBe(void 0);
+        });
+    });
+
     describe("invoker", function () {
         it("should build a function that will invoke the desired method on the given object", function () {
             var slice = lamb.invoker("slice");
@@ -199,7 +223,7 @@ describe("lamb.function", function () {
             expect(slice(someArray, 1, 3)).toEqual([2, 3]);
             expect(someArray.slice.calls.count()).toBe(1);
             expect(someArray.slice.calls.first().object).toBe(someArray);
-            expect(slice(someString, 1, 3)).toEqual("oo");
+            expect(slice(someString, 1, 3)).toBe("oo");
             expect(slice(1)).toBe(void 0);
         });
     });

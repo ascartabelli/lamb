@@ -84,9 +84,7 @@ var _valuesFrom = _curry(function (getKeys, obj) {
  */
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
-        var errors = [];
         var getValues = partial(getWithPath, obj, _, pathSeparator);
-
         return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
     };
 }
