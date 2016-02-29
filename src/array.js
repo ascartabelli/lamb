@@ -20,33 +20,6 @@ function _flatten (array, output) {
     return output;
 }
 
-function _getInsertionIndex (array, element, comparer, reader, start, end) {
-    if (array.length === 0) {
-        return 0;
-    }
-
-    comparer = comparer || sorter.ascending;
-    reader = reader || identity;
-    start = start || 0;
-    end = end || array.length;
-
-    var pivot = (start + end) >> 1;
-    var compared = comparer(reader(element), reader(array[pivot]));
-
-    if (end - start <= 1) {
-        return compared === -1 ? pivot : pivot + 1;
-    }
-
-    switch (compared) {
-        case -1:
-            return _getInsertionIndex(array, element, comparer, reader, start, pivot);
-        case 0:
-            return pivot + 1;
-        case 1:
-            return _getInsertionIndex(array, element, comparer, reader, pivot, end);
-    }
-}
-
 /**
  * Builds a predicate to check if an array-like object contains the given value.<br/>
  * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
@@ -436,54 +409,6 @@ function intersection () {
 }
 
 /**
- * Inserts an element in a copy of a sorted array respecting the sort order.
- * @example <caption>with simple values</caption>
- * _.insert([], 1) // => [1]
- * _.insert([2, 4, 6], 5) // => [2, 4, 5, 6]
- * _.insert([4, 2, 1], 3, _.sorter.descending) // => [4, 3, 2, 1]
- *
- * @example <caption>with complex values</caption>
- * var persons = [
- *     {"name": "jane", "surname": "doe"},
- *     {"name": "John", "surname": "Doe"},
- *     {"name": "Mario", "surname": "Rossi"}
- * ];
- *
- * var getLowerCaseName = _.compose(
- *     _.invoker("toLowerCase"),
- *     _.getKey("name")
- * );
- *
- * var result = _.insert(
- *     persons,
- *     {"name": "marco", "surname": "Rossi"},
- *     _.sorter.ascending,
- *     getLowerCaseName
- * );
- *
- * // `result` holds:
- * // [
- * //     {"name": "jane", "surname": "doe"},
- * //     {"name": "John", "surname": "Doe"},
- * //     {"name": "marco", "surname": "Rossi"},
- * //     {"name": "Mario", "surname": "Rossi"}
- * // ]
- *
- * @memberof module:lamb
- * @category Array
- * @param {Array} array
- * @param {*} element
- * @param {Function} [comparer={@link module:lamb.sorter|sorter.ascending}] - The comparer function used to sort the array.
- * @param {Function} [reader={@link module:lamb.identity|identity}] - The function that evaluates the array elements and supplies values for comparison.
- * @returns {Array}
- */
-function insert (array, element, comparer, reader) {
-    var result = array.concat();
-    result.splice(_getInsertionIndex(array, element, comparer, reader), 0, element);
-    return result;
-}
-
-/**
  * Checks if an array-like object contains the given value.<br/>
  * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
  * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
@@ -681,35 +606,6 @@ function pluckKey (key) {
 function shallowFlatten (array) {
     return _arrayProto.concat.apply([], array);
 }
-
-/**
- * Generates a function to sort arrays of complex values.
- * @example
- * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
- * var asNumbers = _.sorter(_.sorter.ascending, parseFloat);
- *
- * weights.sort() // => ["1 Kg", "10 Kg", "2 Kg", "7 Kg"]
- * weights.sort(asNumbers) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]
- *
- * @memberof module:lamb
- * @category Array
- * @property {Function} ascending - A default ascending comparer.
- * @property {Function} descending - A default descending comparer.
- * @param {Function} comparer - A comparer function to be passed to the [Array.prototype.sort]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort} method.
- * @param {Function} reader - A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
- * @returns {Function}
- */
-function sorter (comparer, reader) {
-    return function (a, b) {
-        return comparer(reader(a), reader(b));
-    };
-}
-sorter.ascending = function (a, b) {
-    return a < b ? -1 : a > b ? 1 : 0;
-};
-sorter.descending = function (a, b) {
-    return b < a ? -1 : b > a ? 1 : 0;
-};
 
 /**
  * Retrieves the first <code>n</code> elements from an array or array-like object.
@@ -920,7 +816,6 @@ lamb.flatten = flatten;
 lamb.group = group;
 lamb.groupBy = groupBy;
 lamb.intersection = intersection;
-lamb.insert = insert;
 lamb.isIn = isIn;
 lamb.list = list;
 lamb.mapWith = mapWith;
@@ -929,7 +824,6 @@ lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
 lamb.shallowFlatten = shallowFlatten;
-lamb.sorter = sorter;
 lamb.take = take;
 lamb.takeN = takeN;
 lamb.takeWhile = takeWhile;

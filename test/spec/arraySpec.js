@@ -326,62 +326,6 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("insert", function () {
-        var personsByCaseInsensitiveNameAsc = [
-            {"name": "jane", "surname": "doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "john", "surname": "doe"},
-            {"name": "Mario", "surname": "Rossi"}
-        ];
-
-        var expectedResult = [
-            {"name": "jane", "surname": "doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "john", "surname": "doe"},
-            {"name": "marco", "surname": "Rossi"},
-            {"name": "Mario", "surname": "Rossi"}
-        ];
-
-        var toLowerCase = lamb.generic(String.prototype.toLowerCase);
-        var compose = lamb.compose;
-        var getKey = lamb.getKey;
-        var getLowerCaseName = compose(toLowerCase, getKey("name"));
-
-        it("should insert an element in a copy of a sorted array respecting the order", function () {
-            var result = lamb.insert(
-                personsByCaseInsensitiveNameAsc,
-                {"name": "marco", "surname": "Rossi"},
-                lamb.sorter.ascending,
-                getLowerCaseName
-            );
-
-            expect(result).toEqual(expectedResult);
-            expect(personsByCaseInsensitiveNameAsc.length).toBe(4);
-
-            // references are not broken
-            expect(personsByCaseInsensitiveNameAsc[0]).toBe(result[0]);
-        });
-
-        it("should allow inserting in descending order with the default `comparer`", function () {
-            expect(lamb.insert([3, 2, 1], 1.5, lamb.sorter.descending)).toEqual([3, 2, 1.5, 1]);
-            expect(lamb.insert([3, 2, 1], 2, lamb.sorter.descending)).toEqual([3, 2, 2, 1]);
-        });
-
-        it("should use the default values for the `comparer` and `reader` if those aren't supplied", function () {
-            expect(lamb.insert([1, 2, 3], 2.5)).toEqual([1, 2, 2.5, 3]);
-        });
-
-        it("should be able to insert values at the beginning and at the end of the array", function () {
-            var arr = [1, 2, 3];
-            expect(lamb.insert(arr, 0)).toEqual([0, 1, 2, 3]);
-            expect(lamb.insert(arr, 4)).toEqual([1, 2, 3, 4]);
-        });
-
-        it("should accept an empty list", function () {
-            expect(lamb.insert([], 1)).toEqual([1]);
-        });
-    });
-
     describe("list", function () {
         it("should return an empty array if no arguments are supplied", function () {
             expect(lamb.list()).toEqual([]);
@@ -501,46 +445,6 @@ describe("lamb.array", function () {
             var input = ["a", "b", {"c" : ["d"]}];
 
             expect(lamb.shallowFlatten(input)).toEqual(input);
-        });
-    });
-
-    describe("sorter", function () {
-        var persons = [
-            {"name": "John", "surname" :"Doe"},
-            {"name": "john", "surname" :"doe"},
-            {"name": "Mario", "surname": "Rossi"},
-            {"name": "jane", "surname": "doe"}
-        ];
-
-        var personsByCaseInsensitiveNameAsc = [
-            {"name": "jane", "surname": "doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "john", "surname": "doe"},
-            {"name": "Mario", "surname": "Rossi"}
-        ];
-
-        var mixed = ["1", "10", 1, false, "20", "15"];
-        var mixedAsNumbersDesc = ["20", "15", "10", "1", 1, false];
-
-        var toLowerCase = lamb.generic(String.prototype.toLowerCase);
-        var compose = lamb.compose;
-        var getKey = lamb.getKey;
-        var getLowerCaseName = compose(toLowerCase, getKey("name"));
-
-        it("should build a comparison function for array sorting", function () {
-            var sorter = lamb.sorter(
-                lamb.sorter.ascending,
-                getLowerCaseName
-            );
-
-            expect(persons.sort(sorter)).toEqual(personsByCaseInsensitiveNameAsc);
-
-            sorter = lamb.sorter(
-                lamb.sorter.descending,
-                Number
-            );
-
-            expect(mixed.sort(sorter)).toEqual(mixedAsNumbersDesc);
         });
     });
 

@@ -98,6 +98,15 @@
  */
 
 /**
+ * Represent a sorting criteria used by {@link module:lamb.insert|insert}, {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith},
+ * and it's usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
+ * @typedef {Sorter} Sorter
+ * @global
+ * @property {Boolean} isDescending
+ * @property {Function} compare
+ */
+
+/**
  * The built-in String object.
  * @typedef {String} String
  * @global
