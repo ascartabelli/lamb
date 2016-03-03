@@ -4,7 +4,7 @@ A lightweight, and docile, JavaScript (ES5) library to help embracing functional
 
 ## Installation and basic usage.
 
-Install it with `npm`:  
+Install it with `npm`:
 
 ```bash
 npm install lamb
@@ -16,7 +16,7 @@ Require it in node.js:
 var lamb = require("lamb");
 ```
 
-It's useful to alias it to have a shorter symbol, like ```_```, as I did throughout the documentation: it's cleaner and the 
+It's useful to alias it to have a shorter symbol, like ```_```, as I did throughout the documentation: it's cleaner and the
 ```lamb``` object itself can be used as a placeholder argument in [partial application](https://ascartabelli.github.io/lamb/module-lamb.html#.partial).
 
 ```javascript
@@ -44,36 +44,40 @@ A first version of the API documentation is [now online](https://ascartabelli.gi
 ## Semantic Versioning.
 
 Lamb uses [semantic versioning](http://semver.org/) and please be aware that, as long as the major version is `0`, any
-bump in the minor version could involve a breaking change in the API.  
+bump in the minor version could involve a breaking change in the API.
 You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## Frequently self-asked questions.
 
-- ***Is another JavaScript library really needed?***  
-  Don't know, really.  
-  The story here is that I like to write my own code and, time permitting, to even reinvent the wheel: it's part of my learning process.  
-  This library is only a means for me to gather some utilities I wrote, clean them up a bit and put them together with some new tools to make 
-  a documented, reusable package.  
-    
-- ***Are your wheels rounder?***  
+- ***Is another JavaScript library really needed?***
+  Don't know, really.
+  The story here is that I like to write my own code and, time permitting, to even reinvent the wheel: it's part of my learning process.
+  This library is only a means for me to gather some utilities I wrote, clean them up a bit and put them together with some new tools to make
+  a documented, reusable package.
+
+- ***Are your wheels rounder?***
   Not at all, but I do try my best to add better suspension; and you do realise that you're reading a guy talking to himself, don't you?
-  
-- ***Why ECMAScript 5?***  
+
+- ***Why ECMAScript 5?***
   Because this is simply me tidying up some old code, and will hopefully be my goodbye to ES5 before fully diving into the world of transpilers.
-  
-- ***What about ES4 environments?***  
+
+- ***What about ES4 environments?***
   In my make-believe world they don't exist, but in case I can be proven wrong you can load some shims / polyfills before my
-  library. There's plenty of those in the [JavaScript Reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/), 
+  library. There's plenty of those in the [JavaScript Reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/),
   and there are many pre-made packages as well [out there](https://github.com/es-shims/es5-shim/).
-  
-- ***Are there plans for the future?***  
-  Absolutely yes: this isn't a complete work at all, only a first public release.  
+
+- ***Are there plans for the future?***
+  Absolutely yes: this isn't a complete work at all, only a first public release.
   I need better documentation and examples for starters, and I also want to add a bunch of other functions and concepts into the mix.
-  
-- ***Why "Lamb"?***  
+
+- ***Why "Lamb"?***
   See the main header: because it's docile like a lamb.
-  
+
 ## <a name="changelog"></a> Changelog
+
+- **v0.15.0 - *2016/03/03***
+  - **API change:** changed `insert` and `sorter`
+  - Added `invokerOn`, `sort`, `sorterDesc` and `sortWith`
 
 - **v0.14.0 - *2015/05/13***
   - **Fully compatible with versions down to 0.13.x**
@@ -114,10 +118,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   - Added the `group` and `groupBy` functions
   - Added the `find` and `findIndex` functions
   - Some long due performance improvements on `curry`, `curryable` and `partial`
-  
-- **v0.6.3 - *2015/03/20***  
+
+- **v0.6.3 - *2015/03/20***
   - The documentation is now online
   - Minor fixes in doc comments
-  
-- **v0.6.2 - *2015/03/18***  
+
+- **v0.6.2 - *2015/03/18***
   - First public release
