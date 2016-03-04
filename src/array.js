@@ -83,7 +83,7 @@ function difference (array) {
  * @param {Number} n
  * @returns {Array}
  */
-var drop = aritize(slice, 2);
+var drop = binary(slice);
 
 /**
  * A curried version of {@link module:lamb.drop|drop} that expects the number of elements
@@ -453,7 +453,7 @@ function isIn (arrayLike, value, fromIndex) {
  * @returns {Array}
  */
 function list () {
-    return slice(arguments);
+    return arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
 }
 
 /**
@@ -795,12 +795,11 @@ var zip = compose(transpose, list);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @param {ArrayLike} arrayLike
  * @returns {Array<Array<*, Number>>}
  */
-function zipWithIndex (arrayLike) {
-    return transpose([arrayLike, range(0, arrayLike.length)]);
-}
+var zipWithIndex = mapWith(binary(list));
 
 lamb.contains = contains;
 lamb.difference = difference;

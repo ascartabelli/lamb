@@ -42,7 +42,7 @@ function _compareWith (criteria) {
         }
 
         return isDescSort ? -result : result;
-    }
+    };
 }
 
 function _getInsertionIndex (array, element, comparer, start, end) {
@@ -281,8 +281,7 @@ function sortWith () {
 
     return function (arrayLike) {
         return sort.apply(null, [arrayLike].concat(sorters));
-    }
-
+    };
 }
 
 lamb.insert = insert;

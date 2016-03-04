@@ -332,6 +332,7 @@ describe("lamb.array", function () {
         });
 
         it("should build an array with the passed arguments", function () {
+            expect(lamb.list(123)).toEqual([123]);
             expect(lamb.list(1, 2, 3)).toEqual([1, 2, 3]);
             expect(lamb.list(null, void 0)).toEqual([null, void 0]);
         });
