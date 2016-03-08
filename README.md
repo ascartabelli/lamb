@@ -75,6 +75,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## <a name="changelog"></a> Changelog
 
+- **v0.15.1 - *2016/03/08***
+  - **Fully compatible with version 0.15.0**
+  - Minor performance improvements
+
 - **v0.15.0 - *2016/03/03***
   - **API change:** changed `insert` and `sorter`
   - Added `invokerOn`, `sort`, `sorterDesc` and `sortWith`
