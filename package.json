@@ -24,13 +24,15 @@
     "url": "https://github.com/ascartabelli/lamb.git"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=0.11.0"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "version": "0.15.1",
   "devDependencies": {
+    "coveralls": "^2.11.8",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-footer": "^1.0.5",
