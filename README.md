@@ -2,6 +2,12 @@
 
 A lightweight, and docile, JavaScript (ES5) library to help embracing functional programming.
 
+[![NPM version](https://img.shields.io/npm/v/lamb.svg)](https://www.npmjs.com/package/lamb) [![Build Status](https://img.shields.io/travis/ascartabelli/lamb/master.svg)](https://travis-ci.org/ascartabelli/lamb) [![Coveralls Status](https://img.shields.io/coveralls/ascartabelli/lamb/master.svg)](https://coveralls.io/github/ascartabelli/lamb)
+
+## Documentation.
+
+The API documentation is [now online](https://ascartabelli.github.io/lamb/).
+
 ## Installation and basic usage.
 
 Install it with `npm`:
@@ -33,9 +39,17 @@ or
 
 You can find the source map for the minified file in the same folder.
 
-## Documentation.
+Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 
-A first version of the API documentation is [now online](https://ascartabelli.github.io/lamb/).
+```html
+<script src="https://npmcdn.com/lamb/dist/lamb.min.js"></script>
+```
+
+The URL above will retrieve the latest version, but you can target a specific version too:
+
+```html
+<script src="https://npmcdn.com/lamb@0.15.1/dist/lamb.min.js"></script>
+```
 
 ## Semantic Versioning.
 
