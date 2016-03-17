@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.15.1
+ * @version 0.15.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.15.1";
+    lamb._version =  "0.15.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1669,7 +1669,7 @@
 
     /**
      * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
-     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undfined</code>.
+     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var arr = [1, 2, 3, 4, 5];

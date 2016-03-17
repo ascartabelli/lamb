@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.15.1/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.15.2/dist/lamb.min.js"></script>
 ```
 
 ## Semantic Versioning.
@@ -84,6 +84,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.15.2 - *2016/03/17***
+  - **Fully compatible with versions down to 0.15.x**
+  - Added support for Travis CI and Coveralls
+  - Updated README and fixed typo in documentation
 
 - **v0.15.1 - *2016/03/08***
   - **Fully compatible with version 0.15.0**
