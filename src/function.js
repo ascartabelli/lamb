@@ -247,7 +247,7 @@ function flip (fn) {
 
 /**
  * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
- * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undfined</code>.
+ * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var arr = [1, 2, 3, 4, 5];
