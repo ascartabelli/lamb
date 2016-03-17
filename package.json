@@ -30,6 +30,7 @@
     "test": "gulp test",
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
+  "tonicExample": "var _ = require('lamb');",
   "version": "0.15.1",
   "devDependencies": {
     "coveralls": "^2.11.8",
