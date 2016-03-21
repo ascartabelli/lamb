@@ -4,7 +4,6 @@ var _ = lamb;
 
 // some prototype shortcuts for internal use
 var _arrayProto = Array.prototype;
-var _fnProto = Function.prototype;
 var _objectProto = Object.prototype;
 var _reProto = RegExp.prototype;
 
@@ -80,7 +79,7 @@ function compose () {
  * Creates generic functions out of methods.
  * @memberof module:lamb
  * @category Core
- * @author [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+ * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
  * @function
  * @example
  * // Lamb's "filter" is actually implemented like this
@@ -95,7 +94,7 @@ function compose () {
  * @param {Function} method
  * @returns {Function}
  */
-var generic = _fnProto.call.bind(_fnProto.bind, _fnProto.call);
+var generic = Function.bind.bind(Function.call);
 
 /**
  * The I combinator. Any value passed to the function is simply returned as it is.

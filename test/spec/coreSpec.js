@@ -1,6 +1,12 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.core", function () {
+    describe("_version", function () {
+        it("should equal the package.json version", function () {
+            expect(lamb._version).toBe(require("../../package.json").version);
+        });
+    });
+
     describe("always", function () {
         it("should return a function that returns a constant value", function () {
             var o = {a: 1};
@@ -25,6 +31,25 @@ describe("lamb.core", function () {
 
         it("should build a function returning \"undefined\" if no functions are passed", function () {
             expect(lamb.compose()()).toBeUndefined();
+        });
+    });
+
+    describe("generic", function () {
+        it("should create a generic function out of an object method", function () {
+            spyOn(Array.prototype, "map").and.callThrough();
+
+            var fakeContext = {};
+            var double = function (n) {
+                expect(this).toBe(fakeContext);
+                return n * 2;
+            };
+            var numbers = [1, 2, 3, 4, 5];
+            var map = lamb.generic(Array.prototype.map);
+
+            expect(map(numbers, double, fakeContext)).toEqual([2, 4, 6, 8, 10]);
+            expect(Array.prototype.map.calls.count()).toBe(1);
+            expect(Array.prototype.map.calls.first().object).toBe(numbers);
+            expect(Array.prototype.map.calls.argsFor(0)).toEqual([double, fakeContext]);
         });
     });
 
