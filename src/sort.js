@@ -149,8 +149,9 @@ function insert (array, element) {
  * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted copy of an
  * array-like object using the given criteria.<br/>
  * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
- * pass simple "reader" functions and default ascending sorters will be built.<br/>
- * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.
+ * pass simple "reader" functions and default ascending sorters will be built for you.<br/>
+ * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
+ * Please note that if the arguments received by the default comparer aren't of the same type, they will be compared as strings.
  *
  * @example <caption>Stable sort:</caption>
  * var persons = [

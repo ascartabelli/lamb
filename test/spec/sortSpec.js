@@ -210,4 +210,53 @@ describe("lamb.sort", function () {
             expect(lamb.sortWith(localeSorterDesc)(chars)).toEqual(charsDesc);
         });
     });
+
+    describe("sorter / sorterDesc", function () {
+        var myComparer = jasmine.createSpy().and.returnValue("foo");
+        var myReader = jasmine.createSpy().and.callFake(lamb.getKey("a"));
+        var foo = {a: 1};
+        var bar = {a: 2};
+
+        afterEach(function () {
+            myComparer.calls.reset();
+            myReader.calls.reset();
+        });
+
+        it("should build a sorting criterion", function () {
+            var sorterAsc = lamb.sorter();
+            var sorterDesc = lamb.sorterDesc();
+
+            expect(sorterAsc.isDescending).toBe(false);
+            expect(sorterDesc.isDescending).toBe(true);
+            expect(typeof sorterAsc.compare).toBe("function");
+            expect(typeof sorterDesc.compare).toBe("function");
+            expect(sorterAsc.compare.length).toBe(2);
+            expect(sorterDesc.compare.length).toBe(2);
+        });
+
+        it("should use a custom comparer if supplied with one", function () {
+            expect(lamb.sorter(null, myComparer).compare(foo, bar)).toBe("foo");
+        });
+
+        it("should pass values directly to the comparer if there's no reader function or if the reader is the identity function", function () {
+            lamb.sorter(lamb.identity, myComparer).compare(foo, bar);
+            lamb.sorterDesc(null, myComparer).compare(foo, bar);
+
+            expect(myComparer).toHaveBeenCalledTimes(2);
+            expect(myComparer.calls.argsFor(0)[0]).toBe(foo);
+            expect(myComparer.calls.argsFor(0)[1]).toBe(bar);
+            expect(myComparer.calls.argsFor(1)[0]).toBe(foo);
+            expect(myComparer.calls.argsFor(1)[1]).toBe(bar);
+        });
+
+        it("should use a custom resader if supplied with one", function () {
+            lamb.sorter(myReader, myComparer).compare(foo, bar);
+
+            expect(myReader).toHaveBeenCalledTimes(2);
+            expect(myReader.calls.argsFor(0)[0]).toBe(foo);
+            expect(myReader.calls.argsFor(1)[0]).toBe(bar);
+            expect(myComparer).toHaveBeenCalledTimes(1);
+            expect(myComparer).toHaveBeenCalledWith(1, 2);
+        });
+    });
 });

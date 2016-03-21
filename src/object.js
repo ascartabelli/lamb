@@ -330,7 +330,7 @@ var hasOwnKey = _curry(hasOwn, 2, true);
  *     luckyNumbers: [13, 17]
  * });
  *
- * // Any of these statements will fail and possibly
+ * // All of these statements will fail and possibly
  * // throw a TypeError (see the function description)
  * user.name = "Joe";
  * delete user.name;
