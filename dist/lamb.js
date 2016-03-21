@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.15.2
+ * @version 0.15.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,14 +18,13 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.15.2";
+    lamb._version =  "0.15.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
 
     // some prototype shortcuts for internal use
     var _arrayProto = Array.prototype;
-    var _fnProto = Function.prototype;
     var _objectProto = Object.prototype;
     var _reProto = RegExp.prototype;
 
@@ -101,7 +100,7 @@
      * Creates generic functions out of methods.
      * @memberof module:lamb
      * @category Core
-     * @author [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+     * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
      * @function
      * @example
      * // Lamb's "filter" is actually implemented like this
@@ -116,7 +115,7 @@
      * @param {Function} method
      * @returns {Function}
      */
-    var generic = _fnProto.call.bind(_fnProto.bind, _fnProto.call);
+    var generic = Function.bind.bind(Function.call);
 
     /**
      * The I combinator. Any value passed to the function is simply returned as it is.
@@ -1279,8 +1278,9 @@
      * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted copy of an
      * array-like object using the given criteria.<br/>
      * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
-     * pass simple "reader" functions and default ascending sorters will be built.<br/>
-     * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.
+     * pass simple "reader" functions and default ascending sorters will be built for you.<br/>
+     * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
+     * Please note that if the arguments received by the default comparer aren't of the same type, they will be compared as strings.
      *
      * @example <caption>Stable sort:</caption>
      * var persons = [
@@ -2770,7 +2770,7 @@
      *     luckyNumbers: [13, 17]
      * });
      *
-     * // Any of these statements will fail and possibly
+     * // All of these statements will fail and possibly
      * // throw a TypeError (see the function description)
      * user.name = "Joe";
      * delete user.name;

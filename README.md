@@ -85,6 +85,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## <a name="changelog"></a> Changelog
 
+- **v0.15.3 - *2016/03/21***
+  - **Fully compatible with versions down to 0.15.x**
+  - Updated `generic` function and removed unused Function.prototype caching
+  - Added specific tests for `generic`, `sorter` and `sorterDesc`
+  - Minor improvements in documentation
+
 - **v0.15.2 - *2016/03/17***
   - **Fully compatible with versions down to 0.15.x**
   - Added support for Travis CI and Coveralls
