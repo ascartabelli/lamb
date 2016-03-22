@@ -386,6 +386,22 @@ function groupBy (iteratee, iterateeContext) {
 }
 
 /**
+ * Returns a copy of the given array-like object without the last element.
+ * @example
+ * _.init([1, 2, 3, 4]) // => [1, 2, 3]
+ * _.init([1]) // => []
+ * _.init([]) // => []
+ *
+ * @memberOf module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @returns {Array}
+ */
+function init (arrayLike) {
+    return slice(arrayLike, 0, arrayLike.length - 1);
+}
+
+/**
  * Returns an array of every item present in all given arrays.<br/>
  * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
@@ -608,6 +624,21 @@ function shallowFlatten (array) {
 }
 
 /**
+ * Returns a copy of the given array-like object without the first element.
+ * @example
+ * _.tail([1, 2, 3, 4]) // => [2, 3, 4]
+ * _.tail([1]) // => []
+ * _.tail([]) // => []
+ *
+ * @memberOf module:lamb
+ * @category Array
+ * @function
+ * @param {ArrayLike} arrayLike
+ * @returns {Array}
+ */
+var tail = binary(partial(slice, _, 1));
+
+/**
  * Retrieves the first <code>n</code> elements from an array or array-like object.
  * Note that, being this a partial application of {@link module:lamb.slice|slice},
  * <code>n</code> can be a negative number.
@@ -814,6 +845,7 @@ lamb.flatMapWith = flatMapWith;
 lamb.flatten = flatten;
 lamb.group = group;
 lamb.groupBy = groupBy;
+lamb.init = init;
 lamb.intersection = intersection;
 lamb.isIn = isIn;
 lamb.list = list;
@@ -823,6 +855,7 @@ lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
 lamb.shallowFlatten = shallowFlatten;
+lamb.tail = tail;
 lamb.take = take;
 lamb.takeN = takeN;
 lamb.takeWhile = takeWhile;

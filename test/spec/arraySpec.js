@@ -304,6 +304,25 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("init", function () {
+        it("should throw an exception if no arguments are supplied", function () {
+            expect(lamb.init).toThrow();
+        });
+
+        it("should return a copy of the given array-like object without the last element", function () {
+            var arr = [1, 2, 3, 4, 5];
+
+            expect(lamb.init(arr)).toEqual([1, 2, 3, 4]);
+            expect(arr.length).toBe(5);
+            expect(lamb.init("hello")).toEqual(["h", "e", "l", "l"]);
+        });
+
+        it("should return an empty array when called with an empty array or an array holding only one element", function () {
+            expect(lamb.init([1])).toEqual([]);
+            expect(lamb.init([])).toEqual([]);
+        });
+    });
+
     describe("intersection", function () {
         it("should throw an exception if no arguments are supplied", function () {
             expect(lamb.intersection).toThrow();
@@ -446,6 +465,25 @@ describe("lamb.array", function () {
             var input = ["a", "b", {"c" : ["d"]}];
 
             expect(lamb.shallowFlatten(input)).toEqual(input);
+        });
+    });
+
+    describe("tail", function () {
+        it("should throw an exception if no arguments are supplied", function () {
+            expect(lamb.tail).toThrow();
+        });
+
+        it("should return a copy of the given array-like object without the first element", function () {
+            var arr = [1, 2, 3, 4, 5];
+
+            expect(lamb.tail(arr)).toEqual([2, 3, 4, 5]);
+            expect(arr.length).toBe(5);
+            expect(lamb.tail("hello")).toEqual(["e", "l", "l", "o"]);
+        });
+
+        it("should return an empty array when called with an empty array or an array holding only one element", function () {
+            expect(lamb.tail([1])).toEqual([]);
+            expect(lamb.tail([])).toEqual([]);
         });
     });
 
