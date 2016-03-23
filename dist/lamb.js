@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.15.3
+ * @version 0.16.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.15.3";
+    lamb._version =  "0.16.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -374,6 +374,9 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.dropN|dropN}
+     * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {ArrayLike} arrayLike
      * @param {Number} n
      * @returns {Array}
@@ -392,6 +395,9 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.drop|drop}
+     * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
@@ -408,6 +414,9 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.takeWhile|takeWhile}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+     * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -567,6 +576,35 @@
     }
 
     /**
+     * Retrieves the element at the given index in an array-like object.<br/>
+     * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
+     * If the index isn't supplied, or if its value it's out of the array-like bounds,
+     * the function will return <code>undefined</code>.
+     * @example
+     * var getFifthElement = _.getAt(4);
+     *
+     * getFifthElement([1, 2, 3, 4, 5]) // => 5
+     * getFifthElement("foo bar") // => "b"
+     * getFifthElement([]) // => undefined
+     * getFifthElement("foo") // => undefined
+     *
+     * @example <caption>Using negative indexes</caption>
+     * _.getAt(-2)([1, 2, 3]) // => 2
+     * _.getAt(-3)("foo") // => "f"
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+     * @param {Number} index
+     * @returns {Function}
+     */
+    function getAt (index) {
+        return function (arrayLike) {
+            return arrayLike[index < 0 ? index + arrayLike.length : index];
+        };
+    }
+
+    /**
      * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
      * criterion to generate keys and values.
      * @example
@@ -681,6 +719,40 @@
     }
 
     /**
+     * Retrieves the first element of an array-like object.<br/>
+     * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+     * @example
+     * _.head([1, 2, 3]) // => 1
+     * _.head("hello") // => "h"
+     * _.head([]) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.last|last}
+     * @param {ArrayLike} arrayLike
+     * @returns {*}
+     */
+    var head = getAt(0);
+
+    /**
+     * Returns a copy of the given array-like object without the last element.
+     * @example
+     * _.init([1, 2, 3, 4]) // => [1, 2, 3]
+     * _.init([1]) // => []
+     * _.init([]) // => []
+     *
+     * @memberOf module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.tail|tail}
+     * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+     * @param {ArrayLike} arrayLike
+     * @returns {Array}
+     */
+    var init = partial(slice, _, 0, -1);
+
+    /**
      * Returns an array of every item present in all given arrays.<br/>
      * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
@@ -736,6 +808,23 @@
 
         return result;
     }
+
+    /**
+     * Retrieves the last element of an array-like object.<br/>
+     * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+     * @example
+     * _.last([1, 2, 3]) // => 3
+     * _.last("hello") // => "o"
+     * _.last([]) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.head|head}
+     * @param {ArrayLike} arrayLike
+     * @returns {*}
+     */
+    var last = getAt(-1);
 
     /**
      * Generates an array with the values passed as arguments.
@@ -903,6 +992,23 @@
     }
 
     /**
+     * Returns a copy of the given array-like object without the first element.
+     * @example
+     * _.tail([1, 2, 3, 4]) // => [2, 3, 4]
+     * _.tail([1]) // => []
+     * _.tail([]) // => []
+     *
+     * @memberOf module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.init|init}
+     * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+     * @param {ArrayLike} arrayLike
+     * @returns {Array}
+     */
+    var tail = partial(slice, _, 1, void 0);
+
+    /**
      * Retrieves the first <code>n</code> elements from an array or array-like object.
      * Note that, being this a partial application of {@link module:lamb.slice|slice},
      * <code>n</code> can be a negative number.
@@ -916,6 +1022,9 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.takeN|takeN}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {ArrayLike} arrayLike
      * @param {Number} n
      * @returns {Array}
@@ -934,6 +1043,9 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.take|take}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
@@ -950,6 +1062,9 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @param {ListIteratorCallback} predicate
      * @param {Object} predicateContext
      * @returns {Function}
@@ -1107,10 +1222,14 @@
     lamb.flatMap = flatMap;
     lamb.flatMapWith = flatMapWith;
     lamb.flatten = flatten;
+    lamb.getAt = getAt;
     lamb.group = group;
     lamb.groupBy = groupBy;
+    lamb.head = head;
+    lamb.init = init;
     lamb.intersection = intersection;
     lamb.isIn = isIn;
+    lamb.last = last;
     lamb.list = list;
     lamb.mapWith = mapWith;
     lamb.partition = partition;
@@ -1118,6 +1237,7 @@
     lamb.pluck = pluck;
     lamb.pluckKey = pluckKey;
     lamb.shallowFlatten = shallowFlatten;
+    lamb.tail = tail;
     lamb.take = take;
     lamb.takeN = takeN;
     lamb.takeWhile = takeWhile;
@@ -1256,10 +1376,8 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @see {@link module:lamb.sort|sort}
-     * @see {@link module:lamb.sorter|sorter}
-     * @see {@link module:lamb.sorterDesc|sorterDesc}
-     * @see {@link module:lamb.sortWith|sortWith}
+     * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
+     * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
      * @param {Array} array
      * @param {*} element
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
@@ -1327,6 +1445,8 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.sortWith|sortWith}
+     * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
      * @param {ArrayLike} arrayLike
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
      * @returns {Array}
@@ -1361,9 +1481,8 @@
      * @category Array
      * @function
      * @see {@link module:lamb.insert|insert}
-     * @see {@link module:lamb.sort|sort}
+     * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorterDesc|sorterDesc}
-     * @see {@link module:lamb.sortWith|sortWith}
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
@@ -1378,9 +1497,8 @@
      * @category Array
      * @function
      * @see {@link module:lamb.insert|insert}
-     * @see {@link module:lamb.sort|sort}
+     * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}
-     * @see {@link module:lamb.sortWith|sortWith}
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
@@ -1403,6 +1521,8 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.sort|sort}
+     * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
      * @returns {Function}
      */
