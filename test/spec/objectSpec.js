@@ -64,7 +64,7 @@ describe("lamb.object", function () {
         });
 
         it("should return undefined for a unknown property in an existent object", function () {
-            expect(lamb.getWithPath(obj, "b.a.z")).not.toBeDefined();
+            expect(lamb.getWithPath(obj, "b.a.z")).toBeUndefined();
         });
 
         it("should throw an error if a non existent object is requested in the path", function () {
@@ -240,7 +240,7 @@ describe("lamb.object", function () {
                 var newObj = lamb.merge(foo, bar);
 
                 expect(newObj).toEqual({a: 1, b: 2, c: 3, d: 4});
-                expect(newObj.z).not.toBeDefined();
+                expect(newObj.z).toBeUndefined();
             });
 
             it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
@@ -253,9 +253,9 @@ describe("lamb.object", function () {
                 var newObj = lamb.mergeOwn(foo, bar);
 
                 expect(newObj).toEqual({c: 3, d: 4});
-                expect(newObj.a).not.toBeDefined();
-                expect(newObj.b).not.toBeDefined();
-                expect(newObj.z).not.toBeDefined();
+                expect(newObj.a).toBeUndefined();
+                expect(newObj.b).toBeUndefined();
+                expect(newObj.z).toBeUndefined();
             });
 
             it("should handle key homonymy by giving to each source precedence over the previous ones", function (){

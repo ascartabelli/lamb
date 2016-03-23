@@ -127,7 +127,7 @@ describe("lamb.array", function () {
             });
 
             it("should return `undefined` if there is no element satisfying the predicate", function () {
-                expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBe(void 0);
+                expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
             });
         });
 
@@ -241,6 +241,51 @@ describe("lamb.array", function () {
             var input = [["a", ["b", [{"c" : ["d"]}]]]];
 
             expect(lamb.flatten(input)).toEqual(["a", "b", {"c" : ["d"]}]);
+        });
+    });
+
+    describe("getAt / head / last", function () {
+        var arr = [1, 2, 3, 4];
+        var s = "abcd";
+
+        it("should retrieve the element at the given index in an array-like object", function () {
+            var getThird = lamb.getAt(2);
+
+            expect(getThird(arr)).toBe(3);
+            expect(getThird(s)).toBe("c");
+            expect(lamb.head(arr)).toBe(1);
+            expect(lamb.head(s)).toBe("a");
+            expect(lamb.last(arr)).toBe(4);
+            expect(lamb.last(s)).toBe("d");
+        });
+
+        it("should allow negative indexes", function () {
+            expect(lamb.getAt(-2)(arr)).toBe(3);
+            expect(lamb.getAt(-2)(s)).toBe("c");
+        });
+
+        it("should throw an error in no array-like object is supplied", function () {
+            expect(lamb.getAt(2)).toThrow();
+            expect(lamb.head).toThrow();
+            expect(lamb.last).toThrow();
+        });
+
+        it("should return undefined if no index is supplied or if the index is out of bound", function () {
+            expect(lamb.getAt()(arr)).toBeUndefined();
+            expect(lamb.getAt(-6)(arr)).toBeUndefined();
+            expect(lamb.getAt(66)(arr)).toBeUndefined();
+            expect(lamb.getAt(NaN)(arr)).toBeUndefined();
+            expect(lamb.getAt(null)(arr)).toBeUndefined();
+            expect(lamb.getAt(void 0)(arr)).toBeUndefined();
+            expect(lamb.getAt({})(arr)).toBeUndefined();
+            expect(lamb.getAt("a")(arr)).toBeUndefined();
+            expect(lamb.head([])).toBeUndefined();
+            expect(lamb.last([])).toBeUndefined();
+        });
+
+        it("should not tell anyone, but strings holding numbers are accepted as indexes", function () {
+            expect(lamb.getAt("1")(arr)).toBe(2);
+            expect(lamb.getAt("2")(s)).toBe("c");
         });
     });
 
@@ -478,7 +523,7 @@ describe("lamb.array", function () {
 
             expect(lamb.tail(arr)).toEqual([2, 3, 4, 5]);
             expect(arr.length).toBe(5);
-            expect(lamb.tail("hello")).toEqual(["e", "l", "l", "o"]);
+            expect(lamb.tail("shell")).toEqual(["h", "e", "l", "l"]);
         });
 
         it("should return an empty array when called with an empty array or an array holding only one element", function () {

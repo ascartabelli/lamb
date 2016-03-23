@@ -208,7 +208,7 @@ describe("lamb.function", function () {
 
             expect(callOnSomeString("slice", 1, 3)).toBe("oo");
             expect(callOnSomeString("toUpperCase")).toBe("FOO BAR");
-            expect(callOnSomeString("foo")).toBe(void 0);
+            expect(callOnSomeString("foo")).toBeUndefined();
         });
     });
 
@@ -224,7 +224,7 @@ describe("lamb.function", function () {
             expect(someArray.slice.calls.count()).toBe(1);
             expect(someArray.slice.calls.first().object).toBe(someArray);
             expect(slice(someString, 1, 3)).toBe("oo");
-            expect(slice(1)).toBe(void 0);
+            expect(slice(1)).toBeUndefined();
         });
     });
 

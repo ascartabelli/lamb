@@ -127,10 +127,8 @@ function _sorter (reader, isDescending, comparer) {
  *
  * @memberof module:lamb
  * @category Array
- * @see {@link module:lamb.sort|sort}
- * @see {@link module:lamb.sorter|sorter}
- * @see {@link module:lamb.sorterDesc|sorterDesc}
- * @see {@link module:lamb.sortWith|sortWith}
+ * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
+ * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @param {Array} array
  * @param {*} element
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
@@ -198,6 +196,8 @@ function insert (array, element) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.sortWith|sortWith}
+ * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @param {ArrayLike} arrayLike
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
  * @returns {Array}
@@ -232,9 +232,8 @@ function sort (arrayLike) {
  * @category Array
  * @function
  * @see {@link module:lamb.insert|insert}
- * @see {@link module:lamb.sort|sort}
+ * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorterDesc|sorterDesc}
- * @see {@link module:lamb.sortWith|sortWith}
  * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
@@ -249,9 +248,8 @@ var sorter = partial(_sorter, _, false, _);
  * @category Array
  * @function
  * @see {@link module:lamb.insert|insert}
- * @see {@link module:lamb.sort|sort}
+ * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}
- * @see {@link module:lamb.sortWith|sortWith}
  * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
@@ -274,6 +272,8 @@ var sorterDesc = partial(_sorter, _, true, _);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.sort|sort}
+ * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
  * @returns {Function}
  */

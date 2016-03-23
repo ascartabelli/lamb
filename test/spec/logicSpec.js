@@ -16,7 +16,7 @@ describe("lamb.logic", function () {
 
             expect(filterAdapter([1, 2, 3, 4, 5, 6], isEven)).toEqual([2, 4, 6]);
             expect(filterAdapter("123456", isEven)).toBe("246");
-            expect(filterAdapter({}, isEven)).toBe(void 0);
+            expect(filterAdapter({}, isEven)).toBeUndefined();
 
             var filterWithDefault = lamb.adapter(filterAdapter, lamb.always("Not implemented"));
             expect(filterWithDefault([1, 2, 3, 4, 5, 6], isEven)).toEqual([2, 4, 6]);
@@ -57,7 +57,7 @@ describe("lamb.logic", function () {
 
             expect(halveIfGreaterThan5(3)).toBe(3);
             expect(halveIfGreaterThan5(10)).toBe(5);
-            expect(lamb.condition(isGreaterThan5, halve)(3)).toBe(void 0);
+            expect(lamb.condition(isGreaterThan5, halve)(3)).toBeUndefined();
         });
     });
 

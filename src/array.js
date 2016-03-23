@@ -79,6 +79,9 @@ function difference (array) {
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
@@ -97,6 +100,9 @@ var drop = binary(slice);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.drop|drop}
+ * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
@@ -113,6 +119,9 @@ var dropN = _curry(drop, 2, true);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.takeWhile|takeWhile}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
  * @param {ListIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -272,6 +281,35 @@ function flatten (array) {
 }
 
 /**
+ * Retrieves the element at the given index in an array-like object.<br/>
+ * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
+ * If the index isn't supplied, or if its value it's out of the array-like bounds,
+ * the function will return <code>undefined</code>.
+ * @example
+ * var getFifthElement = _.getAt(4);
+ *
+ * getFifthElement([1, 2, 3, 4, 5]) // => 5
+ * getFifthElement("foo bar") // => "b"
+ * getFifthElement([]) // => undefined
+ * getFifthElement("foo") // => undefined
+ *
+ * @example <caption>Using negative indexes</caption>
+ * _.getAt(-2)([1, 2, 3]) // => 2
+ * _.getAt(-3)("foo") // => "f"
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+ * @param {Number} index
+ * @returns {Function}
+ */
+function getAt (index) {
+    return function (arrayLike) {
+        return arrayLike[index < 0 ? index + arrayLike.length : index];
+    };
+}
+
+/**
  * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
  * criterion to generate keys and values.
  * @example
@@ -386,6 +424,23 @@ function groupBy (iteratee, iterateeContext) {
 }
 
 /**
+ * Retrieves the first element of an array-like object.<br/>
+ * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+ * @example
+ * _.head([1, 2, 3]) // => 1
+ * _.head("hello") // => "h"
+ * _.head([]) // => undefined
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.last|last}
+ * @param {ArrayLike} arrayLike
+ * @returns {*}
+ */
+var head = getAt(0);
+
+/**
  * Returns a copy of the given array-like object without the last element.
  * @example
  * _.init([1, 2, 3, 4]) // => [1, 2, 3]
@@ -394,12 +449,13 @@ function groupBy (iteratee, iterateeContext) {
  *
  * @memberOf module:lamb
  * @category Array
+ * @function
+ * @see {@link module:lamb.tail|tail}
+ * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
-function init (arrayLike) {
-    return slice(arrayLike, 0, arrayLike.length - 1);
-}
+var init = partial(slice, _, 0, -1);
 
 /**
  * Returns an array of every item present in all given arrays.<br/>
@@ -457,6 +513,23 @@ function isIn (arrayLike, value, fromIndex) {
 
     return result;
 }
+
+/**
+ * Retrieves the last element of an array-like object.<br/>
+ * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+ * @example
+ * _.last([1, 2, 3]) // => 3
+ * _.last("hello") // => "o"
+ * _.last([]) // => undefined
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.head|head}
+ * @param {ArrayLike} arrayLike
+ * @returns {*}
+ */
+var last = getAt(-1);
 
 /**
  * Generates an array with the values passed as arguments.
@@ -633,10 +706,12 @@ function shallowFlatten (array) {
  * @memberOf module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.init|init}
+ * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
-var tail = binary(partial(slice, _, 1));
+var tail = partial(slice, _, 1, void 0);
 
 /**
  * Retrieves the first <code>n</code> elements from an array or array-like object.
@@ -652,6 +727,9 @@ var tail = binary(partial(slice, _, 1));
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
@@ -670,6 +748,9 @@ var take = partial(slice, _, 0, _);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.take|take}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
@@ -686,6 +767,9 @@ var takeN = _curry(take, 2, true);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.dropWhile|dropWhile}
+ * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @param {ListIteratorCallback} predicate
  * @param {Object} predicateContext
  * @returns {Function}
@@ -843,11 +927,14 @@ lamb.findIndex = findIndex;
 lamb.flatMap = flatMap;
 lamb.flatMapWith = flatMapWith;
 lamb.flatten = flatten;
+lamb.getAt = getAt;
 lamb.group = group;
 lamb.groupBy = groupBy;
+lamb.head = head;
 lamb.init = init;
 lamb.intersection = intersection;
 lamb.isIn = isIn;
+lamb.last = last;
 lamb.list = list;
 lamb.mapWith = mapWith;
 lamb.partition = partition;
