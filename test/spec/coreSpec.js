@@ -49,7 +49,8 @@ describe("lamb.core", function () {
             expect(map(numbers, double, fakeContext)).toEqual([2, 4, 6, 8, 10]);
             expect(Array.prototype.map.calls.count()).toBe(1);
             expect(Array.prototype.map.calls.first().object).toBe(numbers);
-            expect(Array.prototype.map.calls.argsFor(0)).toEqual([double, fakeContext]);
+            expect(Array.prototype.map.calls.argsFor(0)[0]).toBe(double);
+            expect(Array.prototype.map.calls.argsFor(0)[1]).toBe(fakeContext);
         });
     });
 

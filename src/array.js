@@ -368,7 +368,7 @@ function getAt (index) {
  * @returns {Object}
  */
 function group (arrayLike, iteratee, iterateeContext) {
-   var result = {};
+    var result = {};
     var len = arrayLike.length;
 
     for (var i = 0, element; i < len; i++) {

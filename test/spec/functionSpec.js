@@ -188,6 +188,24 @@ describe("lamb.function", function () {
         });
     });
 
+    describe("getArgAt", function () {
+        it("should build a function that returns the argument received at the given index", function () {
+            expect(lamb.getArgAt(1)("a", "b", "c")).toBe("b");
+        });
+
+        it("should allow negative indexes", function () {
+            expect(lamb.getArgAt(-1)("a", "b", "c")).toBe("c");
+            expect(lamb.getArgAt(-2)("a", "b", "c")).toBe("b");
+        });
+
+        it("should return undefined if no arguments are passed or if the index is out of bound", function () {
+            expect(lamb.getArgAt()("a", "b", "c")).toBeUndefined();
+            expect(lamb.getArgAt(6)("a", "b", "c")).toBeUndefined();
+            expect(lamb.getArgAt(-4)("a", "b", "c")).toBeUndefined();
+            expect(lamb.getArgAt(2)()).toBeUndefined();
+        });
+    });
+
     describe("invokerOn", function () {
         it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
             var someArray = [1, 2, 3, 4, 5];
@@ -315,10 +333,10 @@ describe("lamb.function", function () {
     describe("wrap", function () {
         var add = function (a, b) {return a + b;};
         var square = function (n) {return n * n;};
-        var wrapper = function (add, a, b) {
-            return add(square(a), square(b));
+        var wrapper = function (fn, a, b) {
+            return fn(square(a), square(b));
         };
-        var wrapperSpy = jasmine.createSpy("wrapper").and.callFake(wrapper);
+        var wrapperSpy = jasmine.createSpy().and.callFake(wrapper);
         var addSquares = lamb.wrap(add, wrapperSpy);
 
         it("should allow to wrap a function with another one", function () {

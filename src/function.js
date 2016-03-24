@@ -246,6 +246,31 @@ function flip (fn) {
 }
 
 /**
+ * Builds a function that returns the argument received at the given index.<br/>
+ * As with {@link module:lamb.getAt|getAt} negative indexes are allowed.<br/>
+ * The resulting function will return <code>undefined</code> if no arguments are
+ * passed or if the index is out of bounds.
+ * @example
+ * var getFirstArg = getArgAt(0);
+ * var getLastArg = getArgAt(-1);
+ *
+ * getFirstArg(1, 2, 3) // => 1
+ * getLastArg(1, 2, 3) // => 3
+ *
+ * getArgAt()(1, 2, 3) // => undefined
+ * getArgAt(6)(1, 2, 3) // => undefined
+ * getArgAt(1)() // => undefined
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @param {Number} index
+ * @returns {Function}
+ */
+function getArgAt (index) {
+    return compose(getAt(index), list);
+}
+
+/**
  * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
  * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
  * @example
@@ -468,6 +493,7 @@ lamb.curryable = curryable;
 lamb.curryableRight = curryableRight;
 lamb.debounce = debounce;
 lamb.flip = flip;
+lamb.getArgAt = getArgAt;
 lamb.invokerOn = invokerOn;
 lamb.invoker = invoker;
 lamb.mapArgs = mapArgs;
