@@ -198,11 +198,17 @@ describe("lamb.function", function () {
             expect(lamb.getArgAt(-2)("a", "b", "c")).toBe("b");
         });
 
-        it("should return undefined if no arguments are passed or if the index is out of bound", function () {
-            expect(lamb.getArgAt()("a", "b", "c")).toBeUndefined();
+        it("should return undefined if no arguments are passed or if the index is out of bounds", function () {
             expect(lamb.getArgAt(6)("a", "b", "c")).toBeUndefined();
             expect(lamb.getArgAt(-4)("a", "b", "c")).toBeUndefined();
             expect(lamb.getArgAt(2)()).toBeUndefined();
+        });
+
+        it("should return undefined if the index isn't an integer", function () {
+            [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
+                expect(lamb.getArgAt(v)("a", "b", "c")).toBeUndefined();
+            });
+            expect(lamb.getArgAt()("a", "b", "c")).toBeUndefined();
         });
     });
 

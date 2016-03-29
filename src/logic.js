@@ -61,6 +61,7 @@ function adapter () {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.anyOf|anyOf}
  * @param {...Function} predicate
  * @returns {Function}
  */
@@ -91,6 +92,7 @@ function allOf () {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.allOf|allOf}
  * @param {...Function} predicate
  * @returns {Function}
  */

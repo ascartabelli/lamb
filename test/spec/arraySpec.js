@@ -270,22 +270,14 @@ describe("lamb.array", function () {
             expect(lamb.last).toThrow();
         });
 
-        it("should return undefined if no index is supplied or if the index is out of bound", function () {
+        it("should return undefined when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
+            [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
+                expect(lamb.getAt(v)(arr)).toBeUndefined();
+            });
+
             expect(lamb.getAt()(arr)).toBeUndefined();
-            expect(lamb.getAt(-6)(arr)).toBeUndefined();
-            expect(lamb.getAt(66)(arr)).toBeUndefined();
-            expect(lamb.getAt(NaN)(arr)).toBeUndefined();
-            expect(lamb.getAt(null)(arr)).toBeUndefined();
-            expect(lamb.getAt(void 0)(arr)).toBeUndefined();
-            expect(lamb.getAt({})(arr)).toBeUndefined();
-            expect(lamb.getAt("a")(arr)).toBeUndefined();
             expect(lamb.head([])).toBeUndefined();
             expect(lamb.last([])).toBeUndefined();
-        });
-
-        it("should not tell anyone, but strings holding numbers are accepted as indexes", function () {
-            expect(lamb.getAt("1")(arr)).toBe(2);
-            expect(lamb.getAt("2")(s)).toBe("c");
         });
     });
 
@@ -494,6 +486,69 @@ describe("lamb.array", function () {
 
             expect(lamb.pluck(lists, "length")).toEqual([2, 3, 1]);
             expect(lamb.pluckKey("length")(lists)).toEqual([2, 3, 1]);
+        });
+    });
+
+    describe("setAt", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var s = "hello";
+
+        it("should allow to set a value in a copy of the given array-like object", function () {
+            var newArr = lamb.setAt(2, 99)(arr);
+            var newArr2 = lamb.setAt(4, 99)(arr);
+            var newS = lamb.setAt(0, "c")(s);
+
+            expect(newArr).toEqual([1, 2, 99, 4, 5]);
+            expect(newArr2).toEqual([1, 2, 3, 4, 99]);
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+            expect(newS).toEqual(["c", "e", "l", "l", "o"]);
+        });
+
+        it("should allow negative indexes", function () {
+            var newArr = lamb.setAt(-1, 99)(arr);
+            var newArr2 = lamb.setAt(-5, 99)(arr);
+
+            expect(newArr).toEqual([1, 2, 3, 4, 99]);
+            expect(newArr2).toEqual([99, 2, 3, 4, 5]);
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should return an array copy of the array-like if the index is not an integer", function () {
+            [
+                lamb.setAt(NaN, 99)(arr),
+                lamb.setAt(null, 99)(arr),
+                lamb.setAt(void 0, 99)(arr),
+                lamb.setAt({}, 99)(arr),
+                lamb.setAt([], 99)(arr),
+                lamb.setAt([2], 99)(arr),
+                lamb.setAt("a", 99)(arr),
+                lamb.setAt("2", 99)(arr),
+                lamb.setAt("2.5", 99)(arr),
+                lamb.setAt(2.5, 99)(arr)
+            ].forEach(function (value) {
+                expect(value).toEqual(arr);
+                expect(value).not.toBe(arr);
+            });
+
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should return an array copy of the array-like if the index is out of bounds", function () {
+            var newArr = lamb.setAt(5, 99)(arr);
+            var newArr2 = lamb.setAt(-6, 99)(arr);
+            var newS = lamb.setAt(10, 99)(s);
+
+            expect(newArr).toEqual([1, 2, 3, 4, 5]);
+            expect(newArr2).toEqual([1, 2, 3, 4, 5]);
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+            expect(newArr).not.toBe(arr);
+            expect(newArr2).not.toBe(arr);
+            expect(newS).toEqual(["h", "e", "l", "l", "o"]);
+        });
+
+        it("should throw an exception if no array-object is supplied", function () {
+            var fn = lamb.setAt(0, 99);
+            expect(fn).toThrow();
         });
     });
 

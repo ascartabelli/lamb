@@ -283,7 +283,7 @@ function flatten (array) {
 /**
  * Retrieves the element at the given index in an array-like object.<br/>
  * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
- * If the index isn't supplied, or if its value it's out of the array-like bounds,
+ * If the index isn't supplied, or if its value isn't an integer within the array-like bounds,
  * the function will return <code>undefined</code>.
  * @example
  * var getFifthElement = _.getAt(4);
@@ -305,7 +305,7 @@ function flatten (array) {
  */
 function getAt (index) {
     return function (arrayLike) {
-        return arrayLike[index < 0 ? index + arrayLike.length : index];
+        return Math.floor(index) === index ? arrayLike[index < 0 ? index + arrayLike.length : index] : void 0;
     };
 }
 
@@ -504,7 +504,7 @@ function intersection () {
 function isIn (arrayLike, value, fromIndex) {
     var result = false;
 
-    for (var i = fromIndex | 0, len = arrayLike.length; i < len; i++) {
+    for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
         if (isSVZ(value, arrayLike[i])) {
             result = true;
             break;
@@ -575,6 +575,7 @@ function mapWith (iteratee, iterateeContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.partitionWith|partitionWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @param {Object} [predicateContext]
@@ -616,6 +617,7 @@ function partition (arrayLike, predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.partition|partition}
  * @param {ListIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -646,6 +648,7 @@ function partitionWith (predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.pluckKey|pluckKey}
  * @param {ArrayLike} arrayLike
  * @param {String} key
  * @returns {Array}
@@ -670,12 +673,49 @@ function pluck (arrayLike, key) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.pluck|pluck}
  * @function
  * @param {String} key
  * @returns {Function}
  */
 function pluckKey (key) {
     return mapWith(getKey(key));
+}
+
+/**
+ * Builds a function that creates a copy of an array-like object with the given
+ * index changed to the provided value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function
+ * will return a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.setAt(2, 99)(arr) // => [1, 2, 99, 4, 5]
+ * arr // => [1, 2, 3, 4, 5]
+ *
+ * _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)
+ *
+ * @example <caption>Using negative indexes</caption>
+ * _.setAt(-1, 99)(arr) // => [1, 2, 3, 4, 99]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {Number} index
+ * @param {*} value
+ * @returns {Function}
+ */
+function setAt (index, value) {
+    return function (arrayLike) {
+        var result = slice(arrayLike);
+        var len = arrayLike.length;
+
+        if (clamp(index, -len, len - 1) === Math.floor(index)) {
+            result[index + (index < 0 ? len : 0)] = value;
+        }
+
+        return result;
+    };
 }
 
 /**
@@ -808,7 +848,7 @@ function takeWhile (predicate, predicateContext) {
  */
 function transpose (arrayLike) {
     var result = [];
-    var minLen = apply(Math.min, pluck(arrayLike, "length")) | 0;
+    var minLen = apply(Math.min, pluck(arrayLike, "length")) >>> 0;
     var len = arrayLike.length;
 
     for (var i = 0, j; i < minLen; i++) {
@@ -941,6 +981,7 @@ lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
+lamb.setAt = setAt;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;
 lamb.take = take;

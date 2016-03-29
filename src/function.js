@@ -16,7 +16,7 @@ function _curry (fn, arity, isRightCurry, isAutoCurry) {
         return a.length ? [a[0]] : [];
     };
 
-    if ((arity | 0) !== arity) {
+    if ((arity >>> 0) !== arity) {
         arity = fn.length;
     }
 

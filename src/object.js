@@ -480,6 +480,7 @@ var pairs = _pairsFrom(enumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.pickIf|pickIf}
  * @param {Object} source
  * @param {String[]} whitelist
  * @returns {Object}
@@ -507,6 +508,7 @@ function pick (source, whitelist) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.pick|pick}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -535,6 +537,7 @@ function pickIf (predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.skipIf|skipIf}
  * @param {Object} source
  * @param {String[]} blacklist
  * @returns {Object}
@@ -562,6 +565,7 @@ function skip (source, blacklist) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.skip|skip}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
