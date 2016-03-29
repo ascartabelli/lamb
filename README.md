@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.16.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.17.0/dist/lamb.min.js"></script>
 ```
 
 ## Semantic Versioning.
@@ -84,6 +84,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.17.0 - *2016/03/29***
+  - **Minor API change (shouldn't affect anyone):** changed integer conversions in `isIn`, `transpose` and currying functions
+  - **API change**: `getAt` no longer accepts strings as indexes
+  - Added `getArgAt` and  `setAt`
 
 - **v0.16.0 - *2016/03/23***
   - **Fully compatible with versions down to 0.15.x**

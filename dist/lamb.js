@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.16.0
+ * @version 0.17.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.16.0";
+    lamb._version =  "0.17.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -578,7 +578,7 @@
     /**
      * Retrieves the element at the given index in an array-like object.<br/>
      * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
-     * If the index isn't supplied, or if its value it's out of the array-like bounds,
+     * If the index isn't supplied, or if its value isn't an integer within the array-like bounds,
      * the function will return <code>undefined</code>.
      * @example
      * var getFifthElement = _.getAt(4);
@@ -600,7 +600,7 @@
      */
     function getAt (index) {
         return function (arrayLike) {
-            return arrayLike[index < 0 ? index + arrayLike.length : index];
+            return Math.floor(index) === index ? arrayLike[index < 0 ? index + arrayLike.length : index] : void 0;
         };
     }
 
@@ -663,7 +663,7 @@
      * @returns {Object}
      */
     function group (arrayLike, iteratee, iterateeContext) {
-       var result = {};
+        var result = {};
         var len = arrayLike.length;
 
         for (var i = 0, element; i < len; i++) {
@@ -799,7 +799,7 @@
     function isIn (arrayLike, value, fromIndex) {
         var result = false;
 
-        for (var i = fromIndex | 0, len = arrayLike.length; i < len; i++) {
+        for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
             if (isSVZ(value, arrayLike[i])) {
                 result = true;
                 break;
@@ -870,6 +870,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.partitionWith|partitionWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
@@ -911,6 +912,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.partition|partition}
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -941,6 +943,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.pluckKey|pluckKey}
      * @param {ArrayLike} arrayLike
      * @param {String} key
      * @returns {Array}
@@ -965,12 +968,49 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.pluck|pluck}
      * @function
      * @param {String} key
      * @returns {Function}
      */
     function pluckKey (key) {
         return mapWith(getKey(key));
+    }
+
+    /**
+     * Builds a function that creates a copy of an array-like object with the given
+     * index changed to the provided value.<br/>
+     * If the index is not an integer or if it's out of bounds, the function
+     * will return a copy of the original array.<br/>
+     * Negative indexes are allowed.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.setAt(2, 99)(arr) // => [1, 2, 99, 4, 5]
+     * arr // => [1, 2, 3, 4, 5]
+     *
+     * _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)
+     *
+     * @example <caption>Using negative indexes</caption>
+     * _.setAt(-1, 99)(arr) // => [1, 2, 3, 4, 99]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {Number} index
+     * @param {*} value
+     * @returns {Function}
+     */
+    function setAt (index, value) {
+        return function (arrayLike) {
+            var result = slice(arrayLike);
+            var len = arrayLike.length;
+
+            if (clamp(index, -len, len - 1) === Math.floor(index)) {
+                result[index + (index < 0 ? len : 0)] = value;
+            }
+
+            return result;
+        };
     }
 
     /**
@@ -1103,7 +1143,7 @@
      */
     function transpose (arrayLike) {
         var result = [];
-        var minLen = apply(Math.min, pluck(arrayLike, "length")) | 0;
+        var minLen = apply(Math.min, pluck(arrayLike, "length")) >>> 0;
         var len = arrayLike.length;
 
         for (var i = 0, j; i < minLen; i++) {
@@ -1236,6 +1276,7 @@
     lamb.partitionWith = partitionWith;
     lamb.pluck = pluck;
     lamb.pluckKey = pluckKey;
+    lamb.setAt = setAt;
     lamb.shallowFlatten = shallowFlatten;
     lamb.tail = tail;
     lamb.take = take;
@@ -1558,7 +1599,7 @@
             return a.length ? [a[0]] : [];
         };
 
-        if ((arity | 0) !== arity) {
+        if ((arity >>> 0) !== arity) {
             arity = fn.length;
         }
 
@@ -1788,6 +1829,31 @@
     }
 
     /**
+     * Builds a function that returns the argument received at the given index.<br/>
+     * As with {@link module:lamb.getAt|getAt} negative indexes are allowed.<br/>
+     * The resulting function will return <code>undefined</code> if no arguments are
+     * passed or if the index is out of bounds.
+     * @example
+     * var getFirstArg = getArgAt(0);
+     * var getLastArg = getArgAt(-1);
+     *
+     * getFirstArg(1, 2, 3) // => 1
+     * getLastArg(1, 2, 3) // => 3
+     *
+     * getArgAt()(1, 2, 3) // => undefined
+     * getArgAt(6)(1, 2, 3) // => undefined
+     * getArgAt(1)() // => undefined
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {Number} index
+     * @returns {Function}
+     */
+    function getArgAt (index) {
+        return compose(getAt(index), list);
+    }
+
+    /**
      * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
      * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
      * @example
@@ -2010,6 +2076,7 @@
     lamb.curryableRight = curryableRight;
     lamb.debounce = debounce;
     lamb.flip = flip;
+    lamb.getArgAt = getArgAt;
     lamb.invokerOn = invokerOn;
     lamb.invoker = invoker;
     lamb.mapArgs = mapArgs;
@@ -2082,6 +2149,7 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.anyOf|anyOf}
      * @param {...Function} predicate
      * @returns {Function}
      */
@@ -2112,6 +2180,7 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.allOf|allOf}
      * @param {...Function} predicate
      * @returns {Function}
      */
@@ -3040,6 +3109,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.pickIf|pickIf}
      * @param {Object} source
      * @param {String[]} whitelist
      * @returns {Object}
@@ -3067,6 +3137,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.pick|pick}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -3095,6 +3166,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.skipIf|skipIf}
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
@@ -3122,6 +3194,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.skip|skip}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
