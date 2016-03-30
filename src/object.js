@@ -103,6 +103,7 @@ function checker (predicate, message, keyPaths, pathSeparator) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
  * @param {Object} obj
  * @returns {String[]}
  */
@@ -143,13 +144,14 @@ function fromPairs (pairsList) {
 /**
  * Returns the value of the object property with the given key.
  * @example
- * var user {name: "John"};
+ * var user = {name: "John"};
  *
  * _.get(user, "name") // => "John";
  * _.get(user, "surname") // => undefined
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.getKey|getKey}, {@link module:lamb.getWithPath|getWithPath}
  * @param {Object} obj
  * @param {String} key
  * @returns {*}
@@ -171,6 +173,7 @@ function get (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.get|get}, {@link module:lamb.getWithPath|getWithPath}
  * @function
  * @param {String} key
  * @returns {Function}
@@ -201,6 +204,7 @@ var getKey = _curry(get, 2, true);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.get|get}, {@link module:lamb.getKey|getKey}
  * @param {Object|ArrayLike} obj
  * @param {String} path
  * @param {String} [separator="."]

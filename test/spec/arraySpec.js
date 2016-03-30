@@ -433,6 +433,19 @@ describe("lamb.array", function () {
             expect(lamb.partitionWith(fooIsActive)(persons)).toEqual(result);
         });
 
+        it("should return two lists even when the predicate is always satisfied or never satisfied", function () {
+            var isGreaterThanTen = function (n) { return n > 10; };
+            var arr1 = [1, 2, 3, 4, 5];
+            var arr2 = [11, 12, 13, 14, 15];
+            var res1 = [[], arr1.concat()];
+            var res2 = [arr2.concat(), []];
+
+            expect(lamb.partition(arr1, isGreaterThanTen)).toEqual(res1);
+            expect(lamb.partitionWith(isGreaterThanTen)(arr1)).toEqual(res1);
+            expect(lamb.partition(arr2, isGreaterThanTen)).toEqual(res2);
+            expect(lamb.partitionWith(isGreaterThanTen)(arr2)).toEqual(res2);
+        });
+
         it("should accept a context object for the predicate", function () {
             var fakeContext = {};
             var isEven = function (n) {

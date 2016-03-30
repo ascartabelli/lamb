@@ -10,6 +10,7 @@
  *
  * @memberof module:lamb
  * @category Type
+ * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
  * @function
  * @param {*} value
  * @returns {Boolean}
@@ -25,6 +26,7 @@ var isNil = anyOf(isNull, isUndefined);
  *
  * @memberof module:lamb
  * @category Type
+ * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
  * @param {*} value
  * @returns {Boolean}
  */
@@ -42,6 +44,7 @@ function isNull (value) {
  *
  * @memberof module:lamb
  * @category Type
+ * @see {@link module:lamb.type|type}
  * @param {String} typeTag
  * @returns {Function}
  */
@@ -60,6 +63,7 @@ function isType (typeName) {
  *
  * @memberof module:lamb
  * @category Type
+ * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
  * @param {*} value
  * @returns {Boolean}
  */
@@ -84,6 +88,7 @@ function isUndefined (value) {
  *
  * @memberof module:lamb
  * @category Type
+ * @see {@link module:lamb.isType|isType}
  * @param {*} value
  * @returns {String}
  */
