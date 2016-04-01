@@ -27,11 +27,11 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("get", function () {
+    describe("getIn", function () {
         it("should return the value of the given object property", function () {
             var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
 
-            expect(lamb.get(obj, "bar")).toBe(2);
+            expect(lamb.getIn(obj, "bar")).toBe(2);
         });
     });
 
@@ -375,6 +375,46 @@ describe("lamb.object", function () {
             it("should skip object properties using a predicate", function () {
                 expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
             });
+        });
+    });
+
+    describe("setIn / setKey", function () {
+        var arr = [1, 2, 3];
+        var baseFoo = Object.create({a: arr}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+        var foo = Object.create(baseFoo, {
+            c: {value: 3, enumerable: true}
+        });
+
+        var fooEquivalent = {a: [1, 2, 3], b: 2, c: 3, z: 5};
+
+        // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
+        afterEach(function () {
+            for (var key in fooEquivalent) {
+                expect(foo[key]).toEqual(fooEquivalent[key]);
+            }
+
+            expect(foo.a).toBe(arr);
+        });
+
+
+        it("should build a copy with all the enumerable properties of the source object with the desired key set to the provided value", function () {
+            var newObjA = lamb.setIn(foo, "c", 99);
+            var newObjB = lamb.setKey("a", ["a", "b"])(foo);
+
+            expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 99});
+            expect(newObjA.a).toBe(arr);
+            expect(newObjA.z).toBeUndefined();
+            expect(newObjB).toEqual({a: ["a", "b"], b: 2, c: 3});
+            expect(newObjB.a).not.toBe(arr);
+            expect(newObjB.z).toBeUndefined();
+        });
+
+        it("should add a new property if the given key doesn't exist on the source", function () {
+            var newObjA = lamb.setIn(foo, "z", 99);
+            var newObjB = lamb.setKey("z", 0)(foo);
+
+            expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 99});
+            expect(newObjB).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 0});
         });
     });
 

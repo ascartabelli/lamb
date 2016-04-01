@@ -100,7 +100,7 @@ describe("lamb.core", function () {
 
         it("should be safe to call the partial application multiple times with different values for unfilled placeholders", function () {
             var list = [{"id" : "foo"}, {"id" : "bar"}, {"id" : "baz"}];
-            var getID = lamb.partial(lamb.get, _, "id");
+            var getID = lamb.partial(lamb.getIn, _, "id");
             expect(list.map(getID)).toEqual(["foo", "bar", "baz"]);
         });
     });
