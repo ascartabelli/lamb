@@ -146,8 +146,8 @@ function fromPairs (pairsList) {
  * @example
  * var user = {name: "John"};
  *
- * _.get(user, "name") // => "John";
- * _.get(user, "surname") // => undefined
+ * _.getIn(user, "name") // => "John";
+ * _.getIn(user, "surname") // => undefined
  *
  * @memberof module:lamb
  * @category Object
@@ -194,7 +194,7 @@ var getKey = _curry(getIn, 2, true);
  *     }
  * };
  *
- * // same as _.get if no path is involved
+ * // same as _.getIn if no path is involved
  * _.getWithPath(user, "name") // => "John"
  *
  * _.getWithPath(user, "login.password") // => "abc123";

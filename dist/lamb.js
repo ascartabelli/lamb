@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.17.0
+ * @version 0.18.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.17.0";
+    lamb._version =  "0.18.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2671,7 +2671,7 @@
     });
 
     var _valuesFrom = _curry(function (getKeys, obj) {
-        return getKeys(obj).map(partial(get, obj));
+        return getKeys(obj).map(partial(getIn, obj));
     });
 
     /**
@@ -2732,6 +2732,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
      * @param {Object} obj
      * @returns {String[]}
      */
@@ -2772,23 +2773,24 @@
     /**
      * Returns the value of the object property with the given key.
      * @example
-     * var user {name: "John"};
+     * var user = {name: "John"};
      *
-     * _.get(user, "name") // => "John";
-     * _.get(user, "surname") // => undefined
+     * _.getIn(user, "name") // => "John";
+     * _.getIn(user, "surname") // => undefined
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.getKey|getKey}, {@link module:lamb.getWithPath|getWithPath}
      * @param {Object} obj
      * @param {String} key
      * @returns {*}
      */
-    function get (obj, key) {
+    function getIn (obj, key) {
         return obj[key];
     }
 
     /**
-     * A curried version of {@link module:lamb.get|get}.<br/>
+     * A curried version of {@link module:lamb.getIn|getIn}.<br/>
      * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
      * @example
      * var user1 = {name: "john"};
@@ -2800,11 +2802,12 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getWithPath|getWithPath}
      * @function
      * @param {String} key
      * @returns {Function}
      */
-    var getKey = _curry(get, 2, true);
+    var getKey = _curry(getIn, 2, true);
 
     /**
      * Gets a nested property value from an object using the given path.<br/>
@@ -2820,7 +2823,7 @@
      *     }
      * };
      *
-     * // same as _.get if no path is involved
+     * // same as _.getIn if no path is involved
      * _.getWithPath(user, "name") // => "John"
      *
      * _.getWithPath(user, "login.password") // => "abc123";
@@ -2830,13 +2833,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
      * @param {Object|ArrayLike} obj
      * @param {String} path
      * @param {String} [separator="."]
      * @returns {*}
      */
     function getWithPath (obj, path, separator) {
-        return path.split(separator || ".").reduce(get, obj);
+        return path.split(separator || ".").reduce(getIn, obj);
     }
 
     /**
@@ -3157,6 +3161,61 @@
     }
 
     /**
+     * Sets the specified key to the given value in a copy of the provided object.<br/>
+     * All the enumerable keys of the source object will be simply copied to an empty
+     * object without breaking references.<br/>
+     * If the specified key is not part of the source object, it will be added to the
+     * result.<br/>
+     * The main purpose of the function is to work on simple plain objects used as
+     * data structures, such as JSON objects, and makes no effort to play nice with
+     * objects created from an OOP perspective (it's not worth it).<br/>
+     * For example the prototype of the result will be <code>Object</code>'s regardless
+     * of the <code>source</code>'s one.
+     * @example
+     * var user = {name: "John", surname: "Doe", age: 30};
+     *
+     * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
+     *
+     * // `user` still is {name: "John", surname: "Doe", age: 30}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.setKey|setKey}
+     * @param {Object} source
+     * @param {String} key
+     * @param {*} value
+     * @returns {Object}
+     */
+    function setIn (source, key, value) {
+        return _merge(enumerables, source, make([key], [value]));
+    }
+
+    /**
+     * Builds a partial application of {@link module:lamb.setIn|setIn} with the provided
+     * <code>key</code> and <code>value</code>.<br/>
+     * The resulting function expects the object to act upon.<br/>
+     * Please refer to {@link module:lamb.setIn|setIn}'s description for explanations about
+     * how the copy of the source object is made.
+     * @example
+     * var user = {name: "John", surname: "Doe", age: 30};
+     * var setAgeTo40 = _.setKey("age", 40);
+     *
+     * setAgeTo40(user) // => {name: "john", surname: "doe", age: 40}
+     *
+     * // `user` still is {name: "John", surname: "Doe", age: 30}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.setIn|setIn}
+     * @param {String} key
+     * @param {*} value
+     * @returns {Function}
+     */
+    function setKey (key, value) {
+        return partial(setIn, _, key, value);
+    }
+
+    /**
      * Returns a copy of the source object without the specified properties.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
@@ -3317,7 +3376,7 @@
     lamb.checker = checker;
     lamb.enumerables = enumerables;
     lamb.fromPairs = fromPairs;
-    lamb.get = get;
+    lamb.getIn = getIn;
     lamb.getKey = getKey;
     lamb.getWithPath = getWithPath;
     lamb.has = has;
@@ -3334,6 +3393,8 @@
     lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
+    lamb.setIn = setIn;
+    lamb.setKey = setKey;
     lamb.skip = skip;
     lamb.skipIf = skipIf;
     lamb.tear = tear;
@@ -3450,6 +3511,7 @@
      *
      * @memberof module:lamb
      * @category Type
+     * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
      * @function
      * @param {*} value
      * @returns {Boolean}
@@ -3465,6 +3527,7 @@
      *
      * @memberof module:lamb
      * @category Type
+     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
      * @param {*} value
      * @returns {Boolean}
      */
@@ -3482,6 +3545,7 @@
      *
      * @memberof module:lamb
      * @category Type
+     * @see {@link module:lamb.type|type}
      * @param {String} typeTag
      * @returns {Function}
      */
@@ -3500,6 +3564,7 @@
      *
      * @memberof module:lamb
      * @category Type
+     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
      * @param {*} value
      * @returns {Boolean}
      */
@@ -3524,6 +3589,7 @@
      *
      * @memberof module:lamb
      * @category Type
+     * @see {@link module:lamb.isType|isType}
      * @param {*} value
      * @returns {String}
      */
