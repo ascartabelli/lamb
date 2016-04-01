@@ -683,6 +683,24 @@ function pluckKey (key) {
 }
 
 /**
+ * Reverses a copy of the given array-like object.
+ * @example
+ * var arr = [1, 2, 3];
+ *
+ * _.reverse(arr) // => [3, 2, 1];
+ *
+ * // `arr` still is [1, 2, 3]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @returns {Array}
+ */
+function reverse (arrayLike) {
+    return slice(arrayLike).reverse();
+}
+
+/**
  * Builds a function that creates a copy of an array-like object with the given
  * index changed to the provided value.<br/>
  * If the index is not an integer or if it's out of bounds, the function
@@ -981,6 +999,7 @@ lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
+lamb.reverse = reverse;
 lamb.setAt = setAt;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;
