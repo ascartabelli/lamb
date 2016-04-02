@@ -44,31 +44,40 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("getWithPath", function () {
+    describe("getPath / getPathIn", function () {
         var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
 
         it("should retrieve a nested object property using the supplied path", function () {
-            expect(lamb.getWithPath(obj, "a")).toBe(2);
-            expect(lamb.getWithPath(obj, "b.a")).toBe(3);
-            expect(lamb.getWithPath(obj, "b.b")).toBe(obj.b.b);
+            expect(lamb.getPath("a")(obj)).toBe(2);
+            expect(lamb.getPath("b.a")(obj)).toBe(3);
+            expect(lamb.getPath("b.b")(obj)).toBe(obj.b.b);
+            expect(lamb.getPathIn(obj, "a")).toBe(2);
+            expect(lamb.getPathIn(obj, "b.a")).toBe(3);
+            expect(lamb.getPathIn(obj, "b.b")).toBe(obj.b.b);
         });
 
         it("should be able to retrieve values from arrays and array-like objects", function () {
-            expect(lamb.getWithPath(obj, "b.b.0")).toBe(4);
-            expect(lamb.getWithPath(obj, "b.c.0")).toBe("f");
+            expect(lamb.getPath("b.b.0")(obj)).toBe(4);
+            expect(lamb.getPath("b.c.0")(obj)).toBe("f");
+            expect(lamb.getPathIn(obj, "b.b.0")).toBe(4);
+            expect(lamb.getPathIn(obj, "b.c.0")).toBe("f");
         });
 
         it("should accept a custom path separator", function () {
-            expect(lamb.getWithPath(obj, "b->b->0", "->")).toBe(4);
-            expect(lamb.getWithPath(obj, "c.d/e.f", "/")).toBe(6);
+            expect(lamb.getPath("b->b->0", "->")(obj)).toBe(4);
+            expect(lamb.getPath("c.d/e.f", "/")(obj)).toBe(6);
+            expect(lamb.getPathIn(obj, "b->b->0", "->")).toBe(4);
+            expect(lamb.getPathIn(obj, "c.d/e.f", "/")).toBe(6);
         });
 
         it("should return undefined for a unknown property in an existent object", function () {
-            expect(lamb.getWithPath(obj, "b.a.z")).toBeUndefined();
+            expect(lamb.getPath("b.a.z")(obj)).toBeUndefined();
+            expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
         });
 
         it("should throw an error if a non existent object is requested in the path", function () {
-            expect(function () {lamb.getWithPath(obj, "b.z.a")}).toThrow();
+            expect(function () {lamb.getPath("b.z.a")(obj)}).toThrow();
+            expect(function () {lamb.getPathIn(obj, "b.z.a")}).toThrow();
         });
     });
 

@@ -78,13 +78,13 @@ var _valuesFrom = _curry(function (getKeys, obj) {
  * @category Object
  * @param {Function} predicate - The predicate to test the object properties
  * @param {String} message - The error message
- * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getWithPath|paths}, to test.
+ * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getPathIn|paths}, to test.
  * @param {String} [pathSeparator="."]
  * @returns {Array<String, String[]>} An error in the form <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
  */
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
-        var getValues = partial(getWithPath, obj, _, pathSeparator);
+        var getValues = partial(getPathIn, obj, _, pathSeparator);
         return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
     };
 }
@@ -151,7 +151,8 @@ function fromPairs (pairsList) {
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.getKey|getKey}, {@link module:lamb.getWithPath|getWithPath}
+ * @see {@link module:lamb.getKey|getKey}
+ * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @param {Object} obj
  * @param {String} key
  * @returns {*}
@@ -173,12 +174,44 @@ function getIn (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getWithPath|getWithPath}
+ * @see {@link module:lamb.getIn|getIn}
+ * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @function
  * @param {String} key
  * @returns {Function}
  */
 var getKey = _curry(getIn, 2, true);
+
+/**
+ * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
+ * path and separator, expecting the object to act upon.
+ * @example
+ *  var user = {
+ *     name: "John",
+ *     surname: "Doe",
+ *     login: {
+ *         "user.name": "jdoe",
+ *         password: "abc123"
+ *     }
+ * };
+ *
+ * var getPwd = _.getPath("login.password");
+ * var getUsername = _.getPath("login/user.name", "/");
+ *
+ * getPwd(user) // => "abc123";
+ * getUsername(user) // => "jdoe"
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.getPathIn|getPathIn}
+ * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+ * @param {String} path
+ * @param {String} [separator="."]
+ * @returns {Function}
+ */
+function getPath (path, separator) {
+    return partial(getPathIn, _, path, separator);
+}
 
 /**
  * Gets a nested property value from an object using the given path.<br/>
@@ -195,22 +228,23 @@ var getKey = _curry(getIn, 2, true);
  * };
  *
  * // same as _.getIn if no path is involved
- * _.getWithPath(user, "name") // => "John"
+ * _.getPathIn(user, "name") // => "John"
  *
- * _.getWithPath(user, "login.password") // => "abc123";
- * _.getWithPath(user, "login/user.name", "/") // => "jdoe"
- * _.getWithPath(user, "name.foo") // => undefined
- * _.getWithPath(user, "name.foo.bar") // => throws a TypeError
+ * _.getPathIn(user, "login.password") // => "abc123";
+ * _.getPathIn(user, "login/user.name", "/") // => "jdoe"
+ * _.getPathIn(user, "name.foo") // => undefined
+ * _.getPathIn(user, "name.foo.bar") // => throws a TypeError
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.getPath|getPath}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
  * @param {Object|ArrayLike} obj
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {*}
  */
-function getWithPath (obj, path, separator) {
+function getPathIn (obj, path, separator) {
     return path.split(separator || ".").reduce(getIn, obj);
 }
 
@@ -749,7 +783,8 @@ lamb.enumerables = enumerables;
 lamb.fromPairs = fromPairs;
 lamb.getIn = getIn;
 lamb.getKey = getKey;
-lamb.getWithPath = getWithPath;
+lamb.getPath = getPath;
+lamb.getPathIn = getPathIn;
 lamb.has = has;
 lamb.hasKey = hasKey;
 lamb.hasKeyValue = hasKeyValue;
