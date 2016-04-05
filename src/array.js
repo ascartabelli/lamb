@@ -362,6 +362,7 @@ function getAt (index) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.groupBy|groupBy}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
@@ -386,7 +387,7 @@ function group (arrayLike, iteratee, iterateeContext) {
 }
 
 /**
- * Using the provided iteratee, and its optional context, builds a [partial application]{@link module:lamb.partial}
+ * Using the provided iteratee, and its optional context, builds a partial application
  * of {@link module:lamb.group|group} expecting the array-like object to act upon.
  * @example
  * var persons = [
@@ -415,6 +416,7 @@ function group (arrayLike, iteratee, iterateeContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.group|group}
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {Function}

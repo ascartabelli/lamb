@@ -76,6 +76,7 @@ var _valuesFrom = _curry(function (getKeys, obj) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.validate|validate}, {@link module:lamb.validateWith|validateWith}
  * @param {Function} predicate - The predicate to test the object properties
  * @param {String} message - The error message
  * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getPathIn|paths}, to test.
@@ -723,6 +724,8 @@ var tearOwn = _tearFrom(Object.keys);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.validateWith|validateWith}
+ * @see {@link module:lamb.checker|checker}
  * @param {Object} obj
  * @param {Function[]} checkers
  * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by {@link module:lamb.checker|checker}, or an empty array.
@@ -756,6 +759,8 @@ function validate (obj, checkers) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.validate|validate}
+ * @see {@link module:lamb.checker|checker}
  * @function
  * @param {Function[]} checkers
  * @returns {Function}
