@@ -41,10 +41,10 @@
     "gulp-indent": "^1.0.1",
     "gulp-istanbul": "^0.10.3",
     "gulp-jasmine": "^2.3.0",
-    "gulp-plato": "^1.0.2",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.3",
+    "plato": "^1.5.0",
     "sinon": "^1.17.3"
   },
   "dependencies": {}
