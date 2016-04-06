@@ -422,6 +422,13 @@ function make (keys, values) {
  * @example
  * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
  *
+ * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+ * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
+ * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
+ *
+ * @example <caption>Every other value will be treated as an empty object:</caption>
+ * _.merge({a: 2}, null, NaN) // => {a: 2}
+ *
  * @memberof module:lamb
  * @category Object
  * @function
@@ -432,7 +439,7 @@ var merge = partial(_merge, enumerables);
 
 /**
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
- * @example <caption>showing the difference with <code>merge</code></caption>
+ * @example <caption>showing the difference with <code>merge</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
@@ -443,6 +450,12 @@ var merge = partial(_merge, enumerables);
  * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
  * _.mergeOwn(foo, bar) // => {c: 3, d: 4}
  *
+ * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+ * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
+ * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
+ *
+ * @example <caption>Every other value will be treated as an empty object:</caption>
+ * _.mergeOwn({a: 2}, null, NaN) // => {a: 2}
  *
  * @memberof module:lamb
  * @category Object
@@ -450,7 +463,7 @@ var merge = partial(_merge, enumerables);
  * @param {...Object} source
  * @returns {Object}
  */
-var mergeOwn = partial(_merge, Object.keys);
+var mergeOwn = partial(_merge, compose(Object.keys, Object));
 
 /**
  * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are

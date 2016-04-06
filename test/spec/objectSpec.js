@@ -244,6 +244,18 @@ describe("lamb.object", function () {
             expect(bar).toEqual({d: 4});
         });
 
+        it("should consider values other than objects or array-like objects as empty objects", function () {
+            expect(lamb.merge({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
+            expect(lamb.mergeOwn({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
+        });
+
+        it("should transform array-like objects in objects with numbered string as properties", function () {
+            expect(lamb.merge([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
+            expect(lamb.mergeOwn([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
+            expect(lamb.merge("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
+            expect(lamb.mergeOwn("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
+        });
+
         describe("merge", function () {
             it("should merge the enumerable properties of the provided sources into a new object without mutating them", function () {
                 var newObj = lamb.merge(foo, bar);
