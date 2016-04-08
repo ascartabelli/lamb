@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.19.0
+ * @version 0.20.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.19.0";
+    lamb._version =  "0.20.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2683,6 +2683,26 @@
         return getKeys(obj).map(_keyToPair, obj);
     });
 
+    function _setPathIn (obj, parts, value) {
+        var headAsInt = parseInt(parts[0], 10);
+        var target;
+        var setter;
+
+        if (Array.isArray(obj) && headAsInt == parts[0]) {
+            target = getAt(headAsInt)(obj);
+            setter = function (v) {
+                return setAt(headAsInt, v)(obj);
+            };
+        } else {
+            target = (obj || {})[parts[0]];
+            setter = partial(setIn, obj, parts[0]);
+        }
+
+        return setter(
+            parts.length < 2 ? value : _setPathIn(target, parts.slice(1), value)
+        );
+    }
+
     var _tearFrom = _curry(function  (getKeys, obj) {
         return getKeys(obj).reduce(function (result, key) {
             result[0].push(key);
@@ -3072,6 +3092,13 @@
      * @example
      * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
      *
+     * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+     * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
+     * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
+     *
+     * @example <caption>Every other value will be treated as an empty object:</caption>
+     * _.merge({a: 2}, null, NaN) // => {a: 2}
+     *
      * @memberof module:lamb
      * @category Object
      * @function
@@ -3082,7 +3109,7 @@
 
     /**
      * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
-     * @example <caption>showing the difference with <code>merge</code></caption>
+     * @example <caption>showing the difference with <code>merge</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3, enumerable: true}
@@ -3093,6 +3120,12 @@
      * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
      * _.mergeOwn(foo, bar) // => {c: 3, d: 4}
      *
+     * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+     * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
+     * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
+     *
+     * @example <caption>Every other value will be treated as an empty object:</caption>
+     * _.mergeOwn({a: 2}, null, NaN) // => {a: 2}
      *
      * @memberof module:lamb
      * @category Object
@@ -3100,7 +3133,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var mergeOwn = partial(_merge, Object.keys);
+    var mergeOwn = partial(_merge, compose(Object.keys, Object));
 
     /**
      * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
@@ -3263,12 +3296,89 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.setIn|setIn}
+     * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
      * @param {String} key
      * @param {*} value
      * @returns {Function}
      */
     function setKey (key, value) {
         return partial(setIn, _, key, value);
+    }
+
+    /**
+     * Builds a partial application of {@link module:lamb.setPathIn|setPathIn} expecting the
+     * object to act upon.<br/>
+     * See {@link module:lamb.setPathIn|setPathIn} for more details and examples.
+     * @example
+     * var user = {id: 1, status: {active: false}};
+     * var activate = _.setPath("status.active", true);
+     *
+     * activate(user) // => {id: 1, status: {active: true}}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.setPathIn|setPathIn}
+     * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+     * @param {String} path
+     * @param {*} value
+     * @param {String} [separator="."]
+     * @returns {Function}
+     */
+    function setPath (path, value, separator) {
+        return partial(setPathIn, _, path, value, separator);
+    }
+
+    /**
+     * Allows to change a nested value in a copy of the provided object.<br/>
+     * The function will delegate the "set" action to {@link module:lamb.setIn|setIn} or
+     * {@link module:lamb.setAt|setAt} depending on the value encountered in the path,
+     * so please refer to the documentation of those functions for specifics about the
+     * implementation.<br/>
+     * Note anyway that the distinction will be between <code>Array</code>s, delegated
+     * to {@link module:lamb.setAt|setAt}, and everything else (including array-like objects),
+     * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
+     * As a result of that, array-like objects will be converted to objects having numbers as keys
+     * and paths targeting non object values will be converted to empty objects.<br/>
+     * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
+     * use custom path separators.
+     * @example
+     * var user = {id: 1, status: {active : false, scores: [2, 4, 6]}};
+     *
+     * _.setPathIn(user, "status.active", true) // => {id: 1, status: {active : true, scores: [2, 4, 6]}}
+     *
+     * @example <caption>Targeting arrays</caption>
+     * _.setPathIn(user, "status.scores.0", 8) // => {id: 1, status: {active : false, scores: [8, 4, 6]}}
+     *
+     * // you can use negative indexes as well
+     * _.setPathIn(user, "status.scores.-1", 8) // => {id: 1, status: {active : false, scores: [2, 4, 8]}}
+     *
+     * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+     * var user = {id: 1, scores: [
+     *     {value: 2, year: "2000"},
+     *     {value: 4, year: "2001"},
+     *     {value: 6, year: "2002"}
+     * ]};
+     *
+     * var newUser = _.setPathIn(user, "scores.0.value", 8);
+     * // "newUser" holds:
+     * // {id: 1, scores: [
+     * //     {value: 8, year: "2000"},
+     * //     {value: 4, year: "2001"},
+     * //     {value: 6, year: "2002"}
+     * // ]}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.setPath|setPath}
+     * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+     * @param {Object|Array} obj
+     * @param {String} path
+     * @param {*} value
+     * @param {String} [separator="."]
+     * @returns {Object|Array}
+     */
+    function setPathIn (obj, path, value, separator) {
+        return _setPathIn(obj, path.split(separator || "."), value);
     }
 
     /**
@@ -3456,6 +3566,8 @@
     lamb.pickIf = pickIf;
     lamb.setIn = setIn;
     lamb.setKey = setKey;
+    lamb.setPath = setPath;
+    lamb.setPathIn = setPathIn;
     lamb.skip = skip;
     lamb.skipIf = skipIf;
     lamb.tear = tear;

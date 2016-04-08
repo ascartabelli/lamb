@@ -48,8 +48,10 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.19.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.20.0/dist/lamb.min.js"></script>
 ```
+
+You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
 
 ## Semantic Versioning.
 
@@ -85,8 +87,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## <a name="changelog"></a> Changelog
 
+- **v0.20.0 - *2016/04/08***
+  - **API change**: The `mergeOwn` function now converts `null` and `undefined` values to empty objects instead of throwing exceptions
+  - Added `setPath` and `setPathIn`
+
 - **v0.19.0 - *2016/04/05***
-  - **API change:**: renamed `getWithPath` to `getPathIn`
+  - **API change**: renamed `getWithPath` to `getPathIn`
   - Added `getPath` and `reverse`
 
 - **v0.18.0 - *2016/04/01***
