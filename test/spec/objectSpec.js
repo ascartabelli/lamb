@@ -11,6 +11,12 @@ describe("lamb.object", function () {
 
             expect(lamb.enumerables(foo)).toEqual(["d", "a"]);
         });
+
+        it("should consider non object values as empty objects", function () {
+            expect(
+                [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()].map(lamb.enumerables)
+            ).toEqual([[], [], [], [], [], [], [], []]);
+        });
     });
 
     describe("fromPairs", function () {
@@ -70,14 +76,11 @@ describe("lamb.object", function () {
             expect(lamb.getPathIn(obj, "c.d/e.f", "/")).toBe(6);
         });
 
-        it("should return undefined for a unknown property in an existent object", function () {
+        it("should return undefined for any non existent path", function () {
             expect(lamb.getPath("b.a.z")(obj)).toBeUndefined();
             expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
-        });
-
-        it("should throw an error if a non existent object is requested in the path", function () {
-            expect(function () {lamb.getPath("b.z.a")(obj)}).toThrow();
-            expect(function () {lamb.getPathIn(obj, "b.z.a")}).toThrow();
+            expect(lamb.getPath("b.z.a")(obj)).toBeUndefined();
+            expect(lamb.getPathIn(obj, "b.z.a")).toBeUndefined();
         });
     });
 
@@ -247,6 +250,8 @@ describe("lamb.object", function () {
         it("should consider values other than objects or array-like objects as empty objects", function () {
             expect(lamb.merge({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
             expect(lamb.mergeOwn({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
+            expect(lamb.merge(/foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({});
+            expect(lamb.mergeOwn(/foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({});
         });
 
         it("should transform array-like objects in objects with numbered string as properties", function () {

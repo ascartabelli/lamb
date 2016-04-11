@@ -90,9 +90,9 @@ var _valuesFrom = _curry(function (getKeys, obj) {
  *
  * pwdMatch(user) // => []
  *
- * user.login.passwordConfirm = "avc123";
+ * var newUser = _.setPathIn(user, "login.passwordConfirm", "avc123");
  *
- * pwdMatch(user) // => ["Passwords don't match", ["login.password", "login.passwordConfirm"]]
+ * pwdMatch(newUser) // => ["Passwords don't match", ["login.password", "login.passwordConfirm"]]
  *
  * @memberof module:lamb
  * @category Object
@@ -254,7 +254,7 @@ function getPath (path, separator) {
  * _.getPathIn(user, "login.password") // => "abc123";
  * _.getPathIn(user, "login/user.name", "/") // => "jdoe"
  * _.getPathIn(user, "name.foo") // => undefined
- * _.getPathIn(user, "name.foo.bar") // => throws a TypeError
+ * _.getPathIn(user, "name.foo.bar") // => undefined
  *
  * @memberof module:lamb
  * @category Object
@@ -266,7 +266,7 @@ function getPath (path, separator) {
  * @returns {*}
  */
 function getPathIn (obj, path, separator) {
-    return path.split(separator || ".").reduce(getIn, obj);
+    return path.split(separator || ".").reduce(tapArgs(getIn, Object), obj);
 }
 
 /**
