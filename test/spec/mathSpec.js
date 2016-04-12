@@ -29,6 +29,18 @@ describe("lamb.math", function () {
         });
     });
 
+    describe("generate", function () {
+        it("should generate a sequence of values of the desired length with the provided iteratee", function () {
+            var context = {};
+            var fibonacci = function (n, idx, list) {
+                expect(this).toBe(context);
+                return n + (list[idx - 1] || 0);
+            };
+
+            expect(lamb.generate(1, 20, fibonacci, context)).toEqual([1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765]);
+        });
+    });
+
     describe("modulo", function () {
         it("should calculate the modulo of two numbers", function () {
             expect(lamb.modulo(5, 3)).toBe(2);
@@ -88,18 +100,6 @@ describe("lamb.math", function () {
             expect(lamb.remainder(5, 3)).toBe(2);
             expect(lamb.remainder(-5, 3)).toBe(-2);
             expect(isNaN(lamb.remainder(-5, 0))).toBe(true);
-        });
-    });
-
-    describe("sequence", function () {
-        it("should generate a sequence of values of the desired length with the provided iteratee", function () {
-            var context = {};
-            var fibonacci = function (n, idx, list) {
-                expect(this).toBe(context);
-                return n + (list[idx - 1] || 0);
-            };
-
-            expect(lamb.sequence(1, 20, fibonacci, context)).toEqual([1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765]);
         });
     });
 

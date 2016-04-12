@@ -48,6 +48,34 @@ function divide (a, b) {
 }
 
 /**
+ * Generates a sequence of values of the desired length with the provided iteratee.
+ * The values being iterated, and received by the iteratee, are the results generated so far.
+ * @example
+ * var fibonacci = function (n, idx, results) {
+ *     return n + (results[idx - 1] || 0);
+ * };
+ *
+ * _.generate(1, 10, fibonacci) // => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @param {*} start - The starting value
+ * @param {Number} len - The desired length for the sequence
+ * @param {ListIteratorCallback} iteratee
+ * @param {Object} [iterateeContext]
+ * @returns {Array}
+ */
+function generate (start, len, iteratee, iterateeContext) {
+    var result = [start];
+
+    for (var i = 0, limit = len - 1; i < limit; i++) {
+        result.push(iteratee.call(iterateeContext, result[i], i, result));
+    }
+
+    return result;
+}
+
+/**
  * Performs the modulo operation and should not be confused with the {@link module:lamb.remainder|remainder}.
  * The function performs a floored division to calculate the result and not a truncated one, hence the sign of
  * the dividend is not kept, unlike the {@link module:lamb.remainder|remainder}.
@@ -129,7 +157,7 @@ function range (start, limit, step) {
     }
 
     var len = Math.max(Math.ceil((limit - start) / step), 0);
-    return sequence(start, len, partial(add, step));
+    return generate(start, len, partial(add, step));
 }
 
 /**
@@ -154,34 +182,6 @@ function remainder (a, b) {
 }
 
 /**
- * Generates a sequence of values of the desired length with the provided iteratee.
- * The values being iterated, and received by the iteratee, are the results generated so far.
- * @example
- * var fibonacci = function (n, idx, list) {
- *     return n + (list[idx - 1] || 0);
- * };
- *
- * _.sequence(1, 10, fibonacci) // => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
- *
- * @memberof module:lamb
- * @category Math
- * @param {*} start - The starting value
- * @param {Number} len - The desired length for the sequence
- * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
- * @returns {Array}
- */
-function sequence (start, len, iteratee, iterateeContext) {
-    var result = [start];
-
-    for (var i = 0, limit = len - 1; i < limit; i++) {
-        result.push(iteratee.call(iterateeContext, result[i], i, result));
-    }
-
-    return result;
-}
-
-/**
  * Subtracts two numbers.
  * @example
  * _.subtract(5, 3) // => 2
@@ -199,10 +199,10 @@ function subtract (a, b) {
 lamb.add = add;
 lamb.clamp = clamp;
 lamb.divide = divide;
+lamb.generate = generate;
 lamb.modulo = modulo;
 lamb.multiply = multiply;
 lamb.randomInt = randomInt;
 lamb.range = range;
 lamb.remainder = remainder;
-lamb.sequence = sequence;
 lamb.subtract = subtract;
