@@ -680,7 +680,7 @@ function setPath (path, value, separator) {
 
 /**
  * Allows to change a nested value in a copy of the provided object.<br/>
- * The function will delegate the "set" action to {@link module:lamb.setIn|setIn} or
+ * The function will delegate the "set action" to {@link module:lamb.setIn|setIn} or
  * {@link module:lamb.setAt|setAt} depending on the value encountered in the path,
  * so please refer to the documentation of those functions for specifics about the
  * implementation.<br/>
@@ -816,6 +816,50 @@ var tear = _tearFrom(enumerables);
 var tearOwn = _tearFrom(Object.keys);
 
 /**
+ * Creates a copy of the given object having the desired's key value updated by applying
+ * the provided function to it.<br/>
+ * The function will delegate the "set action" to {@link module:lamb.setIn|setIn},
+ * so please refer to its documentation for specifics about the implementation.
+ * @example
+ * var user = {name: "John", visits: 2};
+ * var toUpperCase = _.invoker("toUpperCase");
+ *
+ * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updateKey|updateKey}
+ * @param {Object} source
+ * @param {String} key
+ * @param {Function} updater
+ * @returns {Object}
+ */
+function updateIn (source, key, updater) {
+    return setIn(source, key, updater(Object(source)[key]));
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
+ * <code>key</code> and <code>updater</code>, expecting the object to act upon.
+ * @example
+ * var user = {name: "John", visits: 2};
+ * var increment = _.partial(_.add, 1);
+ * var incrementVisits = _.updateKey("visits", increment);
+ *
+ * incrementVisits(user) // => {name: "John", visits: 3}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updateIn|updateIn}
+ * @param {String} key
+ * @param {Function} updater
+ * @returns {Function}
+ */
+function updateKey (key, updater) {
+    return partial(updateIn, _, key, updater);
+}
+
+/**
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
@@ -922,6 +966,8 @@ lamb.skip = skip;
 lamb.skipIf = skipIf;
 lamb.tear = tear;
 lamb.tearOwn = tearOwn;
+lamb.updateIn = updateIn;
+lamb.updateKey = updateKey;
 lamb.validate = validate;
 lamb.validateWith = validateWith;
 lamb.values = values;

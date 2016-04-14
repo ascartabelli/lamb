@@ -404,7 +404,7 @@ describe("lamb.object", function () {
         });
     });
 
-    describe("setIn / setKey", function () {
+    describe("Property setters", function () {
         var arr = [1, 2, 3];
         var baseFoo = Object.create({a: arr}, {b: {value: 2, enumerable: true}, z: {value: 5}});
         var foo = Object.create(baseFoo, {
@@ -412,6 +412,7 @@ describe("lamb.object", function () {
         });
 
         var fooEquivalent = {a: [1, 2, 3], b: 2, c: 3, z: 5};
+        var wannabeEmptyObjects = [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()];
 
         // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
         afterEach(function () {
@@ -422,38 +423,83 @@ describe("lamb.object", function () {
             expect(foo.a).toBe(arr);
         });
 
-        it("should build a copy with all the enumerable properties of the source object with the desired key set to the provided value", function () {
-            var newObjA = lamb.setIn(foo, "c", 99);
-            var newObjB = lamb.setKey("a", ["a", "b"])(foo);
+        describe("setIn / setKey", function () {
+            it("should build a copy of the source object with all its enumerable properties and the desired key set to the provided value", function () {
+                var newObjA = lamb.setIn(foo, "c", 99);
+                var newObjB = lamb.setKey("a", ["a", "b"])(foo);
 
-            expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 99});
-            expect(newObjA.a).toBe(arr);
-            expect(newObjA.z).toBeUndefined();
-            expect(newObjB).toEqual({a: ["a", "b"], b: 2, c: 3});
-            expect(newObjB.a).not.toBe(arr);
-            expect(newObjB.z).toBeUndefined();
-        });
+                expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 99});
+                expect(newObjA.a).toBe(arr);
+                expect(newObjA.z).toBeUndefined();
+                expect(newObjB).toEqual({a: ["a", "b"], b: 2, c: 3});
+                expect(newObjB.a).not.toBe(arr);
+                expect(newObjB.z).toBeUndefined();
+            });
 
-        it("should add a new property if the given key doesn't exist on the source", function () {
-            var newObjA = lamb.setIn(foo, "z", 99);
-            var newObjB = lamb.setKey("z", 0)(foo);
+            it("should add a new property if the given key doesn't exist on the source", function () {
+                var newObjA = lamb.setIn(foo, "z", 99);
+                var newObjB = lamb.setKey("z", 0)(foo);
 
-            expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 99});
-            expect(newObjB).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 0});
-        });
+                expect(newObjA).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 99});
+                expect(newObjB).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 0});
+            });
 
-        it("should consider values other than objects or array-like objects as empty objects", function () {
-            [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()].map(function (value) {
-                expect(lamb.setIn(value, "a", 99)).toEqual({a: 99});
-                expect(lamb.setKey("a", 99)(value)).toEqual({a: 99});
+            it("should consider values other than objects or array-like objects as empty objects", function () {
+                wannabeEmptyObjects.map(function (value) {
+                    expect(lamb.setIn(value, "a", 99)).toEqual({a: 99});
+                    expect(lamb.setKey("a", 99)(value)).toEqual({a: 99});
+                });
+            });
+
+            it("should transform array-like objects in objects with numbered string as properties", function () {
+                expect(lamb.setIn([1, 2], "a", 99)).toEqual({"0": 1, "1": 2, "a": 99});
+                expect(lamb.setKey("a", 99)([1, 2])).toEqual({"0": 1, "1": 2, "a": 99});
+                expect(lamb.setIn("foo", "a", 99)).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
+                expect(lamb.setKey("a", 99)("foo")).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
             });
         });
 
-        it("should transform array-like objects in objects with numbered string as properties", function () {
-            expect(lamb.setIn([1, 2], "a", 99)).toEqual({"0": 1, "1": 2, "a": 99});
-            expect(lamb.setKey("a", 99)([1, 2])).toEqual({"0": 1, "1": 2, "a": 99});
-            expect(lamb.setIn("foo", "a", 99)).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
-            expect(lamb.setKey("a", 99)("foo")).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
+        describe("updateIn / updateKey", function () {
+            it("should build a copy of the source object with all its enumerable properties and the desired key updated according to the received function", function () {
+                var makeDoubles = lamb.mapWith(function (n) { return n * 2; });
+                var makeDoublesSpy = jasmine.createSpy("makeDoubles").and.callFake(makeDoubles);
+                var newObjA = lamb.updateIn(foo, "a", makeDoublesSpy);
+                var newObjB = lamb.updateKey("a", makeDoublesSpy)(foo);
+                var result = {a: [2, 4, 6], b: 2, c: 3};
+
+                expect(newObjA).toEqual(result);
+                expect(newObjB).toEqual(result);
+                expect(makeDoublesSpy.calls.count()).toBe(2);
+                expect(makeDoublesSpy.calls.argsFor(0).length).toBe(1);
+                expect(makeDoublesSpy.calls.argsFor(0)[0]).toBe(arr);
+                expect(makeDoublesSpy.calls.argsFor(1).length).toBe(1);
+                expect(makeDoublesSpy.calls.argsFor(1)[0]).toBe(arr);
+            });
+
+            it("should add a new property if the given key doesn't exist on the source", function () {
+                var newObjA = lamb.updateIn(foo, "z", lamb.always(99));
+                var newObjB = lamb.updateKey("z", lamb.always(99))(foo);
+                var result = {a: [1, 2, 3], b: 2, c: 3, z: 99};
+
+                expect(newObjA).toEqual(result);
+                expect(newObjB).toEqual(result);
+            });
+
+            it("should consider values other than objects or array-like objects as empty objects", function () {
+                wannabeEmptyObjects.map(function (value) {
+                    expect(lamb.updateIn(value, "a", lamb.always(99))).toEqual({a: 99});
+                    expect(lamb.updateKey("a", lamb.always(99))(value)).toEqual({a: 99});
+                });
+            });
+
+            it("should transform array-like objects in objects with numbered string as properties", function () {
+                var fn = lamb.always(99);
+
+                expect(lamb.updateIn([1, 2], "a", fn)).toEqual({"0": 1, "1": 2, "a": 99});
+                expect(lamb.updateKey("a", fn)([1, 2])).toEqual({"0": 1, "1": 2, "a": 99});
+                expect(lamb.updateIn("foo", "a", fn)).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
+                expect(lamb.updateKey("a", fn)("foo")).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
+            });
         });
     });
 
