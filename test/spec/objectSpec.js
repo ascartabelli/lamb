@@ -508,6 +508,14 @@ describe("lamb.object", function () {
                 expect(newObjB).not.toBe(foo);
             });
 
+            it("should check the validity of the destination key before trying to apply the received function to it", function () {
+                var o = {a: 1};
+                var toUpperCase = lamb.invoker("toUpperCase");
+
+                expect(lamb.updateIn(o, "z", toUpperCase)).toEqual({a: 1});
+                expect(lamb.updateKey("z", toUpperCase)(o)).toEqual({a: 1});
+            });
+
             it("should consider values other than objects or array-like objects as empty objects", function () {
                 wannabeEmptyObjects.map(function (value) {
                     expect(lamb.updateIn(value, "a", lamb.always(99))).toEqual({});

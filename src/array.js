@@ -20,6 +20,10 @@ function _flatten (array, output) {
     return output;
 }
 
+function _getPositiveIndex (index, len) {
+    return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
+}
+
 function _groupWith (makeValue, startValue) {
     return function (arrayLike, iteratee, iterateeContext) {
         return reduce(arrayLike, function (result, element, idx) {
@@ -31,6 +35,17 @@ function _groupWith (makeValue, startValue) {
             return result;
         }, {});
     };
+}
+
+function _setIndex (arrayLike, index, value, updater) {
+    var result = slice(arrayLike);
+    var idx = _getPositiveIndex(index, arrayLike.length);
+
+    if (!isUndefined(idx)) {
+        result[idx] = updater ? updater(arrayLike[idx]) : value;
+    }
+
+    return result;
 }
 
 /**
@@ -373,7 +388,8 @@ function flatten (array) {
  */
 function getAt (index) {
     return function (arrayLike) {
-        return Math.floor(index) === index ? arrayLike[index < 0 ? index + arrayLike.length : index] : void 0;
+        var idx = _getPositiveIndex(index, arrayLike.length);
+        return isUndefined(idx) ? idx : arrayLike[idx];
     };
 }
 
@@ -866,14 +882,7 @@ function reverse (arrayLike) {
  */
 function setAt (index, value) {
     return function (arrayLike) {
-        var result = slice(arrayLike);
-        var len = arrayLike.length;
-
-        if (clamp(index, -len, len - 1) === Math.floor(index)) {
-            result[index + (index < 0 ? len : 0)] = value;
-        }
-
-        return result;
+        return _setIndex(arrayLike, index, value);
     };
 }
 
@@ -1082,6 +1091,31 @@ function uniques (arrayLike, iteratee, iterateeContext) {
 }
 
 /**
+ * Builds a function that creates a copy of an array-like object with the given index changed
+ * by applying the provided function to its value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function will return a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = ["a", "b", "c"];
+ * var toUpperCase = _.invoker("toUpperCase");
+ *
+ * _.updateAt(1, toUpperCase)(arr) // => ["a", "B", "c"]
+ * _.updateAt(-1, toUpperCase)(arr) // => ["a", "b", "C"]
+ * _.updateAt(10, toUpperCase)(arr) // => ["a", "b", "c"]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {Number} index
+ * @param {Function} updater
+ * @returns {Function}
+ */
+function updateAt (index, updater) {
+    return function (arrayLike) {
+        return _setIndex(arrayLike, index, null, updater);
+    };
+}
+
+/**
  * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
  * The received array-like objects will be truncated to the shortest length.<br/>
  * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose} for the reverse operation.
@@ -1154,5 +1188,6 @@ lamb.takeWhile = takeWhile;
 lamb.transpose = transpose;
 lamb.union = union;
 lamb.uniques = uniques;
+lamb.updateAt = updateAt;
 lamb.zip = zip;
 lamb.zipWithIndex = zipWithIndex;
