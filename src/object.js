@@ -15,6 +15,10 @@ function _immutable (obj, seen) {
     return obj;
 }
 
+function _isEnumerable (obj, key) {
+    return key in Object(obj) && isIn(enumerables(obj), key);
+}
+
 function _keyToPair (key) {
     return [key, this[key]];
 }
@@ -614,12 +618,14 @@ function pickIf (predicate, predicateContext) {
  * var user = {name: "John", surname: "Doe", age: 30};
  *
  * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
+ * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
  *
  * // `user` still is {name: "John", surname: "Doe", age: 30}
  *
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.setKey|setKey}
+ * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
  * @param {Object} source
  * @param {String} key
  * @param {*} value
@@ -816,15 +822,23 @@ var tear = _tearFrom(enumerables);
 var tearOwn = _tearFrom(Object.keys);
 
 /**
- * Creates a copy of the given object having the desired's key value updated by applying
+ * Creates a copy of the given object having the desired key value updated by applying
  * the provided function to it.<br/>
- * The function will delegate the "set action" to {@link module:lamb.setIn|setIn},
- * so please refer to its documentation for specifics about the implementation.
+ * This function is meant for updating existing enumerable properties, and for those it
+ * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
+ * <code>source</code> is returned otherwise.
  * @example
  * var user = {name: "John", visits: 2};
  * var toUpperCase = _.invoker("toUpperCase");
  *
  * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
+ * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}
+ *
+ * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
+ * var user = Object.create({name: "John"}, {visits: {value: 2}});
+ * var increment = _.partial(_.add, 1);
+ *
+ * _.updateIn(user, "visits", increment) // => {name: "John", visits: 2}
  *
  * @memberof module:lamb
  * @category Object
@@ -835,7 +849,7 @@ var tearOwn = _tearFrom(Object.keys);
  * @returns {Object}
  */
 function updateIn (source, key, updater) {
-    return setIn(source, key, updater(Object(source)[key]));
+    return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
 }
 
 /**
