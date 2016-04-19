@@ -694,7 +694,7 @@ function setPath (path, value, separator) {
  * to {@link module:lamb.setAt|setAt}, and everything else (including array-like objects),
  * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
  * As a result of that, array-like objects will be converted to objects having numbers as keys
- * and paths targeting non object values will be converted to empty objects.<br/>
+ * and paths targeting non-object values will be converted to empty objects.<br/>
  * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
  * use custom path separators.
  * @example

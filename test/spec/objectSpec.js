@@ -12,7 +12,7 @@ describe("lamb.object", function () {
             expect(lamb.enumerables(foo)).toEqual(["d", "a"]);
         });
 
-        it("should consider non object values as empty objects", function () {
+        it("should consider non-object values as empty objects", function () {
             expect(
                 [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()].map(lamb.enumerables)
             ).toEqual([[], [], [], [], [], [], [], []]);
@@ -28,7 +28,7 @@ describe("lamb.object", function () {
             expect(lamb.fromPairs([["a", 1], ["b", 2], ["a", 3]])).toEqual({a: 3, b: 2});
         });
 
-        it("should convert missing or non string keys to strings and missing values to `undefined`", function () {
+        it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
             expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
         });
     });
@@ -76,7 +76,7 @@ describe("lamb.object", function () {
             expect(lamb.getPathIn(obj, "c.d/e.f", "/")).toBe(6);
         });
 
-        it("should return undefined for any non existent path", function () {
+        it("should return undefined for any non-existent path", function () {
             expect(lamb.getPath("b.a.z")(obj)).toBeUndefined();
             expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
             expect(lamb.getPath("b.z.a")(obj)).toBeUndefined();
@@ -223,7 +223,7 @@ describe("lamb.object", function () {
             expect(lamb.make(["a", "b"], [1, 2, 3])).toEqual({a: 1, b: 2});
         });
 
-        it("should convert non string keys to strings", function () {
+        it("should convert non-string keys to strings", function () {
             expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({"null": 1, "undefined": 2, "2": 3});
         });
     });
@@ -498,7 +498,7 @@ describe("lamb.object", function () {
                 expect(newObjC).toEqual({"0": 1});
             });
 
-            it("should not allow to update a non enumerable property, and return a copy of the source instead, as with non existent keys", function () {
+            it("should not allow to update a non-enumerable property, and return a copy of the source instead, as with non-existent keys", function () {
                 var newObjA = lamb.updateIn(foo, "z", lamb.always(99));
                 var newObjB = lamb.updateKey("z", lamb.always(99))(foo);
 
@@ -575,7 +575,7 @@ describe("lamb.object", function () {
             expect(lamb.setPathIn(obj, "c.d->e.f", 99, "->")).toEqual(r);
         });
 
-        it("should add non existent properties to existing objects", function () {
+        it("should add non-existent properties to existing objects", function () {
             var r1 = lamb.setPath("b.z", 99)(obj);
             var r2 = lamb.setPath("z.a", 99)(obj);
             var r3 = lamb.setPath("z.a.b", 99)(obj);

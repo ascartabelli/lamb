@@ -6,7 +6,7 @@ describe("lamb.logic", function () {
     var isLessThanTen = function (n) { return n < 10; };
 
     describe("adapter", function () {
-        it("should accept a series of functions and build another function that calls them one by one until a non undefined value is returned", function () {
+        it("should accept a series of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
             var isEven = function (n) { return n % 2 === 0; };
             var filterString = lamb.condition(
                 lamb.isType("String"),

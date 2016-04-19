@@ -1,7 +1,7 @@
 
 /**
  * Accepts a series of functions and builds a function that applies the received arguments to each one and
- * returns the first non <code>undefined</code> value.<br/>
+ * returns the first non-<code>undefined</code> value.<br/>
  * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
  * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
  * @example

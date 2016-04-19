@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.21.0
+ * @version 0.22.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.21.0";
+    lamb._version =  "0.22.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -315,6 +315,10 @@
         return output;
     }
 
+    function _getPositiveIndex (index, len) {
+        return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
+    }
+
     function _groupWith (makeValue, startValue) {
         return function (arrayLike, iteratee, iterateeContext) {
             return reduce(arrayLike, function (result, element, idx) {
@@ -326,6 +330,17 @@
                 return result;
             }, {});
         };
+    }
+
+    function _setIndex (arrayLike, index, value, updater) {
+        var result = slice(arrayLike);
+        var idx = _getPositiveIndex(index, arrayLike.length);
+
+        if (!isUndefined(idx)) {
+            result[idx] = updater ? updater(arrayLike[idx]) : value;
+        }
+
+        return result;
     }
 
     /**
@@ -668,7 +683,8 @@
      */
     function getAt (index) {
         return function (arrayLike) {
-            return Math.floor(index) === index ? arrayLike[index < 0 ? index + arrayLike.length : index] : void 0;
+            var idx = _getPositiveIndex(index, arrayLike.length);
+            return isUndefined(idx) ? idx : arrayLike[idx];
         };
     }
 
@@ -1161,14 +1177,7 @@
      */
     function setAt (index, value) {
         return function (arrayLike) {
-            var result = slice(arrayLike);
-            var len = arrayLike.length;
-
-            if (clamp(index, -len, len - 1) === Math.floor(index)) {
-                result[index + (index < 0 ? len : 0)] = value;
-            }
-
-            return result;
+            return _setIndex(arrayLike, index, value);
         };
     }
 
@@ -1377,6 +1386,31 @@
     }
 
     /**
+     * Builds a function that creates a copy of an array-like object with the given index changed
+     * by applying the provided function to its value.<br/>
+     * If the index is not an integer or if it's out of bounds, the function will return a copy of the original array.<br/>
+     * Negative indexes are allowed.
+     * @example
+     * var arr = ["a", "b", "c"];
+     * var toUpperCase = _.invoker("toUpperCase");
+     *
+     * _.updateAt(1, toUpperCase)(arr) // => ["a", "B", "c"]
+     * _.updateAt(-1, toUpperCase)(arr) // => ["a", "b", "C"]
+     * _.updateAt(10, toUpperCase)(arr) // => ["a", "b", "c"]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {Number} index
+     * @param {Function} updater
+     * @returns {Function}
+     */
+    function updateAt (index, updater) {
+        return function (arrayLike) {
+            return _setIndex(arrayLike, index, null, updater);
+        };
+    }
+
+    /**
      * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
      * The received array-like objects will be truncated to the shortest length.<br/>
      * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose} for the reverse operation.
@@ -1449,6 +1483,7 @@
     lamb.transpose = transpose;
     lamb.union = union;
     lamb.uniques = uniques;
+    lamb.updateAt = updateAt;
     lamb.zip = zip;
     lamb.zipWithIndex = zipWithIndex;
 
@@ -2253,7 +2288,7 @@
 
     /**
      * Accepts a series of functions and builds a function that applies the received arguments to each one and
-     * returns the first non <code>undefined</code> value.<br/>
+     * returns the first non-<code>undefined</code> value.<br/>
      * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
      * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
      * @example
@@ -2806,6 +2841,10 @@
         }
 
         return obj;
+    }
+
+    function _isEnumerable (obj, key) {
+        return key in Object(obj) && isIn(enumerables(obj), key);
     }
 
     function _keyToPair (key) {
@@ -3407,12 +3446,14 @@
      * var user = {name: "John", surname: "Doe", age: 30};
      *
      * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
+     * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
      *
      * // `user` still is {name: "John", surname: "Doe", age: 30}
      *
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.setKey|setKey}
+     * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
      * @param {Object} source
      * @param {String} key
      * @param {*} value
@@ -3473,7 +3514,7 @@
 
     /**
      * Allows to change a nested value in a copy of the provided object.<br/>
-     * The function will delegate the "set" action to {@link module:lamb.setIn|setIn} or
+     * The function will delegate the "set action" to {@link module:lamb.setIn|setIn} or
      * {@link module:lamb.setAt|setAt} depending on the value encountered in the path,
      * so please refer to the documentation of those functions for specifics about the
      * implementation.<br/>
@@ -3481,7 +3522,7 @@
      * to {@link module:lamb.setAt|setAt}, and everything else (including array-like objects),
      * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
      * As a result of that, array-like objects will be converted to objects having numbers as keys
-     * and paths targeting non object values will be converted to empty objects.<br/>
+     * and paths targeting non-object values will be converted to empty objects.<br/>
      * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
      * use custom path separators.
      * @example
@@ -3609,6 +3650,58 @@
     var tearOwn = _tearFrom(Object.keys);
 
     /**
+     * Creates a copy of the given object having the desired key value updated by applying
+     * the provided function to it.<br/>
+     * This function is meant for updating existing enumerable properties, and for those it
+     * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
+     * <code>source</code> is returned otherwise.
+     * @example
+     * var user = {name: "John", visits: 2};
+     * var toUpperCase = _.invoker("toUpperCase");
+     *
+     * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
+     * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}
+     *
+     * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
+     * var user = Object.create({name: "John"}, {visits: {value: 2}});
+     * var increment = _.partial(_.add, 1);
+     *
+     * _.updateIn(user, "visits", increment) // => {name: "John", visits: 2}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.updateKey|updateKey}
+     * @param {Object} source
+     * @param {String} key
+     * @param {Function} updater
+     * @returns {Object}
+     */
+    function updateIn (source, key, updater) {
+        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+    }
+
+    /**
+     * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
+     * <code>key</code> and <code>updater</code>, expecting the object to act upon.
+     * @example
+     * var user = {name: "John", visits: 2};
+     * var increment = _.partial(_.add, 1);
+     * var incrementVisits = _.updateKey("visits", increment);
+     *
+     * incrementVisits(user) // => {name: "John", visits: 3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.updateIn|updateIn}
+     * @param {String} key
+     * @param {Function} updater
+     * @returns {Function}
+     */
+    function updateKey (key, updater) {
+        return partial(updateIn, _, key, updater);
+    }
+
+    /**
      * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
      * @example
      * var hasContent = function (s) { return s.trim().length > 0; };
@@ -3715,6 +3808,8 @@
     lamb.skipIf = skipIf;
     lamb.tear = tear;
     lamb.tearOwn = tearOwn;
+    lamb.updateIn = updateIn;
+    lamb.updateKey = updateKey;
     lamb.validate = validate;
     lamb.validateWith = validateWith;
     lamb.values = values;

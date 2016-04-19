@@ -144,7 +144,7 @@ describe("lamb.array", function () {
     });
 
     describe("flatMap / flatMapWith", function () {
-        it("should behave like map if the mapping function returns a non array value", function () {
+        it("should behave like map if the mapping function returns a non-array value", function () {
             var double = function (n) { return n * 2; };
             var arr = [1, 2, 3, 4, 5];
             var result = [2, 4, 6, 8, 10];
@@ -208,7 +208,7 @@ describe("lamb.array", function () {
             expect(lamb.flatMapWith(toUpperCase)(testString)).toEqual(result);
         });
 
-        it("should return an empty array if is supplied with a non array value", function () {
+        it("should return an empty array if is supplied with a non-array value", function () {
             expect(lamb.flatMap({}, lamb.identity)).toEqual([]);
             expect(lamb.flatMapWith(lamb.identity)({})).toEqual([]);
         });

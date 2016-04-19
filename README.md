@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.21.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.22.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -87,9 +87,13 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
 
 ## <a name="changelog"></a> Changelog
 
+- **v0.22.0 - *2016/04/19***
+  - **Fully compatible with versions down to 0.21.x**
+  - Added `updateIn`, `updateKey` and `updateAt`
+
 - **v0.21.0 - *2016/04/13***
   - **API change**: `getPathIn` and `getPath` now return `undefined` for any non existent path, instead of throwing exceptions when an `undefined` value was a part of the path instead of being its target
-  - **API CHANGE**: renamed `sequence` to `generate` to avoid confusion with other languages, concepts and libraries
+  - **API change**: renamed `sequence` to `generate` to avoid confusion with other languages, concepts and libraries
   - Added `count`, `countBy`, `index`, `indexBy`
 
 - **v0.20.0 - *2016/04/08***
