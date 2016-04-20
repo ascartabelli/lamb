@@ -16,10 +16,12 @@ var scripts = [
     "./src/core.js",
     "./src/generics.js",
     "./src/array.js",
+    "./src/grouping.js",
     "./src/sort.js",
     "./src/function.js",
     "./src/logic.js",
     "./src/math.js",
+    "./src/accessors.js",
     "./src/object.js",
     "./src/string.js",
     "./src/type.js"

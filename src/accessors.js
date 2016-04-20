@@ -1,0 +1,466 @@
+
+function _getPositiveIndex (index, len) {
+    return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
+}
+
+function _isEnumerable (obj, key) {
+    return key in Object(obj) && isIn(enumerables(obj), key);
+}
+
+function _setIndex (arrayLike, index, value, updater) {
+    var result = slice(arrayLike);
+    var idx = _getPositiveIndex(index, arrayLike.length);
+
+    if (!isUndefined(idx)) {
+        result[idx] = updater ? updater(arrayLike[idx]) : value;
+    }
+
+    return result;
+}
+
+function _setPathIn (obj, parts, value) {
+    var headAsInt = parseInt(parts[0], 10);
+    var target;
+    var setter;
+
+    if (Array.isArray(obj) && headAsInt == parts[0]) {
+        target = getAt(headAsInt)(obj);
+        setter = function (v) {
+            return setAt(headAsInt, v)(obj);
+        };
+    } else {
+        target = (obj || {})[parts[0]];
+        setter = partial(setIn, obj, parts[0]);
+    }
+
+    return setter(
+        parts.length < 2 ? value : _setPathIn(target, parts.slice(1), value)
+    );
+}
+
+/**
+ * Retrieves the element at the given index in an array-like object.<br/>
+ * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
+ * If the index isn't supplied, or if its value isn't an integer within the array-like bounds,
+ * the function will return <code>undefined</code>.
+ * @example
+ * var getFifthElement = _.getAt(4);
+ *
+ * getFifthElement([1, 2, 3, 4, 5]) // => 5
+ * getFifthElement("foo bar") // => "b"
+ * getFifthElement([]) // => undefined
+ * getFifthElement("foo") // => undefined
+ *
+ * @example <caption>Using negative indexes</caption>
+ * _.getAt(-2)([1, 2, 3]) // => 2
+ * _.getAt(-3)("foo") // => "f"
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+ * @param {Number} index
+ * @returns {Function}
+ */
+function getAt (index) {
+    return function (arrayLike) {
+        var idx = _getPositiveIndex(index, arrayLike.length);
+        return isUndefined(idx) ? idx : arrayLike[idx];
+    };
+}
+
+/**
+ * Returns the value of the object property with the given key.
+ * @example
+ * var user = {name: "John"};
+ *
+ * _.getIn(user, "name") // => "John";
+ * _.getIn(user, "surname") // => undefined
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.getKey|getKey}
+ * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+ * @param {Object} obj
+ * @param {String} key
+ * @returns {*}
+ */
+function getIn (obj, key) {
+    return obj[key];
+}
+
+/**
+ * A curried version of {@link module:lamb.getIn|getIn}.<br/>
+ * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
+ * @example
+ * var user1 = {name: "john"};
+ * var user2 = {name: "jane"};
+ * var getName = _.getKey("name");
+ *
+ * getName(user1) // => "john"
+ * getName(user2) // => "jane"
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.getIn|getIn}
+ * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+ * @function
+ * @param {String} key
+ * @returns {Function}
+ */
+var getKey = _curry(getIn, 2, true);
+
+/**
+ * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
+ * path and separator, expecting the object to act upon.
+ * @example
+ *  var user = {
+ *     name: "John",
+ *     surname: "Doe",
+ *     login: {
+ *         "user.name": "jdoe",
+ *         password: "abc123"
+ *     }
+ * };
+ *
+ * var getPwd = _.getPath("login.password");
+ * var getUsername = _.getPath("login/user.name", "/");
+ *
+ * getPwd(user) // => "abc123";
+ * getUsername(user) // => "jdoe"
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.getPathIn|getPathIn}
+ * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+ * @param {String} path
+ * @param {String} [separator="."]
+ * @returns {Function}
+ */
+function getPath (path, separator) {
+    return partial(getPathIn, _, path, separator);
+}
+
+/**
+ * Gets a nested property value from an object using the given path.<br/>
+ * The path is a string with property names separated by dots by default, but
+ * it can be customised with the optional third parameter.
+ * @example
+ * var user = {
+ *     name: "John",
+ *     surname: "Doe",
+ *     login: {
+ *         "user.name": "jdoe",
+ *         password: "abc123"
+ *     }
+ * };
+ *
+ * // same as _.getIn if no path is involved
+ * _.getPathIn(user, "name") // => "John"
+ *
+ * _.getPathIn(user, "login.password") // => "abc123";
+ * _.getPathIn(user, "login/user.name", "/") // => "jdoe"
+ * _.getPathIn(user, "name.foo") // => undefined
+ * _.getPathIn(user, "name.foo.bar") // => undefined
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.getPath|getPath}
+ * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+ * @param {Object|ArrayLike} obj
+ * @param {String} path
+ * @param {String} [separator="."]
+ * @returns {*}
+ */
+function getPathIn (obj, path, separator) {
+    return path.split(separator || ".").reduce(tapArgs(getIn, Object), obj);
+}
+
+/**
+ * Retrieves the first element of an array-like object.<br/>
+ * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+ * @example
+ * _.head([1, 2, 3]) // => 1
+ * _.head("hello") // => "h"
+ * _.head([]) // => undefined
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.last|last}
+ * @param {ArrayLike} arrayLike
+ * @returns {*}
+ */
+var head = getAt(0);
+
+/**
+ * Retrieves the last element of an array-like object.<br/>
+ * Just a common use case of {@link module:lamb.getAt|getAt} exposed for convenience.
+ * @example
+ * _.last([1, 2, 3]) // => 3
+ * _.last("hello") // => "o"
+ * _.last([]) // => undefined
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.head|head}
+ * @param {ArrayLike} arrayLike
+ * @returns {*}
+ */
+var last = getAt(-1);
+
+/**
+ * Builds a function that creates a copy of an array-like object with the given
+ * index changed to the provided value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function
+ * will return a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.setAt(2, 99)(arr) // => [1, 2, 99, 4, 5]
+ * arr // => [1, 2, 3, 4, 5]
+ *
+ * _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)
+ *
+ * @example <caption>Using negative indexes</caption>
+ * _.setAt(-1, 99)(arr) // => [1, 2, 3, 4, 99]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {Number} index
+ * @param {*} value
+ * @returns {Function}
+ */
+function setAt (index, value) {
+    return function (arrayLike) {
+        return _setIndex(arrayLike, index, value);
+    };
+}
+
+/**
+ * Sets the specified key to the given value in a copy of the provided object.<br/>
+ * All the enumerable keys of the source object will be simply copied to an empty
+ * object without breaking references.<br/>
+ * If the specified key is not part of the source object, it will be added to the
+ * result.<br/>
+ * The main purpose of the function is to work on simple plain objects used as
+ * data structures, such as JSON objects, and makes no effort to play nice with
+ * objects created from an OOP perspective (it's not worth it).<br/>
+ * For example the prototype of the result will be <code>Object</code>'s regardless
+ * of the <code>source</code>'s one.
+ * @example
+ * var user = {name: "John", surname: "Doe", age: 30};
+ *
+ * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
+ * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
+ *
+ * // `user` still is {name: "John", surname: "Doe", age: 30}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.setKey|setKey}
+ * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+ * @param {Object} source
+ * @param {String} key
+ * @param {*} value
+ * @returns {Object}
+ */
+function setIn (source, key, value) {
+    return _merge(enumerables, source, make([key], [value]));
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.setIn|setIn} with the provided
+ * <code>key</code> and <code>value</code>.<br/>
+ * The resulting function expects the object to act upon.<br/>
+ * Please refer to {@link module:lamb.setIn|setIn}'s description for explanations about
+ * how the copy of the source object is made.
+ * @example
+ * var user = {name: "John", surname: "Doe", age: 30};
+ * var setAgeTo40 = _.setKey("age", 40);
+ *
+ * setAgeTo40(user) // => {name: "john", surname: "doe", age: 40}
+ *
+ * // `user` still is {name: "John", surname: "Doe", age: 30}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.setIn|setIn}
+ * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+ * @param {String} key
+ * @param {*} value
+ * @returns {Function}
+ */
+function setKey (key, value) {
+    return partial(setIn, _, key, value);
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.setPathIn|setPathIn} expecting the
+ * object to act upon.<br/>
+ * See {@link module:lamb.setPathIn|setPathIn} for more details and examples.
+ * @example
+ * var user = {id: 1, status: {active: false}};
+ * var activate = _.setPath("status.active", true);
+ *
+ * activate(user) // => {id: 1, status: {active: true}}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.setPathIn|setPathIn}
+ * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+ * @param {String} path
+ * @param {*} value
+ * @param {String} [separator="."]
+ * @returns {Function}
+ */
+function setPath (path, value, separator) {
+    return partial(setPathIn, _, path, value, separator);
+}
+
+/**
+ * Allows to change a nested value in a copy of the provided object.<br/>
+ * The function will delegate the "set action" to {@link module:lamb.setIn|setIn} or
+ * {@link module:lamb.setAt|setAt} depending on the value encountered in the path,
+ * so please refer to the documentation of those functions for specifics about the
+ * implementation.<br/>
+ * Note anyway that the distinction will be between <code>Array</code>s, delegated
+ * to {@link module:lamb.setAt|setAt}, and everything else (including array-like objects),
+ * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
+ * As a result of that, array-like objects will be converted to objects having numbers as keys
+ * and paths targeting non-object values will be converted to empty objects.<br/>
+ * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
+ * use custom path separators.
+ * @example
+ * var user = {id: 1, status: {active : false, scores: [2, 4, 6]}};
+ *
+ * _.setPathIn(user, "status.active", true) // => {id: 1, status: {active : true, scores: [2, 4, 6]}}
+ *
+ * @example <caption>Targeting arrays</caption>
+ * _.setPathIn(user, "status.scores.0", 8) // => {id: 1, status: {active : false, scores: [8, 4, 6]}}
+ *
+ * // you can use negative indexes as well
+ * _.setPathIn(user, "status.scores.-1", 8) // => {id: 1, status: {active : false, scores: [2, 4, 8]}}
+ *
+ * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+ * var user = {id: 1, scores: [
+ *     {value: 2, year: "2000"},
+ *     {value: 4, year: "2001"},
+ *     {value: 6, year: "2002"}
+ * ]};
+ *
+ * var newUser = _.setPathIn(user, "scores.0.value", 8);
+ * // "newUser" holds:
+ * // {id: 1, scores: [
+ * //     {value: 8, year: "2000"},
+ * //     {value: 4, year: "2001"},
+ * //     {value: 6, year: "2002"}
+ * // ]}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.setPath|setPath}
+ * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+ * @param {Object|Array} obj
+ * @param {String} path
+ * @param {*} value
+ * @param {String} [separator="."]
+ * @returns {Object|Array}
+ */
+function setPathIn (obj, path, value, separator) {
+    return _setPathIn(obj, path.split(separator || "."), value);
+}
+
+/**
+ * Builds a function that creates a copy of an array-like object with the given index changed
+ * by applying the provided function to its value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function will return a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = ["a", "b", "c"];
+ * var toUpperCase = _.invoker("toUpperCase");
+ *
+ * _.updateAt(1, toUpperCase)(arr) // => ["a", "B", "c"]
+ * _.updateAt(-1, toUpperCase)(arr) // => ["a", "b", "C"]
+ * _.updateAt(10, toUpperCase)(arr) // => ["a", "b", "c"]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {Number} index
+ * @param {Function} updater
+ * @returns {Function}
+ */
+function updateAt (index, updater) {
+    return function (arrayLike) {
+        return _setIndex(arrayLike, index, null, updater);
+    };
+}
+
+/**
+ * Creates a copy of the given object having the desired key value updated by applying
+ * the provided function to it.<br/>
+ * This function is meant for updating existing enumerable properties, and for those it
+ * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
+ * <code>source</code> is returned otherwise.
+ * @example
+ * var user = {name: "John", visits: 2};
+ * var toUpperCase = _.invoker("toUpperCase");
+ *
+ * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
+ * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}
+ *
+ * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
+ * var user = Object.create({name: "John"}, {visits: {value: 2}});
+ * var increment = _.partial(_.add, 1);
+ *
+ * _.updateIn(user, "visits", increment) // => {name: "John", visits: 2}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updateKey|updateKey}
+ * @param {Object} source
+ * @param {String} key
+ * @param {Function} updater
+ * @returns {Object}
+ */
+function updateIn (source, key, updater) {
+    return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
+ * <code>key</code> and <code>updater</code>, expecting the object to act upon.
+ * @example
+ * var user = {name: "John", visits: 2};
+ * var increment = _.partial(_.add, 1);
+ * var incrementVisits = _.updateKey("visits", increment);
+ *
+ * incrementVisits(user) // => {name: "John", visits: 3}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updateIn|updateIn}
+ * @param {String} key
+ * @param {Function} updater
+ * @returns {Function}
+ */
+function updateKey (key, updater) {
+    return partial(updateIn, _, key, updater);
+}
+
+lamb.getAt = getAt;
+lamb.getIn = getIn;
+lamb.getKey = getKey;
+lamb.getPath = getPath;
+lamb.getPathIn = getPathIn;
+lamb.head = head;
+lamb.last = last;
+lamb.setAt = setAt;
+lamb.setIn = setIn;
+lamb.setKey = setKey;
+lamb.setPath = setPath;
+lamb.setPathIn = setPathIn;
+lamb.updateAt = updateAt;
+lamb.updateIn = updateIn;
+lamb.updateKey = updateKey;
