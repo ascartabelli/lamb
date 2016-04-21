@@ -7,6 +7,36 @@ function _isEnumerable (obj, key) {
     return key in Object(obj) && ~enumerables(obj).indexOf(key);
 }
 
+function _getPathInfo (obj, parts) {
+    var target = obj;
+    var i = -1;
+    var len = parts.length;
+
+    var currentKey;
+    var currentKeyAsInt;
+
+    while (++i < len) {
+        currentKey = parts[i];
+        currentKeyAsInt = parseInt(currentKey, 10);
+
+        if (Array.isArray(target) && currentKeyAsInt == currentKey) {
+            if (isUndefined(_getNaturalIndex(currentKeyAsInt, target.length))) {
+                break;
+            }
+
+            target = getIndex(target, currentKeyAsInt);
+        } else {
+            if (!_isEnumerable(target, currentKey)) {
+                break;
+            }
+
+            target = target[currentKey];
+        }
+    }
+
+    return i === len ? {isValid: true, target: target} : {isValid: false, target: void 0};
+}
+
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
     var idx = _getNaturalIndex(index, result.length);
@@ -19,22 +49,17 @@ function _setIndex (arrayLike, index, value, updater) {
 }
 
 function _setPathIn (obj, parts, value) {
-    var headAsInt = parseInt(parts[0], 10);
-    var target;
-    var setter;
+    var key = parts[0];
+    var keyAsInt = parseInt(key, 10);
+    var isIndex = Array.isArray(obj) && keyAsInt == key;
+    var setter = isIndex ? partial(_setIndex, obj, keyAsInt) : partial(setIn, obj, key);
+    var v = parts.length === 1 ? value : _setPathIn(
+        isIndex ? getIndex(obj, keyAsInt) : _isEnumerable(obj, key) ? obj[key] : void 0,
+        parts.slice(1),
+        value
+    );
 
-    if (Array.isArray(obj) && headAsInt == parts[0]) {
-        target = getIndex(obj, headAsInt);
-        setter = partial(_setIndex, obj, headAsInt);
-    } else {
-        if (_isEnumerable(obj, parts[0])) {
-            target = obj[parts[0]];
-        }
-
-        setter = partial(setIn, obj, parts[0]);
-    }
-
-    return setter(parts.length > 1 ? _setPathIn(target, parts.slice(1), value) : value);
+    return setter(v);
 }
 
 /**
@@ -400,6 +425,7 @@ function setPath (path, value, separator) {
  * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
  * As a result of that, array-like objects will be converted to objects having numbers as keys
  * and paths targeting non-object values will be converted to empty objects.<br/>
+ * Non-enumerable properties encountered in the path will be considered as non-existent properties.<br/>
  * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
  * use custom path separators.
  * @example
@@ -432,14 +458,14 @@ function setPath (path, value, separator) {
  * @category Object
  * @see {@link module:lamb.setPath|setPath}
  * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
- * @param {Object|Array} obj
+ * @param {Object|Array} source
  * @param {String} path
  * @param {*} value
  * @param {String} [separator="."]
  * @returns {Object|Array}
  */
-function setPathIn (obj, path, value, separator) {
-    return _setPathIn(obj, path.split(separator || "."), value);
+function setPathIn (source, path, value, separator) {
+    return _setPathIn(source, path.split(separator || "."), value);
 }
 
 /**
@@ -491,6 +517,7 @@ function updateAt (index, updater) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.updateKey|updateKey}
+ * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
  * @param {Object} source
  * @param {String} key
  * @param {Function} updater
@@ -538,12 +565,90 @@ var updateIndex = partial(_setIndex, _, _, null);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.updateIn|updateIn}
+ * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
  * @param {String} key
  * @param {Function} updater
  * @returns {Function}
  */
 function updateKey (key, updater) {
     return partial(updateIn, _, key, updater);
+}
+
+/**
+ * Builds a partial application of {@link module:lamb.updateIn|updateIn} expecting the object to act upon.
+ * @example
+ * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
+ * var increment = _.partial(_.add, 1);
+ * var incrementScores = _.updatePath("status.scores", _.mapWith(increment))
+ *
+ * incrementScores(user) // => {id: 1, status: {scores: [3, 5, 7], visits: 0}}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updatePathIn|updatePathIn}
+ * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+ * @param {String} path
+ * @param {Function} updater
+ * @param {String} [separator="."]
+ * @returns {Function}
+ */
+function updatePath (path, updater, separator) {
+    return partial(updatePathIn, _, path, updater, separator);
+}
+
+/**
+ * Allows to change a nested value in a copy of the given object by applying the provided
+ * function to it.<br/>
+ * This function is meant for updating existing enumerable properties, and for those it
+ * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
+ * <code>source</code> is returned otherwise.<br/>
+ * Like the other "path" functions, negative indexes can be used to access array elements.
+ * @example
+ * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
+ * var increment = _.partial(_.add, 1);
+ *
+ * _.updatePathIn(user, "status.visits", increment) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
+ *
+ * @example <caption>Targeting arrays</caption>
+ * _.updatePathIn(user, "status.scores.0", increment) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
+ *
+ * // you can use negative indexes as well
+ * _.updatePathIn(user, "status.scores.-1", increment) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
+ *
+ * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+ * var user = {id: 1, scores: [
+ *     {value: 2, year: "2000"},
+ *     {value: 4, year: "2001"},
+ *     {value: 6, year: "2002"}
+ * ]};
+ *
+ * var newUser = _.updatePathIn(user, "scores.0.value", increment);
+ * // "newUser" holds:
+ * // {id: 1, scores: [
+ * //     {value: 3, year: "2000"},
+ * //     {value: 4, year: "2001"},
+ * //     {value: 6, year: "2002"}
+ * // ]}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.updatePath|updatePath}
+ * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+ * @param {Object|Array} source
+ * @param {String} path
+ * @param {Function} updater
+ * @param {String} [separator="."]
+ * @returns {Object|Array}
+ */
+function updatePathIn (source, path, updater, separator) {
+    var parts = path.split(separator || ".");
+    var pathInfo = _getPathInfo(source, parts);
+
+    if (pathInfo.isValid) {
+        return _setPathIn(source, parts, updater(pathInfo.target));
+    } else {
+        return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
+    }
 }
 
 lamb.getAt = getAt;
@@ -564,3 +669,5 @@ lamb.updateAt = updateAt;
 lamb.updateIn = updateIn;
 lamb.updateIndex = updateIndex;
 lamb.updateKey = updateKey;
+lamb.updatePath = updatePath;
+lamb.updatePathIn = updatePathIn;

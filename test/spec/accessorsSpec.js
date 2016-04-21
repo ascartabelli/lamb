@@ -157,6 +157,7 @@ describe("lamb.accessors", function () {
                 expect(incSpy.calls.argsFor(1)[0]).toBe(3);
                 expect(lamb.updateIndex(s, 0, lamb.always("c"))).toEqual(["c", "e", "l", "l", "o"]);
                 expect(lamb.updateAt(0, lamb.always("c"))(s)).toEqual(["c", "e", "l", "l", "o"]);
+                expect(lamb.updateAt(1, lamb.always(99))([1, void 0, 3])).toEqual([1, 99, 3]);
             });
 
             it("should allow negative indexes", function () {
@@ -385,6 +386,10 @@ describe("lamb.accessors", function () {
                     expect(makeDoublesSpy.calls.argsFor(0)[0]).toBe(arr);
                     expect(makeDoublesSpy.calls.argsFor(1).length).toBe(1);
                     expect(makeDoublesSpy.calls.argsFor(1)[0]).toBe(arr);
+
+                    var o = {a: 1, b: void 0};
+                    expect(lamb.updateIn(o, "b", lamb.always(99))).toEqual({a: 1, b: 99});
+                    expect(lamb.updateKey("b", lamb.always(99))(o)).toEqual({a: 1, b: 99});
                 });
 
                 it("should transform array-like objects in objects with numbered string as properties", function () {
@@ -435,7 +440,7 @@ describe("lamb.accessors", function () {
             });
         });
 
-        describe("setPath / setPathIn", function () {
+        describe("Path setters", function () {
             var obj = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
 
             Object.defineProperty(obj.b, "w", {
@@ -444,141 +449,325 @@ describe("lamb.accessors", function () {
 
             var objCopy = JSON.parse(JSON.stringify(obj));
 
+            var wannabeEmptyObjects = [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()];
+
             afterEach(function () {
                 expect(obj).toEqual(objCopy);
             });
 
-            it("should allow to set a nested property in a copy of the given object", function () {
-                var r = lamb.setPath("a", 99, ".")(obj);
+            describe("setPath / setPathIn", function () {
+                it("should allow to set a nested property in a copy of the given object", function () {
+                    var r = lamb.setPath("a", 99, ".")(obj);
 
-                expect(r).toEqual(
-                    {a: 99, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
-                );
-                expect(r.b).toBe(obj.b);
-                expect(r["c.d"]).toBe(obj["c.d"]);
-                expect(lamb.setPathIn(obj, "a", 99, ".")).toEqual(r);
+                    expect(r).toEqual(
+                        {a: 99, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                    );
+                    expect(r.b).toBe(obj.b);
+                    expect(r["c.d"]).toBe(obj["c.d"]);
+                    expect(lamb.setPathIn(obj, "a", 99, ".")).toEqual(r);
 
-                var r1 = lamb.setPath("b.c", "bar", ".")(obj);
+                    var r1 = lamb.setPath("b.c", "bar", ".")(obj);
 
-                expect(r1).toEqual(
-                    {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "bar"}, "c.d" : {"e.f": 6}}
-                );
-                expect(r1.b.a).toBe(obj.b.a);
-                expect(r1.b.b).toBe(obj.b.b);
-                expect(r1["c.d"]).toBe(obj["c.d"]);
-                expect(lamb.setPathIn(obj, "b.c", "bar", ".")).toEqual(r1);
+                    expect(r1).toEqual(
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "bar"}, "c.d" : {"e.f": 6}}
+                    );
+                    expect(r1.b.a).toBe(obj.b.a);
+                    expect(r1.b.b).toBe(obj.b.b);
+                    expect(r1["c.d"]).toBe(obj["c.d"]);
+                    expect(lamb.setPathIn(obj, "b.c", "bar", ".")).toEqual(r1);
+                });
+
+                it("should use the dot as the default separator", function () {
+                    var r = lamb.setPath("b.a.g", 99)(obj);
+
+                    expect(r).toEqual(
+                        {a: 2, b: {a: {g: 99, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                    );
+                    expect(r.b.b).toBe(obj.b.b);
+                    expect(r["c.d"]).toBe(obj["c.d"]);
+                    expect(lamb.setPathIn(obj, "b.a.g", 99)).toEqual(r);
+                });
+
+                it("should allow custom separators", function () {
+                    var r = lamb.setPath("c.d->e.f", 99, "->")(obj);
+
+                    expect(r).toEqual(
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 99}}
+                    );
+                    expect(r.b).toBe(obj.b);
+                    expect(lamb.setPathIn(obj, "c.d->e.f", 99, "->")).toEqual(r);
+                });
+
+                it("should add non-existent properties to existing objects", function () {
+                    var r1 = lamb.setPath("b.z", 99)(obj);
+                    var r2 = lamb.setPath("z.a", 99)(obj);
+                    var r3 = lamb.setPath("z.a.b", 99)(obj);
+
+                    expect(r1).toEqual(
+                       {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", z: 99}, "c.d" : {"e.f": 6}}
+                    );
+                    expect(lamb.setPathIn(obj, "b.z", 99)).toEqual(r1);
+
+                    expect(r2).toEqual(
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: 99}}
+                    );
+                    expect(lamb.setPathIn(obj, "z.a", 99)).toEqual(r2);
+
+                    expect(r3).toEqual(
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
+                    );
+                    expect(lamb.setPathIn(obj, "z.a.b", 99)).toEqual(r3);
+                });
+
+                it("should treat non-enumerable properties encountered in a path as non-existent properties", function () {
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {z: 99}}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {y: {z: 99}}}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPathIn(obj, "b.w.z", 99)).toEqual(r1);
+                    expect(lamb.setPath("b.w.z", 99)(obj)).toEqual(r1);
+                    expect(lamb.setPathIn(obj, "b.w.y.z", 99)).toEqual(r2);
+                    expect(lamb.setPath("b.w.y.z", 99)(obj)).toEqual(r2);
+                });
+
+                it("should replace indexes when an array is found and the key is a string containing an integer", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 99], c: "foo"}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPath("b.b.1", 99)(obj)).toEqual(r);
+                    expect(lamb.setPathIn(obj, "b.b.1", 99)).toEqual(r);
+                    expect(lamb.setPath("1", 99)([1, 2, 3])).toEqual([1, 99, 3]);
+                    expect(lamb.setPathIn([1, 2, 3], "1", 99)).toEqual([1, 99, 3]);
+                });
+
+                it("should allow using negative array indexes in path parts", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [99, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPath("b.b.-2", 99)(obj)).toEqual(r);
+                    expect(lamb.setPathIn(obj, "b.b.-2", 99)).toEqual(r);
+                    expect(lamb.setPath("-2", 99)([1, 2, 3])).toEqual([1, 99, 3]);
+                    expect(lamb.setPathIn([1, 2, 3], "-2", 99)).toEqual([1, 99, 3]);
+                });
+
+                it("should not add new elements to an array and behave like `setAt` which returns a copy of the array", function () {
+                    var r1 = lamb.setPath("b.b.2", 99)(obj);
+                    var r2 = lamb.setPathIn(obj, "b.b.2", 99);
+
+                    expect(r1).toEqual(obj);
+                    expect(r2).toEqual(obj);
+                    expect(r1.b.b).not.toBe(obj.b.b);
+                    expect(r2.b.b).not.toBe(obj.b.b);
+                });
+
+                it("should allow to change values nested in an array", function () {
+                    var o = {data: [
+                        {id: 1, value: 10},
+                        {id: 2, value: 20},
+                        {id: 3, value: 30}
+                    ]};
+                    var r = {data: [
+                        {id: 1, value: 10},
+                        {id: 2, value: 99},
+                        {id: 3, value: 30}
+                    ]};
+
+                    expect(lamb.setPath("data.1.value", 99)(o)).toEqual(r);
+                    expect(lamb.setPathIn(o, "data.1.value", 99)).toEqual(r);
+                    expect(lamb.setPath("data.-2.value", 99)(o)).toEqual(r);
+                    expect(lamb.setPathIn(o, "data.-2.value", 99)).toEqual(r);
+                });
+
+                it("should build an object with numbered keys when an array-like object is found", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPath("b.c.0", "m")(obj)).toEqual(r);
+                    expect(lamb.setPathIn(obj, "b.c.0", "m")).toEqual(r);
+                });
+
+                it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo"}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPath("b.b.z", 99)(obj)).toEqual(r);
+                    expect(lamb.setPathIn(obj, "b.b.z", 99)).toEqual(r);
+                });
+
+                it("should consider values other than objects or array-like objects as empty objects", function () {
+                    wannabeEmptyObjects.map(function (value) {
+                        expect(lamb.setPathIn(value, "a", 99)).toEqual({a: 99});
+                        expect(lamb.setPath("a", 99)(value)).toEqual({a: 99});
+                    });
+                });
             });
 
-            it("should use the dot as the default separator", function () {
-                var r = lamb.setPath("b.a.g", 99)(obj);
+            describe("updatePath / updatePathIn", function () {
+                var double = function (n) { return n * 2; };
+                var inc = function (n) { return n + 1; };
+                var toUpperCase = lamb.invoker("toUpperCase");
 
-                expect(r).toEqual(
-                    {a: 2, b: {a: {g: 99, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
-                );
-                expect(r.b.b).toBe(obj.b.b);
-                expect(r["c.d"]).toBe(obj["c.d"]);
-                expect(lamb.setPathIn(obj, "b.a.g", 99)).toEqual(r);
-            });
+                it("should allow to update a nested property in a copy of the given object using the provided function", function () {
+                    var makeDoubles = lamb.mapWith(double);
+                    var makeDoublesSpy = jasmine.createSpy("makeDoubles").and.callFake(makeDoubles);
+                    var newObjA = lamb.updatePathIn(obj, "b.b", makeDoublesSpy, ".");
+                    var newObjB = lamb.updatePath("b.b", makeDoublesSpy, ".")(obj);
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 10], c: "foo"}, "c.d" : {"e.f": 6}};
 
-            it("should allow custom separators", function () {
-                var r = lamb.setPath("c.d->e.f", 99, "->")(obj);
+                    expect(newObjA).toEqual(r1);
+                    expect(newObjB).toEqual(r1);
+                    expect(makeDoublesSpy.calls.count()).toBe(2);
+                    expect(makeDoublesSpy.calls.argsFor(0).length).toBe(1);
+                    expect(makeDoublesSpy.calls.argsFor(0)[0]).toBe(obj.b.b);
+                    expect(makeDoublesSpy.calls.argsFor(1).length).toBe(1);
+                    expect(makeDoublesSpy.calls.argsFor(1)[0]).toBe(obj.b.b);
 
-                expect(r).toEqual(
-                    {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 99}}
-                );
-                expect(r.b).toBe(obj.b);
-                expect(lamb.setPathIn(obj, "c.d->e.f", 99, "->")).toEqual(r);
-            });
+                    expect(newObjA.b.a).toBe(obj.b.a);
+                    expect(newObjA["c.d"]).toBe(obj["c.d"]);
 
-            it("should add non-existent properties to existing objects", function () {
-                var r1 = lamb.setPath("b.z", 99)(obj);
-                var r2 = lamb.setPath("z.a", 99)(obj);
-                var r3 = lamb.setPath("z.a.b", 99)(obj);
+                    var r2 = {a: 3, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
 
-                expect(r1).toEqual(
-                   {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", z: 99}, "c.d" : {"e.f": 6}}
-                );
-                expect(lamb.setPathIn(obj, "b.z", 99)).toEqual(r1);
+                    expect(lamb.updatePathIn(obj, "a", inc, ".")).toEqual(r2);
+                    expect(lamb.updatePath("a", inc, ".")(obj)).toEqual(r2);
+                });
 
-                expect(r2).toEqual(
-                    {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: 99}}
-                );
-                expect(lamb.setPathIn(obj, "z.a", 99)).toEqual(r2);
+                it("should use the dot as the default separator", function () {
+                    var r = lamb.updatePath("b.a.g", double)(obj);
 
-                expect(r3).toEqual(
-                    {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
-                );
-                expect(lamb.setPathIn(obj, "z.a.b", 99)).toEqual(r3);
-            });
+                    expect(r).toEqual(
+                        {a: 2, b: {a: {g: 20, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                    );
+                    expect(r.b.b).toBe(obj.b.b);
+                    expect(r["c.d"]).toBe(obj["c.d"]);
+                    expect(lamb.updatePathIn(obj, "b.a.g", double)).toEqual(r);
+                });
 
-            it("should treat non-enumerable properties encountered in a path as non-existent properties", function () {
-                var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {z: 99}}, "c.d" : {"e.f": 6}};
-                var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {y: {z: 99}}}, "c.d" : {"e.f": 6}};
+                it("should allow custom separators", function () {
+                    var r = lamb.updatePath("c.d->e.f", double, "->")(obj);
 
-                expect(lamb.setPathIn(obj, "b.w.z", 99)).toEqual(r1);
-                expect(lamb.setPath("b.w.z", 99)(obj)).toEqual(r1);
-                expect(lamb.setPathIn(obj, "b.w.y.z", 99)).toEqual(r2);
-                expect(lamb.setPath("b.w.y.z", 99)(obj)).toEqual(r2);
-            });
+                    expect(r).toEqual(
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 12}}
+                    );
+                    expect(r.b).toBe(obj.b);
+                    expect(lamb.updatePathIn(obj, "c.d->e.f", double, "->")).toEqual(r);
+                });
 
-            it("should replace indexes when an array is found and the key is a string containing an integer", function () {
-                var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 99], c: "foo"}, "c.d" : {"e.f": 6}};
+                it("should be possible to use a path with a single key", function () {
+                    var arr = [1, 2, 3];
+                    var o = {a: 1, b: 2};
 
-                expect(lamb.setPath("b.b.1", 99)(obj)).toEqual(r);
-                expect(lamb.setPathIn(obj, "b.b.1", 99)).toEqual(r);
-                expect(lamb.setPath("1", 99)([1, 2, 3])).toEqual([1, 99, 3]);
-                expect(lamb.setPathIn([1, 2, 3], "1", 99)).toEqual([1, 99, 3]);
-            });
+                    expect(lamb.updatePathIn(arr, "1", inc)).toEqual([1, 3, 3]);
+                    expect(lamb.updatePath("-1", inc)(arr)).toEqual([1, 2, 4]);
+                    expect(lamb.updatePathIn(o, "b", inc)).toEqual({a: 1, b: 3});
+                    expect(lamb.updatePath("a", inc)(o)).toEqual({a: 2, b: 2});
+                });
 
-            it("should allow using negative array indexes in path parts", function () {
-                var r = {a: 2, b: {a: {g: 10, h: 11}, b: [99, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+                it("should replace indexes when an array is found and the key is a string containing an integer", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 10], c: "foo"}, "c.d" : {"e.f": 6}};
 
-                expect(lamb.setPath("b.b.-2", 99)(obj)).toEqual(r);
-                expect(lamb.setPathIn(obj, "b.b.-2", 99)).toEqual(r);
-                expect(lamb.setPath("-2", 99)([1, 2, 3])).toEqual([1, 99, 3]);
-                expect(lamb.setPathIn([1, 2, 3], "-2", 99)).toEqual([1, 99, 3]);
-            });
+                    expect(lamb.updatePath("b.b.1", double)(obj)).toEqual(r);
+                    expect(lamb.updatePathIn(obj, "b.b.1", double)).toEqual(r);
+                    expect(lamb.updatePath("1", double)([1, 2, 3])).toEqual([1, 4, 3]);
+                    expect(lamb.updatePathIn([1, 2, 3], "1", double)).toEqual([1, 4, 3]);
 
-            it("should not add new elements to an array and behave like `setAt` which returns a copy of the array", function () {
-                var r1 = lamb.setPath("b.b.2", 99)(obj);
-                var r2 = lamb.setPathIn(obj, "b.b.2", 99);
+                });
 
-                expect(r1).toEqual(obj);
-                expect(r2).toEqual(obj);
-                expect(r1.b.b).not.toBe(obj.b.b);
-                expect(r2.b.b).not.toBe(obj.b.b);
-            });
+                it("should allow using negative array indexes in path parts", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 5], c: "foo"}, "c.d" : {"e.f": 6}};
 
-            it("should allow to change values nested in an array", function () {
-                var o = {data: [
-                    {id: 1, value: 10},
-                    {id: 2, value: 20},
-                    {id: 3, value: 30}
-                ]};
-                var r = {data: [
-                    {id: 1, value: 10},
-                    {id: 2, value: 99},
-                    {id: 3, value: 30}
-                ]};
+                    expect(lamb.updatePath("b.b.-2", double)(obj)).toEqual(r);
+                    expect(lamb.updatePathIn(obj, "b.b.-2", double)).toEqual(r);
+                    expect(lamb.updatePath("-2", double)([1, 2, 3])).toEqual([1, 4, 3]);
+                    expect(lamb.updatePathIn([1, 2, 3], "-2", double)).toEqual([1, 4, 3]);
+                });
 
-                expect(lamb.setPath("data.1.value", 99)(o)).toEqual(r);
-                expect(lamb.setPathIn(o, "data.1.value", 99)).toEqual(r);
-                expect(lamb.setPath("data.-2.value", 99)(o)).toEqual(r);
-                expect(lamb.setPathIn(o, "data.-2.value", 99)).toEqual(r);
-            });
+                it("should allow to change values nested in an array", function () {
+                    var o = {data: [
+                        {id: 1, value: 10},
+                        {id: 2, value: 20},
+                        {id: 3, value: 30}
+                    ]};
+                    var r = {data: [
+                        {id: 1, value: 10},
+                        {id: 2, value: 21},
+                        {id: 3, value: 30}
+                    ]};
 
-            it("should build an object with numbered keys when an array-like object is found", function () {
-                var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}}, "c.d" : {"e.f": 6}};
+                    expect(lamb.updatePath("data.1.value", inc)(o)).toEqual(r);
+                    expect(lamb.updatePathIn(o, "data.1.value", inc)).toEqual(r);
+                    expect(lamb.updatePath("data.-2.value", inc)(o)).toEqual(r);
+                    expect(lamb.updatePathIn(o, "data.-2.value", inc)).toEqual(r);
+                });
 
-                expect(lamb.setPath("b.c.0", "m")(obj)).toEqual(r);
-                expect(lamb.setPathIn(obj, "b.c.0", "m")).toEqual(r);
-            });
+                it("should build an object with numbered keys when an array-like object is found", function () {
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}}, "c.d" : {"e.f": 6}};
 
-            it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
-                var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo"}, "c.d" : {"e.f": 6}};
+                    expect(lamb.updatePath("b.c.0", lamb.always("m"))(obj)).toEqual(r);
+                    expect(lamb.updatePathIn(obj, "b.c.0", lamb.always("m"))).toEqual(r);
+                });
 
-                expect(lamb.setPath("b.b.z", 99)(obj)).toEqual(r);
-                expect(lamb.setPathIn(obj, "b.b.z", 99)).toEqual(r);
+                it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
+                    obj.b.b.z = 1;
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo"}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.updatePath("b.b.z", lamb.always(99))(obj)).toEqual(r);
+                    expect(lamb.updatePathIn(obj, "b.b.z", lamb.always(99))).toEqual(r);
+                    delete obj.b.b.z;
+                });
+
+                it("should not add a new property if the given path doesn't exist on the source, and return a copy of the source instead", function () {
+                    var arr = [1];
+                    var newObjA = lamb.updatePathIn(obj, "b.a.z", lamb.always(99));
+                    var newObjB = lamb.updatePathIn(obj, "b.b.1.z", lamb.always(99));
+                    var newObjC = lamb.updatePath("xyz", lamb.always(99))(obj);
+                    var newObjD = lamb.updatePathIn(obj, "b.b.-10", lamb.always(99));
+                    var newObjE = lamb.updatePath("xyz", lamb.always(99))(arr);
+                    var newObjF = lamb.updatePath("x.y.z", lamb.always(99))(arr);
+                    var newObjG = lamb.updatePath("1", lamb.always(99))(arr);
+                    var newObjH = lamb.updatePath("-10", lamb.always(99))(arr);
+
+                    expect(newObjA).toEqual(obj);
+                    expect(newObjA).not.toBe(obj);
+                    expect(newObjB).toEqual(obj);
+                    expect(newObjB).not.toBe(obj);
+                    expect(newObjC).toEqual(obj);
+                    expect(newObjC).not.toBe(obj);
+                    expect(newObjD).toEqual(obj);
+                    expect(newObjD).not.toBe(obj);
+                    expect(newObjE).toEqual(arr);
+                    expect(newObjE).not.toBe(arr);
+                    expect(newObjF).toEqual(arr);
+                    expect(newObjF).not.toBe(arr);
+                    expect(newObjG).toEqual(arr);
+                    expect(newObjG).not.toBe(arr);
+                    expect(newObjH).toEqual(arr);
+                    expect(newObjH).not.toBe(arr);
+                });
+
+                it("should not see a non-existing path when the target is undefined", function () {
+                    var fooObj = {a: {b: {c: 2, d: void 0}}};
+                    var r = {a: {b: {c: 2, d: 99}}};
+                    var fn99 = lamb.always(99);
+
+                    expect(lamb.updatePathIn(fooObj, "a.b.d", fn99)).toEqual(r);
+                    expect(lamb.updatePath("a.b.d", fn99)(fooObj)).toEqual(r);
+                });
+
+                it("should return a copy of the source object when a non enumerable property is part of the path or its target", function () {
+                    var fooObj = Object.create({}, {
+                        a: {enumerable: true, value: 1},
+                        b: {value: {c: 2, d: {e: 3}}}
+                    });
+
+                    expect(lamb.updatePathIn(fooObj, "b", lamb.setKey("c", 99))).toEqual({a: 1});
+                    expect(lamb.updatePath("b", lamb.setKey("c", 99))(fooObj)).toEqual({a: 1});
+                    expect(lamb.updatePathIn(fooObj, "b.c", lamb.always(99))).toEqual({a: 1});
+                    expect(lamb.updatePath("b.d.e", lamb.always(99))(fooObj)).toEqual({a: 1});
+                });
+
+                it("should consider values other than objects or array-like objects as empty objects", function () {
+                    wannabeEmptyObjects.map(function (value) {
+                        expect(lamb.updatePathIn(value, "a", lamb.always(99))).toEqual({});
+                        expect(lamb.updatePath("a", lamb.always(99))(value)).toEqual({});
+                        expect(lamb.updatePathIn(value, "a.b.c", lamb.always(99))).toEqual({});
+                        expect(lamb.updatePath("a.b.c", lamb.always(99))(value)).toEqual({});
+                    });
+                });
             });
         });
     });
