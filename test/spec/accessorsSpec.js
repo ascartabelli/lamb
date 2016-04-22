@@ -9,6 +9,8 @@ describe("lamb.accessors", function () {
             it("should retrieve the element at the given index in an array-like object", function () {
                 var getThird = lamb.getAt(2);
 
+                expect(lamb.getIndex(arr, 1)).toBe(2);
+                expect(lamb.getIndex(s, 1)).toBe("b");
                 expect(getThird(arr)).toBe(3);
                 expect(getThird(s)).toBe("c");
                 expect(lamb.head(arr)).toBe(1);
@@ -18,22 +20,35 @@ describe("lamb.accessors", function () {
             });
 
             it("should allow negative indexes", function () {
+                expect(lamb.getIndex(arr, -2)).toBe(3);
+                expect(lamb.getIndex(s, -2)).toBe("c");
                 expect(lamb.getAt(-2)(arr)).toBe(3);
                 expect(lamb.getAt(-2)(s)).toBe("c");
             });
 
             it("should throw an error in no array-like object is supplied", function () {
-                expect(lamb.getAt(2)).toThrow();
-                expect(lamb.head).toThrow();
-                expect(lamb.last).toThrow();
+                expect(function () { lamb.getIndex(null, 2); }).toThrow();
+                expect(function () { lamb.getIndex(void 0, 2); }).toThrow();
+                expect(function () { lamb.getAt(2)(null); }).toThrow();
+                expect(function () { lamb.getAt(2)(void 0); }).toThrow();
+                expect(function () { lamb.head(null); }).toThrow();
+                expect(function () { lamb.last(void 0); }).toThrow();
             });
 
-            it("should return undefined when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
+            it("should return undefined when the object isn't an array-like, no index is supplied, the index isn't an integer or the index is out of bounds", function () {
                 [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
                     expect(lamb.getAt(v)(arr)).toBeUndefined();
                 });
 
-                expect(lamb.getAt()(arr)).toBeUndefined();
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.getIndex(v, 2)).toBeUndefined();
+                    expect(lamb.getAt(2)(v)).toBeUndefined();
+                    expect(lamb.head(v)).toBeUndefined();
+                    expect(lamb.last(v)).toBeUndefined();
+                });
+
+                expect(lamb.getIndex(arr, 2.2)).toBeUndefined();
+                expect(lamb.getAt("1")(arr)).toBeUndefined();
                 expect(lamb.head([])).toBeUndefined();
                 expect(lamb.last([])).toBeUndefined();
             });
@@ -210,6 +225,37 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "b.c.0")).toBe("f");
             });
 
+            it("should allow negative indexes", function () {
+                expect(lamb.getPath("b.b.-1")(obj)).toBe(5);
+                expect(lamb.getPathIn(obj, "b.b.-1")).toBe(5);
+                expect(lamb.getPath("b.c.-3")(obj)).toBe("f");
+                expect(lamb.getPathIn(obj, "b.c.-3")).toBe("f");
+            });
+
+            it("should be able to retrieve values nested in arrays", function () {
+                var o = {data: [
+                    {id: 1, value: 10},
+                    {id: 2, value: 20},
+                    {id: 3, value: 30}
+                ]};
+
+                expect(lamb.getPath("data.1.value")(o)).toBe(20)
+                expect(lamb.getPathIn(o, "data.1.value")).toBe(20);
+                expect(lamb.getPath("data.-1.value")(o)).toBe(30)
+                expect(lamb.getPathIn(o, "data.-1.value")).toBe(30);
+            });
+
+            it("should give priority to object keys over array-like indexes when a negative index is encountered", function () {
+                var o = {a: ["abc", new String("def"), "ghi"]};
+                o.a["-1"] = "foo";
+                o.a[1]["-2"] = "bar";
+
+                expect(lamb.getPath("a.-1")(o)).toBe("foo");
+                expect(lamb.getPathIn(o, "a.-1")).toBe("foo");
+                expect(lamb.getPath("a.1.-2")(o)).toBe("bar");
+                expect(lamb.getPathIn(o, "a.1.-2")).toBe("bar");
+            });
+
             it("should accept a custom path separator", function () {
                 expect(lamb.getPath("b->b->0", "->")(obj)).toBe(4);
                 expect(lamb.getPath("c.d/e.f", "/")(obj)).toBe(6);
@@ -222,6 +268,10 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
                 expect(lamb.getPath("b.z.a")(obj)).toBeUndefined();
                 expect(lamb.getPathIn(obj, "b.z.a")).toBeUndefined();
+                expect(lamb.getPath("b.b.10")(obj)).toBeUndefined();
+                expect(lamb.getPathIn(obj, "b.b.10")).toBeUndefined();
+                expect(lamb.getPath("b.b.10.z")(obj)).toBeUndefined();
+                expect(lamb.getPathIn(obj, "b.b.10.z")).toBeUndefined();
             });
         });
 

@@ -1,5 +1,5 @@
 
-function _getPositiveIndex (index, len) {
+function _getNaturalIndex (index, len) {
     return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
 }
 
@@ -9,7 +9,7 @@ function _isEnumerable (obj, key) {
 
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
-    var idx = _getPositiveIndex(index, arrayLike.length);
+    var idx = _getNaturalIndex(index, arrayLike.length);
 
     if (!isUndefined(idx)) {
         result[idx] = updater ? updater(arrayLike[idx]) : value;
@@ -24,25 +24,19 @@ function _setPathIn (obj, parts, value) {
     var setter;
 
     if (Array.isArray(obj) && headAsInt == parts[0]) {
-        target = getAt(headAsInt)(obj);
-        setter = function (v) {
-            return setAt(headAsInt, v)(obj);
-        };
+        target = getIndex(obj, headAsInt);
+        setter = partial(_setIndex, obj, headAsInt);
     } else {
         target = (obj || {})[parts[0]];
         setter = partial(setIn, obj, parts[0]);
     }
 
-    return setter(
-        parts.length < 2 ? value : _setPathIn(target, parts.slice(1), value)
-    );
+    return setter(parts.length > 1 ? _setPathIn(target, parts.slice(1), value) : value);
 }
 
 /**
- * Retrieves the element at the given index in an array-like object.<br/>
- * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
- * If the index isn't supplied, or if its value isn't an integer within the array-like bounds,
- * the function will return <code>undefined</code>.
+ * A curried version of {@link module:lamb.getIndex|getIndex} that uses the provided index
+ * to build a function expecting the array-like object holding the element we want to retrieve.
  * @example
  * var getFifthElement = _.getAt(4);
  *
@@ -57,16 +51,13 @@ function _setPathIn (obj, parts, value) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
+ * @see {@link module:lamb.getIndex|getIndex}
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
  * @param {Number} index
  * @returns {Function}
  */
-function getAt (index) {
-    return function (arrayLike) {
-        var idx = _getPositiveIndex(index, arrayLike.length);
-        return isUndefined(idx) ? idx : arrayLike[idx];
-    };
-}
+var getAt = _curry(getIndex, 2, true);
 
 /**
  * Returns the value of the object property with the given key.
@@ -89,6 +80,33 @@ function getIn (obj, key) {
 }
 
 /**
+ * Retrieves the element at the given index in an array-like object.<br/>
+ * Like {@link module:lamb.slice|slice} the index can be negative.<br/>
+ * If the index isn't supplied, or if its value isn't an integer within the array-like bounds,
+ * the function will return <code>undefined</code>.<br/>
+ * <code>getIndex</code> will throw an exception when receives <code>null</code> or
+ * <code>undefined</code> in place of an array-like object, but returns <code>undefined</code>
+ * for any other value.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.getIndex(arr, 1) // => 2
+ * _.getIndex(arr, -1) // => 5
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.getAt|getAt}
+ * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+ * @param {ArrayLike} arrayLike
+ * @param {Number} index
+ * @returns {*}
+ */
+function getIndex (arrayLike, index) {
+    var idx = _getNaturalIndex(index, arrayLike.length);
+    return isUndefined(idx) ? idx : arrayLike[idx];
+}
+
+/**
  * A curried version of {@link module:lamb.getIn|getIn}.<br/>
  * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
  * @example
@@ -101,9 +119,9 @@ function getIn (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.getIn|getIn}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
- * @function
  * @param {String} key
  * @returns {Function}
  */
@@ -111,7 +129,7 @@ var getKey = _curry(getIn, 2, true);
 
 /**
  * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
- * path and separator, expecting the object to act upon.
+ * path and separator, expecting the object to act upon.<br/>
  * @example
  *  var user = {
  *     name: "John",
@@ -143,7 +161,10 @@ function getPath (path, separator) {
 /**
  * Gets a nested property value from an object using the given path.<br/>
  * The path is a string with property names separated by dots by default, but
- * it can be customised with the optional third parameter.
+ * it can be customised with the optional third parameter.<br/>
+ * You can use integers in the path, even negative ones, to refer to array-like
+ * object indexes, but the priority will be given to existing object keys:
+ * the last example explains this particular case.
  * @example
  * var user = {
  *     name: "John",
@@ -151,16 +172,32 @@ function getPath (path, separator) {
  *     login: {
  *         "user.name": "jdoe",
  *         password: "abc123"
- *     }
+ *     },
+ *     scores: [
+ *         {id: 1, value: 10},
+ *         {id: 2, value: 20},
+ *         {id: 3, value: 30}
+ *     ]
  * };
  *
- * // same as _.getIn if no path is involved
  * _.getPathIn(user, "name") // => "John"
- *
  * _.getPathIn(user, "login.password") // => "abc123";
  * _.getPathIn(user, "login/user.name", "/") // => "jdoe"
  * _.getPathIn(user, "name.foo") // => undefined
  * _.getPathIn(user, "name.foo.bar") // => undefined
+ *
+ * @example <caption>Accessing array-like objects indexes:</caption>
+ * _.getPathIn(user, "login.password.1") // => "b"
+ * _.getPathIn(user, "scores.0") // => {id: 1, value: 10}
+ * _.getPathIn(user, "scores.-1.value") // => 30
+ *
+ * @example <caption>Priority will be given to existing object keys over indexes:</caption>
+ * _.getPathIn(user, "scores.-1") // => {id: 3, value: 30}
+ *
+ * // let's do something funny
+ * user.scores["-1"] = "foo bar";
+ *
+ * _.getPathIn(user, "scores.-1") // => "foo bar";
  *
  * @memberof module:lamb
  * @category Object
@@ -172,7 +209,10 @@ function getPath (path, separator) {
  * @returns {*}
  */
 function getPathIn (obj, path, separator) {
-    return path.split(separator || ".").reduce(tapArgs(getIn, Object), obj);
+    return path.split(separator || ".").reduce(
+        adapter(tapArgs(getIn, Object), tapArgs(getIndex, Object, Number)),
+        obj
+    );
 }
 
 /**
@@ -187,6 +227,7 @@ function getPathIn (obj, path, separator) {
  * @category Array
  * @function
  * @see {@link module:lamb.last|last}
+ * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
  * @param {ArrayLike} arrayLike
  * @returns {*}
  */
@@ -204,6 +245,7 @@ var head = getAt(0);
  * @category Array
  * @function
  * @see {@link module:lamb.head|head}
+ * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
  * @param {ArrayLike} arrayLike
  * @returns {*}
  */
@@ -451,6 +493,7 @@ function updateKey (key, updater) {
 
 lamb.getAt = getAt;
 lamb.getIn = getIn;
+lamb.getIndex = getIndex;
 lamb.getKey = getKey;
 lamb.getPath = getPath;
 lamb.getPathIn = getPathIn;
