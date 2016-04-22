@@ -253,7 +253,7 @@ var last = getAt(-1);
 
 /**
  * Builds a function that creates a copy of an array-like object with the given
- * index changed to the provided value.<br/>
+ * index changed to the desired value.<br/>
  * If the index is not an integer or if it's out of bounds, the function
  * will return a copy of the original array.<br/>
  * Negative indexes are allowed.
@@ -270,6 +270,7 @@ var last = getAt(-1);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.setIndex|setIndex}
  * @param {Number} index
  * @param {*} value
  * @returns {Function}
@@ -311,6 +312,30 @@ function setAt (index, value) {
 function setIn (source, key, value) {
     return _merge(enumerables, source, make([key], [value]));
 }
+
+/**
+ * Creates a copy of an array-like object with the given index changed to
+ * the desired value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function
+ * will return a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = [1, 2, 3];
+ *
+ * _.setIndex(arr, 1, 99) // => [1, 99, 3]
+ * _.setIndex(arr, -1, 99) // => [1, 2, 99]
+ * _.setIndex(arr, 10, 99) // => [1, 2, 3] (not a reference to `arr`)
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.setAt|setAt}
+ * @param {ArrayLike} arrayLike
+ * @param {Number} index
+ * @param {*} value
+ * @returns {*}
+ */
+var setIndex = aritize(_setIndex, 3);
 
 /**
  * Builds a partial application of {@link module:lamb.setIn|setIn} with the provided
@@ -415,9 +440,10 @@ function setPathIn (obj, path, value, separator) {
 }
 
 /**
- * Builds a function that creates a copy of an array-like object with the given index changed
- * by applying the provided function to its value.<br/>
- * If the index is not an integer or if it's out of bounds, the function will return a copy of the original array.<br/>
+ * Builds a function that creates a copy of an array-like object with the given index
+ * changed by applying the provided function to its value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function will return
+ * a copy of the original array.<br/>
  * Negative indexes are allowed.
  * @example
  * var arr = ["a", "b", "c"];
@@ -425,10 +451,11 @@ function setPathIn (obj, path, value, separator) {
  *
  * _.updateAt(1, toUpperCase)(arr) // => ["a", "B", "c"]
  * _.updateAt(-1, toUpperCase)(arr) // => ["a", "b", "C"]
- * _.updateAt(10, toUpperCase)(arr) // => ["a", "b", "c"]
+ * _.updateAt(10, toUpperCase)(arr) // => ["a", "b", "c"] (not a reference to `arr`)
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.updateIndex|updateIndex}
  * @param {Number} index
  * @param {Function} updater
  * @returns {Function}
@@ -471,6 +498,31 @@ function updateIn (source, key, updater) {
 }
 
 /**
+ * Creates a copy of an array-like object with the given index changed by applying the
+ * provided function to its value.<br/>
+ * If the index is not an integer or if it's out of bounds, the function will return
+ * a copy of the original array.<br/>
+ * Negative indexes are allowed.
+ * @example
+ * var arr = ["a", "b", "c"];
+ * var toUpperCase = _.invoker("toUpperCase");
+ *
+ * _.updateIndex(arr, 1, toUpperCase) // => ["a", "B", "c"]
+ * _.updateIndex(arr, -1, toUpperCase) // => ["a", "b", "C"]
+ * _.updateIndex(arr, 10, toUpperCase) // => ["a", "b", "c"] (not a reference to `arr`)
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.updateAt|updateAt}
+ * @param {ArrayLike} arrayLike
+ * @param {Number} index
+ * @param {Function} updater
+ * @returns {Array}
+ */
+var updateIndex = partial(_setIndex, _, _, null);
+
+/**
  * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
  * <code>key</code> and <code>updater</code>, expecting the object to act upon.
  * @example
@@ -501,9 +553,11 @@ lamb.head = head;
 lamb.last = last;
 lamb.setAt = setAt;
 lamb.setIn = setIn;
+lamb.setIndex = setIndex;
 lamb.setKey = setKey;
 lamb.setPath = setPath;
 lamb.setPathIn = setPathIn;
 lamb.updateAt = updateAt;
 lamb.updateIn = updateIn;
+lamb.updateIndex = updateIndex;
 lamb.updateKey = updateKey;

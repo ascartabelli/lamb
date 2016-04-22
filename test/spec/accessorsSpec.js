@@ -2,7 +2,7 @@ var lamb = require("../../dist/lamb.js");
 
 describe("lamb.accessors", function () {
     describe("Array accessors", function () {
-        describe("getAt / head / last", function () {
+        describe("getIndex / getAt / head / last", function () {
             var arr = [1, 2, 3, 4];
             var s = "abcd";
 
@@ -54,7 +54,7 @@ describe("lamb.accessors", function () {
             });
         });
 
-        describe("setAt", function () {
+        describe("setIndex / setAt", function () {
             var arr = [1, 2, 3, 4, 5];
             var arrCopy = [1, 2, 3, 4, 5];
             var s = "hello";
@@ -64,17 +64,17 @@ describe("lamb.accessors", function () {
             });
 
             it("should allow to set a value in a copy of the given array-like object", function () {
-                var newArr = lamb.setAt(2, 99)(arr);
-                var newArr2 = lamb.setAt(4, 99)(arr);
-                var newS = lamb.setAt(0, "c")(s);
+                var r1 = [1, 2, 99, 4, 5];
+                var r2 = ["c", "e", "l", "l", "o"];
 
-                expect(newArr).toEqual([1, 2, 99, 4, 5]);
-                expect(newArr2).toEqual([1, 2, 3, 4, 99]);
-                expect(newS).toEqual(["c", "e", "l", "l", "o"]);
+                expect(lamb.setIndex(arr, 2, 99)).toEqual(r1);
+                expect(lamb.setAt(2, 99)(arr)).toEqual(r1);
+                expect(lamb.setIndex(s, 0, "c")).toEqual(r2);
+                expect(lamb.setAt(0, "c")(s)).toEqual(r2);
             });
 
             it("should allow negative indexes", function () {
-                var newArr = lamb.setAt(-1, 99)(arr);
+                var newArr = lamb.setIndex(arr, -1, 99);
                 var newArr2 = lamb.setAt(-5, 99)(arr);
 
                 expect(newArr).toEqual([1, 2, 3, 4, 99]);
@@ -83,6 +83,16 @@ describe("lamb.accessors", function () {
 
             it("should return an array copy of the array-like if the index is not an integer", function () {
                 [
+                    lamb.setIndex(arr, NaN, 99),
+                    lamb.setIndex(arr, null, 99),
+                    lamb.setIndex(arr, void 0, 99),
+                    lamb.setIndex(arr, {}, 99),
+                    lamb.setIndex(arr, [], 99),
+                    lamb.setIndex(arr, [2], 99),
+                    lamb.setIndex(arr, "a", 99),
+                    lamb.setIndex(arr, "2", 99),
+                    lamb.setIndex(arr, "2.5", 99),
+                    lamb.setIndex(arr, 2.5, 99),
                     lamb.setAt(NaN, 99)(arr),
                     lamb.setAt(null, 99)(arr),
                     lamb.setAt(void 0, 99)(arr),
@@ -100,7 +110,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an array copy of the array-like if the index is out of bounds", function () {
-                var newArr = lamb.setAt(5, 99)(arr);
+                var newArr = lamb.setIndex(arr, 5, 99);
                 var newArr2 = lamb.setAt(-6, 99)(arr);
                 var newS = lamb.setAt(10, 99)(s);
 
@@ -112,12 +122,12 @@ describe("lamb.accessors", function () {
             });
 
             it("should throw an exception if no array-object is supplied", function () {
-                var fn = lamb.setAt(0, 99);
-                expect(fn).toThrow();
+                expect(lamb.setAt(0, 99)).toThrow();
+                expect(function () { lamb.setIndex(null, 0, 99); }).toThrow();
             });
         });
 
-        describe("updateAt", function () {
+        describe("updateIndex / updateAt", function () {
             var arr = [1, 2, 3, 4, 5];
             var arrCopy = [1, 2, 3, 4, 5];
             var s = "hello";
@@ -131,15 +141,19 @@ describe("lamb.accessors", function () {
             });
 
             it("should allow to update a value in a copy of the given array-like object with the provided function", function () {
+                expect(lamb.updateIndex(arr, 2, incSpy)).toEqual([1, 2, 4, 4, 5]);
                 expect(lamb.updateAt(2, incSpy)(arr)).toEqual([1, 2, 4, 4, 5]);
-                expect(incSpy.calls.count()).toBe(1);
+                expect(incSpy.calls.count()).toBe(2);
                 expect(incSpy.calls.argsFor(0).length).toBe(1);
+                expect(incSpy.calls.argsFor(1).length).toBe(1);
                 expect(incSpy.calls.argsFor(0)[0]).toBe(3);
+                expect(incSpy.calls.argsFor(1)[0]).toBe(3);
+                expect(lamb.updateIndex(s, 0, lamb.always("c"))).toEqual(["c", "e", "l", "l", "o"]);
                 expect(lamb.updateAt(0, lamb.always("c"))(s)).toEqual(["c", "e", "l", "l", "o"]);
             });
 
             it("should allow negative indexes", function () {
-                var newArr = lamb.updateAt(-1, fn99)(arr);
+                var newArr = lamb.updateIndex(arr, -1, fn99);
                 var newArr2 = lamb.updateAt(-5, fn99)(arr);
 
                 expect(newArr).toEqual([1, 2, 3, 4, 99]);
@@ -148,6 +162,16 @@ describe("lamb.accessors", function () {
 
             it("should return an array copy of the array-like if the index is not an integer", function () {
                 [
+                    lamb.updateIndex(arr, NaN, fn99),
+                    lamb.updateIndex(arr, null, fn99),
+                    lamb.updateIndex(arr, void 0, fn99),
+                    lamb.updateIndex(arr, {}, fn99),
+                    lamb.updateIndex(arr, [], fn99),
+                    lamb.updateIndex(arr, [2], fn99),
+                    lamb.updateIndex(arr, "a", fn99),
+                    lamb.updateIndex(arr, "2", fn99),
+                    lamb.updateIndex(arr, "2.5", fn99),
+                    lamb.updateIndex(arr, 2.5, fn99),
                     lamb.updateAt(NaN, fn99)(arr),
                     lamb.updateAt(null, fn99)(arr),
                     lamb.updateAt(void 0, fn99)(arr),
@@ -165,7 +189,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an array copy of the array-like if the index is out of bounds", function () {
-                var newArr = lamb.updateAt(5, fn99)(arr);
+                var newArr = lamb.updateIndex(arr, 5, fn99);
                 var newArr2 = lamb.updateAt(-6, fn99)(arr);
                 var newS = lamb.updateAt(10, fn99)(s);
 
@@ -178,12 +202,13 @@ describe("lamb.accessors", function () {
 
             it("should check the existence of the destination index before trying to apply the received function to it", function () {
                 var toUpperCase = lamb.invoker("toUpperCase");
+                expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["h", "e", "l", "l", "o"]);
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
 
             it("should throw an exception if no array-object is supplied", function () {
-                var fn = lamb.updateAt(0, fn99);
-                expect(fn).toThrow();
+                expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
+                expect(lamb.updateAt(0, fn99)).toThrow();
             });
         });
     });
