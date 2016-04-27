@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.23.0-rc.1
+ * @version 0.23.0-rc.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.23.0-rc.1";
+    lamb._version =  "0.23.0-rc.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -304,7 +304,7 @@
 
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);
-        var idx = _getNaturalIndex(index, arrayLike.length);
+        var idx = _getNaturalIndex(index, result.length);
 
         if (!isUndefined(idx)) {
             result[idx] = updater ? updater(arrayLike[idx]) : value;

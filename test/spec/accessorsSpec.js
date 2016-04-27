@@ -125,6 +125,13 @@ describe("lamb.accessors", function () {
                 expect(lamb.setAt(0, 99)).toThrow();
                 expect(function () { lamb.setIndex(null, 0, 99); }).toThrow();
             });
+
+            it("should return an empty array if a non-array-like object is supplied", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.setIndex(v, 2, 99)).toEqual([]);
+                    expect(lamb.setAt(2, 99)(v)).toEqual([]);
+                });
+            });
         });
 
         describe("updateIndex / updateAt", function () {
@@ -209,6 +216,13 @@ describe("lamb.accessors", function () {
             it("should throw an exception if no array-object is supplied", function () {
                 expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
                 expect(lamb.updateAt(0, fn99)).toThrow();
+            });
+
+            it("should return an empty array if a non-array-like object is supplied", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.updateIndex(v, 2, fn99)).toEqual([]);
+                    expect(lamb.updateAt(2, fn99)(v)).toEqual([]);
+                });
             });
         });
     });

@@ -9,7 +9,7 @@ function _isEnumerable (obj, key) {
 
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
-    var idx = _getNaturalIndex(index, arrayLike.length);
+    var idx = _getNaturalIndex(index, result.length);
 
     if (!isUndefined(idx)) {
         result[idx] = updater ? updater(arrayLike[idx]) : value;
