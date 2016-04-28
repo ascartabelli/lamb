@@ -4,7 +4,7 @@ function _getNaturalIndex (index, len) {
 }
 
 function _isEnumerable (obj, key) {
-    return key in Object(obj) && isIn(enumerables(obj), key);
+    return key in Object(obj) && ~enumerables(obj).indexOf(key);
 }
 
 function _setIndex (arrayLike, index, value, updater) {
@@ -27,7 +27,10 @@ function _setPathIn (obj, parts, value) {
         target = getIndex(obj, headAsInt);
         setter = partial(_setIndex, obj, headAsInt);
     } else {
-        target = (obj || {})[parts[0]];
+        if (_isEnumerable(obj, parts[0])) {
+            target = obj[parts[0]];
+        }
+
         setter = partial(setIn, obj, parts[0]);
     }
 

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.23.0
+ * @version 0.24.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.23.0";
+    lamb._version =  "0.24.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -299,7 +299,7 @@
     }
 
     function _isEnumerable (obj, key) {
-        return key in Object(obj) && isIn(enumerables(obj), key);
+        return key in Object(obj) && ~enumerables(obj).indexOf(key);
     }
 
     function _setIndex (arrayLike, index, value, updater) {
@@ -322,7 +322,10 @@
             target = getIndex(obj, headAsInt);
             setter = partial(_setIndex, obj, headAsInt);
         } else {
-            target = (obj || {})[parts[0]];
+            if (_isEnumerable(obj, parts[0])) {
+                target = obj[parts[0]];
+            }
+
             setter = partial(setIn, obj, parts[0]);
         }
 

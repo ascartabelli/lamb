@@ -437,6 +437,11 @@ describe("lamb.accessors", function () {
 
         describe("setPath / setPathIn", function () {
             var obj = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+
+            Object.defineProperty(obj.b, "w", {
+                value: {x: 22, y: {z: 33}}
+            });
+
             var objCopy = JSON.parse(JSON.stringify(obj));
 
             afterEach(function () {
@@ -504,6 +509,16 @@ describe("lamb.accessors", function () {
                     {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
                 );
                 expect(lamb.setPathIn(obj, "z.a.b", 99)).toEqual(r3);
+            });
+
+            it("should treat non-enumerable properties encountered in a path as non-existent properties", function () {
+                var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {z: 99}}, "c.d" : {"e.f": 6}};
+                var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {y: {z: 99}}}, "c.d" : {"e.f": 6}};
+
+                expect(lamb.setPathIn(obj, "b.w.z", 99)).toEqual(r1);
+                expect(lamb.setPath("b.w.z", 99)(obj)).toEqual(r1);
+                expect(lamb.setPathIn(obj, "b.w.y.z", 99)).toEqual(r2);
+                expect(lamb.setPath("b.w.y.z", 99)(obj)).toEqual(r2);
             });
 
             it("should replace indexes when an array is found and the key is a string containing an integer", function () {
