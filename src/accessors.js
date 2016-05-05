@@ -1,30 +1,28 @@
 
 function _getNaturalIndex (index, len) {
-    return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
-}
-
-function _isEnumerable (obj, key) {
-    return key in Object(obj) && ~enumerables(obj).indexOf(key);
+    if (_isInteger(index) && _isInteger(len)) {
+        return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+    }
 }
 
 function _getPathInfo (obj, parts) {
     var target = obj;
     var i = -1;
     var len = parts.length;
-
     var currentKey;
-    var currentKeyAsInt;
+    var idx;
 
     while (++i < len) {
         currentKey = parts[i];
-        currentKeyAsInt = parseInt(currentKey, 10);
 
-        if (Array.isArray(target) && currentKeyAsInt == currentKey) {
-            if (isUndefined(_getNaturalIndex(currentKeyAsInt, target.length))) {
+        if (_isIndex(target, currentKey)) {
+            idx = _getNaturalIndex(+currentKey, target.length);
+
+            if (isUndefined(idx)) {
                 break;
             }
 
-            target = getIndex(target, currentKeyAsInt);
+            target = target[idx];
         } else {
             if (!_isEnumerable(target, currentKey)) {
                 break;
@@ -35,6 +33,18 @@ function _getPathInfo (obj, parts) {
     }
 
     return i === len ? {isValid: true, target: target} : {isValid: false, target: void 0};
+}
+
+function _isIndex (target, key) {
+    return Array.isArray(target) && parseInt(key, 10) == key;
+}
+
+function _isEnumerable (obj, key) {
+    return key in Object(obj) && ~enumerables(obj).indexOf(key);
+}
+
+function _isInteger (n) {
+    return Math.floor(n) === n;
 }
 
 function _setIndex (arrayLike, index, value, updater) {
@@ -50,16 +60,13 @@ function _setIndex (arrayLike, index, value, updater) {
 
 function _setPathIn (obj, parts, value) {
     var key = parts[0];
-    var keyAsInt = parseInt(key, 10);
-    var isIndex = Array.isArray(obj) && keyAsInt == key;
-    var setter = isIndex ? partial(_setIndex, obj, keyAsInt) : partial(setIn, obj, key);
     var v = parts.length === 1 ? value : _setPathIn(
-        isIndex ? getIndex(obj, keyAsInt) : _isEnumerable(obj, key) ? obj[key] : void 0,
+        _getPathInfo(obj, [key]).target,
         parts.slice(1),
         value
     );
 
-    return setter(v);
+    return _isIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(obj, key, v);
 }
 
 /**

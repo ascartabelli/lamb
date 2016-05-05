@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.24.0-alpha.3
+ * @version 0.24.0-rc.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.24.0-alpha.3";
+    lamb._version =  "0.24.0-rc.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -295,31 +295,29 @@
 
 
     function _getNaturalIndex (index, len) {
-        return clamp(index, -len, len - 1) === Math.floor(index) ? index < 0 ? index + len : index : void 0;
-    }
-
-    function _isEnumerable (obj, key) {
-        return key in Object(obj) && ~enumerables(obj).indexOf(key);
+        if (_isInteger(index) && _isInteger(len)) {
+            return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+        }
     }
 
     function _getPathInfo (obj, parts) {
         var target = obj;
         var i = -1;
         var len = parts.length;
-
         var currentKey;
-        var currentKeyAsInt;
+        var idx;
 
         while (++i < len) {
             currentKey = parts[i];
-            currentKeyAsInt = parseInt(currentKey, 10);
 
-            if (Array.isArray(target) && currentKeyAsInt == currentKey) {
-                if (isUndefined(_getNaturalIndex(currentKeyAsInt, target.length))) {
+            if (_isIndex(target, currentKey)) {
+                idx = _getNaturalIndex(+currentKey, target.length);
+
+                if (isUndefined(idx)) {
                     break;
                 }
 
-                target = getIndex(target, currentKeyAsInt);
+                target = target[idx];
             } else {
                 if (!_isEnumerable(target, currentKey)) {
                     break;
@@ -330,6 +328,18 @@
         }
 
         return i === len ? {isValid: true, target: target} : {isValid: false, target: void 0};
+    }
+
+    function _isIndex (target, key) {
+        return Array.isArray(target) && parseInt(key, 10) == key;
+    }
+
+    function _isEnumerable (obj, key) {
+        return key in Object(obj) && ~enumerables(obj).indexOf(key);
+    }
+
+    function _isInteger (n) {
+        return Math.floor(n) === n;
     }
 
     function _setIndex (arrayLike, index, value, updater) {
@@ -345,16 +355,13 @@
 
     function _setPathIn (obj, parts, value) {
         var key = parts[0];
-        var keyAsInt = parseInt(key, 10);
-        var isIndex = Array.isArray(obj) && keyAsInt == key;
-        var setter = isIndex ? partial(_setIndex, obj, keyAsInt) : partial(setIn, obj, key);
         var v = parts.length === 1 ? value : _setPathIn(
-            isIndex ? getIndex(obj, keyAsInt) : _isEnumerable(obj, key) ? obj[key] : void 0,
+            _getPathInfo(obj, [key]).target,
             parts.slice(1),
             value
         );
 
-        return setter(v);
+        return _isIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(obj, key, v);
     }
 
     /**
@@ -2591,31 +2598,6 @@
     }
 
     /**
-     * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
-     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0; };
-     * var arr = [1, 2, 3, 4, 5];
-     * var invokerOnArr = _.invokerOn(arr);
-     *
-     * invokerOnArr("filter", isEven) // => [2, 4]
-     * invokerOnArr("slice", 1, 3) // => [2, 3]
-     *
-     * @memberof module:lamb
-     * @category Function
-     * @see {@link module:lamb.invoker|invoker}
-     * @param {Object} target
-     * @returns {Function}
-     */
-    function invokerOn (target) {
-        return function (methodName) {
-            var args = slice(arguments, 1);
-            var method = target[methodName];
-            return type(method) === "Function" ? method.apply(target, args) : void 0;
-        };
-    }
-
-    /**
      * Builds a function that will invoke the given method name on any received object and return
      * the result. If no method with such name is found the function will return <code>undefined</code>.
      * Along with the method name it's possible to supply some arguments that will be bound to the method call.<br/>
@@ -2653,6 +2635,31 @@
             var args = slice(arguments, 1);
             var method = target[methodName];
             return type(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
+        };
+    }
+
+    /**
+     * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
+     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var arr = [1, 2, 3, 4, 5];
+     * var invokerOnArr = _.invokerOn(arr);
+     *
+     * invokerOnArr("filter", isEven) // => [2, 4]
+     * invokerOnArr("slice", 1, 3) // => [2, 3]
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @see {@link module:lamb.invoker|invoker}
+     * @param {Object} target
+     * @returns {Function}
+     */
+    function invokerOn (target) {
+        return function (methodName) {
+            var args = slice(arguments, 1);
+            var method = target[methodName];
+            return type(method) === "Function" ? method.apply(target, args) : void 0;
         };
     }
 
@@ -2814,8 +2821,8 @@
     lamb.debounce = debounce;
     lamb.flip = flip;
     lamb.getArgAt = getArgAt;
-    lamb.invokerOn = invokerOn;
     lamb.invoker = invoker;
+    lamb.invokerOn = invokerOn;
     lamb.mapArgs = mapArgs;
     lamb.pipe = pipe;
     lamb.tapArgs = tapArgs;

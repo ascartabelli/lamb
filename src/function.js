@@ -271,31 +271,6 @@ function getArgAt (index) {
 }
 
 /**
- * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
- * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
- * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var arr = [1, 2, 3, 4, 5];
- * var invokerOnArr = _.invokerOn(arr);
- *
- * invokerOnArr("filter", isEven) // => [2, 4]
- * invokerOnArr("slice", 1, 3) // => [2, 3]
- *
- * @memberof module:lamb
- * @category Function
- * @see {@link module:lamb.invoker|invoker}
- * @param {Object} target
- * @returns {Function}
- */
-function invokerOn (target) {
-    return function (methodName) {
-        var args = slice(arguments, 1);
-        var method = target[methodName];
-        return type(method) === "Function" ? method.apply(target, args) : void 0;
-    };
-}
-
-/**
  * Builds a function that will invoke the given method name on any received object and return
  * the result. If no method with such name is found the function will return <code>undefined</code>.
  * Along with the method name it's possible to supply some arguments that will be bound to the method call.<br/>
@@ -333,6 +308,31 @@ function invoker (methodName) {
         var args = slice(arguments, 1);
         var method = target[methodName];
         return type(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
+    };
+}
+
+/**
+ * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
+ * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
+ * @example
+ * var isEven = function (n) { return n % 2 === 0; };
+ * var arr = [1, 2, 3, 4, 5];
+ * var invokerOnArr = _.invokerOn(arr);
+ *
+ * invokerOnArr("filter", isEven) // => [2, 4]
+ * invokerOnArr("slice", 1, 3) // => [2, 3]
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @see {@link module:lamb.invoker|invoker}
+ * @param {Object} target
+ * @returns {Function}
+ */
+function invokerOn (target) {
+    return function (methodName) {
+        var args = slice(arguments, 1);
+        var method = target[methodName];
+        return type(method) === "Function" ? method.apply(target, args) : void 0;
     };
 }
 
@@ -494,8 +494,8 @@ lamb.curryableRight = curryableRight;
 lamb.debounce = debounce;
 lamb.flip = flip;
 lamb.getArgAt = getArgAt;
-lamb.invokerOn = invokerOn;
 lamb.invoker = invoker;
+lamb.invokerOn = invokerOn;
 lamb.mapArgs = mapArgs;
 lamb.pipe = pipe;
 lamb.tapArgs = tapArgs;
