@@ -33,12 +33,28 @@ var _pairsFrom = _curry(function (getKeys, obj) {
     return getKeys(obj).map(_keyToPair, obj);
 });
 
-var _tearFrom = _curry(function  (getKeys, obj) {
+function _safeEnumerables (obj) {
+    var keys = [];
+
+    for (var key in obj) {
+        keys.push(key);
+    }
+
+    return keys;
+}
+
+var _safeKeys = compose(Object.keys, Object);
+
+var _tearFrom = _curry(function (getKeys, obj) {
     return getKeys(obj).reduce(function (result, key) {
         result[0].push(key);
         result[1].push(obj[key]);
         return result;
     }, [[], []]);
+});
+
+var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
+    return (isNil(obj) ? Object.keys : getKeys)(obj);
 });
 
 var _valuesFrom = _curry(function (getKeys, obj) {
@@ -92,31 +108,24 @@ function checker (predicate, message, keyPaths, pathSeparator) {
 
 /**
  * Creates an array with all the enumerable properties of the given object.
- * @example <caption>showing the difference with <code>Object.keys</code></caption>
+ * @example <caption>Showing the difference with {@link module:lamb.keys|keys}</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3},
  *     d: {value: 4, enumerable: true}
  * });
  *
- * Object.keys(foo) // => ["d"]
+ * _.keys(foo) // => ["d"]
  * _.enumerables(foo) // => ["d", "a"]
  *
  * @memberof module:lamb
  * @category Object
- * @see [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
+ * @function
+ * @see {@link module:lamb.keys|keys}
  * @param {Object} obj
  * @returns {String[]}
  */
-function enumerables (obj) {
-    var keys = [];
-
-    for (var key in obj) {
-        keys.push(key);
-    }
-
-    return keys;
-}
+var enumerables = _unsafeKeyListFrom(_safeEnumerables);
 
 /**
  * Builds an object from a list of key / value pairs like the one
@@ -280,6 +289,32 @@ function immutable (obj) {
 }
 
 /**
+ * Retrieves the list of the own enumerable properties of an object.<br/>
+ * Although [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
+ * is already present in ECMAScript 5, its behaviour changed in the subsequent specifications
+ * of the standard as you can read if the link above.<br/>
+ * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
+ * object for any value but <code>null</code> and <code>undefined</code>.
+ * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>
+ * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+ * var foo = Object.create(baseFoo, {
+ *     c: {value: 3},
+ *     d: {value: 4, enumerable: true}
+ * });
+ *
+ * _.enumerables(foo) // => ["d", "a"]
+ * _.keys(foo) // => ["d"]
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @function
+ * @see {@link module:lamb.enumerables|enumerables}
+ * @param {Object} obj
+ * @returns {String[]}
+ */
+var keys = _unsafeKeyListFrom(_safeKeys);
+
+/**
  * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
  * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
  * If more values than keys are supplied, the extra values will be ignored.<br/>
@@ -328,7 +363,7 @@ function make (keys, values) {
  * @param {...Object} source
  * @returns {Object}
  */
-var merge = partial(_merge, enumerables);
+var merge = partial(_merge, _safeEnumerables);
 
 /**
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
@@ -356,7 +391,7 @@ var merge = partial(_merge, enumerables);
  * @param {...Object} source
  * @returns {Object}
  */
-var mergeOwn = partial(_merge, compose(Object.keys, Object));
+var mergeOwn = partial(_merge, _safeKeys);
 
 /**
  * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
@@ -377,7 +412,7 @@ var mergeOwn = partial(_merge, compose(Object.keys, Object));
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
  */
-var ownPairs = _pairsFrom(Object.keys);
+var ownPairs = _pairsFrom(keys);
 
 /**
  * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
@@ -397,7 +432,7 @@ var ownPairs = _pairsFrom(Object.keys);
  * @param {Object} obj
  * @returns {Array}
  */
-var ownValues = _valuesFrom(Object.keys);
+var ownValues = _valuesFrom(keys);
 
 /**
  * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
@@ -554,7 +589,7 @@ var tear = _tearFrom(enumerables);
  * @param {Object} obj
  * @returns {Array<Array<String>, Array<*>>}
  */
-var tearOwn = _tearFrom(Object.keys);
+var tearOwn = _tearFrom(keys);
 
 /**
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
@@ -643,6 +678,7 @@ lamb.hasKeyValue = hasKeyValue;
 lamb.hasOwn = hasOwn;
 lamb.hasOwnKey = hasOwnKey;
 lamb.immutable = immutable;
+lamb.keys = keys;
 lamb.make = make;
 lamb.merge = merge;
 lamb.mergeOwn = mergeOwn;

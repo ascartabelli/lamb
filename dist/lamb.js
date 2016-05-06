@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.24.0
+ * @version 0.25.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.24.0";
+    lamb._version =  "0.25.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -294,6 +294,651 @@
     lamb.slice = slice;
 
 
+    /**
+     * Accepts a series of functions and builds a function that applies the received arguments to each one and
+     * returns the first non-<code>undefined</code> value.<br/>
+     * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
+     * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var filterString = _.compose(_.invoker("join", ""), _.filter);
+     * var filterAdapter = _.adapter(
+     *     _.invoker("filter"),
+     *     _.condition(_.isType("String"), filterString)
+     * );
+     *
+     * filterAdapter([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
+     * filterAdapter("123456", isEven)) // => "246"
+     * filterAdapter({}, isEven)) // => undefined
+     *
+     * // obviously it's composable
+     * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
+     *
+     * filterWithDefault([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
+     * filterWithDefault("123456", isEven)) // => "246"
+     * filterWithDefault({}, isEven)) // => "Not implemented"
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {...Function} fn
+     * @returns {Function}
+     */
+    function adapter () {
+        var functions = slice(arguments);
+
+        return function () {
+            var len = functions.length;
+            var result;
+
+            for (var i = 0; i < len; i++) {
+                result = apply(functions[i], arguments);
+
+                if (!isUndefined(result)) {
+                    break;
+                }
+            }
+
+            return result;
+        };
+    }
+
+    /**
+     * Builds a predicate that returns true if all the given predicates are satisfied.
+     * The arguments passed to the resulting function are applied to every predicate unless one of them returns false.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var isPositive = function (n) { return n > 0; };
+     * var isPositiveEven = _.allOf(isEven, isPositive);
+     *
+     * isPositiveEven(-2) // => false
+     * isPositiveEven(11) // => false
+     * isPositiveEven(6) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see {@link module:lamb.anyOf|anyOf}
+     * @param {...Function} predicate
+     * @returns {Function}
+     */
+    function allOf () {
+        var predicates = slice(arguments);
+
+        return function () {
+            var args = arguments;
+
+            return predicates.every(function (predicate) {
+                return predicate.apply(null, args);
+            });
+        };
+    }
+
+    /**
+     * Builds a predicate that returns true if at least one of the given predicates is satisfied.
+     * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
+     * @example
+     * // Lamb's "isNil" is actually implemented like this
+     * var isNil = _.anyOf(_.isNull, _.isUndefined);
+     *
+     * isNil(NaN) // => false
+     * isNil({}) // => false
+     * isNil(null) // => true
+     * isNil(void 0) // => true
+     * isNil() // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see {@link module:lamb.allOf|allOf}
+     * @param {...Function} predicate
+     * @returns {Function}
+     */
+    function anyOf () {
+        var predicates = slice(arguments);
+
+        return function () {
+            var args = arguments;
+
+            return predicates.some(function (predicate) {
+                return predicate.apply(null, args);
+            });
+        };
+    }
+
+    /**
+     * Builds a function that will apply the received arguments to <code>trueFn</code>, if the predicate is satisfied with
+     * the same arguments, or to <code>falseFn</code> otherwise.<br/>
+     * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function will return <code>undefined</code>.<br/>
+     * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>, it's probably better to
+     * use {@link module:lamb.adapter|adapter} to build more complex behaviours.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0};
+     * var halve = function (n) { return n / 2; };
+     * var halveIfEven = _.condition(isEven, halve, _.identity);
+     *
+     * halveIfEven(5) // => 5
+     * halveIfEven(6) // => 3
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see {@link module:lamb.invoker|invoker}
+     * @param {Function} predicate
+     * @param {Function} trueFn
+     * @param {Function} [falseFn]
+     * @returns {Function}
+     */
+    function condition (predicate, trueFn, falseFn) {
+        return function () {
+            var applyArgsTo = applyArgs(arguments);
+            return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
+        };
+    }
+
+    /**
+     * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
+     * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
+     * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
+     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.<br/>
+     * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
+     * @example
+     * var testObject = {};
+     *
+     * _.is({}, testObject) // => false
+     * _.is(testObject, testObject) // => true
+     * _.is("foo", "foo") // => true
+     * _.is(0, -0) // => false
+     * _.is(0 / 0, NaN) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
+     * @param {*} a
+     * @param {*} b
+     * @returns {Boolean}
+     */
+    function is (a, b) {
+        return a === 0 && b === 0 ? 1 / a === 1 / b : isSVZ(a, b);
+    }
+
+    /**
+     * Verifies that the first given value is greater than the second.
+     * @example
+     * var pastDate = new Date(2010, 2, 12);
+     * var today = new Date();
+     *
+     * _.isGT(today, pastDate) // true
+     * _.isGT(pastDate, today) // false
+     * _.isGT(3, 4) // false
+     * _.isGT(3, 3) // false
+     * _.isGT(3, 2) // true
+     * _.isGT(0, -0) // false
+     * _.isGT(-0, 0) // false
+     * _.isGT("a", "A") // true
+     * _.isGT("b", "a") // true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {Number|String|Date|Boolean} a
+     * @param {Number|String|Date|Boolean} b
+     * @returns {Boolean}
+     */
+    function isGT (a, b) {
+        return a > b;
+    }
+
+    /**
+     * Verifies that the first given value is greater than or equal to the second.
+     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+     * @example
+     * _.isGTE(3, 4) // false
+     * _.isGTE(3, 3) // true
+     * _.isGTE(3, 2) // true
+     * _.isGTE(0, -0) // true
+     * _.isGTE(-0, 0) // true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {Number|String|Date|Boolean} a
+     * @param {Number|String|Date|Boolean} b
+     * @returns {Boolean}
+     */
+    function isGTE (a, b) {
+        return a >= b;
+    }
+
+    /**
+     * Verifies that the first given value is less than the second.
+     * @example
+     * var pastDate = new Date(2010, 2, 12);
+     * var today = new Date();
+     *
+     * _.isLT(today, pastDate) // false
+     * _.isLT(pastDate, today) // true
+     * _.isLT(3, 4) // true
+     * _.isLT(3, 3) // false
+     * _.isLT(3, 2) // false
+     * _.isLT(0, -0) // false
+     * _.isLT(-0, 0) // false
+     * _.isLT("a", "A") // false
+     * _.isLT("a", "b") // true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {Number|String|Date|Boolean} a
+     * @param {Number|String|Date|Boolean} b
+     * @returns {Boolean}
+     */
+    function isLT (a, b) {
+        return a < b;
+    }
+
+    /**
+     * Verifies that the first given value is less than or equal to the second.
+     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+     * @example
+     * _.isLTE(3, 4) // true
+     * _.isLTE(3, 3) // true
+     * _.isLTE(3, 2) // false
+     * _.isLTE(0, -0) // true
+     * _.isLTE(-0, 0) // true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {Number|String|Date|Boolean} a
+     * @param {Number|String|Date|Boolean} b
+     * @returns {Boolean}
+     */
+    function isLTE (a, b) {
+        return a <= b;
+    }
+
+    /**
+     * A simple negation of {@link module:lamb.is|is}, exposed for convenience.
+     * @example
+     * _.isNot("foo", "foo") // => false
+     * _.isNot(0, -0) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @function
+     * @param {*} valueA
+     * @param {*} valueB
+     * @returns {Boolean}
+     */
+    var isNot = not(is);
+
+    /**
+     * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
+     * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
+     * considered the same value too.<br/>
+     * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
+     * @example
+     * var testObject = {};
+     *
+     * _.isSVZ({}, testObject) // => false
+     * _.isSVZ(testObject, testObject) // => true
+     * _.isSVZ("foo", "foo") // => true
+     * _.isSVZ(0, -0) // => true
+     * _.isSVZ(0 / 0, NaN) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
+     * @param {*} a
+     * @param {*} b
+     * @returns {Boolean}
+     */
+    function isSVZ (a, b) {
+        return a !== a ? b !== b : a === b;
+    }
+
+    /**
+     * Returns a predicate that negates the given one.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var isOdd = _.not(isEven);
+     *
+     * isOdd(5) // => true
+     * isOdd(4) // => false
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @param {Function} predicate
+     * @returns {Function}
+     */
+    function not (predicate) {
+        return function () {
+            return !predicate.apply(null, arguments);
+        };
+    }
+
+    lamb.adapter = adapter;
+    lamb.allOf = allOf;
+    lamb.anyOf = anyOf;
+    lamb.condition = condition;
+    lamb.is = is;
+    lamb.isGT = isGT;
+    lamb.isGTE = isGTE;
+    lamb.isLT = isLT;
+    lamb.isLTE = isLTE;
+    lamb.isNot = isNot;
+    lamb.isSVZ = isSVZ;
+    lamb.not = not;
+
+
+    /**
+     * Adds two numbers.
+     * @example
+     * _.add(4, 5) // => 9
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function add (a, b) {
+        return a + b;
+    }
+
+    /**
+     * "Clamps" a number within the given limits.
+     * @example
+     * _.clamp(-5, 0, 10) // => 0
+     * _.clamp(5, 0, 10) // => 5
+     * _.clamp(15, 0, 10) // => 10
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} n
+     * @param {Number} min
+     * @param {Number} max
+     * @returns {Number}
+     */
+    function clamp (n, min, max) {
+        return n < min ? min : n > max ? max : n;
+    }
+
+    /**
+     * Divides two numbers.
+     * @example
+     * _.divide(5, 2) // => 2.5
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function divide (a, b) {
+        return a / b;
+    }
+
+    /**
+     * Generates a sequence of values of the desired length with the provided iteratee.
+     * The values being iterated, and received by the iteratee, are the results generated so far.
+     * @example
+     * var fibonacci = function (n, idx, results) {
+     *     return n + (results[idx - 1] || 0);
+     * };
+     *
+     * _.generate(1, 10, fibonacci) // => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {*} start - The starting value
+     * @param {Number} len - The desired length for the sequence
+     * @param {ListIteratorCallback} iteratee
+     * @param {Object} [iterateeContext]
+     * @returns {Array}
+     */
+    function generate (start, len, iteratee, iterateeContext) {
+        var result = [start];
+
+        for (var i = 0, limit = len - 1; i < limit; i++) {
+            result.push(iteratee.call(iterateeContext, result[i], i, result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Performs the modulo operation and should not be confused with the {@link module:lamb.remainder|remainder}.
+     * The function performs a floored division to calculate the result and not a truncated one, hence the sign of
+     * the dividend is not kept, unlike the {@link module:lamb.remainder|remainder}.
+     * @example
+     * _.modulo(5, 3) // => 2
+     * _.remainder(5, 3) // => 2
+     *
+     * _.modulo(-5, 3) // => 1
+     * _.remainder(-5, 3) // => -2
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function modulo (a, b) {
+        return a - (b * Math.floor(a / b));
+    }
+
+    /**
+     * Multiplies two numbers.
+     * @example
+     * _.multiply(5, 3) // => 15
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function multiply (a, b) {
+        return a * b;
+    }
+
+    /**
+     * Generates a random integer between two given integers, both included.
+     * Note that no safety measure is taken if the provided arguments aren't integers, so
+     * you may end up with unexpected (not really) results.
+     * For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
+     * @example
+     *
+     * _.randomInt(1, 10) // => an integer >=1 && <= 10
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} min
+     * @param {Number} max
+     * @returns {Number}
+     */
+    function randomInt (min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    /**
+     * Generates an arithmetic progression of numbers starting from <code>start</code> up to,
+     * but not including, <code>limit</code>, using the given <code>step</code>.
+     * @example
+     * _.range(2, 10) // => [2, 3, 4, 5, 6, 7, 8, 9]
+     * _.range(2, 10, 0) // => [2]
+     * _.range(1, -10, -2) // => [1, -1, -3, -5, -7, -9]
+     * _.range(1, -10, 2) // => [1]
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} start
+     * @param {Number} limit
+     * @param {Number} [step=1]
+     * @returns {Number[]}
+     */
+    function range (start, limit, step) {
+        if (step === 0 || arguments.length < 2) {
+            return [start];
+        }
+
+        if (!step) {
+            step = 1;
+        }
+
+        var len = Math.max(Math.ceil((limit - start) / step), 0);
+        return generate(start, len, partial(add, step));
+    }
+
+    /**
+     * Gets the remainder of the division of two numbers.
+     * Not to be confused with the {@link module:lamb.modulo|modulo} as the remainder
+     * keeps the sign of the dividend and may lead to some unexpected results.
+     * @example
+     * // example of wrong usage of the remainder
+     * // (in this case the modulo operation should be used)
+     * var isOdd = function (n) { return _.remainder(n, 2) === 1; };
+     * isOdd(-3) // => false as -3 % 2 === -1
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function remainder (a, b) {
+        return a % b;
+    }
+
+    /**
+     * Subtracts two numbers.
+     * @example
+     * _.subtract(5, 3) // => 2
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function subtract (a, b) {
+        return a - b;
+    }
+
+    lamb.add = add;
+    lamb.clamp = clamp;
+    lamb.divide = divide;
+    lamb.generate = generate;
+    lamb.modulo = modulo;
+    lamb.multiply = multiply;
+    lamb.randomInt = randomInt;
+    lamb.range = range;
+    lamb.remainder = remainder;
+    lamb.subtract = subtract;
+
+
+    /**
+     * Verifies if a value is <code>null</code> or <code>undefined</code>.
+     * @example
+     * _.isNil(NaN) // => false
+     * _.isNil({}) // => false
+     * _.isNil(null) // => true
+     * _.isNil(void 0) // => true
+     * _.isNil() // => true
+     *
+     * @memberof module:lamb
+     * @category Type
+     * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
+     * @function
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    var isNil = anyOf(isNull, isUndefined);
+
+    /**
+     * Verifies if a value is <code>null</code>.
+     * @example
+     * _.isNull(null) // => true
+     * _.isNull(void 0) // => false
+     * _.isNull(false) // => false
+     *
+     * @memberof module:lamb
+     * @category Type
+     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    function isNull (value) {
+        return value === null;
+    }
+
+    /**
+     * Builds a predicate that expects a value to check against the specified type.
+     * @example
+     * var isString = _.isType("String");
+     *
+     * isString("Hello") // => true
+     * isString(new String("Hi")) // => true
+     *
+     * @memberof module:lamb
+     * @category Type
+     * @see {@link module:lamb.type|type}
+     * @param {String} typeTag
+     * @returns {Function}
+     */
+    function isType (typeName) {
+        return function (value) {
+            return type(value) === typeName;
+        };
+    }
+
+    /**
+     * Verifies if a value is <code>undefined</code>.
+     * @example
+     * _.isUndefined(null) // => false
+     * _.isUndefined(void 0) // => true
+     * _.isUndefined(false) // => false
+     *
+     * @memberof module:lamb
+     * @category Type
+     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    function isUndefined (value) {
+        // using void because undefined could be theoretically shadowed
+        return value === void 0;
+    }
+
+    /**
+     * Retrieves the "type tag" from the given value.
+     * @example
+     * var x = 5;
+     * var y = new Number(5);
+     *
+     * typeof x // => "number"
+     * typeof y // => "object"
+     * _.type(x) // => "Number"
+     * _.type(y) // => "Number"
+     *
+     * _.type(Object.prototype.toString) // => "Function"
+     * _.type(/a/) // => "RegExp"
+     *
+     * @memberof module:lamb
+     * @category Type
+     * @see {@link module:lamb.isType|isType}
+     * @param {*} value
+     * @returns {String}
+     */
+    function type (value) {
+        return _objectProto.toString.call(value).replace(/^\[\w+\s+|\]$/g, "");
+    }
+
+    lamb.isNil = isNil;
+    lamb.isNull = isNull;
+    lamb.isType = isType;
+    lamb.isUndefined = isUndefined;
+    lamb.type = type;
+
+
     function _getNaturalIndex (index, len) {
         if (_isInteger(index) && _isInteger(len)) {
             return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
@@ -335,7 +980,7 @@
     }
 
     function _isEnumerable (obj, key) {
-        return key in Object(obj) && ~enumerables(obj).indexOf(key);
+        return key in Object(obj) && ~_safeEnumerables(obj).indexOf(key);
     }
 
     function _isInteger (n) {
@@ -640,7 +1285,7 @@
      * @returns {Object}
      */
     function setIn (source, key, value) {
-        return _merge(enumerables, source, make([key], [value]));
+        return _merge(_safeEnumerables, source, make([key], [value]));
     }
 
     /**
@@ -826,7 +1471,7 @@
      * @returns {Object}
      */
     function updateIn (source, key, updater) {
-        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(_safeEnumerables, source);
     }
 
     /**
@@ -949,7 +1594,7 @@
         if (pathInfo.isValid) {
             return _setPathIn(source, parts, updater(pathInfo.target));
         } else {
-            return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
+            return Array.isArray(source) ? slice(source) : _merge(_safeEnumerables, source);
         }
     }
 
@@ -2831,547 +3476,6 @@
     lamb.wrap = wrap;
 
 
-    /**
-     * Accepts a series of functions and builds a function that applies the received arguments to each one and
-     * returns the first non-<code>undefined</code> value.<br/>
-     * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
-     * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0; };
-     * var filterString = _.compose(_.invoker("join", ""), _.filter);
-     * var filterAdapter = _.adapter(
-     *     _.invoker("filter"),
-     *     _.condition(_.isType("String"), filterString)
-     * );
-     *
-     * filterAdapter([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
-     * filterAdapter("123456", isEven)) // => "246"
-     * filterAdapter({}, isEven)) // => undefined
-     *
-     * // obviously it's composable
-     * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
-     *
-     * filterWithDefault([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
-     * filterWithDefault("123456", isEven)) // => "246"
-     * filterWithDefault({}, isEven)) // => "Not implemented"
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {...Function} fn
-     * @returns {Function}
-     */
-    function adapter () {
-        var functions = slice(arguments);
-
-        return function () {
-            var len = functions.length;
-            var result;
-
-            for (var i = 0; i < len; i++) {
-                result = apply(functions[i], arguments);
-
-                if (!isUndefined(result)) {
-                    break;
-                }
-            }
-
-            return result;
-        };
-    }
-
-    /**
-     * Builds a predicate that returns true if all the given predicates are satisfied.
-     * The arguments passed to the resulting function are applied to every predicate unless one of them returns false.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0; };
-     * var isPositive = function (n) { return n > 0; };
-     * var isPositiveEven = _.allOf(isEven, isPositive);
-     *
-     * isPositiveEven(-2) // => false
-     * isPositiveEven(11) // => false
-     * isPositiveEven(6) // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see {@link module:lamb.anyOf|anyOf}
-     * @param {...Function} predicate
-     * @returns {Function}
-     */
-    function allOf () {
-        var predicates = slice(arguments);
-
-        return function () {
-            var args = arguments;
-
-            return predicates.every(function (predicate) {
-                return predicate.apply(null, args);
-            });
-        };
-    }
-
-    /**
-     * Builds a predicate that returns true if at least one of the given predicates is satisfied.
-     * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
-     * @example
-     * // Lamb's "isNil" is actually implemented like this
-     * var isNil = _.anyOf(_.isNull, _.isUndefined);
-     *
-     * isNil(NaN) // => false
-     * isNil({}) // => false
-     * isNil(null) // => true
-     * isNil(void 0) // => true
-     * isNil() // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see {@link module:lamb.allOf|allOf}
-     * @param {...Function} predicate
-     * @returns {Function}
-     */
-    function anyOf () {
-        var predicates = slice(arguments);
-
-        return function () {
-            var args = arguments;
-
-            return predicates.some(function (predicate) {
-                return predicate.apply(null, args);
-            });
-        };
-    }
-
-    /**
-     * Builds a function that will apply the received arguments to <code>trueFn</code>, if the predicate is satisfied with
-     * the same arguments, or to <code>falseFn</code> otherwise.<br/>
-     * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function will return <code>undefined</code>.<br/>
-     * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>, it's probably better to
-     * use {@link module:lamb.adapter|adapter} to build more complex behaviours.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0};
-     * var halve = function (n) { return n / 2; };
-     * var halveIfEven = _.condition(isEven, halve, _.identity);
-     *
-     * halveIfEven(5) // => 5
-     * halveIfEven(6) // => 3
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see {@link module:lamb.invoker|invoker}
-     * @param {Function} predicate
-     * @param {Function} trueFn
-     * @param {Function} [falseFn]
-     * @returns {Function}
-     */
-    function condition (predicate, trueFn, falseFn) {
-        return function () {
-            var applyArgsTo = applyArgs(arguments);
-            return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
-        };
-    }
-
-    /**
-     * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
-     * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
-     * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
-     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.<br/>
-     * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
-     * @example
-     * var testObject = {};
-     *
-     * _.is({}, testObject) // => false
-     * _.is(testObject, testObject) // => true
-     * _.is("foo", "foo") // => true
-     * _.is(0, -0) // => false
-     * _.is(0 / 0, NaN) // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
-     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
-     * @param {*} a
-     * @param {*} b
-     * @returns {Boolean}
-     */
-    function is (a, b) {
-        return a === 0 && b === 0 ? 1 / a === 1 / b : isSVZ(a, b);
-    }
-
-    /**
-     * Verifies that the first given value is greater than the second.
-     * @example
-     * var pastDate = new Date(2010, 2, 12);
-     * var today = new Date();
-     *
-     * _.isGT(today, pastDate) // true
-     * _.isGT(pastDate, today) // false
-     * _.isGT(3, 4) // false
-     * _.isGT(3, 3) // false
-     * _.isGT(3, 2) // true
-     * _.isGT(0, -0) // false
-     * _.isGT(-0, 0) // false
-     * _.isGT("a", "A") // true
-     * _.isGT("b", "a") // true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {Number|String|Date|Boolean} a
-     * @param {Number|String|Date|Boolean} b
-     * @returns {Boolean}
-     */
-    function isGT (a, b) {
-        return a > b;
-    }
-
-    /**
-     * Verifies that the first given value is greater than or equal to the second.
-     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
-     * @example
-     * _.isGTE(3, 4) // false
-     * _.isGTE(3, 3) // true
-     * _.isGTE(3, 2) // true
-     * _.isGTE(0, -0) // true
-     * _.isGTE(-0, 0) // true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {Number|String|Date|Boolean} a
-     * @param {Number|String|Date|Boolean} b
-     * @returns {Boolean}
-     */
-    function isGTE (a, b) {
-        return a >= b;
-    }
-
-    /**
-     * Verifies that the first given value is less than the second.
-     * @example
-     * var pastDate = new Date(2010, 2, 12);
-     * var today = new Date();
-     *
-     * _.isLT(today, pastDate) // false
-     * _.isLT(pastDate, today) // true
-     * _.isLT(3, 4) // true
-     * _.isLT(3, 3) // false
-     * _.isLT(3, 2) // false
-     * _.isLT(0, -0) // false
-     * _.isLT(-0, 0) // false
-     * _.isLT("a", "A") // false
-     * _.isLT("a", "b") // true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {Number|String|Date|Boolean} a
-     * @param {Number|String|Date|Boolean} b
-     * @returns {Boolean}
-     */
-    function isLT (a, b) {
-        return a < b;
-    }
-
-    /**
-     * Verifies that the first given value is less than or equal to the second.
-     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
-     * @example
-     * _.isLTE(3, 4) // true
-     * _.isLTE(3, 3) // true
-     * _.isLTE(3, 2) // false
-     * _.isLTE(0, -0) // true
-     * _.isLTE(-0, 0) // true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {Number|String|Date|Boolean} a
-     * @param {Number|String|Date|Boolean} b
-     * @returns {Boolean}
-     */
-    function isLTE (a, b) {
-        return a <= b;
-    }
-
-    /**
-     * A simple negation of {@link module:lamb.is|is}, exposed for convenience.
-     * @example
-     * _.isNot("foo", "foo") // => false
-     * _.isNot(0, -0) // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @function
-     * @param {*} valueA
-     * @param {*} valueB
-     * @returns {Boolean}
-     */
-    var isNot = not(is);
-
-    /**
-     * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
-     * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
-     * considered the same value too.<br/>
-     * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
-     * @example
-     * var testObject = {};
-     *
-     * _.isSVZ({}, testObject) // => false
-     * _.isSVZ(testObject, testObject) // => true
-     * _.isSVZ("foo", "foo") // => true
-     * _.isSVZ(0, -0) // => true
-     * _.isSVZ(0 / 0, NaN) // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
-     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
-     * @param {*} a
-     * @param {*} b
-     * @returns {Boolean}
-     */
-    function isSVZ (a, b) {
-        return a !== a ? b !== b : a === b;
-    }
-
-    /**
-     * Returns a predicate that negates the given one.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0; };
-     * var isOdd = _.not(isEven);
-     *
-     * isOdd(5) // => true
-     * isOdd(4) // => false
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @param {Function} predicate
-     * @returns {Function}
-     */
-    function not (predicate) {
-        return function () {
-            return !predicate.apply(null, arguments);
-        };
-    }
-
-    lamb.adapter = adapter;
-    lamb.allOf = allOf;
-    lamb.anyOf = anyOf;
-    lamb.condition = condition;
-    lamb.is = is;
-    lamb.isGT = isGT;
-    lamb.isGTE = isGTE;
-    lamb.isLT = isLT;
-    lamb.isLTE = isLTE;
-    lamb.isNot = isNot;
-    lamb.isSVZ = isSVZ;
-    lamb.not = not;
-
-
-    /**
-     * Adds two numbers.
-     * @example
-     * _.add(4, 5) // => 9
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function add (a, b) {
-        return a + b;
-    }
-
-    /**
-     * "Clamps" a number within the given limits.
-     * @example
-     * _.clamp(-5, 0, 10) // => 0
-     * _.clamp(5, 0, 10) // => 5
-     * _.clamp(15, 0, 10) // => 10
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} n
-     * @param {Number} min
-     * @param {Number} max
-     * @returns {Number}
-     */
-    function clamp (n, min, max) {
-        return n < min ? min : n > max ? max : n;
-    }
-
-    /**
-     * Divides two numbers.
-     * @example
-     * _.divide(5, 2) // => 2.5
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function divide (a, b) {
-        return a / b;
-    }
-
-    /**
-     * Generates a sequence of values of the desired length with the provided iteratee.
-     * The values being iterated, and received by the iteratee, are the results generated so far.
-     * @example
-     * var fibonacci = function (n, idx, results) {
-     *     return n + (results[idx - 1] || 0);
-     * };
-     *
-     * _.generate(1, 10, fibonacci) // => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {*} start - The starting value
-     * @param {Number} len - The desired length for the sequence
-     * @param {ListIteratorCallback} iteratee
-     * @param {Object} [iterateeContext]
-     * @returns {Array}
-     */
-    function generate (start, len, iteratee, iterateeContext) {
-        var result = [start];
-
-        for (var i = 0, limit = len - 1; i < limit; i++) {
-            result.push(iteratee.call(iterateeContext, result[i], i, result));
-        }
-
-        return result;
-    }
-
-    /**
-     * Performs the modulo operation and should not be confused with the {@link module:lamb.remainder|remainder}.
-     * The function performs a floored division to calculate the result and not a truncated one, hence the sign of
-     * the dividend is not kept, unlike the {@link module:lamb.remainder|remainder}.
-     * @example
-     * _.modulo(5, 3) // => 2
-     * _.remainder(5, 3) // => 2
-     *
-     * _.modulo(-5, 3) // => 1
-     * _.remainder(-5, 3) // => -2
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function modulo (a, b) {
-        return a - (b * Math.floor(a / b));
-    }
-
-    /**
-     * Multiplies two numbers.
-     * @example
-     * _.multiply(5, 3) // => 15
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function multiply (a, b) {
-        return a * b;
-    }
-
-    /**
-     * Generates a random integer between two given integers, both included.
-     * Note that no safety measure is taken if the provided arguments aren't integers, so
-     * you may end up with unexpected (not really) results.
-     * For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
-     * @example
-     *
-     * _.randomInt(1, 10) // => an integer >=1 && <= 10
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} min
-     * @param {Number} max
-     * @returns {Number}
-     */
-    function randomInt (min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    /**
-     * Generates an arithmetic progression of numbers starting from <code>start</code> up to,
-     * but not including, <code>limit</code>, using the given <code>step</code>.
-     * @example
-     * _.range(2, 10) // => [2, 3, 4, 5, 6, 7, 8, 9]
-     * _.range(2, 10, 0) // => [2]
-     * _.range(1, -10, -2) // => [1, -1, -3, -5, -7, -9]
-     * _.range(1, -10, 2) // => [1]
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} start
-     * @param {Number} limit
-     * @param {Number} [step=1]
-     * @returns {Number[]}
-     */
-    function range (start, limit, step) {
-        if (step === 0 || arguments.length < 2) {
-            return [start];
-        }
-
-        if (!step) {
-            step = 1;
-        }
-
-        var len = Math.max(Math.ceil((limit - start) / step), 0);
-        return generate(start, len, partial(add, step));
-    }
-
-    /**
-     * Gets the remainder of the division of two numbers.
-     * Not to be confused with the {@link module:lamb.modulo|modulo} as the remainder
-     * keeps the sign of the dividend and may lead to some unexpected results.
-     * @example
-     * // example of wrong usage of the remainder
-     * // (in this case the modulo operation should be used)
-     * var isOdd = function (n) { return _.remainder(n, 2) === 1; };
-     * isOdd(-3) // => false as -3 % 2 === -1
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function remainder (a, b) {
-        return a % b;
-    }
-
-    /**
-     * Subtracts two numbers.
-     * @example
-     * _.subtract(5, 3) // => 2
-     *
-     * @memberof module:lamb
-     * @category Math
-     * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
-     */
-    function subtract (a, b) {
-        return a - b;
-    }
-
-    lamb.add = add;
-    lamb.clamp = clamp;
-    lamb.divide = divide;
-    lamb.generate = generate;
-    lamb.modulo = modulo;
-    lamb.multiply = multiply;
-    lamb.randomInt = randomInt;
-    lamb.range = range;
-    lamb.remainder = remainder;
-    lamb.subtract = subtract;
-
-
     function _immutable (obj, seen) {
         if (seen.indexOf(obj) === -1) {
             seen.push(Object.freeze(obj));
@@ -3406,12 +3510,28 @@
         return getKeys(obj).map(_keyToPair, obj);
     });
 
-    var _tearFrom = _curry(function  (getKeys, obj) {
+    function _safeEnumerables (obj) {
+        var keys = [];
+
+        for (var key in obj) {
+            keys.push(key);
+        }
+
+        return keys;
+    }
+
+    var _safeKeys = compose(Object.keys, Object);
+
+    var _tearFrom = _curry(function (getKeys, obj) {
         return getKeys(obj).reduce(function (result, key) {
             result[0].push(key);
             result[1].push(obj[key]);
             return result;
         }, [[], []]);
+    });
+
+    var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
+        return (isNil(obj) ? Object.keys : getKeys)(obj);
     });
 
     var _valuesFrom = _curry(function (getKeys, obj) {
@@ -3465,31 +3585,24 @@
 
     /**
      * Creates an array with all the enumerable properties of the given object.
-     * @example <caption>showing the difference with <code>Object.keys</code></caption>
+     * @example <caption>Showing the difference with {@link module:lamb.keys|keys}</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3},
      *     d: {value: 4, enumerable: true}
      * });
      *
-     * Object.keys(foo) // => ["d"]
+     * _.keys(foo) // => ["d"]
      * _.enumerables(foo) // => ["d", "a"]
      *
      * @memberof module:lamb
      * @category Object
-     * @see [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
+     * @function
+     * @see {@link module:lamb.keys|keys}
      * @param {Object} obj
      * @returns {String[]}
      */
-    function enumerables (obj) {
-        var keys = [];
-
-        for (var key in obj) {
-            keys.push(key);
-        }
-
-        return keys;
-    }
+    var enumerables = _unsafeKeyListFrom(_safeEnumerables);
 
     /**
      * Builds an object from a list of key / value pairs like the one
@@ -3653,6 +3766,32 @@
     }
 
     /**
+     * Retrieves the list of the own enumerable properties of an object.<br/>
+     * Although [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
+     * is already present in ECMAScript 5, its behaviour changed in the subsequent specifications
+     * of the standard as you can read if the link above.<br/>
+     * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
+     * object for any value but <code>null</code> and <code>undefined</code>.
+     * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>
+     * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
+     * var foo = Object.create(baseFoo, {
+     *     c: {value: 3},
+     *     d: {value: 4, enumerable: true}
+     * });
+     *
+     * _.enumerables(foo) // => ["d", "a"]
+     * _.keys(foo) // => ["d"]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @see {@link module:lamb.enumerables|enumerables}
+     * @param {Object} obj
+     * @returns {String[]}
+     */
+    var keys = _unsafeKeyListFrom(_safeKeys);
+
+    /**
      * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
      * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
      * If more values than keys are supplied, the extra values will be ignored.<br/>
@@ -3701,7 +3840,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var merge = partial(_merge, enumerables);
+    var merge = partial(_merge, _safeEnumerables);
 
     /**
      * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
@@ -3729,7 +3868,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var mergeOwn = partial(_merge, compose(Object.keys, Object));
+    var mergeOwn = partial(_merge, _safeKeys);
 
     /**
      * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
@@ -3750,7 +3889,7 @@
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
-    var ownPairs = _pairsFrom(Object.keys);
+    var ownPairs = _pairsFrom(keys);
 
     /**
      * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
@@ -3770,7 +3909,7 @@
      * @param {Object} obj
      * @returns {Array}
      */
-    var ownValues = _valuesFrom(Object.keys);
+    var ownValues = _valuesFrom(keys);
 
     /**
      * Converts an object into an array of key / value pairs of its enumerable properties.<br/>
@@ -3927,7 +4066,7 @@
      * @param {Object} obj
      * @returns {Array<Array<String>, Array<*>>}
      */
-    var tearOwn = _tearFrom(Object.keys);
+    var tearOwn = _tearFrom(keys);
 
     /**
      * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
@@ -4016,6 +4155,7 @@
     lamb.hasOwn = hasOwn;
     lamb.hasOwnKey = hasOwnKey;
     lamb.immutable = immutable;
+    lamb.keys = keys;
     lamb.make = make;
     lamb.merge = merge;
     lamb.mergeOwn = mergeOwn;
@@ -4127,110 +4267,6 @@
     lamb.padRight = padRight;
     lamb.repeat = repeat;
     lamb.testWith = testWith;
-
-
-    /**
-     * Verifies if a value is <code>null</code> or <code>undefined</code>.
-     * @example
-     * _.isNil(NaN) // => false
-     * _.isNil({}) // => false
-     * _.isNil(null) // => true
-     * _.isNil(void 0) // => true
-     * _.isNil() // => true
-     *
-     * @memberof module:lamb
-     * @category Type
-     * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
-     * @function
-     * @param {*} value
-     * @returns {Boolean}
-     */
-    var isNil = anyOf(isNull, isUndefined);
-
-    /**
-     * Verifies if a value is <code>null</code>.
-     * @example
-     * _.isNull(null) // => true
-     * _.isNull(void 0) // => false
-     * _.isNull(false) // => false
-     *
-     * @memberof module:lamb
-     * @category Type
-     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
-     * @param {*} value
-     * @returns {Boolean}
-     */
-    function isNull (value) {
-        return value === null;
-    }
-
-    /**
-     * Builds a predicate that expects a value to check against the specified type.
-     * @example
-     * var isString = _.isType("String");
-     *
-     * isString("Hello") // => true
-     * isString(new String("Hi")) // => true
-     *
-     * @memberof module:lamb
-     * @category Type
-     * @see {@link module:lamb.type|type}
-     * @param {String} typeTag
-     * @returns {Function}
-     */
-    function isType (typeName) {
-        return function (value) {
-            return type(value) === typeName;
-        };
-    }
-
-    /**
-     * Verifies if a value is <code>undefined</code>.
-     * @example
-     * _.isUndefined(null) // => false
-     * _.isUndefined(void 0) // => true
-     * _.isUndefined(false) // => false
-     *
-     * @memberof module:lamb
-     * @category Type
-     * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
-     * @param {*} value
-     * @returns {Boolean}
-     */
-    function isUndefined (value) {
-        // using void because undefined could be theoretically shadowed
-        return value === void 0;
-    }
-
-    /**
-     * Retrieves the "type tag" from the given value.
-     * @example
-     * var x = 5;
-     * var y = new Number(5);
-     *
-     * typeof x // => "number"
-     * typeof y // => "object"
-     * _.type(x) // => "Number"
-     * _.type(y) // => "Number"
-     *
-     * _.type(Object.prototype.toString) // => "Function"
-     * _.type(/a/) // => "RegExp"
-     *
-     * @memberof module:lamb
-     * @category Type
-     * @see {@link module:lamb.isType|isType}
-     * @param {*} value
-     * @returns {String}
-     */
-    function type (value) {
-        return _objectProto.toString.call(value).replace(/^\[\w+\s+|\]$/g, "");
-    }
-
-    lamb.isNil = isNil;
-    lamb.isNull = isNull;
-    lamb.isType = isType;
-    lamb.isUndefined = isUndefined;
-    lamb.type = type;
 
     /* istanbul ignore next */
     if (typeof exports === "object") {

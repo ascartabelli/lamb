@@ -40,7 +40,7 @@ function _isIndex (target, key) {
 }
 
 function _isEnumerable (obj, key) {
-    return key in Object(obj) && ~enumerables(obj).indexOf(key);
+    return key in Object(obj) && ~_safeEnumerables(obj).indexOf(key);
 }
 
 function _isInteger (n) {
@@ -345,7 +345,7 @@ function setAt (index, value) {
  * @returns {Object}
  */
 function setIn (source, key, value) {
-    return _merge(enumerables, source, make([key], [value]));
+    return _merge(_safeEnumerables, source, make([key], [value]));
 }
 
 /**
@@ -531,7 +531,7 @@ function updateAt (index, updater) {
  * @returns {Object}
  */
 function updateIn (source, key, updater) {
-    return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+    return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(_safeEnumerables, source);
 }
 
 /**
@@ -654,7 +654,7 @@ function updatePathIn (source, path, updater, separator) {
     if (pathInfo.isValid) {
         return _setPathIn(source, parts, updater(pathInfo.target));
     } else {
-        return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
+        return Array.isArray(source) ? slice(source) : _merge(_safeEnumerables, source);
     }
 }
 
