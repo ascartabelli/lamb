@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.25.0-alpha.1
+ * @version 0.25.0-rc.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.25.0-alpha.1";
+    lamb._version =  "0.25.0-rc.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -980,12 +980,14 @@
     }
 
     function _isEnumerable (obj, key) {
-        return key in Object(obj) && ~_safeEnumerables(obj).indexOf(key);
+        return key in Object(obj) && (_isOwnEnumerable(obj, key) || ~_safeEnumerables(obj).indexOf(key));
     }
 
     function _isInteger (n) {
         return Math.floor(n) === n;
     }
+
+    var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
 
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);

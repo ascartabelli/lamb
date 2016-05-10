@@ -40,12 +40,14 @@ function _isIndex (target, key) {
 }
 
 function _isEnumerable (obj, key) {
-    return key in Object(obj) && ~_safeEnumerables(obj).indexOf(key);
+    return key in Object(obj) && (_isOwnEnumerable(obj, key) || ~_safeEnumerables(obj).indexOf(key));
 }
 
 function _isInteger (n) {
     return Math.floor(n) === n;
 }
+
+var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
 
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
