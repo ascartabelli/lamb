@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.24.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.25.1/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,11 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.25.1 - *2016/05/10***
+  - **API change**: `enumerables`, `pairs`, `tear` and `values` now throw a TypeError if supplied with `null` or `undefined`
+  - **API change**: `ownPairs`, `ownValues` and `tearOwn` now throw a TypeError only if supplied with `null` or `undefined` regardless of the ECMAScript engine you are using
+  - Added `keys` as a shim of ES6’s `Object.keys
 
 - **v0.24.0 - *2016/05/05***
   - **API change**: `setPath` and `setPathIn` now treat non-enumerable properties encountered in a path as non-existent properties
