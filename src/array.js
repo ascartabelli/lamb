@@ -146,6 +146,7 @@ function dropWhile (predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.filter|filter}
  * @param {ListIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -237,6 +238,7 @@ function findIndex (arrayLike, predicate, predicateContext) {
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.flatMapWith|flatMapWith}
  * @param {Array} array
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
@@ -255,6 +257,7 @@ var flatMap = compose(shallowFlatten, map);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.flatMap|flatMap}
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {Function}
@@ -264,7 +267,7 @@ function flatMapWith (iteratee, iterateeContext) {
 }
 
 /**
- * Flattens an array. See also {@link module:lamb.shallowFlatten|shallowFlatten}.
+ * Flattens an array.
  * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
@@ -273,6 +276,7 @@ function flatMapWith (iteratee, iterateeContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.shallowFlatten|shallowFlatten}
  * @param {Array} array
  * @returns {Array}
  */
@@ -379,6 +383,7 @@ function list () {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.map|map}
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {function}
@@ -524,8 +529,7 @@ function reverse (arrayLike) {
 }
 
 /**
- * Flattens the "first level" of an array.<br/>
- * See also {@link module:lamb.flatten|flatten}.
+ * Flattens the "first level" of an array.
  * @example <caption>showing the difference with <code>flatten</code></caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
@@ -534,6 +538,7 @@ function reverse (arrayLike) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.flatten|flatten}
  * @param {Array} array
  * @returns {Array}
  */
@@ -715,8 +720,8 @@ function uniques (arrayLike, iteratee, iterateeContext) {
     var seen = [];
     var value;
 
-    for (var i = 0; i < arrayLike.length; i++) {
-        value = iteratee.call(iterateeContext, arrayLike[i], i , arrayLike);
+    for (var i = 0, len = arrayLike.length; i < len; i++) {
+        value = iteratee.call(iterateeContext, arrayLike[i], i, arrayLike);
 
         if (!isIn(seen, value)) {
             seen.push(value);

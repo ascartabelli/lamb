@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.25.0-rc.1
+ * @version 0.25.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.25.0-rc.1";
+    lamb._version =  "0.25.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -191,6 +191,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.filterWith|filterWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
@@ -234,6 +235,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.mapWith|mapWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
@@ -1769,6 +1771,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.filter|filter}
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -1860,6 +1863,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.flatMapWith|flatMapWith}
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
@@ -1878,6 +1882,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.flatMap|flatMap}
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Function}
@@ -1887,7 +1892,7 @@
     }
 
     /**
-     * Flattens an array. See also {@link module:lamb.shallowFlatten|shallowFlatten}.
+     * Flattens an array.
      * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
      * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
      *
@@ -1896,6 +1901,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.shallowFlatten|shallowFlatten}
      * @param {Array} array
      * @returns {Array}
      */
@@ -2002,6 +2008,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.map|map}
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {function}
@@ -2147,8 +2154,7 @@
     }
 
     /**
-     * Flattens the "first level" of an array.<br/>
-     * See also {@link module:lamb.flatten|flatten}.
+     * Flattens the "first level" of an array.
      * @example <caption>showing the difference with <code>flatten</code></caption>
      * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
      *
@@ -2157,6 +2163,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.flatten|flatten}
      * @param {Array} array
      * @returns {Array}
      */
@@ -2338,8 +2345,8 @@
         var seen = [];
         var value;
 
-        for (var i = 0; i < arrayLike.length; i++) {
-            value = iteratee.call(iterateeContext, arrayLike[i], i , arrayLike);
+        for (var i = 0, len = arrayLike.length; i < len; i++) {
+            value = iteratee.call(iterateeContext, arrayLike[i], i, arrayLike);
 
             if (!isIn(seen, value)) {
                 seen.push(value);

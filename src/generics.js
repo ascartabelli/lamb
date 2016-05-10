@@ -13,6 +13,7 @@
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.filterWith|filterWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @param {Object} [predicateContext]
@@ -56,6 +57,7 @@ var forEach = generic(_arrayProto.forEach);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.mapWith|mapWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
