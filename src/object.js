@@ -508,6 +508,100 @@ function pickIf (predicate, predicateContext) {
 }
 
 /**
+ * Creates a copy of the given object with its enumerable keys renamed as
+ * indicated in the provided lookup table.
+ * @example
+ * var person = {"firstName": "John", "lastName": "Doe"};
+ * var keysMap = {"firstName": "name", "lastName": "surname"};
+ *
+ * _.rename(person, keysMap) // => {"name": "John", "surname": "Doe"}
+ *
+ * @example <caption>It's safe using it to swap keys:</caption>
+ * var keysMap = {"firstName": "lastName", "lastName": "firstName"};
+ *
+ * _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.renameKeys|renameKeys}, {@link module:lamb.renameWith|renameWith}
+ * @param {Object} source
+ * @param {Object} keysMap
+ * @returns {Object}
+ */
+function rename (source, keysMap) {
+    keysMap = Object(keysMap);
+    var result = {};
+    var oldKeys = enumerables(source);
+
+    for (var prop in keysMap) {
+        if (~oldKeys.indexOf(prop)) {
+            result[keysMap[prop]] = source[prop];
+        }
+    }
+
+    for (var i = 0, len = oldKeys.length, key; i < len; i++) {
+        key = oldKeys[i];
+
+        if (!(key in keysMap || key in result)) {
+            result[key] = source[key];
+        }
+    }
+
+    return result;
+}
+
+/**
+ * A curried version of {@link module:lamb.rename|rename} expecting a
+ * <code>keysMap</code> to build a function waiting for the object to act upon.
+ * @example
+ * var persons = [
+ *     {"firstName": "John", "lastName": "Doe"},
+ *     {"first_name": "Mario", "last_name": "Rossi"},
+ * ];
+ * var normalizeKeys = _.renameKeys({
+ *     "firstName": "name",
+ *     "first_name": "name",
+ *     "lastName": "surname",
+ *     "last_name": "surname"
+ * });
+ *
+ * persons.map(normalizeKeys) // => [{"name": "John", "surname": "Doe"}, {"name": "Mario", "surname": "Rossi"}]
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @function
+ * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameWith|renameWith}
+ * @param {Object} keysMap
+ * @returns {Function}
+ */
+var renameKeys = _curry(rename, 2, true);
+
+/**
+ * Uses the provided function as a <code>keysMap</code> generator and returns
+ * a function expecting the object whose keys we want to {@link module:lamb.rename|rename}.
+ * @example
+ * var person = {"NAME": "John", "SURNAME": "Doe"};
+ * var makeLowerKeysMap = function (source) {
+ *     var sourceKeys = _.keys(source);
+ *     return _.make(sourceKeys, sourceKeys.map(_.invoker("toLowerCase")));
+ * };
+ * var lowerKeysFor = _.renameWith(makeLowerKeysMap);
+ *
+ * lowerKeysFor(person) // => {"name": "John", "surname": "doe"};
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameKeys|renameKeys}
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function renameWith (fn) {
+    return function (source) {
+        return rename(source, fn(source));
+    };
+}
+
+/**
  * Returns a copy of the source object without the specified properties.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
@@ -687,6 +781,9 @@ lamb.ownValues = ownValues;
 lamb.pairs = pairs;
 lamb.pick = pick;
 lamb.pickIf = pickIf;
+lamb.rename = rename;
+lamb.renameKeys = renameKeys;
+lamb.renameWith = renameWith;
 lamb.skip = skip;
 lamb.skipIf = skipIf;
 lamb.tear = tear;
