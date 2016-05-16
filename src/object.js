@@ -292,7 +292,7 @@ function immutable (obj) {
  * Retrieves the list of the own enumerable properties of an object.<br/>
  * Although [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
  * is already present in ECMAScript 5, its behaviour changed in the subsequent specifications
- * of the standard as you can read if the link above.<br/>
+ * of the standard as you can read in the link above.<br/>
  * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
  * object for any value but <code>null</code> and <code>undefined</code>.
  * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>

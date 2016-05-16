@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.26.0-alpha.1
+ * @version 0.26.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.26.0-alpha.1";
+    lamb._version =  "0.26.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3375,14 +3375,14 @@
      * @returns {Function}
      */
     function tapArgs (fn) {
-        var readers = slice(arguments, 1);
+        var tappers = slice(arguments, 1);
 
         return function () {
             var len = arguments.length;
             var args = [];
 
             for (var i = 0; i < len; i++) {
-                args.push(readers[i] ? readers[i](arguments[i]) : arguments[i]);
+                args.push(tappers[i] ? tappers[i](arguments[i]) : arguments[i]);
             }
 
             return fn.apply(this, args);
@@ -3778,7 +3778,7 @@
      * Retrieves the list of the own enumerable properties of an object.<br/>
      * Although [Object.keys]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys}
      * is already present in ECMAScript 5, its behaviour changed in the subsequent specifications
-     * of the standard as you can read if the link above.<br/>
+     * of the standard as you can read in the link above.<br/>
      * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
      * object for any value but <code>null</code> and <code>undefined</code>.
      * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>

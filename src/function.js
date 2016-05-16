@@ -394,14 +394,14 @@ var pipe = flip(compose);
  * @returns {Function}
  */
 function tapArgs (fn) {
-    var readers = slice(arguments, 1);
+    var tappers = slice(arguments, 1);
 
     return function () {
         var len = arguments.length;
         var args = [];
 
         for (var i = 0; i < len; i++) {
-            args.push(readers[i] ? readers[i](arguments[i]) : arguments[i]);
+            args.push(tappers[i] ? tappers[i](arguments[i]) : arguments[i]);
         }
 
         return fn.apply(this, args);
