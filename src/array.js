@@ -511,6 +511,54 @@ function pluckKey (key) {
 }
 
 /**
+ * A partial application of {@link module:lamb.reduce|reduceRight} that uses the
+ * provided <code>accumulator</code> and the optional <code>initialValue</code> to
+ * build a function expecting the array-like object to act upon.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.reduceRightWith(_.add)(arr) // => 15
+ * _.reduceRightWith(_.subtract)(arr) // => -5
+ * _.reduceRightWith(_.subtract, 0)(arr) // => -15
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.reduceWith|reduceWith}
+ * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+ * @param {AccumulatorCallback} accumulator
+ * @param {*} [initialValue]
+ * @returns {Function}
+ */
+function reduceRightWith (accumulator, initialValue) {
+    var fn = arguments.length === 2 ? reduceRight : binary(reduceRight);
+    return partial(fn, _, accumulator, initialValue);
+}
+
+/**
+ * A partial application of {@link module:lamb.reduce|reduce} that uses the
+ * provided <code>accumulator</code> and the optional <code>initialValue</code> to
+ * build a function expecting the array-like object to act upon.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.reduceWith(_.add)(arr) // => 15
+ * _.reduceWith(_.subtract)(arr) // => -13
+ * _.reduceWith(_.subtract, 0)(arr) // => -15
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.reduceRightWith|reduceRightWith}
+ * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+ * @param {AccumulatorCallback} accumulator
+ * @param {*} [initialValue]
+ * @returns {Function}
+ */
+function reduceWith (accumulator, initialValue) {
+    var fn = arguments.length === 2 ? reduce : binary(reduce);
+    return partial(fn, _, accumulator, initialValue);
+}
+
+/**
  * Reverses a copy of the given array-like object.
  * @example
  * var arr = [1, 2, 3];
@@ -786,6 +834,8 @@ lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
+lamb.reduceRightWith = reduceRightWith;
+lamb.reduceWith = reduceWith;
 lamb.reverse = reverse;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;

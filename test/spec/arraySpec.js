@@ -405,6 +405,44 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("reduceRightWith", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var s = "12345";
+
+        it("should build a partial application of `reduceRight` expecting the array to act upon", function () {
+            expect(lamb.reduceRightWith(lamb.subtract)(arr)).toBe(-5);
+            expect(lamb.reduceRightWith(lamb.subtract, 0)(arr)).toBe(-15);
+            expect(lamb.reduceRightWith(lamb.subtract, 10)(arr)).toBe(-5);
+        });
+
+        it("should work with array-like objects", function () {
+            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
+
+            expect(lamb.reduceRightWith(fn)(s)).toBe(-5);
+            expect(lamb.reduceRightWith(fn, 0)(s)).toBe(-15);
+            expect(lamb.reduceRightWith(fn, 10)(s)).toBe(-5);
+        });
+    });
+
+    describe("reduceWith", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var s = "12345";
+
+        it("should build a partial application of `reduce` expecting the array to act upon", function () {
+            expect(lamb.reduceWith(lamb.subtract)(arr)).toBe(-13);
+            expect(lamb.reduceWith(lamb.subtract, 0)(arr)).toBe(-15);
+            expect(lamb.reduceWith(lamb.subtract, 10)(arr)).toBe(-5);
+        });
+
+        it("should work with array-like objects", function () {
+            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
+
+            expect(lamb.reduceWith(fn)(s)).toBe(-13);
+            expect(lamb.reduceWith(fn, 0)(s)).toBe(-15);
+            expect(lamb.reduceWith(fn, 10)(s)).toBe(-5);
+        });
+    });
+
     describe("reverse", function () {
         it("should reverse a copy of an array-like object", function () {
             var arr = [1, 2, 3, 4, 5];

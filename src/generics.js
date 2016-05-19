@@ -74,6 +74,8 @@ var map = generic(_arrayProto.map);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.reduceRight|reduceRight}
+ * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
  * @param {ArrayLike} arrayLike
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
@@ -87,6 +89,8 @@ var reduce = generic(_arrayProto.reduce);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.reduce|reduce}
+ * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
  * @param {ArrayLike} arrayLike
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
