@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.26.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.27.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.27.0 - *2016/05/23***
+  - **API change**: renamed `insert` to `sortedInsert`
+  - Added `insert`, `insertAt`, `reduceWith` and `reduceRightWith`
 
 - **v0.26.0 - *2016/05/16***
   - **Fully compatible with versions down to 0.25.x**

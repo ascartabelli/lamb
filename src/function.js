@@ -339,7 +339,7 @@ function invokerOn (target) {
 /**
  * Builds a function that allows to map over the received arguments before applying them to the original one.
  * @example
- * var sumArray = _.invoker("reduce", _.add);
+ * var sumArray = _.reduceWith(_.add);
  * var sum = _.compose(sumArray, _.list);
  *
  * sum(1, 2, 3, 4, 5) // => 15

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.27.0-alpha.3
+ * @version 0.27.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.27.0-alpha.3";
+    lamb._version =  "0.27.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3430,7 +3430,7 @@
     /**
      * Builds a function that allows to map over the received arguments before applying them to the original one.
      * @example
-     * var sumArray = _.invoker("reduce", _.add);
+     * var sumArray = _.reduceWith(_.add);
      * var sum = _.compose(sumArray, _.list);
      *
      * sum(1, 2, 3, 4, 5) // => 15
