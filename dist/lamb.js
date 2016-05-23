@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.27.0-alpha.1
+ * @version 0.27.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.27.0-alpha.1";
+    lamb._version =  "0.27.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2835,57 +2835,6 @@
     }
 
     /**
-     * Inserts an element in a copy of a sorted array respecting the sort order.
-     * @example <caption>with simple values</caption>
-     * _.insert([], 1) // => [1]
-     * _.insert([2, 4, 6], 5) // => [2, 4, 5, 6]
-     * _.insert([4, 2, 1], 3, _.sorterDesc()) // => [4, 3, 2, 1]
-     *
-     * @example <caption>with complex values</caption>
-     * var persons = [
-     *     {"name": "jane", "surname": "doe"},
-     *     {"name": "John", "surname": "Doe"},
-     *     {"name": "Mario", "surname": "Rossi"}
-     * ];
-     *
-     * var getLowerCaseName = _.compose(
-     *     _.invoker("toLowerCase"),
-     *     _.getKey("name")
-     * );
-     *
-     * var result = _.insert(
-     *     persons,
-     *     {"name": "marco", "surname": "Rossi"},
-     *     getLowerCaseName
-     * );
-     *
-     * // `result` holds:
-     * // [
-     * //     {"name": "jane", "surname": "doe"},
-     * //     {"name": "John", "surname": "Doe"},
-     * //     {"name": "marco", "surname": "Rossi"},
-     * //     {"name": "Mario", "surname": "Rossi"}
-     * // ]
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
-     * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
-     * @param {Array} array
-     * @param {*} element
-     * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
-     * @returns {Array}
-     */
-    function insert (array, element) {
-        var criteria = _makeCriteria(slice(arguments, 2));
-        var result = array.concat();
-        var idx = _getInsertionIndex(array, element, _compareWith(criteria), 0, array.length);
-
-        result.splice(idx, 0, element);
-        return result;
-    }
-
-    /**
      * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted copy of an
      * array-like object using the given criteria.<br/>
      * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
@@ -2967,13 +2916,64 @@
     }
 
     /**
+     * Inserts an element in a copy of a sorted array respecting the sort order.
+     * @example <caption>with simple values</caption>
+     * _.sortedInsert([], 1) // => [1]
+     * _.sortedInsert([2, 4, 6], 5) // => [2, 4, 5, 6]
+     * _.sortedInsert([4, 2, 1], 3, _.sorterDesc()) // => [4, 3, 2, 1]
+     *
+     * @example <caption>with complex values</caption>
+     * var persons = [
+     *     {"name": "jane", "surname": "doe"},
+     *     {"name": "John", "surname": "Doe"},
+     *     {"name": "Mario", "surname": "Rossi"}
+     * ];
+     *
+     * var getLowerCaseName = _.compose(
+     *     _.invoker("toLowerCase"),
+     *     _.getKey("name")
+     * );
+     *
+     * var result = _.sortedInsert(
+     *     persons,
+     *     {"name": "marco", "surname": "Rossi"},
+     *     getLowerCaseName
+     * );
+     *
+     * // `result` holds:
+     * // [
+     * //     {"name": "jane", "surname": "doe"},
+     * //     {"name": "John", "surname": "Doe"},
+     * //     {"name": "marco", "surname": "Rossi"},
+     * //     {"name": "Mario", "surname": "Rossi"}
+     * // ]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
+     * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+     * @param {Array} array
+     * @param {*} element
+     * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
+     * @returns {Array}
+     */
+    function sortedInsert (array, element) {
+        var criteria = _makeCriteria(slice(arguments, 2));
+        var result = array.concat();
+        var idx = _getInsertionIndex(array, element, _compareWith(criteria), 0, array.length);
+
+        result.splice(idx, 0, element);
+        return result;
+    }
+
+    /**
      * Creates an ascending sort criterion with the provided <code>reader</code> and <code>comparer</code>.<br/>
      * See {@link module:lamb.sort|sort} for various examples.
      *
      * @memberof module:lamb
      * @category Array
      * @function
-     * @see {@link module:lamb.insert|insert}
+     * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorterDesc|sorterDesc}
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
@@ -2989,7 +2989,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
-     * @see {@link module:lamb.insert|insert}
+     * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
@@ -3027,8 +3027,8 @@
         };
     }
 
-    lamb.insert = insert;
     lamb.sort = sort;
+    lamb.sortedInsert = sortedInsert;
     lamb.sorter = sorter;
     lamb.sorterDesc = sorterDesc;
     lamb.sortWith = sortWith;
@@ -4527,7 +4527,7 @@
  */
 
 /**
- * Represent a sorting criteria used by {@link module:lamb.insert|insert}, {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith},
+ * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert}, {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith},
  * and it's usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
  * @typedef {Sorter} Sorter
  * @global
