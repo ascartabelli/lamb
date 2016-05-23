@@ -210,6 +210,7 @@ function sort (arrayLike) {
  * @category Array
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+ * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
  * @param {Array} array
  * @param {*} element
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.

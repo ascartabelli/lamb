@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.27.0-alpha.2
+ * @version 0.27.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.27.0-alpha.2";
+    lamb._version =  "0.27.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1920,7 +1920,7 @@
      * _.init([1]) // => []
      * _.init([]) // => []
      *
-     * @memberOf module:lamb
+     * @memberof module:lamb
      * @category Array
      * @function
      * @see {@link module:lamb.tail|tail}
@@ -1929,6 +1929,59 @@
      * @returns {Array}
      */
     var init = partial(slice, _, 0, -1);
+
+    /**
+     * Inserts the provided element in a copy of an array-like object at the
+     * specified index.<br/>
+     * If the index is greater than the length of the array-like, the element
+     * will be appended at the end.<br/>
+     * Negative indexes are allowed; when a negative index is out of bounds
+     * the element will be inserted at the start of the resulting array.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.insert(arr, 3, 99) // => [1, 2, 3, 99, 4, 5]
+     * _.insert(arr, -2, 99) // => [1, 2, 3, 99, 4, 5]
+     * _.insert(arr, 10, 99) // => [1, 2, 3, 4, 5, 99]
+     * _.insert(arr, -10, 99) // => [99, 1, 2, 3, 4, 5]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.insertAt|insertAt}
+     * @see {@link module:lamb.sortedInsert|sortedInsert}
+     * @param {ArrayLike} arrayLike
+     * @param {Number} index
+     * @param {*} element
+     * @returns {Array}
+     */
+    function insert (arrayLike, index, element) {
+        var result = slice(arrayLike);
+        result.splice(index, 0, element);
+        return result;
+    }
+
+    /**
+     * Builds a partial application of {@link module:lamb.insert|insert}
+     * expecting the array-like object to act upon.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.insertAt(3, 99)(arr) // => [1, 2, 3, 99, 4, 5]
+     * _.insertAt(-2, 99)(arr) // => [1, 2, 3, 99, 4, 5]
+     * _.insertAt(10, 99)(arr) // => [1, 2, 3, 4, 5, 99]
+     * _.insertAt(-10, 99)(arr) // => [99, 1, 2, 3, 4, 5]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.insert|insert}
+     * @see {@link module:lamb.sortedInsert|sortedInsert}
+     * @param {Number} index
+     * @param {*} element
+     * @returns {Function}
+     */
+    function insertAt (index, element) {
+        return partial(insert, _, index, element);
+    }
 
     /**
      * Returns an array of every item present in all given arrays.<br/>
@@ -2230,7 +2283,7 @@
      * _.tail([1]) // => []
      * _.tail([]) // => []
      *
-     * @memberOf module:lamb
+     * @memberof module:lamb
      * @category Array
      * @function
      * @see {@link module:lamb.init|init}
@@ -2455,6 +2508,8 @@
     lamb.flatMapWith = flatMapWith;
     lamb.flatten = flatten;
     lamb.init = init;
+    lamb.insert = insert;
+    lamb.insertAt = insertAt;
     lamb.intersection = intersection;
     lamb.isIn = isIn;
     lamb.list = list;
@@ -2952,6 +3007,7 @@
      * @category Array
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+     * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
      * @param {Array} array
      * @param {*} element
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.

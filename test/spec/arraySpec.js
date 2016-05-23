@@ -263,6 +263,80 @@ describe("lamb.array", function () {
         });
     });
 
+    describe("insert / insertAt", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var result = [1, 2, 3, 99, 4, 5];
+
+        afterEach(function () {
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should allow to insert an element in a copy of an array at the specified index", function () {
+            var r1 = lamb.insert(arr, 3, 99);
+            var r2 = lamb.insertAt(3, 99)(arr);
+
+            expect(r1).toEqual(result);
+            expect(r2).toEqual(result);
+            expect(r1).not.toBe(arr);
+            expect(r2).not.toBe(arr);
+        });
+
+        it("should insert the element at the end of the array if the provided index is greater than its length", function () {
+            expect(lamb.insert(arr, 99, 99)).toEqual([1, 2, 3, 4, 5, 99]);
+            expect(lamb.insertAt(99, 99)(arr)).toEqual([1, 2, 3, 4, 5, 99]);
+        });
+
+        it("should allow the use of negative indexes", function () {
+            expect(lamb.insert(arr, -2, 99)).toEqual(result);
+            expect(lamb.insertAt(-2, 99)(arr)).toEqual(result);
+        });
+
+        it("should insert the element at the start of the array if provided with a negative index which is out of bounds", function () {
+            var r = [99, 1, 2, 3, 4, 5];
+            expect(lamb.insert(arr, -99, 99)).toEqual(r);
+            expect(lamb.insertAt(-99, 99)(arr)).toEqual(r);
+        });
+
+        it("should convert the index to an integer following ECMA specifications", function () {
+            // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
+            var r = [99, 1, 2, 3, 4, 5];
+
+            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (idx) {
+                expect(lamb.insert(arr, idx, 99)).toEqual(r);
+                expect(lamb.insertAt(idx, 99)(arr)).toEqual(r);
+            });
+
+            expect(lamb.insert(arr, [3], 99)).toEqual(result);
+            expect(lamb.insertAt([-2], 99)(arr)).toEqual(result);
+            expect(lamb.insert(arr, 3.6, 99)).toEqual(result);
+            expect(lamb.insert(arr, 3.2, 99)).toEqual(result);
+            expect(lamb.insertAt(-2.8, 99)(arr)).toEqual(result);
+            expect(lamb.insertAt(-2.2, 99)(arr)).toEqual(result);
+            expect(lamb.insert(arr, "-2", 99)).toEqual(result);
+            expect(lamb.insertAt("3", 99)(arr)).toEqual(result);
+        });
+
+        it("should work with array-like objects", function () {
+            var s = "12345";
+            expect(lamb.insert(s, -2, "99")).toEqual(result.map(String));
+            expect(lamb.insertAt(3, "99")(s)).toEqual(result.map(String));
+        });
+
+        it("should throw an exception if a `nil` value is passed in place of an array-like object", function () {
+            expect(function () { lamb.insert(null, 3, 99); }).toThrow();
+            expect(function () { lamb.insert(void 0, 3, 99); }).toThrow();
+            expect(function () { lamb.insertAt(3, 99)(null); }).toThrow();
+            expect(function () { lamb.insertAt(3, 99)(void 0); }).toThrow();
+        });
+
+        it("should consider every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date(), {}].forEach(function (value) {
+                expect(lamb.insert(value, 3, 99)).toEqual([99]);
+                expect(lamb.insertAt(3, 99)(value)).toEqual([99]);
+            });
+        });
+    });
+
     describe("intersection", function () {
         it("should throw an exception if no arguments are supplied", function () {
             expect(lamb.intersection).toThrow();
