@@ -37,6 +37,20 @@ describe("lamb.array", function () {
             expect(lamb.contains("f", 1)("foo")).toBe(false);
             expect(lamb.isIn("foo", "f", 1)).toBe(false);
         });
+
+        it("should throw an exception if supplied with `null` or `undefined´", function () {
+            expect(function () { lamb.isIn(null, 1); }).toThrow();
+            expect(function () { lamb.isIn(void 0, 1); }).toThrow();
+            expect(function () { lamb.contains(1)(null); }).toThrow();
+            expect(function () { lamb.contains(1)(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array and return false", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.contains(1)(value)).toBe(false);
+                expect(lamb.isIn(value, 1)).toBe(false);
+            });
+        });
     });
 
     describe("difference", function () {

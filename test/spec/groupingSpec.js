@@ -80,6 +80,20 @@ describe("lamb.grouping", function () {
             expect(lamb.count("hello world", lamb.identity)).toEqual(result);
             expect(lamb.countBy(lamb.identity)("hello world")).toEqual(result);
         });
+
+        it("should throw an exception if supplied with `null` or `undefined´", function () {
+            expect(function () { lamb.count(null, lamb.identity); }).toThrow();
+            expect(function () { lamb.count(void 0, lamb.identity); }).toThrow();
+            expect(function () { lamb.countBy(lamb.identity)(null); }).toThrow();
+            expect(function () { lamb.countBy(lamb.identity)(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array and return an empty object", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.countBy(lamb.identity)(value)).toEqual({});
+                expect(lamb.count(value, lamb.identity)).toEqual({});
+            });
+        });
     });
 
     describe("group / groupBy", function () {
@@ -99,6 +113,20 @@ describe("lamb.grouping", function () {
             };
 
             expect(argsTest.apply(null, numbers)).toEqual(result);
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined´", function () {
+            expect(function () { lamb.group(null, lamb.identity); }).toThrow();
+            expect(function () { lamb.group(void 0, lamb.identity); }).toThrow();
+            expect(function () { lamb.groupBy(lamb.identity)(null); }).toThrow();
+            expect(function () { lamb.groupBy(lamb.identity)(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array and return an empty object", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.groupBy(lamb.identity)(value)).toEqual({});
+                expect(lamb.group(value, lamb.identity)).toEqual({});
+            });
         });
     });
 
@@ -125,6 +153,20 @@ describe("lamb.grouping", function () {
 
             expect(lamb.index("hello world", lamb.identity)).toEqual(result);
             expect(lamb.indexBy(lamb.identity)("hello world")).toEqual(result);
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined´", function () {
+            expect(function () { lamb.index(null, lamb.identity); }).toThrow();
+            expect(function () { lamb.index(void 0, lamb.identity); }).toThrow();
+            expect(function () { lamb.indexBy(lamb.identity)(null); }).toThrow();
+            expect(function () { lamb.indexBy(lamb.identity)(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array and return an empty object", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.indexBy(lamb.identity)(value)).toEqual({});
+                expect(lamb.index(value, lamb.identity)).toEqual({});
+            });
         });
     });
 });
