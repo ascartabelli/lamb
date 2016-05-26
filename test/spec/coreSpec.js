@@ -103,5 +103,13 @@ describe("lamb.core", function () {
             var getID = lamb.partial(lamb.getIn, _, "id");
             expect(list.map(getID)).toEqual(["foo", "bar", "baz"]);
         });
+
+        it("should pass all the received arguments, even if they exceed the original function's arity", function () {
+            function foo (a, b) {
+                return a + b + arguments[2] + arguments[3];
+            }
+
+            expect(lamb.partial(foo, 2, _, _, 1)(3,4)).toBe(10);
+        });
     });
 });
