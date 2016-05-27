@@ -195,25 +195,49 @@ describe("lamb.array", function () {
             return "AEIOUaeiou".indexOf(char) !== -1;
         };
 
+        var is40YO = lamb.hasKeyValue("age", 40);
+
         describe("find", function () {
             it("should find an element in an array-like object by using the given predicate", function () {
-                expect(lamb.find(persons, lamb.hasKeyValue("age", 40))).toEqual(persons[1]);
+                expect(lamb.find(persons, is40YO)).toEqual(persons[1]);
                 expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
             });
 
             it("should return `undefined` if there is no element satisfying the predicate", function () {
                 expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
             });
+
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+                expect(function () { lamb.find(null, is40YO); }).toThrow();
+                expect(function () { lamb.find(void 0, is40YO); }).toThrow();
+            });
+
+            it("should treat every other value as an empty array and return `undefined`", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                    expect(lamb.find(value, is40YO)).toBeUndefined();
+                });
+            });
         });
 
         describe("findIndex", function () {
             it("should find the index of an element in an array-like object by using the given predicate", function () {
-                expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 40))).toBe(1);
+                expect(lamb.findIndex(persons, is40YO)).toBe(1);
                 expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
             });
 
             it("should return `-1` if there is no element satisfying the predicate", function () {
                 expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+                expect(function () { lamb.findIndex(null, is40YO); }).toThrow();
+                expect(function () { lamb.findIndex(void 0, is40YO); }).toThrow();
+            });
+
+            it("should treat every other value as an empty array and return `-1`", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                    expect(lamb.findIndex(value, is40YO)).toBe(-1);
+                });
             });
         });
     });
@@ -283,21 +307,23 @@ describe("lamb.array", function () {
             expect(lamb.flatMapWith(toUpperCase)(testString)).toEqual(result);
         });
 
-        it("should return an empty array if is supplied with a non-array value", function () {
-            expect(lamb.flatMap({}, lamb.identity)).toEqual([]);
-            expect(lamb.flatMapWith(lamb.identity)({})).toEqual([]);
-        });
-
-        it("should throw an error if called with null of undefined in place of the array", function () {
-            expect(function () {lamb.flatMap(null, lamb.identity);}).toThrow();
-            expect(lamb.flatMap).toThrow();
-            expect(function () {lamb.flatMapWith(lamb.identity)(null);}).toThrow();
-            expect(lamb.flatMapWith(lamb.identity)).toThrow();
-        });
-
         it("should throw an error if not supplied with a mapper function", function () {
             expect(function () {lamb.flatMap([1, 2, 3]);}).toThrow();
             expect(function () {lamb.flatMapWith()([1, 2, 3]);}).toThrow();
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            expect(function () { lamb.flatMap(null, lamb.identity); }).toThrow();
+            expect(function () { lamb.flatMap(void 0, lamb.identity); }).toThrow();
+            expect(function () { lamb.flatMapWith(lamb.identity)(null); }).toThrow();
+            expect(function () { lamb.flatMapWith(lamb.identity)(void 0); }).toThrow();
+        });
+
+        it("should return an empty array for every other value", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.flatMap(value, lamb.identity)).toEqual([]);
+                expect(lamb.flatMapWith(lamb.identity)(value)).toEqual([]);
+            });
         });
     });
 
