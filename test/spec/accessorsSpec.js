@@ -26,7 +26,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getAt(-2)(s)).toBe("c");
             });
 
-            it("should throw an error in no array-like object is supplied", function () {
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
                 expect(function () { lamb.getIndex(null, 2); }).toThrow();
                 expect(function () { lamb.getIndex(void 0, 2); }).toThrow();
                 expect(function () { lamb.getAt(2)(null); }).toThrow();
@@ -35,7 +35,7 @@ describe("lamb.accessors", function () {
                 expect(function () { lamb.last(void 0); }).toThrow();
             });
 
-            it("should return undefined when the object isn't an array-like, no index is supplied, the index isn't an integer or the index is out of bounds", function () {
+            it("should return undefined for every other value and when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
                 [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
                     expect(lamb.getAt(v)(arr)).toBeUndefined();
                 });
@@ -121,12 +121,14 @@ describe("lamb.accessors", function () {
                 expect(newS).toEqual(["h", "e", "l", "l", "o"]);
             });
 
-            it("should throw an exception if no array-object is supplied", function () {
-                expect(lamb.setAt(0, 99)).toThrow();
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+                expect(function () { lamb.setAt(0, 99)(null); }).toThrow();
+                expect(function () { lamb.setAt(0, 99)(void 0); }).toThrow();
                 expect(function () { lamb.setIndex(null, 0, 99); }).toThrow();
+                expect(function () { lamb.setIndex(void 0, 0, 99); }).toThrow();
             });
 
-            it("should return an empty array if a non-array-like object is supplied", function () {
+            it("should return an empty array for every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.setIndex(v, 2, 99)).toEqual([]);
                     expect(lamb.setAt(2, 99)(v)).toEqual([]);
@@ -214,12 +216,14 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
 
-            it("should throw an exception if no array-object is supplied", function () {
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
                 expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
-                expect(lamb.updateAt(0, fn99)).toThrow();
+                expect(function () { lamb.updateIndex(void 0, 0, fn99); }).toThrow();
+                expect(function () { lamb.updateAt(0, fn99)(null); }).toThrow();
+                expect(function () { lamb.updateAt(0, fn99)(void 0); }).toThrow();
             });
 
-            it("should return an empty array if a non-array-like object is supplied", function () {
+            it("should return an empty array for every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.updateIndex(v, 2, fn99)).toEqual([]);
                     expect(lamb.updateAt(2, fn99)(v)).toEqual([]);
