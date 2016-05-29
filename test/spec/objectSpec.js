@@ -66,38 +66,89 @@ describe("lamb.object", function () {
             });
         });
 
-        describe("hasOwn", function () {
+        describe("hasOwn / hasOwnKey", function () {
             it("should check the existence of an owned property in an object", function () {
                 expect(lamb.hasOwn(obj, "toString")).toBe(false);
                 expect(lamb.hasOwn(obj, "foo")).toBe(true);
                 expect(lamb.hasOwn(obj, "baz")).toBe(false);
+                expect(lamb.hasOwnKey("toString")(obj)).toBe(false);
+                expect(lamb.hasOwnKey("foo")(obj)).toBe(true);
+                expect(lamb.hasOwnKey("baz")(obj)).toBe(false);
             });
-        });
 
-        describe("hasOwnKey", function () {
-            it("should build a function expecting an object to check for the ownership of the given property", function () {
-                var hasOwnToString = lamb.hasOwnKey("toString");
-                var hasOwnFoo = lamb.hasOwnKey("foo");
-                var hasOwnBaz = lamb.hasOwnKey("baz");
+            it("should return `false` for a non-existent property", function () {
+                expect(lamb.hasOwn(obj, "z")).toBe(false);
+                expect(lamb.hasOwnKey("z")(obj)).toBe(false);
+            });
 
-                expect(hasOwnToString(obj)).toBe(false);
-                expect(hasOwnFoo(obj)).toBe(true);
-                expect(hasOwnBaz(obj)).toBe(false);
+            it("should accept integers as keys and accept array-like objects", function () {
+                var o = {"1": "a", "2": "b"};
+                var arr = [1, 2, 3, 4];
+                var s = "abcd";
+
+                expect(lamb.hasOwn(o, 2)).toBe(true);
+                expect(lamb.hasOwn(arr, 2)).toBe(true);
+                expect(lamb.hasOwn(s, 2)).toBe(true);
+                expect(lamb.hasOwnKey(2)(o)).toBe(true);
+                expect(lamb.hasOwnKey(2)(arr)).toBe(true);
+                expect(lamb.hasOwnKey(2)(s)).toBe(true);
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+                expect(function () { lamb.hasOwn(null, "a"); }).toThrow();
+                expect(function () { lamb.hasOwn(void 0, "a"); }).toThrow();
+                expect(function () { lamb.hasOwnKey("a")(null); }).toThrow();
+                expect(function () { lamb.hasOwnKey("a")(void 0); }).toThrow();
+            });
+
+            it("should return `false` for every other value and when the key isn't a string or an integer", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.hasOwn(v, "a")).toBe(false);
+                    expect(lamb.hasOwn(obj, v)).toBe(false);
+                    expect(lamb.hasOwnKey("a")(v)).toBe(false);
+                    expect(lamb.hasOwnKey(v)(obj)).toBe(false);
+                });
             });
         });
     });
 
     describe("hasKeyValue", function () {
+        var persons = [
+            {"name": "Jane", "surname": "Doe"},
+            {"name": "John", "surname": "Doe"},
+            {"name": "Mario", "surname": "Rossi"}
+        ];
+
+        var isDoe = lamb.hasKeyValue("surname", "Doe");
+
         it("should build a function that checks if an object holds the desired key / value pair", function () {
-            var persons = [
-                {"name": "Jane", "surname": "Doe"},
-                {"name": "John", "surname": "Doe"},
-                {"name": "Mario", "surname": "Rossi"}
-            ];
-
-            var isDoe = lamb.hasKeyValue("surname", "Doe");
-
             expect(persons.map(isDoe)).toEqual([true, true, false]);
+        });
+
+        it("should return `false` for a non-existent property", function () {
+            expect(lamb.hasKeyValue("z", 2)(persons[0])).toBe(false);
+        });
+
+        it("should accept integers as keys and accept array-like objects", function () {
+            var o = {"1": "a", "2": "b"};
+            var arr = [1, 2, 3, 4];
+            var s = "abcd";
+
+            expect(lamb.hasKeyValue(2, "b")(o)).toBe(true);
+            expect(lamb.hasKeyValue(2, 3)(arr)).toBe(true);
+            expect(lamb.hasKeyValue(2, "c")(s)).toBe(true);
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+            expect(function () { lamb.hasKeyValue("a", 2)(null); }).toThrow();
+            expect(function () { lamb.hasKeyValue("a", 2)(void 0); }).toThrow();
+        });
+
+        it("should return `false` for every other value and when the key isn't a string or an integer", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                expect(lamb.hasKeyValue("a", 2)(v)).toBe(false);
+                expect(lamb.hasKeyValue(v, 2)(persons[0])).toBe(false);
+            });
         });
     });
 

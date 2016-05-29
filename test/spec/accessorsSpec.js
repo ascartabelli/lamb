@@ -233,20 +233,46 @@ describe("lamb.accessors", function () {
     });
 
     describe("Object accessors", function () {
-        describe("getIn", function () {
+        describe("getIn / getKey", function () {
+            var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
+
             it("should return the value of the given object property", function () {
-                var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
-
                 expect(lamb.getIn(obj, "bar")).toBe(2);
+                expect(lamb.getKey("foo")(obj)).toBe(1);
             });
-        });
 
-        describe("getKey", function () {
-            it("should build a function returning the specified property for any given object", function () {
-                var objs  = [{"id" : 1}, {"id" : 2}, {"id" : 3}, {"id" : 4}, {"id" : 5}, {}];
-                var getID = lamb.getKey("id");
+            it("should return `undefined` for a non-existent property", function () {
+                expect(lamb.getIn(obj, "a")).toBeUndefined();
+                expect(lamb.getKey("z")(obj)).toBeUndefined();
+            });
 
-                expect(objs.map(getID)).toEqual([1, 2, 3, 4, 5, void(0)]);
+            it("should accept integers as keys and accept array-like objects", function () {
+                var o = {"1": "a", "2": "b"};
+                var arr = [1, 2, 3, 4];
+                var s = "abcd";
+
+                expect(lamb.getIn(o, 1)).toBe("a");
+                expect(lamb.getKey(2)(o)).toBe("b");
+                expect(lamb.getIn(arr, 1)).toBe(2);
+                expect(lamb.getKey(2)(arr)).toBe(3);
+                expect(lamb.getIn(s, 1)).toBe("b");
+                expect(lamb.getKey(2)(s)).toBe("c");
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+                expect(function () { lamb.getIn(null, "a"); }).toThrow();
+                expect(function () { lamb.getIn(void 0, "a"); }).toThrow();
+                expect(function () { lamb.getKey("a")(null); }).toThrow();
+                expect(function () { lamb.getKey("a")(void 0); }).toThrow();
+            });
+
+            it("should return `undefined` for every other value and when the key isn't a string or an integer", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.getIn(v, "a")).toBeUndefined();
+                    expect(lamb.getKey("a")(v)).toBeUndefined();
+                    expect(lamb.getIn(obj, v)).toBeUndefined();
+                    expect(lamb.getKey(v)(obj)).toBeUndefined();
+                });
             });
         });
 
