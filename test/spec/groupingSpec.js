@@ -81,7 +81,7 @@ describe("lamb.grouping", function () {
             expect(lamb.countBy(lamb.identity)("hello world")).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.count(null, lamb.identity); }).toThrow();
             expect(function () { lamb.count(void 0, lamb.identity); }).toThrow();
             expect(function () { lamb.countBy(lamb.identity)(null); }).toThrow();
@@ -115,7 +115,7 @@ describe("lamb.grouping", function () {
             expect(argsTest.apply(null, numbers)).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.group(null, lamb.identity); }).toThrow();
             expect(function () { lamb.group(void 0, lamb.identity); }).toThrow();
             expect(function () { lamb.groupBy(lamb.identity)(null); }).toThrow();
@@ -155,7 +155,7 @@ describe("lamb.grouping", function () {
             expect(lamb.indexBy(lamb.identity)("hello world")).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.index(null, lamb.identity); }).toThrow();
             expect(function () { lamb.index(void 0, lamb.identity); }).toThrow();
             expect(function () { lamb.indexBy(lamb.identity)(null); }).toThrow();

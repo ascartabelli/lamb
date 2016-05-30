@@ -1,6 +1,10 @@
 
 function _getPadding (source, char, len) {
-    return repeat(char[0] || " ", Math.ceil(len - source.length));
+    if (!isNil(source) && type(source) !== "String") {
+        source = String(source);
+    }
+
+    return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
 }
 
 /**

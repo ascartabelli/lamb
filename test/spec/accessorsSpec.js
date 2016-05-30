@@ -26,7 +26,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getAt(-2)(s)).toBe("c");
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.getIndex(null, 2); }).toThrow();
                 expect(function () { lamb.getIndex(void 0, 2); }).toThrow();
                 expect(function () { lamb.getAt(2)(null); }).toThrow();
@@ -121,7 +121,7 @@ describe("lamb.accessors", function () {
                 expect(newS).toEqual(["h", "e", "l", "l", "o"]);
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.setAt(0, 99)(null); }).toThrow();
                 expect(function () { lamb.setAt(0, 99)(void 0); }).toThrow();
                 expect(function () { lamb.setIndex(null, 0, 99); }).toThrow();
@@ -216,7 +216,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
                 expect(function () { lamb.updateIndex(void 0, 0, fn99); }).toThrow();
                 expect(function () { lamb.updateAt(0, fn99)(null); }).toThrow();
@@ -259,7 +259,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getKey(2)(s)).toBe("c");
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.getIn(null, "a"); }).toThrow();
                 expect(function () { lamb.getIn(void 0, "a"); }).toThrow();
                 expect(function () { lamb.getKey("a")(null); }).toThrow();

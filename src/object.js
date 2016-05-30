@@ -328,7 +328,7 @@ var keys = _unsafeKeyListFrom(_safeKeys);
  * @memberof module:lamb
  * @category Object
  * @param {String[]} keys
- * @param {Array} values
+ * @param {ArrayLike} values
  * @returns {Object}
  */
 function make (keys, values) {

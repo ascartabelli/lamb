@@ -17,7 +17,7 @@ describe("lamb.object", function () {
             expect(lamb.enumerables("abc")).toEqual(["0", "1", "2"]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.enumerables(null)}).toThrow();
             expect(function () {lamb.enumerables(void 0)}).toThrow();
         });
@@ -94,7 +94,7 @@ describe("lamb.object", function () {
                 expect(lamb.hasOwnKey(2)(s)).toBe(true);
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.hasOwn(null, "a"); }).toThrow();
                 expect(function () { lamb.hasOwn(void 0, "a"); }).toThrow();
                 expect(function () { lamb.hasOwnKey("a")(null); }).toThrow();
@@ -139,7 +139,7 @@ describe("lamb.object", function () {
             expect(lamb.hasKeyValue(2, "c")(s)).toBe(true);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an object", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
             expect(function () { lamb.hasKeyValue("a", 2)(null); }).toThrow();
             expect(function () { lamb.hasKeyValue("a", 2)(void 0); }).toThrow();
         });
@@ -218,6 +218,21 @@ describe("lamb.object", function () {
             expect(Object.isFrozen(persons[3])).toBe(true);
             expect(persons[3].baz).toBe(persons);
         });
+
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () { lamb.immutable(null); }).toThrow();
+            expect(function () { lamb.immutable(void 0); }).toThrow();
+        });
+
+        it("should not throw an exception when a `nil` value is in a nested property", function () {
+            var o = {
+                a: null,
+                b: void 0,
+                c: {d: null, e: void 0}
+            };
+
+            expect(function () { lamb.immutable(o); }).not.toThrow();
+        });
     });
 
     describe("keys", function () {
@@ -236,7 +251,7 @@ describe("lamb.object", function () {
             expect(lamb.keys("abc")).toEqual(["0", "1", "2"]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.keys(null)}).toThrow();
             expect(function () {lamb.keys(void 0)}).toThrow();
         });
@@ -263,6 +278,29 @@ describe("lamb.object", function () {
 
         it("should convert non-string keys to strings", function () {
             expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({"null": 1, "undefined": 2, "2": 3});
+        });
+
+        it("should accept array-like objects in both parameters", function () {
+            expect(lamb.make("abcd", "1234")).toEqual({a: "1", b: "2", c: "3", d: "4"});
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` in the `keys` or in the `values` parameter", function () {
+            expect(function () {lamb.make(null, [])}).toThrow();
+            expect(function () {lamb.make(void 0, [])}).toThrow();
+            expect(function () {lamb.make([], null)}).toThrow();
+            expect(function () {lamb.make([], void 0)}).toThrow();
+        });
+
+        it("should consider other values for the `keys` parameter as empty arrays and return an empty object", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                expect(lamb.make(v, [])).toEqual({});
+            });
+        });
+
+        it("should consider other values for the `values` parameter to be empty arrays", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                expect(lamb.make(["foo", "bar"], v)).toEqual({"foo": void 0, "bar": void 0});
+            });
         });
     });
 
@@ -343,7 +381,7 @@ describe("lamb.object", function () {
             expect(lamb.pairs(source)).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.ownPairs(null)}).toThrow();
             expect(function () {lamb.ownPairs(void 0)}).toThrow();
             expect(function () {lamb.pairs(null)}).toThrow();
@@ -395,7 +433,7 @@ describe("lamb.object", function () {
             expect(lamb.values(source)).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.ownValues(null)}).toThrow();
             expect(function () {lamb.ownValues(void 0)}).toThrow();
             expect(function () {lamb.values(null)}).toThrow();
@@ -656,7 +694,7 @@ describe("lamb.object", function () {
             expect(lamb.tearOwn({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.tear(null)}).toThrow();
             expect(function () {lamb.tear(void 0)}).toThrow();
             expect(function () {lamb.tearOwn(null)}).toThrow();

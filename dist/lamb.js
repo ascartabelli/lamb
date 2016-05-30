@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.28.0-alpha.7
+ * @version 0.28.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.28.0-alpha.7";
+    lamb._version =  "0.28.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3924,7 +3924,7 @@
      * @memberof module:lamb
      * @category Object
      * @param {String[]} keys
-     * @param {Array} values
+     * @param {ArrayLike} values
      * @returns {Object}
      */
     function make (keys, values) {
@@ -4390,7 +4390,11 @@
 
 
     function _getPadding (source, char, len) {
-        return repeat(char[0] || " ", Math.ceil(len - source.length));
+        if (!isNil(source) && type(source) !== "String") {
+            source = String(source);
+        }
+
+        return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
     }
 
     /**

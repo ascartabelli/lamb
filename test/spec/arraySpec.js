@@ -38,7 +38,7 @@ describe("lamb.array", function () {
             expect(lamb.isIn("foo", "f", 1)).toBe(false);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.isIn(null, 1); }).toThrow();
             expect(function () { lamb.isIn(void 0, 1); }).toThrow();
             expect(function () { lamb.contains(1)(null); }).toThrow();
@@ -100,7 +100,7 @@ describe("lamb.array", function () {
             expect(lamb.dropN(10)([1, 2, 3, 4])).toEqual([]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.drop(null, 0); }).toThrow();
             expect(function () { lamb.drop(void 0, 0); }).toThrow();
             expect(function () { lamb.dropN(0)(null); }).toThrow();
@@ -133,7 +133,7 @@ describe("lamb.array", function () {
             expect(dropWhileIsEven([1, 3, 5, 7])).toEqual([1, 3, 5, 7]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { dropWhileIsEven(null); }).toThrow();
             expect(function () { dropWhileIsEven(void 0); }).toThrow();
         });
@@ -166,7 +166,7 @@ describe("lamb.array", function () {
             expect(getLowerCaseEls("fooBAR")).toEqual(["f", "o", "o"]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { getLowerCaseEls(null); }).toThrow();
             expect(function () { getLowerCaseEls(void 0); }).toThrow();
         });
@@ -207,7 +207,7 @@ describe("lamb.array", function () {
                 expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.find(null, is40YO); }).toThrow();
                 expect(function () { lamb.find(void 0, is40YO); }).toThrow();
             });
@@ -229,7 +229,7 @@ describe("lamb.array", function () {
                 expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
             });
 
-            it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+            it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.findIndex(null, is40YO); }).toThrow();
                 expect(function () { lamb.findIndex(void 0, is40YO); }).toThrow();
             });
@@ -312,7 +312,7 @@ describe("lamb.array", function () {
             expect(function () {lamb.flatMapWith()([1, 2, 3]);}).toThrow();
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { lamb.flatMap(null, lamb.identity); }).toThrow();
             expect(function () { lamb.flatMap(void 0, lamb.identity); }).toThrow();
             expect(function () { lamb.flatMapWith(lamb.identity)(null); }).toThrow();
@@ -346,10 +346,6 @@ describe("lamb.array", function () {
     });
 
     describe("init", function () {
-        it("should throw an exception if no arguments are supplied", function () {
-            expect(lamb.init).toThrow();
-        });
-
         it("should return a copy of the given array-like object without the last element", function () {
             var arr = [1, 2, 3, 4, 5];
 
@@ -361,6 +357,17 @@ describe("lamb.array", function () {
         it("should return an empty array when called with an empty array or an array holding only one element", function () {
             expect(lamb.init([1])).toEqual([]);
             expect(lamb.init([])).toEqual([]);
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.init(null); }).toThrow();
+            expect(function () { lamb.init(void 0); }).toThrow();
+        });
+
+        it("should return an empty array for every other value", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.init(value)).toEqual([]);
+            });
         });
     });
 
@@ -439,24 +446,40 @@ describe("lamb.array", function () {
     });
 
     describe("intersection", function () {
-        it("should throw an exception if no arguments are supplied", function () {
-            expect(lamb.intersection).toThrow();
-        });
+        var a1 = [0, 1, 2, 3, 4, NaN];
+        var a2 = [-0, 2, 2, 3, 4, 5];
+        var a3 = [4, 5, 1, NaN];
+        var a4 = [6, 7];
 
         it("should return an array of every item present in all given arrays", function () {
-            var a1 = [0, 1, 2, 3, 4, NaN];
-            var a2 = [-0, 2, 2, 3, 4, 5];
-            var a3 = [4, 5, 1, NaN];
-            var a4 = [6, 7];
-
             expect(lamb.intersection(a1)).toEqual(a1);
             expect(lamb.intersection(a2)).toEqual([-0, 2, 3, 4, 5]);
+            expect(lamb.intersection(a1, a2, a3)).toEqual([4]);
+            expect(lamb.intersection(a1, a2, a3, a4)).toEqual([]);
+        });
+
+        it("should use the SameValueZero comparison and put in the result the first value found when comparing `0` with `-0`", function () {
+            expect(lamb.intersection(a1, a3)).toEqual([1, 4, NaN]);
+            expect(lamb.intersection(a2, a1)).toEqual([-0, 2, 3, 4]);
             expect(Object.is(-0, lamb.intersection(a2)[0])).toBe(true);
             expect(lamb.intersection(a1, a2)).toEqual([0, 2, 3, 4]);
             expect(Object.is(0, lamb.intersection(a1, a2)[0])).toBe(true);
-            expect(lamb.intersection(a1, a2, a3)).toEqual([4]);
-            expect(lamb.intersection(a1, a2, a3, a4)).toEqual([]);
-            expect(lamb.intersection(a1, a3)).toEqual([1, 4, NaN]);
+        });
+
+        it("should accept array-like objects", function () {
+            expect(lamb.intersection("123", "23")).toEqual(["2", "3"]);
+            expect(lamb.intersection(["1", "2"], "23", "42")).toEqual(["2"]);
+        });
+
+        it("should throw an exception if any of the array-like is `null` or `undefined`", function () {
+            expect(function () { lamb.intersection(null, [1, 2]); }).toThrow();
+            expect(function () { lamb.intersection([1, 2], void 0); }).toThrow();
+        });
+
+        it("should treat other values as empty arrays", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date(), {}].forEach(function (value) {
+                expect(lamb.intersection([2, 3], value)).toEqual([]);
+            });
         });
     });
 
@@ -493,7 +516,7 @@ describe("lamb.array", function () {
             expect(makeDoubles("12345")).toEqual([2, 4, 6, 8, 10]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { makeDoubles(null); }).toThrow();
             expect(function () { makeDoubles(void 0); }).toThrow();
         });
@@ -621,7 +644,7 @@ describe("lamb.array", function () {
             expect(lamb.reduceRightWith(fn, 10)(s)).toBe(-5);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(null); }).toThrow();
             expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(void 0); }).toThrow();
         });
@@ -660,7 +683,7 @@ describe("lamb.array", function () {
             expect(lamb.reduceWith(fn, 10)(s)).toBe(-5);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { lamb.reduceWith(lamb.subtract, 0)(null); }).toThrow();
             expect(function () { lamb.reduceWith(lamb.subtract, 0)(void 0); }).toThrow();
         });
@@ -754,7 +777,7 @@ describe("lamb.array", function () {
             expect(lamb.takeN(-10)([1, 2, 3, 4])).toEqual([]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´", function () {
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.take(null, 0); }).toThrow();
             expect(function () { lamb.take(void 0, 0); }).toThrow();
             expect(function () { lamb.takeN(0)(null); }).toThrow();
@@ -787,7 +810,7 @@ describe("lamb.array", function () {
             expect(takeWhileIsEven([2, 4, 6, 8])).toEqual([2, 4, 6, 8]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined´ instead of an array-like", function () {
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { takeWhileIsEven(null); }).toThrow();
             expect(function () { takeWhileIsEven(void 0); }).toThrow();
         });
