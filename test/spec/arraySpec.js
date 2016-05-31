@@ -529,7 +529,7 @@ describe("lamb.array", function () {
     });
 
     describe("partition / partitionWith", function () {
-        it("should split an array-like objects in two lists; one with the elements satisfying the predicate, the other with the remaining elements", function () {
+        it("should split an array in two lists; one with the elements satisfying the predicate, the other with the remaining elements", function () {
             var persons = [
                 {"name": "Jane", "surname": "Doe", "active": false},
                 {"name": "John", "surname": "Doe", "active": true},
@@ -557,13 +557,17 @@ describe("lamb.array", function () {
             var isGreaterThanTen = function (n) { return n > 10; };
             var arr1 = [1, 2, 3, 4, 5];
             var arr2 = [11, 12, 13, 14, 15];
+            var arr3 = [];
             var res1 = [[], arr1.concat()];
             var res2 = [arr2.concat(), []];
+            var res3 = [[], []];
 
             expect(lamb.partition(arr1, isGreaterThanTen)).toEqual(res1);
             expect(lamb.partitionWith(isGreaterThanTen)(arr1)).toEqual(res1);
             expect(lamb.partition(arr2, isGreaterThanTen)).toEqual(res2);
             expect(lamb.partitionWith(isGreaterThanTen)(arr2)).toEqual(res2);
+            expect(lamb.partition(arr3, isGreaterThanTen)).toEqual(res3);
+            expect(lamb.partitionWith(isGreaterThanTen)(arr3)).toEqual(res3);
         });
 
         it("should accept a context object for the predicate", function () {
@@ -586,6 +590,27 @@ describe("lamb.array", function () {
 
             expect(lamb.partition(testString, isVowel)).toEqual(result);
             expect(lamb.partitionWith(isVowel)(testString)).toEqual(result);
+        });
+
+        it("should throw an exception when the predicate isn't a function", function () {
+            [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.partition([1, 2], value); }).toThrow();
+            });
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.partition(null); }).toThrow();
+            expect(function () { lamb.partition(void 0); }).toThrow();
+            expect(function () { lamb.partitionWith(lamb.identity)(null); }).toThrow();
+            expect(function () { lamb.partitionWith(lamb.identity)(void 0); }).toThrow();
+        });
+
+
+        it("should treat every other value as an empty array", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.partition(value, lamb.isType("Number"))).toEqual([[], []]);
+                expect(lamb.partitionWith(lamb.isType("Number"))(value)).toEqual([[], []]);
+            });
         });
     });
 
