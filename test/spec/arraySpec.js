@@ -515,6 +515,10 @@ describe("lamb.array", function () {
         it("should work with array-like objects", function () {
             expect(makeDoubles("12345")).toEqual([2, 4, 6, 8, 10]);
         });
+		
+		it("should throw an exception if isn't supplied with a mapping function", function () {
+			expect(function () { lamb.mapWith(null)(nummbers); }).toThrow();
+		});
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { makeDoubles(null); }).toThrow();
@@ -615,35 +619,47 @@ describe("lamb.array", function () {
     });
 
     describe("pluck / pluckKey", function () {
-        it("should throw an exception if no array-like object is supplied", function () {
-            expect(lamb.pluck).toThrow();
-            expect(lamb.pluckKey("foo")).toThrow();
-        });
-
-        it("should return a list of undefined values if no property is specified", function () {
-            expect(lamb.pluck([1, 2, 3, 4])).toEqual([void 0, void 0, void 0, void 0]);
-            expect(lamb.pluckKey()([1, 2, 3, 4])).toEqual([void 0, void 0, void 0, void 0]);
-        });
-
+        var arr = [
+            {"foo": 1, "bar": 2, "baz": 3},
+            {"foo": 34, "bar": 22, "baz": 73},
+            {"foo": 45, "bar": 21, "baz": 83},
+            {"foo": 65, "bar": 92, "baz": 39}
+        ];
+		
+        var lists = [[1, 2], [3, 4, 5], [6]];
+		var s = "hello";
+		
         it("should return an array of values taken from the given property of the source array elements", function () {
-            var sourceArray = [
-                {"foo": 1, "bar": 2, "baz": 3},
-                {"foo": 34, "bar": 22, "baz": 73},
-                {"foo": 45, "bar": 21, "baz": 83},
-                {"foo": 65, "bar": 92, "baz": 39}
-            ];
-
-            expect(lamb.pluck(sourceArray, "bar")).toEqual([2, 22, 21, 92]);
-            expect(lamb.pluckKey("bar")(sourceArray)).toEqual([2, 22, 21, 92]);
-
-            var lists = [
-                [1, 2],
-                [3, 4, 5],
-                [6]
-            ];
-
+            expect(lamb.pluck(arr, "bar")).toEqual([2, 22, 21, 92]);
+            expect(lamb.pluckKey("bar")(arr)).toEqual([2, 22, 21, 92]);
             expect(lamb.pluck(lists, "length")).toEqual([2, 3, 1]);
             expect(lamb.pluckKey("length")(lists)).toEqual([2, 3, 1]);
+        });
+		
+		it("should work with array-like objects", function () {
+			expect(lamb.pluck(s, "length")).toEqual([1, 1, 1, 1, 1]);
+			expect(lamb.pluckKey("length")(s)).toEqual([1, 1, 1, 1, 1]);
+		});
+		
+		it("should return a list of undefined values if no property is specified or if the property doesn't exist", function () {
+            ["length", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+	            expect(lamb.pluck(arr, value)).toEqual([void 0, void 0, void 0, void 0]);
+	            expect(lamb.pluckKey(value)(arr)).toEqual([void 0, void 0, void 0, void 0]);
+            });
+		});
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.pluck(null, "foo"); }).toThrow();
+            expect(function () { lamb.pluck(void 0, "foo"); }).toThrow();
+            expect(function () { lamb.pluckKey("foo")(null); }).toThrow();
+            expect(function () { lamb.pluckKey("foo")(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.pluck(value, "foo")).toEqual([]);
+                expect(lamb.pluckKey("foo")(value)).toEqual([]);
+            });
         });
     });
 
@@ -735,8 +751,15 @@ describe("lamb.array", function () {
             expect(arr).toEqual([1, 2, 3, 4, 5]);
         });
 
-        it("should throw an exception if called without arguments", function () {
-            expect(lamb.reverse).toThrow();
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.reverse(null); }).toThrow();
+            expect(function () { lamb.reverse(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.reverse(value)).toEqual([]);
+            });
         });
     });
 
