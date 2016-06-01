@@ -25,6 +25,13 @@ describe("lamb.accessors", function () {
                 expect(lamb.getAt(-2)(arr)).toBe(3);
                 expect(lamb.getAt(-2)(s)).toBe("c");
             });
+			
+			it("should throw an exception if called without the data argument", function () {
+				expect(lamb.getIndex).toThrow();
+				expect(lamb.getAt(1)).toThrow();
+				expect(lamb.head).toThrow();
+				expect(lamb.last).toThrow();
+			});
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.getIndex(null, 2); }).toThrow();
@@ -120,6 +127,11 @@ describe("lamb.accessors", function () {
                 expect(newArr2).not.toBe(arr);
                 expect(newS).toEqual(["h", "e", "l", "l", "o"]);
             });
+			
+			it("should throw an exception if called without the data argument", function () {
+				expect(lamb.setIndex).toThrow();
+				expect(lamb.setAt(1, 1)).toThrow();
+			});
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.setAt(0, 99)(null); }).toThrow();
@@ -215,6 +227,11 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["h", "e", "l", "l", "o"]);
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
+			
+			it("should throw an exception if called without the data argument", function () {
+				expect(lamb.updateIndex).toThrow();
+				expect(lamb.updateAt(1, fn99)).toThrow();
+			});
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
@@ -258,6 +275,11 @@ describe("lamb.accessors", function () {
                 expect(lamb.getIn(s, 1)).toBe("b");
                 expect(lamb.getKey(2)(s)).toBe("c");
             });
+			
+			it("should throw an exception if called without the data argument", function () {
+				expect(lamb.getIn).toThrow();
+				expect(lamb.getKey("a")).toThrow();
+			});
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.getIn(null, "a"); }).toThrow();

@@ -60,9 +60,9 @@ function contains (value, fromIndex) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = shallowFlatten(slice(arguments, 1));
+    var rest = shallowFlatten(slice(arguments, 1).map(unary(slice)));
     var isInRest = partial(isIn, rest, _, 0);
-    return array.filter(not(isInRest));
+    return filter(array, not(isInRest));
 }
 
 /**
@@ -99,14 +99,17 @@ var drop = binary(slice);
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.drop|drop}
  * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
-var dropN = _curry(drop, 2, true);
+function dropN (n) {
+	return function (arrayLike) {
+		return slice(arrayLike, n);
+	};
+}
 
 /**
  * Builds a function that drops the first <code>n</code> elements satisfying a predicate from an array or array-like object.
@@ -644,7 +647,7 @@ function reverse (arrayLike) {
  * @returns {Array}
  */
 function shallowFlatten (array) {
-    return _arrayProto.concat.apply([], array);
+	return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
 }
 
 /**
@@ -698,14 +701,17 @@ var take = partial(slice, _, 0, _);
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.take|take}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
-var takeN = _curry(take, 2, true);
+function takeN (n) {
+	return function (arrayLike) {
+		return slice(arrayLike, 0, n);
+	};
+}
 
 /**
  * Builds a function that takes the first <code>n</code> elements satisfying a predicate from an array or array-like object.

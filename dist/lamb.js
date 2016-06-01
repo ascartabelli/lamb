@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.28.0-alpha.11
+ * @version 0.28.0-alpha.12
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.28.0-alpha.11";
+    lamb._version =  "0.28.0-alpha.12";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1034,13 +1034,16 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.getIndex|getIndex}
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
      * @param {Number} index
      * @returns {Function}
      */
-    var getAt = _curry(getIndex, 2, true);
+    function getAt (index) {
+    	return function (arrayLike) {
+    		return getIndex(arrayLike, index);
+    	};
+    }
 
     /**
      * Returns the value of the object property with the given key.
@@ -1102,13 +1105,16 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @see {@link module:lamb.getIn|getIn}
      * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
      * @param {String} key
      * @returns {Function}
      */
-    var getKey = _curry(getIn, 2, true);
+    function getKey (key) {
+    	return function (obj) {
+    		return getIn(obj, key);
+    	};
+    }
 
     /**
      * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
@@ -1689,9 +1695,9 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(slice(arguments, 1));
+        var rest = shallowFlatten(slice(arguments, 1).map(unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
-        return array.filter(not(isInRest));
+        return filter(array, not(isInRest));
     }
 
     /**
@@ -1728,14 +1734,17 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.drop|drop}
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    var dropN = _curry(drop, 2, true);
+    function dropN (n) {
+    	return function (arrayLike) {
+    		return slice(arrayLike, n);
+    	};
+    }
 
     /**
      * Builds a function that drops the first <code>n</code> elements satisfying a predicate from an array or array-like object.
@@ -2273,7 +2282,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-        return _arrayProto.concat.apply([], array);
+    	return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
     }
 
     /**
@@ -2327,14 +2336,17 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.take|take}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    var takeN = _curry(take, 2, true);
+    function takeN (n) {
+    	return function (arrayLike) {
+    		return slice(arrayLike, 0, n);
+    	};
+    }
 
     /**
      * Builds a function that takes the first <code>n</code> elements satisfying a predicate from an array or array-like object.

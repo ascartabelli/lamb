@@ -88,13 +88,16 @@ function _setPathIn (obj, parts, value) {
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.getIndex|getIndex}
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
  * @param {Number} index
  * @returns {Function}
  */
-var getAt = _curry(getIndex, 2, true);
+function getAt (index) {
+	return function (arrayLike) {
+		return getIndex(arrayLike, index);
+	};
+}
 
 /**
  * Returns the value of the object property with the given key.
@@ -156,13 +159,16 @@ function getIndex (arrayLike, index) {
  *
  * @memberof module:lamb
  * @category Object
- * @function
  * @see {@link module:lamb.getIn|getIn}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @param {String} key
  * @returns {Function}
  */
-var getKey = _curry(getIn, 2, true);
+function getKey (key) {
+	return function (obj) {
+		return getIn(obj, key);
+	};
+}
 
 /**
  * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
