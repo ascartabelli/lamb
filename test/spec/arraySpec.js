@@ -780,10 +780,6 @@ describe("lamb.array", function () {
     });
 
     describe("tail", function () {
-        it("should throw an exception if no arguments are supplied", function () {
-            expect(lamb.tail).toThrow();
-        });
-
         it("should return a copy of the given array-like object without the first element", function () {
             var arr = [1, 2, 3, 4, 5];
 
@@ -795,6 +791,17 @@ describe("lamb.array", function () {
         it("should return an empty array when called with an empty array or an array holding only one element", function () {
             expect(lamb.tail([1])).toEqual([]);
             expect(lamb.tail([])).toEqual([]);
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () { lamb.tail(null); }).toThrow();
+            expect(function () { lamb.tail(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.tail(value)).toEqual([]);
+            });
         });
     });
 
@@ -871,10 +878,6 @@ describe("lamb.array", function () {
     });
 
     describe("union", function () {
-        it("should return an empty array if no arguments are supplied", function () {
-            expect(lamb.union()).toEqual([]);
-        });
-
         it("should return a list of every unique element present in the given arrays", function () {
             expect(lamb.union([])).toEqual([]);
             expect(lamb.union([1, 2], [2, 3])).toEqual([1, 2, 3]);
@@ -893,13 +896,26 @@ describe("lamb.array", function () {
         it("should work with array-like objects", function () {
             expect(lamb.union("abc", "bcd", "cde")).toEqual(["a", "b", "c", "d", "e"]);
         });
+		
+        it("should return an empty array if no arguments are supplied", function () {
+            expect(lamb.union()).toEqual([]);
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.union(null); }).toThrow();
+            expect(function () { lamb.union(void 0); }).toThrow();
+            expect(function () { lamb.union([1, 2], null); }).toThrow();
+            expect(function () { lamb.union([1, 2], void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.union(value)).toEqual([]);
+            });
+        });
     });
 
     describe("uniques", function () {
-        it("should throw an exception if no arguments are supplied", function () {
-            expect(lamb.uniques).toThrow();
-        });
-
         it("should return the unique elements of an array of simple values", function () {
             expect(lamb.uniques([])).toEqual([]);
             expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, -0, 2, NaN, 1, 1, NaN])).toEqual([0, 2, 3, 4, NaN, 1]);
@@ -929,6 +945,21 @@ describe("lamb.array", function () {
 
             expect(lamb.uniques(data, iteratee)).toEqual(expectedResult);
         });
+		
+        it("should throw an exception if no arguments are supplied", function () {
+            expect(lamb.uniques).toThrow();
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.uniques(null); }).toThrow();
+            expect(function () { lamb.uniques(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.uniques(value)).toEqual([]);
+            });
+        });
     });
 
     describe("transpose / zip", function () {
@@ -941,10 +972,6 @@ describe("lamb.array", function () {
         var r3 = [[1, 5, 8], [2, 6, 9]];
 
         describe("transpose", function () {
-            it("should throw an error if no arguments are supplied", function () {
-                expect(lamb.transpose).toThrow();
-            });
-
             it("should transpose a matrix", function () {
                 expect(lamb.transpose([])).toEqual([]);
                 expect(lamb.transpose([1, 2, 3])).toEqual([]);
@@ -960,11 +987,14 @@ describe("lamb.array", function () {
 
                 expect(fn("abc", [1, 2, 3])).toEqual([["a", 1], ["b", 2], ["c", 3]]);
             });
+			
+			it("should throw an exception when called without arguments", function () {
+				expect(lamb.transpose).toThrow();
+			});
         });
 
         describe("zip", function () {
             it("should pair items with the same index in the received lists", function () {
-                expect(lamb.zip()).toEqual([]);
                 expect(lamb.zip([])).toEqual([]);
                 expect(lamb.zip(a1)).toEqual(r1);
                 expect(lamb.zip(a1, a2)).toEqual(r2);
@@ -975,14 +1005,31 @@ describe("lamb.array", function () {
             it("should work with array-like objects", function () {
                 expect(lamb.zip(a1, "abc")).toEqual([[1, "a"], [2, "b"], [3, "c"]]);
             });
+			
+			it("should return an empty array when called without arguments", function () {
+				expect(lamb.zip()).toEqual([]);
+			});
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.transpose(null); }).toThrow();
+            expect(function () { lamb.transpose(void 0); }).toThrow();
+            expect(function () { lamb.zip(null); }).toThrow();
+            expect(function () { lamb.zip(void 0); }).toThrow();
+            expect(function () { lamb.zip([1, 2], null); }).toThrow();
+            expect(function () { lamb.zip([1, 2], void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.transpose(value)).toEqual([]);
+                expect(lamb.zip(value, [1, 2])).toEqual([]);
+				expect(lamb.zip([1, 2], value)).toEqual([]);
+            });
         });
     });
 
     describe("zipWithIndex", function () {
-        it("should throw an error if no arguments are supplied", function () {
-            expect(lamb.zipWithIndex).toThrow();
-        });
-
         it("should pair the received values with their index", function () {
             expect(lamb.zipWithIndex([])).toEqual([]);
             expect(lamb.zipWithIndex([1, 2, 3, 4])).toEqual([[1, 0], [2, 1], [3, 2], [4, 3]]);
@@ -990,6 +1037,21 @@ describe("lamb.array", function () {
 
         it("should work with array-like objects", function () {
             expect(lamb.zipWithIndex("abcd")).toEqual([["a", 0], ["b", 1], ["c", 2], ["d", 3]]);
+        });
+		
+        it("should throw an error if no arguments are supplied", function () {
+            expect(lamb.zipWithIndex).toThrow();
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.zipWithIndex(null); }).toThrow();
+            expect(function () { lamb.zipWithIndex(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.zipWithIndex(value)).toEqual([]);
+            });
         });
     });
 });
