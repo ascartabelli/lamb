@@ -143,8 +143,8 @@ var enumerables = _unsafeKeyListFrom(_safeEnumerables);
  */
 function fromPairs (pairsList) {
     var result = {};
-
-    pairsList.forEach(function (pair) {
+	
+	forEach(pairsList, function (pair) {
         result[pair[0]] = pair[1];
     });
 

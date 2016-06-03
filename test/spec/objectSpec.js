@@ -41,6 +41,33 @@ describe("lamb.object", function () {
         it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
             expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
         });
+		
+		it("should return an empty object if supplied with an empty array", function () {
+			expect(lamb.fromPairs([])).toEqual({});
+		});
+		
+		it("should accept array-like objects as pairs", function () {
+			expect(lamb.fromPairs(["a1", "b2"])).toEqual({"a": "1", "b": "2"});
+		});
+		
+		it("should try to retrieve pairs from array-like objects", function () {
+			expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
+		});
+		
+		it("should throw an exception if called without the data argument", function () {
+			expect(lamb.fromPairs).toThrow();
+		});
+
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () { lamb.fromPairs(null); }).toThrow();
+            expect(function () { lamb.fromPairs(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array and return an empty object", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.fromPairs(value)).toEqual({});
+            });
+        });
     });
 
     describe("Property checking", function () {

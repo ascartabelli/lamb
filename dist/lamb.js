@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.28.0-alpha.15
+ * @version 0.28.0-alpha.16
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.28.0-alpha.15";
+    lamb._version =  "0.28.0-alpha.16";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3751,8 +3751,8 @@
      */
     function fromPairs (pairsList) {
         var result = {};
-
-        pairsList.forEach(function (pair) {
+    	
+    	forEach(pairsList, function (pair) {
             result[pair[0]] = pair[1];
         });
 
