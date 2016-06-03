@@ -28,7 +28,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.27.0
+ * @version 0.28.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -45,7 +45,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.27.0";
+    lamb._version =  "0.28.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1061,13 +1061,16 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.getIndex|getIndex}
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
      * @param {Number} index
      * @returns {Function}
      */
-    var getAt = _curry(getIndex, 2, true);
+    function getAt (index) {
+    	return function (arrayLike) {
+    		return getIndex(arrayLike, index);
+    	};
+    }
 
     /**
      * Returns the value of the object property with the given key.
@@ -1129,13 +1132,16 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @see {@link module:lamb.getIn|getIn}
      * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
      * @param {String} key
      * @returns {Function}
      */
-    var getKey = _curry(getIn, 2, true);
+    function getKey (key) {
+    	return function (obj) {
+    		return getIn(obj, key);
+    	};
+    }
 
     /**
      * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
@@ -1716,9 +1722,9 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(slice(arguments, 1));
+        var rest = shallowFlatten(slice(arguments, 1).map(unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
-        return array.filter(not(isInRest));
+        return filter(array, not(isInRest));
     }
 
     /**
@@ -1755,14 +1761,17 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.drop|drop}
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    var dropN = _curry(drop, 2, true);
+    function dropN (n) {
+    	return function (arrayLike) {
+    		return slice(arrayLike, n);
+    	};
+    }
 
     /**
      * Builds a function that drops the first &lt;code>n&lt;/code> elements satisfying a predicate from an array or array-like object.
@@ -1937,7 +1946,7 @@
      * @returns {Array}
      */
     function flatten (array) {
-        return _flatten(array, []);
+    	return Array.isArray(array) ? _flatten(array, []) : slice(array);
     }
 
     /**
@@ -2300,7 +2309,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-        return _arrayProto.concat.apply([], array);
+    	return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
     }
 
     /**
@@ -2354,14 +2363,17 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.take|take}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    var takeN = _curry(take, 2, true);
+    function takeN (n) {
+    	return function (arrayLike) {
+    		return slice(arrayLike, 0, n);
+    	};
+    }
 
     /**
      * Builds a function that takes the first &lt;code>n&lt;/code> elements satisfying a predicate from an array or array-like object.
@@ -3766,8 +3778,8 @@
      */
     function fromPairs (pairsList) {
         var result = {};
-
-        pairsList.forEach(function (pair) {
+    	
+    	forEach(pairsList, function (pair) {
             result[pair[0]] = pair[1];
         });
 
@@ -3795,6 +3807,10 @@
      * @returns {Boolean}
      */
     function has (obj, key) {
+    	if (typeof obj !== "object" &amp;&amp; !isUndefined(obj)) {
+    		obj = Object(obj);
+    	}	
+    	
         return key in obj;
     }
 
@@ -3811,11 +3827,14 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @param {String} key
      * @returns {Function}
      */
-    var hasKey = _curry(has, 2, true);
+    function hasKey (key) {
+    	return function (obj) {
+    		return has(obj, key);
+    	};
+    }
 
     /**
      * Builds a function expecting an object to check against the given key / value pair.
@@ -3872,11 +3891,14 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @param {String} key
      * @returns {Function}
      */
-    var hasOwnKey = _curry(hasOwn, 2, true);
+    function hasOwnKey (key) {
+    	return function (obj) {
+    		return hasOwn(obj, key);
+    	};
+    }
 
     /**
      * Makes an object immutable by recursively calling [Object.freeze]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze}
@@ -3951,7 +3973,7 @@
      * @memberof module:lamb
      * @category Object
      * @param {String[]} keys
-     * @param {Array} values
+     * @param {ArrayLike} values
      * @returns {Object}
      */
     function make (keys, values) {
@@ -4417,7 +4439,11 @@
 
 
     function _getPadding (source, char, len) {
-        return repeat(char[0] || " ", Math.ceil(len - source.length));
+        if (!isNil(source) &amp;&amp; type(source) !== "String") {
+            source = String(source);
+        }
+
+        return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
     }
 
     /**
@@ -4640,7 +4666,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 23 2016 14:38:15 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 03 2016 15:08:25 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
