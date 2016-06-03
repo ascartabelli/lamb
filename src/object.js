@@ -172,6 +172,10 @@ function fromPairs (pairsList) {
  * @returns {Boolean}
  */
 function has (obj, key) {
+	if (typeof obj !== "object" && !isUndefined(obj)) {
+		obj = Object(obj);
+	}	
+	
     return key in obj;
 }
 
@@ -188,11 +192,14 @@ function has (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
- * @function
  * @param {String} key
  * @returns {Function}
  */
-var hasKey = _curry(has, 2, true);
+function hasKey (key) {
+	return function (obj) {
+		return has(obj, key);
+	};
+}
 
 /**
  * Builds a function expecting an object to check against the given key / value pair.
@@ -249,11 +256,14 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  *
  * @memberof module:lamb
  * @category Object
- * @function
  * @param {String} key
  * @returns {Function}
  */
-var hasOwnKey = _curry(hasOwn, 2, true);
+function hasOwnKey (key) {
+	return function (obj) {
+		return hasOwn(obj, key);
+	};
+}
 
 /**
  * Makes an object immutable by recursively calling [Object.freeze]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze}

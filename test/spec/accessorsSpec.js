@@ -44,6 +44,7 @@ describe("lamb.accessors", function () {
 
             it("should return undefined for every other value and when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
                 [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
+					expect(lamb.getIndex(arr, v)).toBeUndefined();
                     expect(lamb.getAt(v)(arr)).toBeUndefined();
                 });
 
@@ -56,6 +57,8 @@ describe("lamb.accessors", function () {
 
                 expect(lamb.getIndex(arr, 2.2)).toBeUndefined();
                 expect(lamb.getAt("1")(arr)).toBeUndefined();
+				expect(lamb.getIndex(arr)).toBeUndefined();
+				expect(lamb.getAt()(arr)).toBeUndefined();
                 expect(lamb.head([])).toBeUndefined();
                 expect(lamb.last([])).toBeUndefined();
             });
@@ -276,6 +279,22 @@ describe("lamb.accessors", function () {
                 expect(lamb.getKey(2)(s)).toBe("c");
             });
 			
+			it("should convert other values for the `key` parameter to string", function () {
+	            var d = new Date();
+	            var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
+	            var stringKeys = ["null", "undefined", "[object Object]", "1,2", "/foo/", "1", "function () {}", "NaN", "true", String(d)];
+				var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+				var testObj = lamb.make(stringKeys, values);
+				
+				stringKeys.forEach(function (key) {
+					expect(lamb.getIn(testObj, key)).toBe(values[stringKeys.indexOf(key)]);
+					expect(lamb.getKey(key)(testObj)).toBe(values[stringKeys.indexOf(key)]);
+				});
+				
+				expect(lamb.getIn(testObj)).toBe(1);
+				expect(lamb.getKey()(testObj)).toBe(1);
+			});
+			
 			it("should throw an exception if called without the data argument", function () {
 				expect(lamb.getIn).toThrow();
 				expect(lamb.getKey("a")).toThrow();
@@ -288,12 +307,10 @@ describe("lamb.accessors", function () {
                 expect(function () { lamb.getKey("a")(void 0); }).toThrow();
             });
 
-            it("should return `undefined` for every other value and when the key isn't a string or an integer", function () {
+            it("should return `undefined` for every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.getIn(v, "a")).toBeUndefined();
                     expect(lamb.getKey("a")(v)).toBeUndefined();
-                    expect(lamb.getIn(obj, v)).toBeUndefined();
-                    expect(lamb.getKey(v)(obj)).toBeUndefined();
                 });
             });
         });
