@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.27.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.28.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,17 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.28.0 - *2016/06/03***
+  - **API change**: `difference` now accepts array-like objects
+  - **API change**: String padding functions now convert to string `non-nil` sources before using them
+  - **API change**: String padding functions won’t throw errors for `nil` values passed as padding chars and use the default value instead
+  - **API change**: `flatten` and `shallowFlatten` now throw an exception only for `nil` values, converts array-likes to arrays and treat every other value as an empty array
+  - **API change**: `difference` now throws an exception only for `nil` values passed as the main parameter; other unexpected values will be treated as empty arrays
+  - **API change**: `difference` parameters but than the main one will be treated as an empty array if they aren’t array-like
+  - **API change**: `fromPairs` now throw exceptions only for `nil` values, other unexpected values will be treated as empty arrays
+  - **API change**: `has` and `hasKey` now throw exceptions only for `nil` values, other unexpected values will be converted to Object
+  - Completed "first round" of test updating
 
 - **v0.27.0 - *2016/05/23***
   - **API change**: renamed `insert` to `sortedInsert`
