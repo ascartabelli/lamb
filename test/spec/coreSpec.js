@@ -11,12 +11,16 @@ describe("lamb.core", function () {
         it("should return a function that returns a constant value", function () {
             var o = {a: 1};
             var fn = lamb.always(o);
-            var r1 = fn();
+            var r1 = fn("foo");
             var r2 = fn();
             expect(r1).toBe(o);
             expect(r2).toBe(o);
             expect(r1).toBe(r2);
         });
+		
+		it("should build a function returning `undefined` if called without arguments", function () {
+			expect(lamb.always()()).toBeUndefined();
+		});		
     });
 
     describe("compose", function () {
@@ -29,9 +33,16 @@ describe("lamb.core", function () {
             expect(composed(2)).toBe(-16);
         });
 
-        it("should build a function returning \"undefined\" if no functions are passed", function () {
+        it("should build a function returning `undefined` if no functions are passed", function () {
             expect(lamb.compose()()).toBeUndefined();
         });
+		
+		it("should build a function throwing an exception if any parameter is not a function", function () {
+			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+				expect(lamb.compose(lamb.identity, value)).toThrow();
+				expect(lamb.compose(value, lamb.identity)).toThrow();
+			});
+		});
     });
 
     describe("generic", function () {
@@ -52,6 +63,14 @@ describe("lamb.core", function () {
             expect(Array.prototype.map.calls.argsFor(0)[0]).toBe(double);
             expect(Array.prototype.map.calls.argsFor(0)[1]).toBe(fakeContext);
         });
+		
+		it("should build a function throwing an exception if called without arguments or if `method` isn't a function", function () {
+			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+				expect(lamb.generic(value)).toThrow();
+			});
+			
+			expect(lamb.generic()).toThrow();
+		});
     });
 
     describe("identity", function () {
@@ -59,6 +78,7 @@ describe("lamb.core", function () {
             expect(lamb.identity(0)).toBe(0);
             expect(lamb.identity("foo")).toBe("foo");
             expect(lamb.identity(null)).toBe(null);
+			expect(lamb.identity()).toBeUndefined();
 
             var someRefType = {"foo" : 5};
             expect(lamb.identity(someRefType)).toBe(someRefType);
@@ -83,7 +103,7 @@ describe("lamb.core", function () {
             expect(partialFooSubtract(1, 2, 4)).toBe(-13);
         });
 
-        it("should make possible to create a partial application from another partial application", function () {
+        it("should be possible to create a partial application from another partial application", function () {
             var partialFooSubtract = lamb.partial(fooSubtract, _, 2, _, 4);
             var partialFooSubtract2 = lamb.partial(partialFooSubtract, 1, _, 5);
 
@@ -111,5 +131,13 @@ describe("lamb.core", function () {
 
             expect(lamb.partial(foo, 2, _, _, 1)(3,4)).toBe(10);
         });
+		
+		it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", function () {
+			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+				expect(lamb.partial(value)).toThrow();
+			});
+			
+			expect(lamb.partial()).toThrow();
+		});
     });
 });
