@@ -41,19 +41,19 @@ describe("lamb.object", function () {
         it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
             expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
         });
-        
+
         it("should return an empty object if supplied with an empty array", function () {
             expect(lamb.fromPairs([])).toEqual({});
         });
-        
+
         it("should accept array-like objects as pairs", function () {
             expect(lamb.fromPairs(["a1", "b2"])).toEqual({"a": "1", "b": "2"});
         });
-        
+
         it("should try to retrieve pairs from array-like objects", function () {
             expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
         });
-        
+
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.fromPairs).toThrow();
         });
@@ -80,12 +80,12 @@ describe("lamb.object", function () {
                 expect(lamb.hasKey("toString")(obj)).toBe(true);
                 expect(lamb.hasKey("foo")(obj)).toBe(true);
             });
-            
+
             it("should return `false` for a non-existent property", function () {
                 expect(lamb.has(obj, "baz")).toBe(false);
                 expect(lamb.hasKey("baz")(obj)).toBe(false);
             });
-            
+
             it("should accept integers as keys and accept array-like objects", function () {
                 var o = {"1": "a", "2": "b"};
                 var arr = [1, 2, 3, 4];
@@ -98,7 +98,20 @@ describe("lamb.object", function () {
                 expect(lamb.hasKey(2)(arr)).toBe(true);
                 expect(lamb.hasKey(2)(s)).toBe(true);
             });
-            
+
+            it("should convert other values for the `key` parameter to string", function () {
+                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, new Date()];
+                var testObj = lamb.make(keys.map(String), []);
+
+                keys.forEach(function (key) {
+                    expect(lamb.has(testObj, key)).toBe(true);
+                    expect(lamb.hasKey(key)(testObj)).toBe(true);
+                });
+
+                expect(lamb.has({"undefined": void 0})).toBe(true);
+                expect(lamb.hasKey()({"undefined": void 0})).toBe(true);
+            });
+
             it("should throw an exception if called without the data argument", function () {
                 expect(lamb.has).toThrow();
                 expect(lamb.hasKey("foo")).toThrow();
@@ -111,20 +124,21 @@ describe("lamb.object", function () {
                 expect(function () { lamb.hasKey("a")(void 0); }).toThrow();
             });
 
-            it("should return `false` for every other value and when the key isn't a string or an integer", function () {
+            it("should convert to object every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.has(v, "a")).toBe(false);
-                    expect(lamb.has(obj, v)).toBe(false);
                     expect(lamb.hasKey("a")(v)).toBe(false);
-                    expect(lamb.hasKey(v)(obj)).toBe(false);
                 });
+
+                expect(lamb.has(/foo/, "lastIndex")).toBe(true);
+                expect(lamb.hasKey("lastIndex")(/foo/)).toBe(true);
             });
         });
-        
+
         describe("hasOwn / hasOwnKey", function () {
             it("should check the existence of an owned property in an object", function () {
                 expect(lamb.hasOwn(obj, "toString")).toBe(false);
-                expect(lamb.hasOwn(obj, "foo")).toBe(true);                
+                expect(lamb.hasOwn(obj, "foo")).toBe(true);
                 expect(lamb.hasOwnKey("toString")(obj)).toBe(false);
                 expect(lamb.hasOwnKey("foo")(obj)).toBe(true);
             });
@@ -146,7 +160,20 @@ describe("lamb.object", function () {
                 expect(lamb.hasOwnKey(2)(arr)).toBe(true);
                 expect(lamb.hasOwnKey(2)(s)).toBe(true);
             });
-            
+
+            it("should convert other values for the `key` parameter to string", function () {
+                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, new Date()];
+                var testObj = lamb.make(keys.map(String), []);
+
+                keys.forEach(function (key) {
+                    expect(lamb.hasOwn(testObj, key)).toBe(true);
+                    expect(lamb.hasOwnKey(key)(testObj)).toBe(true);
+                });
+
+                expect(lamb.hasOwn({"undefined": void 0})).toBe(true);
+                expect(lamb.hasOwnKey()({"undefined": void 0})).toBe(true);
+            });
+
             it("should throw an exception if called without the data argument", function () {
                 expect(lamb.hasOwn).toThrow();
                 expect(lamb.hasOwnKey("foo")).toThrow();
@@ -159,13 +186,14 @@ describe("lamb.object", function () {
                 expect(function () { lamb.hasOwnKey("a")(void 0); }).toThrow();
             });
 
-            it("should return `false` for every other value and when the key isn't a string or an integer", function () {
+            it("should return convert to object every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.hasOwn(v, "a")).toBe(false);
-                    expect(lamb.hasOwn(obj, v)).toBe(false);
                     expect(lamb.hasOwnKey("a")(v)).toBe(false);
-                    expect(lamb.hasOwnKey(v)(obj)).toBe(false);
                 });
+
+                expect(lamb.hasOwn(/foo/, "lastIndex")).toBe(true);
+                expect(lamb.hasOwnKey("lastIndex")(/foo/)).toBe(true);
             });
         });
     });
@@ -196,21 +224,22 @@ describe("lamb.object", function () {
             expect(lamb.hasKeyValue(2, 3)(arr)).toBe(true);
             expect(lamb.hasKeyValue(2, "c")(s)).toBe(true);
         });
-        
+
         it("should convert other values for the `key` parameter to string", function () {
             var d = new Date();
             var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-            var stringKeys = ["null", "undefined", "[object Object]", "1,2", "/foo/", "1", "function () {}", "NaN", "true", String(d)];
+            var stringKeys = keys.map(String);
             var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
             var testObj = lamb.make(stringKeys, values);
-            
-            stringKeys.forEach(function (key) {
-                expect(lamb.hasKeyValue(key, stringKeys.indexOf(key))(testObj)).toBe(true)
+
+            keys.forEach(function (key) {
+                var value = stringKeys.indexOf(String(key));
+                expect(lamb.hasKeyValue(key, value)(testObj)).toBe(true);
             });
-            
+
             expect(lamb.hasKeyValue()({"undefined": void 0})).toBe(true);
         });
-        
+
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.hasKeyValue("foo", 2)).toThrow();
         });
@@ -220,10 +249,12 @@ describe("lamb.object", function () {
             expect(function () { lamb.hasKeyValue("a", 2)(void 0); }).toThrow();
         });
 
-        it("should return `false` for every other value", function () {
+        it("should convert to object every other value", function () {
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                 expect(lamb.hasKeyValue("a", 2)(v)).toBe(false);
             });
+
+            expect(lamb.hasKeyValue("lastIndex", 0)(/foo/)).toBe(true);
         });
     });
 
@@ -543,7 +574,11 @@ describe("lamb.object", function () {
     });
 
     describe("Property filtering", function () {
-        var simpleObj = {"foo" : 1, "bar" : 2, "baz" : 3};
+        var baseSimpleObj = {"bar" : 2};
+        var simpleObj = Object.create(baseSimpleObj, {
+            "foo" : {value: 1, enumerable: true},
+            "baz" : {value: 3, enumerable: true}
+        });
 
         var persons = [
             {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York"},
@@ -570,11 +605,57 @@ describe("lamb.object", function () {
 
         describe("pick", function () {
             it("should return an object having only the specified properties of the source object (if they exist)", function () {
+                expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({"foo" : 1, "baz" : 3});
+            });
 
-                var expected = {"foo" : 1, "baz" : 3};
-                var result = lamb.pick(simpleObj, ["foo", "baz", "foobaz"]);
+            it("should include inherited properties", function () {
+                expect(lamb.pick(simpleObj, ["foo", "bar"])).toEqual({"foo": 1, "bar": 2});
+            });
 
-                expect(result).toEqual(expected);
+            it("should accept arrays and array-like objects and integers as keys", function () {
+                var result = {
+                    "0": {"name": "Jane", "surname": "Doe"},
+                    "2": {"name": "Mario", "surname": "Rossi"}
+                };
+
+                expect(lamb.pick(names, ["0", 2])).toEqual(result);
+                expect(lamb.pick("bar", [0, 2])).toEqual({"0": "b", "2": "r"});
+            });
+
+            it("should return an empty object if supplied with an empty list of keys", function () {
+                expect(lamb.pick(simpleObj, [])).toEqual({});
+            });
+
+            it("should accept an array-like object as the `whitelist` parameter", function () {
+                expect(lamb.pick({a: 1, b: 2, c: 3}, "ac")).toEqual({a: 1, c: 3});
+            });
+
+            it("should throw an exception if called without arguments", function () {
+                expect(lamb.pick).toThrow();
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined` in place of the `whitelist`", function () {
+                expect(function () { lamb.pick({a: 1}, null); }).toThrow();
+                expect(function () { lamb.pick({a: 1}, void 0); }).toThrow();
+            });
+
+            it("should treat other values for the `whitelist` parameter as an empty array and return an empty object", function () {
+                [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                    expect(lamb.pick({a: 1, b: 2}, value)).toEqual({});
+                });
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                expect(function () { lamb.pick(null, ["a", "b"]); }).toThrow();
+                expect(function () { lamb.pick(void 0, ["a", "b"]); }).toThrow();
+            });
+
+            it("should convert to object every other value", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.pick(v, ["a"])).toEqual({});
+                });
+
+                expect(lamb.pick(/foo/, ["lastIndex"])).toEqual({"lastIndex": 0});
             });
         });
 
@@ -590,6 +671,52 @@ describe("lamb.object", function () {
                 var result = lamb.skip(simpleObj, ["bar", "baz"]);
 
                 expect(result).toEqual(expected);
+            });
+
+            it("should include inherited properties", function () {
+                expect(lamb.skip(simpleObj, ["foo"])).toEqual({"bar": 2, "baz": 3});
+            });
+
+            it("should return a copy of the source object if supplied with an empty list of keys", function () {
+                var result = lamb.skip(simpleObj, []);
+
+                expect(result).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                expect(result).not.toBe(simpleObj);
+            });
+
+            it("should accept an array-like object as the `blacklist` parameter", function () {
+                expect(lamb.skip({a: 1, b: 2, c: 3}, "ac")).toEqual({b: 2});
+            });
+
+            it("should throw an exception if called without arguments", function () {
+                expect(lamb.skip).toThrow();
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined` in place of the `blacklist`", function () {
+                expect(function () { lamb.skip({a: 1}, null); }).toThrow();
+                expect(function () { lamb.skip({a: 1}, void 0); }).toThrow();
+            });
+
+            it("should treat other values for the `blacklist` parameter as an empty array and return a copy of the source object", function () {
+                [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                    var result = lamb.skip(simpleObj, value);
+
+                    expect(result).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                    expect(result).not.toBe(simpleObj);
+                });
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                expect(function () { lamb.skip(null, ["a", "b"]); }).toThrow();
+                expect(function () { lamb.skip(void 0, ["a", "b"]); }).toThrow();
+            });
+
+            it("should convert to object every other value", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.skip(v, ["a"])).toEqual({});
+                });
+
+                expect(lamb.skip(/foo/, ["lastIndex"])).toEqual({});
             });
         });
 

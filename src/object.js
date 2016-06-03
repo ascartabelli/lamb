@@ -478,8 +478,8 @@ var pairs = _pairsFrom(enumerables);
 function pick (source, whitelist) {
     var result = {};
 
-    whitelist.forEach(function (key) {
-        if (key in source) {
+    forEach(whitelist, function (key) {
+        if (has(source, key)) {
             result[key] = source[key];
         }
     });
@@ -629,11 +629,11 @@ function renameWith (fn) {
 function skip (source, blacklist) {
     var result = {};
 
-    for (var key in source) {
-        if (blacklist.indexOf(key) === -1) {
+    enumerables(source).forEach(function (key) {
+        if (!isIn(blacklist, key)) {
             result[key] = source[key];
         }
-    }
+    });
 
     return result;
 }
