@@ -284,7 +284,7 @@ function flatMapWith (iteratee, iterateeContext) {
  * @returns {Array}
  */
 function flatten (array) {
-    return _flatten(array, []);
+	return Array.isArray(array) ? _flatten(array, []) : slice(array);
 }
 
 /**

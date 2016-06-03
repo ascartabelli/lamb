@@ -398,8 +398,23 @@ describe("lamb.array", function () {
             expect(lamb.flatten(input)).toEqual(["a", "b", {"c" : ["d"]}]);
         });
 		
+		it("should return an array copy of the source object if supplied with an array-like", function () {
+			expect(lamb.flatten("foo")).toEqual(["f", "o", "o"]);
+		});
+		
         it("should throw an exception if called without arguments", function () {
             expect(lamb.flatten).toThrow();
+        });
+		
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.flatten(null); }).toThrow();
+            expect(function () { lamb.flatten(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.flatten(value)).toEqual([]);
+            });
         });
     });
 
