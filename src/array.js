@@ -106,9 +106,9 @@ var drop = binary(slice);
  * @returns {Function}
  */
 function dropN (n) {
-	return function (arrayLike) {
-		return slice(arrayLike, n);
-	};
+    return function (arrayLike) {
+        return slice(arrayLike, n);
+    };
 }
 
 /**
@@ -284,7 +284,7 @@ function flatMapWith (iteratee, iterateeContext) {
  * @returns {Array}
  */
 function flatten (array) {
-	return Array.isArray(array) ? _flatten(array, []) : slice(array);
+    return Array.isArray(array) ? _flatten(array, []) : slice(array);
 }
 
 /**
@@ -647,7 +647,7 @@ function reverse (arrayLike) {
  * @returns {Array}
  */
 function shallowFlatten (array) {
-	return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
+    return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
 }
 
 /**
@@ -708,9 +708,9 @@ var take = partial(slice, _, 0, _);
  * @returns {Function}
  */
 function takeN (n) {
-	return function (arrayLike) {
-		return slice(arrayLike, 0, n);
-	};
+    return function (arrayLike) {
+        return slice(arrayLike, 0, n);
+    };
 }
 
 /**

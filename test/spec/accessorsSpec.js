@@ -25,13 +25,13 @@ describe("lamb.accessors", function () {
                 expect(lamb.getAt(-2)(arr)).toBe(3);
                 expect(lamb.getAt(-2)(s)).toBe("c");
             });
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.getIndex).toThrow();
-				expect(lamb.getAt(1)).toThrow();
-				expect(lamb.head).toThrow();
-				expect(lamb.last).toThrow();
-			});
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.getIndex).toThrow();
+                expect(lamb.getAt(1)).toThrow();
+                expect(lamb.head).toThrow();
+                expect(lamb.last).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.getIndex(null, 2); }).toThrow();
@@ -44,7 +44,7 @@ describe("lamb.accessors", function () {
 
             it("should return undefined for every other value and when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
                 [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
-					expect(lamb.getIndex(arr, v)).toBeUndefined();
+                    expect(lamb.getIndex(arr, v)).toBeUndefined();
                     expect(lamb.getAt(v)(arr)).toBeUndefined();
                 });
 
@@ -57,8 +57,8 @@ describe("lamb.accessors", function () {
 
                 expect(lamb.getIndex(arr, 2.2)).toBeUndefined();
                 expect(lamb.getAt("1")(arr)).toBeUndefined();
-				expect(lamb.getIndex(arr)).toBeUndefined();
-				expect(lamb.getAt()(arr)).toBeUndefined();
+                expect(lamb.getIndex(arr)).toBeUndefined();
+                expect(lamb.getAt()(arr)).toBeUndefined();
                 expect(lamb.head([])).toBeUndefined();
                 expect(lamb.last([])).toBeUndefined();
             });
@@ -130,11 +130,11 @@ describe("lamb.accessors", function () {
                 expect(newArr2).not.toBe(arr);
                 expect(newS).toEqual(["h", "e", "l", "l", "o"]);
             });
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.setIndex).toThrow();
-				expect(lamb.setAt(1, 1)).toThrow();
-			});
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.setIndex).toThrow();
+                expect(lamb.setAt(1, 1)).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.setAt(0, 99)(null); }).toThrow();
@@ -230,11 +230,11 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["h", "e", "l", "l", "o"]);
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.updateIndex).toThrow();
-				expect(lamb.updateAt(1, fn99)).toThrow();
-			});
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.updateIndex).toThrow();
+                expect(lamb.updateAt(1, fn99)).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.updateIndex(null, 0, fn99); }).toThrow();
@@ -278,27 +278,27 @@ describe("lamb.accessors", function () {
                 expect(lamb.getIn(s, 1)).toBe("b");
                 expect(lamb.getKey(2)(s)).toBe("c");
             });
-			
-			it("should convert other values for the `key` parameter to string", function () {
-	            var d = new Date();
-	            var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-	            var stringKeys = ["null", "undefined", "[object Object]", "1,2", "/foo/", "1", "function () {}", "NaN", "true", String(d)];
-				var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-				var testObj = lamb.make(stringKeys, values);
-				
-				stringKeys.forEach(function (key) {
-					expect(lamb.getIn(testObj, key)).toBe(values[stringKeys.indexOf(key)]);
-					expect(lamb.getKey(key)(testObj)).toBe(values[stringKeys.indexOf(key)]);
-				});
-				
-				expect(lamb.getIn(testObj)).toBe(1);
-				expect(lamb.getKey()(testObj)).toBe(1);
-			});
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.getIn).toThrow();
-				expect(lamb.getKey("a")).toThrow();
-			});
+            
+            it("should convert other values for the `key` parameter to string", function () {
+                var d = new Date();
+                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
+                var stringKeys = ["null", "undefined", "[object Object]", "1,2", "/foo/", "1", "function () {}", "NaN", "true", String(d)];
+                var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                var testObj = lamb.make(stringKeys, values);
+                
+                stringKeys.forEach(function (key) {
+                    expect(lamb.getIn(testObj, key)).toBe(values[stringKeys.indexOf(key)]);
+                    expect(lamb.getKey(key)(testObj)).toBe(values[stringKeys.indexOf(key)]);
+                });
+                
+                expect(lamb.getIn(testObj)).toBe(1);
+                expect(lamb.getKey()(testObj)).toBe(1);
+            });
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.getIn).toThrow();
+                expect(lamb.getKey("a")).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.getIn(null, "a"); }).toThrow();

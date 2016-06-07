@@ -143,8 +143,8 @@ var enumerables = _unsafeKeyListFrom(_safeEnumerables);
  */
 function fromPairs (pairsList) {
     var result = {};
-	
-	forEach(pairsList, function (pair) {
+
+    forEach(pairsList, function (pair) {
         result[pair[0]] = pair[1];
     });
 
@@ -172,10 +172,10 @@ function fromPairs (pairsList) {
  * @returns {Boolean}
  */
 function has (obj, key) {
-	if (typeof obj !== "object" && !isUndefined(obj)) {
-		obj = Object(obj);
-	}	
-	
+    if (typeof obj !== "object" && !isUndefined(obj)) {
+        obj = Object(obj);
+    }
+
     return key in obj;
 }
 
@@ -196,9 +196,9 @@ function has (obj, key) {
  * @returns {Function}
  */
 function hasKey (key) {
-	return function (obj) {
-		return has(obj, key);
-	};
+    return function (obj) {
+        return has(obj, key);
+    };
 }
 
 /**
@@ -260,9 +260,9 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  * @returns {Function}
  */
 function hasOwnKey (key) {
-	return function (obj) {
-		return hasOwn(obj, key);
-	};
+    return function (obj) {
+        return hasOwn(obj, key);
+    };
 }
 
 /**

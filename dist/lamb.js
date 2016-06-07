@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.28.0
+ * @version 0.28.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.28.0";
+    lamb._version =  "0.28.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1040,9 +1040,9 @@
      * @returns {Function}
      */
     function getAt (index) {
-    	return function (arrayLike) {
-    		return getIndex(arrayLike, index);
-    	};
+        return function (arrayLike) {
+            return getIndex(arrayLike, index);
+        };
     }
 
     /**
@@ -1111,9 +1111,9 @@
      * @returns {Function}
      */
     function getKey (key) {
-    	return function (obj) {
-    		return getIn(obj, key);
-    	};
+        return function (obj) {
+            return getIn(obj, key);
+        };
     }
 
     /**
@@ -1741,9 +1741,9 @@
      * @returns {Function}
      */
     function dropN (n) {
-    	return function (arrayLike) {
-    		return slice(arrayLike, n);
-    	};
+        return function (arrayLike) {
+            return slice(arrayLike, n);
+        };
     }
 
     /**
@@ -1919,7 +1919,7 @@
      * @returns {Array}
      */
     function flatten (array) {
-    	return Array.isArray(array) ? _flatten(array, []) : slice(array);
+        return Array.isArray(array) ? _flatten(array, []) : slice(array);
     }
 
     /**
@@ -2282,7 +2282,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-    	return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
+        return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
     }
 
     /**
@@ -2343,9 +2343,9 @@
      * @returns {Function}
      */
     function takeN (n) {
-    	return function (arrayLike) {
-    		return slice(arrayLike, 0, n);
-    	};
+        return function (arrayLike) {
+            return slice(arrayLike, 0, n);
+        };
     }
 
     /**
@@ -3751,8 +3751,8 @@
      */
     function fromPairs (pairsList) {
         var result = {};
-    	
-    	forEach(pairsList, function (pair) {
+
+        forEach(pairsList, function (pair) {
             result[pair[0]] = pair[1];
         });
 
@@ -3780,10 +3780,10 @@
      * @returns {Boolean}
      */
     function has (obj, key) {
-    	if (typeof obj !== "object" && !isUndefined(obj)) {
-    		obj = Object(obj);
-    	}	
-    	
+        if (typeof obj !== "object" && !isUndefined(obj)) {
+            obj = Object(obj);
+        }
+
         return key in obj;
     }
 
@@ -3804,9 +3804,9 @@
      * @returns {Function}
      */
     function hasKey (key) {
-    	return function (obj) {
-    		return has(obj, key);
-    	};
+        return function (obj) {
+            return has(obj, key);
+        };
     }
 
     /**
@@ -3868,9 +3868,9 @@
      * @returns {Function}
      */
     function hasOwnKey (key) {
-    	return function (obj) {
-    		return hasOwn(obj, key);
-    	};
+        return function (obj) {
+            return hasOwn(obj, key);
+        };
     }
 
     /**

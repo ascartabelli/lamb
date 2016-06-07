@@ -94,9 +94,9 @@ function _setPathIn (obj, parts, value) {
  * @returns {Function}
  */
 function getAt (index) {
-	return function (arrayLike) {
-		return getIndex(arrayLike, index);
-	};
+    return function (arrayLike) {
+        return getIndex(arrayLike, index);
+    };
 }
 
 /**
@@ -165,9 +165,9 @@ function getIndex (arrayLike, index) {
  * @returns {Function}
  */
 function getKey (key) {
-	return function (obj) {
-		return getIn(obj, key);
-	};
+    return function (obj) {
+        return getIn(obj, key);
+    };
 }
 
 /**

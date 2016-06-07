@@ -41,22 +41,22 @@ describe("lamb.object", function () {
         it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
             expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
         });
-		
-		it("should return an empty object if supplied with an empty array", function () {
-			expect(lamb.fromPairs([])).toEqual({});
-		});
-		
-		it("should accept array-like objects as pairs", function () {
-			expect(lamb.fromPairs(["a1", "b2"])).toEqual({"a": "1", "b": "2"});
-		});
-		
-		it("should try to retrieve pairs from array-like objects", function () {
-			expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
-		});
-		
-		it("should throw an exception if called without the data argument", function () {
-			expect(lamb.fromPairs).toThrow();
-		});
+        
+        it("should return an empty object if supplied with an empty array", function () {
+            expect(lamb.fromPairs([])).toEqual({});
+        });
+        
+        it("should accept array-like objects as pairs", function () {
+            expect(lamb.fromPairs(["a1", "b2"])).toEqual({"a": "1", "b": "2"});
+        });
+        
+        it("should try to retrieve pairs from array-like objects", function () {
+            expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
+        });
+        
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.fromPairs).toThrow();
+        });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.fromPairs(null); }).toThrow();
@@ -80,12 +80,12 @@ describe("lamb.object", function () {
                 expect(lamb.hasKey("toString")(obj)).toBe(true);
                 expect(lamb.hasKey("foo")(obj)).toBe(true);
             });
-			
+            
             it("should return `false` for a non-existent property", function () {
-				expect(lamb.has(obj, "baz")).toBe(false);
+                expect(lamb.has(obj, "baz")).toBe(false);
                 expect(lamb.hasKey("baz")(obj)).toBe(false);
             });
-			
+            
             it("should accept integers as keys and accept array-like objects", function () {
                 var o = {"1": "a", "2": "b"};
                 var arr = [1, 2, 3, 4];
@@ -98,11 +98,11 @@ describe("lamb.object", function () {
                 expect(lamb.hasKey(2)(arr)).toBe(true);
                 expect(lamb.hasKey(2)(s)).toBe(true);
             });
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.has).toThrow();
-				expect(lamb.hasKey("foo")).toThrow();
-			});
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.has).toThrow();
+                expect(lamb.hasKey("foo")).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.has(null, "a"); }).toThrow();
@@ -120,7 +120,7 @@ describe("lamb.object", function () {
                 });
             });
         });
-		
+        
         describe("hasOwn / hasOwnKey", function () {
             it("should check the existence of an owned property in an object", function () {
                 expect(lamb.hasOwn(obj, "toString")).toBe(false);
@@ -146,11 +146,11 @@ describe("lamb.object", function () {
                 expect(lamb.hasOwnKey(2)(arr)).toBe(true);
                 expect(lamb.hasOwnKey(2)(s)).toBe(true);
             });
-			
-			it("should throw an exception if called without the data argument", function () {
-				expect(lamb.hasOwn).toThrow();
-				expect(lamb.hasOwnKey("foo")).toThrow();
-			});
+            
+            it("should throw an exception if called without the data argument", function () {
+                expect(lamb.hasOwn).toThrow();
+                expect(lamb.hasOwnKey("foo")).toThrow();
+            });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.hasOwn(null, "a"); }).toThrow();
@@ -196,24 +196,24 @@ describe("lamb.object", function () {
             expect(lamb.hasKeyValue(2, 3)(arr)).toBe(true);
             expect(lamb.hasKeyValue(2, "c")(s)).toBe(true);
         });
-		
-		it("should convert other values for the `key` parameter to string", function () {
+        
+        it("should convert other values for the `key` parameter to string", function () {
             var d = new Date();
             var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
             var stringKeys = ["null", "undefined", "[object Object]", "1,2", "/foo/", "1", "function () {}", "NaN", "true", String(d)];
-			var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-			var testObj = lamb.make(stringKeys, values);
-			
-			stringKeys.forEach(function (key) {
-				expect(lamb.hasKeyValue(key, stringKeys.indexOf(key))(testObj)).toBe(true)
-			});
-			
-			expect(lamb.hasKeyValue()({"undefined": void 0})).toBe(true);
-		});
-		
-		it("should throw an exception if called without the data argument", function () {
-			expect(lamb.hasKeyValue("foo", 2)).toThrow();
-		});
+            var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            var testObj = lamb.make(stringKeys, values);
+            
+            stringKeys.forEach(function (key) {
+                expect(lamb.hasKeyValue(key, stringKeys.indexOf(key))(testObj)).toBe(true)
+            });
+            
+            expect(lamb.hasKeyValue()({"undefined": void 0})).toBe(true);
+        });
+        
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.hasKeyValue("foo", 2)).toThrow();
+        });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
             expect(function () { lamb.hasKeyValue("a", 2)(null); }).toThrow();

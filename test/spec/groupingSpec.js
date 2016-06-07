@@ -80,21 +80,21 @@ describe("lamb.grouping", function () {
             expect(lamb.count("hello world", lamb.identity)).toEqual(result);
             expect(lamb.countBy(lamb.identity)("hello world")).toEqual(result);
         });
-		
-		it("should throw an exception if the iteratee isn't a function", function () {
-			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-				expect(function () { lamb.count(persons, value); }).toThrow();
-				expect(function () { lamb.countBy(value)(persons); }).toThrow();
-			});
-			
-			expect(function () { lamb.count(persons); }).toThrow();
-			expect(function () { lamb.countBy()(persons); }).toThrow();
-		});
-		
-		it("should throw an exception if called without the data argument", function () {
-			expect(lamb.count).toThrow();
-			expect(lamb.countBy(lamb.identity)).toThrow();
-		});
+        
+        it("should throw an exception if the iteratee isn't a function", function () {
+            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.count(persons, value); }).toThrow();
+                expect(function () { lamb.countBy(value)(persons); }).toThrow();
+            });
+            
+            expect(function () { lamb.count(persons); }).toThrow();
+            expect(function () { lamb.countBy()(persons); }).toThrow();
+        });
+        
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.count).toThrow();
+            expect(lamb.countBy(lamb.identity)).toThrow();
+        });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.count(null, lamb.identity); }).toThrow();
@@ -129,21 +129,21 @@ describe("lamb.grouping", function () {
 
             expect(argsTest.apply(null, numbers)).toEqual(result);
         });
-		
-		it("should throw an exception if the iteratee isn't a function", function () {
-			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-				expect(function () { lamb.group(persons, value); }).toThrow();
-				expect(function () { lamb.groupBy(value)(persons); }).toThrow();
-			});
-			
-			expect(function () { lamb.group(persons); }).toThrow();
-			expect(function () { lamb.groupBy()(persons); }).toThrow();
-		});
-		
-		it("should throw an exception if called without the data argument", function () {
-			expect(lamb.group).toThrow();
-			expect(lamb.groupBy(lamb.identity)).toThrow();
-		});
+        
+        it("should throw an exception if the iteratee isn't a function", function () {
+            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.group(persons, value); }).toThrow();
+                expect(function () { lamb.groupBy(value)(persons); }).toThrow();
+            });
+            
+            expect(function () { lamb.group(persons); }).toThrow();
+            expect(function () { lamb.groupBy()(persons); }).toThrow();
+        });
+        
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.group).toThrow();
+            expect(lamb.groupBy(lamb.identity)).toThrow();
+        });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.group(null, lamb.identity); }).toThrow();
@@ -184,21 +184,21 @@ describe("lamb.grouping", function () {
             expect(lamb.index("hello world", lamb.identity)).toEqual(result);
             expect(lamb.indexBy(lamb.identity)("hello world")).toEqual(result);
         });
-		
-		it("should throw an exception if the iteratee isn't a function", function () {
-			[void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-				expect(function () { lamb.index(persons, value); }).toThrow();
-				expect(function () { lamb.indexBy(value)(persons); }).toThrow();
-			});
-			
-			expect(function () { lamb.index(persons); }).toThrow();
-			expect(function () { lamb.indexBy()(persons); }).toThrow();
-		});
-		
-		it("should throw an exception if called without the data argument", function () {
-			expect(lamb.index).toThrow();
-			expect(lamb.indexBy(lamb.identity)).toThrow();
-		});
+        
+        it("should throw an exception if the iteratee isn't a function", function () {
+            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.index(persons, value); }).toThrow();
+                expect(function () { lamb.indexBy(value)(persons); }).toThrow();
+            });
+            
+            expect(function () { lamb.index(persons); }).toThrow();
+            expect(function () { lamb.indexBy()(persons); }).toThrow();
+        });
+        
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.index).toThrow();
+            expect(lamb.indexBy(lamb.identity)).toThrow();
+        });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.index(null, lamb.identity); }).toThrow();
