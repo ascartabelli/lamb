@@ -59,7 +59,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.28.1</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>0.29.0</li></ul></dd>
     
 
     
@@ -18355,7 +18355,7 @@ _.ownValues(foo) // => [3]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4440">line 4440</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4444">line 4444</a>
     </li></ul></dd>
     
 
@@ -18609,7 +18609,7 @@ _.padLeft("", "-", 5) // => "-----"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4462">line 4462</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4466">line 4466</a>
     </li></ul></dd>
     
 
@@ -19630,7 +19630,7 @@ Non existent properties will be ignored.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4086">line 4086</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4087">line 4087</a>
     </li></ul></dd>
     
 
@@ -19641,6 +19641,8 @@ Non existent properties will be ignored.
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#.pickIf">pickIf</a></li>
+        
+            <li><a href="module-lamb.html#.skip">skip</a>, <a href="module-lamb.html#.skipIf">skipIf</a></li>
         </ul>
     </dd>
     
@@ -19705,7 +19707,7 @@ _.pick(user, ["name", "email"]) // => {"name": "john"}</code></pre>
 
 
 <div class="description">
-    Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+    Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
 The properties satisfying the predicate will be included in the resulting object.
 </div>
 
@@ -19842,7 +19844,7 @@ The properties satisfying the predicate will be included in the resulting object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4114">line 4114</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4116">line 4116</a>
     </li></ul></dd>
     
 
@@ -19853,6 +19855,8 @@ The properties satisfying the predicate will be included in the resulting object
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#.pick">pick</a></li>
+        
+            <li><a href="module-lamb.html#.skip">skip</a>, <a href="module-lamb.html#.skipIf">skipIf</a></li>
         </ul>
     </dd>
     
@@ -22125,7 +22129,7 @@ indicated in the provided lookup table.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4149">line 4149</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4151">line 4151</a>
     </li></ul></dd>
     
 
@@ -22300,7 +22304,7 @@ _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}</code><
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4195">line 4195</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4197">line 4197</a>
     </li></ul></dd>
     
 
@@ -22477,7 +22481,7 @@ a function expecting the object whose keys we want to <a href="module-lamb.html#
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4216">line 4216</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4218">line 4218</a>
     </li></ul></dd>
     
 
@@ -22674,7 +22678,7 @@ this function doesn't throw a RangeError if <code>count</code> is negative, but 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4481">line 4481</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4485">line 4485</a>
     </li></ul></dd>
     
 
@@ -24632,7 +24636,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4237">line 4237</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4240">line 4240</a>
     </li></ul></dd>
     
 
@@ -24643,6 +24647,8 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#.skipIf">skipIf</a></li>
+        
+            <li><a href="module-lamb.html#.pick">pick</a>, <a href="module-lamb.html#.pickIf">pickIf</a></li>
         </ul>
     </dd>
     
@@ -24707,7 +24713,7 @@ _.skip(user, ["name", "email"]) // => {surname: "doe", age: 30};</code></pre>
 
 
 <div class="description">
-    Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+    Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
 The properties satisfying the predicate will be omitted in the resulting object.
 </div>
 
@@ -24844,7 +24850,7 @@ The properties satisfying the predicate will be omitted in the resulting object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4265">line 4265</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4269">line 4269</a>
     </li></ul></dd>
     
 
@@ -24855,6 +24861,8 @@ The properties satisfying the predicate will be omitted in the resulting object.
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#.skip">skip</a></li>
+        
+            <li><a href="module-lamb.html#.pick">pick</a>, <a href="module-lamb.html#.pickIf">pickIf</a></li>
         </ul>
     </dd>
     
@@ -27612,7 +27620,7 @@ See also <a href="module-lamb.html#.tearOwn">tearOwn</a> for picking only the ow
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4284">line 4284</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4288">line 4288</a>
     </li></ul></dd>
     
 
@@ -27771,7 +27779,7 @@ See also <a href="module-lamb.html#.make">make</a> for the reverse operation.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4304">line 4304</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4308">line 4308</a>
     </li></ul></dd>
     
 
@@ -27937,7 +27945,7 @@ _.tearOwn(foo) // => [["c"], [3]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4504">line 4504</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4508">line 4508</a>
     </li></ul></dd>
     
 
@@ -30674,7 +30682,7 @@ var newUser = _.updatePathIn(user, "scores.0.value", increment);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4331">line 4331</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4335">line 4335</a>
     </li></ul></dd>
     
 
@@ -30858,7 +30866,7 @@ returning a function expecting the object to validate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4366">line 4366</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4370">line 4370</a>
     </li></ul></dd>
     
 
@@ -31039,7 +31047,7 @@ See also <a href="module-lamb.html#.ownValues">ownValues</a> for picking only th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4382">line 4382</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4386">line 4386</a>
     </li></ul></dd>
     
 
@@ -31635,7 +31643,7 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jun 07 2016 11:21:24 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jun 16 2016 12:39:46 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
