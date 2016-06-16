@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.28.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.29.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.29.0 - *2016/06/16***
+  - **API change**: `pick`, `pickIf`, `skip` and `skipIf` now throw exceptions only for `nil` values in the data argument, other values will be converted to Object
+  - **API change**: `pick` now throws exceptions only for `nil` values in the `whitelist` parameter, other values will be treated as empty arrays
+  - **API change**: `skip` now throws exceptions only for `nil` values in the `blacklist` parameter, other values will be treated as empty arrays
+  - **API change**: `not` now correctly keeps the predicate’s context
 
 - **v0.28.0 - *2016/06/03***
   - **API change**: `difference` now accepts array-like objects
