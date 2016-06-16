@@ -162,5 +162,22 @@ describe("lamb.logic", function () {
 
             expect(isOdd(3)).toBe(true);
         });
+
+        it("should keep the predicate context", function () {
+            function isEven () { return this.value % 2 === 0; }
+
+            function Foo (value) {
+                this.value = value;
+            }
+
+            Foo.prototype = {
+                value: 0,
+                isOdd: lamb.not(isEven)
+            };
+
+            var obj = new Foo(4);
+
+            expect(obj.isOdd()).toBe(false);
+        });
     });
 });

@@ -581,8 +581,8 @@ describe("lamb.object", function () {
         });
 
         var persons = [
-            {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York"},
-            {"name": "John", "surname": "Doe", "age": 40, "city" : "London"},
+            {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
+            {"name": "John", "surname": "Doe", "age": 40, "city": "London"},
             {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
             {"name": "Paolo", "surname": "Bianchi", "age": 15, "city": "Amsterdam"}
         ];
@@ -600,6 +600,12 @@ describe("lamb.object", function () {
             {"name": "Mario", "surname": "Rossi"},
             {"name": "Paolo", "surname": "Bianchi"}
         ];
+
+        var fakeContext = {};
+        var isNumber = function (v) {
+            expect(this).toBe(fakeContext);
+            return typeof v === "number";
+        };
 
         var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
 
@@ -663,6 +669,37 @@ describe("lamb.object", function () {
             it("should pick object properties using a predicate", function () {
                 expect(persons.map(lamb.pickIf(isNameKey))).toEqual(names);
             });
+
+            it("should accept a context object for the predicate", function () {
+                expect(lamb.pickIf(isNumber, fakeContext)(persons[0])).toEqual({"age": 12});
+            });
+
+            it("should accept array-like objects", function () {
+                var isEven = function (n) { return n % 2 === 0; };
+
+                expect(lamb.pickIf(isEven)([1, 2, 3, 4])).toEqual({"1": 2, "3": 4});
+                expect(lamb.pickIf(isEven)("1234")).toEqual({"1": "2", "3": "4"});
+            });
+
+            it("should throw an exception if the predicate isn't a function or if is missing", function () {
+                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(function () { lamb.pickIf(value)({a: 2}); }).toThrow();
+                });
+
+                expect(function () { lamb.pickIf()({a: 2}); }).toThrow();
+            });
+
+            it("should throw an exception if the `source` is `null` or `undefined` or if is missing", function () {
+                expect(lamb.pickIf(isNumber)).toThrow();
+                expect(function () { lamb.pickIf(isNumber)(null); }).toThrow();
+                expect(function () { lamb.pickIf(isNumber)(void 0); }).toThrow();
+            });
+
+            it("should convert to object every other value received as `source`", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.pickIf(isNumber)(v)).toEqual({});
+                });
+            });
         });
 
         describe("skip", function () {
@@ -723,6 +760,37 @@ describe("lamb.object", function () {
         describe("skipIf", function () {
             it("should skip object properties using a predicate", function () {
                 expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
+            });
+
+            it("should accept a context object for the predicate", function () {
+                expect(lamb.skipIf(isNumber, fakeContext)(persons[0])).toEqual({"name": "Jane", "surname": "Doe", "city": "New York"});
+            });
+
+            it("should accept array-like objects", function () {
+                var isEven = function (n) { return n % 2 === 0; };
+
+                expect(lamb.skipIf(isEven)([1, 2, 3, 4])).toEqual({"0": 1, "2": 3});
+                expect(lamb.skipIf(isEven)("1234")).toEqual({"0": "1", "2": "3"});
+            });
+
+            it("should throw an exception if the predicate isn't a function or if is missing", function () {
+                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(function () { lamb.skipIf(value)({a: 2}); }).toThrow();
+                });
+
+                expect(function () { lamb.skipIf()({a: 2}); }).toThrow();
+            });
+
+            it("should throw an exception if the `source` is `null` or `undefined` or if is missing", function () {
+                expect(lamb.skipIf(isNumber)).toThrow();
+                expect(function () { lamb.skipIf(isNumber)(null); }).toThrow();
+                expect(function () { lamb.skipIf(isNumber)(void 0); }).toThrow();
+            });
+
+            it("should convert to object every other value received as `source`", function () {
+                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                    expect(lamb.skipIf(isNumber)(v)).toEqual({});
+                });
             });
         });
     });

@@ -313,7 +313,7 @@ function isSVZ (a, b) {
  */
 function not (predicate) {
     return function () {
-        return !predicate.apply(null, arguments);
+        return !predicate.apply(this, arguments);
     };
 }
 

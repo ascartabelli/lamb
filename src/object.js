@@ -471,6 +471,7 @@ var pairs = _pairsFrom(enumerables);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.pickIf|pickIf}
+ * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
  * @param {Object} source
  * @param {String[]} whitelist
  * @returns {Object}
@@ -488,7 +489,7 @@ function pick (source, whitelist) {
 }
 
 /**
- * Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+ * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
  * The properties satisfying the predicate will be included in the resulting object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
@@ -499,6 +500,7 @@ function pick (source, whitelist) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.pick|pick}
+ * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -507,11 +509,11 @@ function pickIf (predicate, predicateContext) {
     return function (source) {
         var result = {};
 
-        for (var key in source) {
+        enumerables(source).forEach(function (key) {
             if (predicate.call(predicateContext, source[key], key, source)) {
                 result[key] = source[key];
             }
-        }
+        });
 
         return result;
     };
@@ -622,6 +624,7 @@ function renameWith (fn) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.skipIf|skipIf}
+ * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
  * @param {Object} source
  * @param {String[]} blacklist
  * @returns {Object}
@@ -639,7 +642,7 @@ function skip (source, blacklist) {
 }
 
 /**
- * Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+ * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
  * The properties satisfying the predicate will be omitted in the resulting object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
@@ -650,6 +653,7 @@ function skip (source, blacklist) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.skip|skip}
+ * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}

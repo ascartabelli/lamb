@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.29.0-alpha.1
+ * @version 0.29.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.29.0-alpha.1";
+    lamb._version =  "0.29.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -614,7 +614,7 @@
      */
     function not (predicate) {
         return function () {
-            return !predicate.apply(null, arguments);
+            return !predicate.apply(this, arguments);
         };
     }
 
@@ -4079,6 +4079,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
      * @param {Object} source
      * @param {String[]} whitelist
      * @returns {Object}
@@ -4096,7 +4097,7 @@
     }
 
     /**
-     * Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+     * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
      * The properties satisfying the predicate will be included in the resulting object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
@@ -4107,6 +4108,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.pick|pick}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -4115,11 +4117,11 @@
         return function (source) {
             var result = {};
 
-            for (var key in source) {
+            enumerables(source).forEach(function (key) {
                 if (predicate.call(predicateContext, source[key], key, source)) {
                     result[key] = source[key];
                 }
-            }
+            });
 
             return result;
         };
@@ -4230,6 +4232,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
@@ -4247,7 +4250,7 @@
     }
 
     /**
-     * Builds a function expecting an object whose properties will be checked against the given predicate.<br/>
+     * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
      * The properties satisfying the predicate will be omitted in the resulting object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
@@ -4258,6 +4261,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.skip|skip}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
