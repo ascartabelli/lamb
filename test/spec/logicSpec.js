@@ -1,6 +1,6 @@
 var lamb = require("../../dist/lamb.js");
 
-describe("lamb.logic", function () {//"use strict";
+describe("lamb.logic", function () {
     var isEven = function (n) { return n % 2 === 0; };
     var isGreaterThanTwo = function (n) { return n > 2; };
     var isLessThanTen = function (n) { return n < 10; };
