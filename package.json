@@ -37,7 +37,7 @@
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-footer": "^1.0.5",
-    "gulp-header": "^1.7.1",
+    "gulp-header": "1.7.1",
     "gulp-indent": "^1.0.1",
     "gulp-istanbul": "^0.10.4",
     "gulp-jasmine": "^2.3.0",
