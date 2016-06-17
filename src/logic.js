@@ -72,8 +72,8 @@ function allOf () {
         var args = arguments;
 
         return predicates.every(function (predicate) {
-            return predicate.apply(null, args);
-        });
+            return predicate.apply(this, args);
+        }, this);
     };
 }
 
@@ -103,8 +103,8 @@ function anyOf () {
         var args = arguments;
 
         return predicates.some(function (predicate) {
-            return predicate.apply(null, args);
-        });
+            return predicate.apply(this, args);
+        }, this);
     };
 }
 

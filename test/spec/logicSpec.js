@@ -1,9 +1,27 @@
 var lamb = require("../../dist/lamb.js");
 
-describe("lamb.logic", function () {
+describe("lamb.logic", function () {//"use strict";
     var isEven = function (n) { return n % 2 === 0; };
     var isGreaterThanTwo = function (n) { return n > 2; };
     var isLessThanTen = function (n) { return n < 10; };
+
+    function Foo (value) {
+        this.value = value;
+    }
+
+    Foo.prototype = {
+        value: 0,
+        isEven: function () {
+            return this.value % 2 === 0;
+        },
+        isPositive: function () {
+            return this.value > 0;
+        }
+    };
+    Foo.prototype.isOdd = lamb.not(Foo.prototype.isEven);
+    Foo.prototype.isPositiveEven = lamb.allOf(Foo.prototype.isEven, Foo.prototype.isPositive);
+    Foo.prototype.isPositiveOrEven = lamb.anyOf(Foo.prototype.isEven, Foo.prototype.isPositive);
+
 
     describe("adapter", function () {
         it("should accept a series of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
@@ -35,6 +53,24 @@ describe("lamb.logic", function () {
             var check = lamb.allOf(isEven, isGreaterThanTwo, isLessThanTen);
             expect([2, 3, 16].map(check)).toEqual([false, false, false]);
         });
+
+        it("should keep the predicate context", function () {
+            expect(new Foo(6).isPositiveEven()).toBe(true);
+            expect(new Foo(5).isPositiveEven()).toBe(false);
+        });
+
+        it("should return `true` for any value if not supplied with predicates because of vacuous truth", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.allOf()(value)).toBe(true);
+            });
+        });
+
+        it("should build a function returning an exception if any given predicate isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.allOf(value, isEven)(2); }).toThrow();
+                expect(function () { lamb.allOf(isEven, value)(2); }).toThrow();
+            });
+        });
     });
 
     describe("anyOf", function () {
@@ -46,6 +82,30 @@ describe("lamb.logic", function () {
         it("should return false if none of the given predicates is satisfied", function () {
             var check = lamb.anyOf(isEven, isLessThanTen);
             expect([33, 35, 55].map(check)).toEqual([false, false, false]);
+        });
+
+        it("should keep the predicate context", function () {
+            expect(new Foo(5).isPositiveOrEven()).toBe(true);
+            expect(new Foo(-5).isPositiveOrEven()).toBe(false);
+        });
+
+        it("should return `false` for any value if not supplied with predicates", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.anyOf()(value)).toBe(false);
+            });
+        });
+
+        it("should not throw an exception if some predicate isn't a function if a previous predicate satisfies the condition", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.anyOf(isEven, value)(2)).toBe(true);
+            });
+        });
+
+        it("should build a function returning an exception if a predicate isn't a function and the condition isn't satisfied yet", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.anyOf(value, isEven)(2); }).toThrow();
+                expect(function () { lamb.anyOf(isEven, value)(3); }).toThrow();
+            });
         });
     });
 
@@ -164,20 +224,16 @@ describe("lamb.logic", function () {
         });
 
         it("should keep the predicate context", function () {
-            function isEven () { return this.value % 2 === 0; }
+            expect(new Foo(4).isOdd()).toBe(false);
+            expect(new Foo(5).isOdd()).toBe(true);
+        });
 
-            function Foo (value) {
-                this.value = value;
-            }
+        it("should build a function returning an exception if the given predicate is missing or isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.not(value)).toThrow();
+            });
 
-            Foo.prototype = {
-                value: 0,
-                isOdd: lamb.not(isEven)
-            };
-
-            var obj = new Foo(4);
-
-            expect(obj.isOdd()).toBe(false);
+            expect(lamb.not()).toThrow();
         });
     });
 });
