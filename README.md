@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.29.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.30.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.30.0 - *2016/06/21***
+  - **API change**: `aritize` now adds `undefined` arguments if the desired arity is greater than the amount of received parameters
+  - **API change**: `apply` and `applyArgs` now treat non-array-like values for the `args` parameter as empty arrays
+  - **API change**: `allOf`, `anyOf`, `apply`, `applyArgs`, `aritize`, `binary` and `unary` now keep the functions' context
+  - Completed “second round" of test updating
 
 - **v0.29.0 - *2016/06/16***
   - **API change**: `pick`, `pickIf`, `skip` and `skipIf` now throw exceptions only for `nil` values in the data argument, other values will be converted to Object
