@@ -11,6 +11,9 @@ describe("lamb.logic", function () {
 
     Foo.prototype = {
         value: 0,
+        getValue: function () {
+            return typeof this.value === "number" ? this.value : void 0;
+        },
         isEven: function () {
             return this.value % 2 === 0;
         },
@@ -40,6 +43,26 @@ describe("lamb.logic", function () {
             expect(filterWithDefault([1, 2, 3, 4, 5, 6], isEven)).toEqual([2, 4, 6]);
             expect(filterWithDefault("123456", isEven)).toBe("246");
             expect(filterWithDefault({}, isEven)).toBe("Not implemented");
+        });
+
+        it("should not modify the functions' context", function () {
+            var obj = {value: 5, getValue: lamb.adapter(Foo.prototype.getValue)};
+            expect(obj.getValue()).toBe(5);
+        });
+
+        it("should not throw an exception if some parameter isn't a function if a previous function returned a non-undefined value", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.adapter(isEven, value)(2)).toBe(true);
+            });
+        });
+
+        it("should build a function returning an exception if a parameter isn't a function and no previous function returned a non-unefined value", function () {
+            var fn = function (v) { return isEven(v) ? true : void 0; };
+
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.adapter(value, fn)(2); }).toThrow();
+                expect(function () { lamb.adapter(fn, value)(3); }).toThrow();
+            });
         });
     });
 

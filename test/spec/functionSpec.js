@@ -15,7 +15,6 @@ describe("lamb.function", function () {
         }
     }
 
-
     describe("apply", function () {
         it("should apply the passed function to the given arguments", function () {
             expect(lamb.apply(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
@@ -94,25 +93,120 @@ describe("lamb.function", function () {
     });
 
     describe("aritize", function () {
+        var maxArgument = function () { return Math.max.apply(null, arguments); };
+        var maxArgumentSpy = jasmine.createSpy("maxArgument").and.callFake(maxArgument);;
+
+        afterEach(function () {
+            maxArgumentSpy.calls.reset();
+        });
+
         it("should change the arity of the given function to the specified value", function () {
-            var maxArgument = function () { return Math.max.apply(null, arguments); };
-            var maxArgumentSpy = jasmine.createSpy("maxArgument").and.callFake(maxArgument);
             var maxOfFirst3 = lamb.aritize(maxArgumentSpy, 3);
 
             expect(maxOfFirst3(0, 1, 2, 3, 4, 5)).toBe(2);
             expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2]);
         });
+
+        it("should allow negative arities", function () {
+            expect(lamb.aritize(maxArgumentSpy, -1)(0, 1, 2, 3)).toBe(2);
+            expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2]);
+        });
+
+        it("should call the function without arguments if the arity is out of bounds", function () {
+            expect(lamb.aritize(maxArgumentSpy, -10)(0, 1, 2, 3)).toBe(-Infinity);
+            expect(maxArgumentSpy.calls.argsFor(0).length).toBe(0);
+        });
+
+        it("should add `undefined` arguments if the desired arity is greater than the amount of received parameters", function () {
+            expect(lamb.aritize(maxArgumentSpy, 6)(0, 1, 2, 3)).toEqual(NaN);
+            expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2, 3, void 0, void 0]);
+        });
+
+        it("should use all received arguments if supplied with an `undefined` arity following the ECMA specifications of `slice`", function () {
+            // see http://www.ecma-international.org/ecma-262/6.0/#sec-array.prototype.slice
+
+            expect(lamb.aritize(maxArgumentSpy, void 0)(0, 1, 2, 3, 4, 5)).toBe(5);
+            expect(lamb.aritize(maxArgumentSpy)(0, 1, 2, 3, 4, 5)).toBe(5);
+            expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2, 3, 4, 5]);
+            expect(maxArgumentSpy.calls.argsFor(1)).toEqual([0, 1, 2, 3, 4, 5]);
+        })
+
+        it("should convert the arity to an integer following ECMA specifications", function () {
+            // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
+
+            [{}, "foo", NaN, null, function () {}, ["a", "b"]].forEach(function (value, idx) {
+                expect(lamb.aritize(maxArgumentSpy, value)(0, 1, 2, 3, 4, 5)).toBe(-Infinity);
+                expect(maxArgumentSpy.calls.argsFor(idx).length).toBe(0);
+            });
+
+            maxArgumentSpy.calls.reset();
+
+            [[5], 5.9, "5.9", "-1", ["-1.9"]].forEach(function (value, idx) {
+                expect(lamb.aritize(maxArgumentSpy, value)(0, 1, 2, 3, 4, 5)).toBe(4);
+                expect(maxArgumentSpy.calls.argsFor(idx)).toEqual([0, 1, 2, 3, 4]);
+            });
+        });
+
+        it("should not modify the function's context", function () {
+            var fn = function () {
+                this.values = this.values.concat(lamb.slice(arguments));
+            };
+
+            var obj = {values: [1, 2, 3], addValues: lamb.aritize(fn, 2)};
+            obj.addValues(4, 5, 6, 7);
+
+            expect(obj.values).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.aritize(value, 0)).toThrow();
+            });
+
+            expect(lamb.aritize()).toThrow();
+        });
     });
 
     describe("binary", function () {
-        it("should build a function that passes only two arguments to the given one", function () {
+        var binaryList;
+
+        beforeEach(function () {
             spyOn(lamb, "list").and.callThrough();
+            binaryList = lamb.binary(lamb.list);
+        });
 
-            var binaryList = lamb.binary(lamb.list);
+        afterEach(function () {
+            lamb.list.calls.reset();
+        });
 
+        it("should build a function that passes only two arguments to the given one", function () {
             expect(binaryList.length).toBe(2);
             expect(binaryList(1, 2, 3)).toEqual([1, 2]);
             expect(lamb.list.calls.argsFor(0)).toEqual([1, 2]);
+        });
+
+        it("should add `undefined` arguments if the received parameters aren't two", function () {
+            expect(binaryList()).toEqual([void 0, void 0]);
+            expect(binaryList(1)).toEqual([1, void 0]);
+        });
+
+        it("should not modify the function's context", function () {
+            var fn = function () {
+                this.values = this.values.concat(lamb.slice(arguments));
+            };
+
+            var obj = {values: [1, 2, 3], addValues: lamb.binary(fn)};
+            obj.addValues(4, 5, 6, 7);
+
+            expect(obj.values).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.binary(value)).toThrow();
+            });
+
+            expect(lamb.binary()).toThrow();
         });
     });
 
@@ -383,14 +477,44 @@ describe("lamb.function", function () {
     });
 
     describe("unary", function () {
-        it("should build a function that passes only one argument to the given one", function () {
+        var unaryList;
+
+        beforeEach(function () {
             spyOn(lamb, "list").and.callThrough();
+            unaryList = lamb.unary(lamb.list);
+        });
 
-            var unaryList = lamb.unary(lamb.list);
+        afterEach(function () {
+            lamb.list.calls.reset();
+        });
 
+        it("should build a function that passes only one argument to the given one", function () {
             expect(unaryList.length).toBe(1);
             expect(unaryList(1, 2, 3)).toEqual([1]);
             expect(lamb.list.calls.argsFor(0)).toEqual([1]);
+        });
+
+        it("should add an `undefined` argument if the built function doesn't receive parameters", function () {
+            expect(unaryList()).toEqual([void 0]);
+        });
+
+        it("should not modify the function's context", function () {
+            var fn = function () {
+                this.values.push(arguments[0]);
+            };
+
+            var obj = {values: [1, 2, 3], addValue: lamb.unary(fn)};
+            obj.addValue(4);
+
+            expect(obj.values).toEqual([1, 2, 3, 4]);
+        });
+
+        it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.unary(value)).toThrow();
+            });
+
+            expect(lamb.unary()).toThrow();
         });
     });
 

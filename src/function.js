@@ -61,14 +61,20 @@ function applyArgs (args) {
 
 /**
  * Builds a function that passes only the specified amount of arguments to the given function.<br/>
+ * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
+ * pass a negative arity.<br/>
  * See also {@link module:lamb.binary|binary} and {@link module:lamb.unary|unary} for common use
  * cases shortcuts.
  * @example
- * var data = ["1-2", "13-5", "6-23"];
- * var getDashIndex = _.invoker("indexOf", "-");
+ * function maxArgument () {
+ *     return Math.max.apply(null, arguments);
+ * }
  *
- * data.map(getDashIndex) // => [1, 2, -1]
- * data.map(_.aritize(getDashIndex, 1)) // = > [1, 2, 1]
+ * maxArgument(10, 11, 45, 99) // => 99
+ * _.aritize(maxArgument, 2)(10, 11, 45, 99) // => 11
+ *
+ * @example <caption>Using a negative arity:</caption>
+ * _.aritize(maxArgument, -1)(10, 11, 45, 99) // => 45
  *
  * @memberof module:lamb
  * @category Function
@@ -78,7 +84,15 @@ function applyArgs (args) {
  */
 function aritize (fn, arity) {
     return function () {
-        return apply(fn, slice(arguments, 0, arity));
+        var args = slice(arguments, 0, arity);
+        var argsLen = args.length;
+        var n = Math.floor(arity);
+
+        if (n > 0 && argsLen < n) {
+            args = args.concat(Array(n - argsLen));
+        }
+
+        return fn.apply(this, args);
     };
 }
 
@@ -98,7 +112,7 @@ function aritize (fn, arity) {
  */
 function binary (fn) {
     return function (a, b) {
-        return fn(a, b);
+        return fn.call(this, a, b);
     };
 }
 
@@ -462,7 +476,7 @@ function throttle (fn, timespan) {
  */
 function unary (fn) {
     return function (a) {
-        return fn(a);
+        return fn.call(this, a);
     };
 }
 

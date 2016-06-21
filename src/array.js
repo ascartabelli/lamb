@@ -765,7 +765,7 @@ function takeWhile (predicate, predicateContext) {
  */
 function transpose (arrayLike) {
     var result = [];
-    var minLen = apply(Math.min, pluck(arrayLike, "length")) >>> 0;
+    var minLen = Math.min.apply(null, pluck(arrayLike, "length")) >>> 0;
     var len = arrayLike.length;
 
     for (var i = 0, j; i < minLen; i++) {

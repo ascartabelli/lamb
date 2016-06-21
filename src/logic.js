@@ -36,7 +36,7 @@ function adapter () {
         var result;
 
         for (var i = 0; i < len; i++) {
-            result = apply(functions[i], arguments);
+            result = functions[i].apply(this, arguments);
 
             if (!isUndefined(result)) {
                 break;
