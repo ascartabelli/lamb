@@ -35,7 +35,7 @@ function _curry (fn, arity, isRightCurry, isAutoCurry) {
  * @returns {*}
  */
 function apply (fn, args) {
-    return fn.apply(fn, slice(args));
+    return fn.apply(this, slice(Object(args)));
 }
 
 /**
@@ -50,11 +50,14 @@ function apply (fn, args) {
  *
  * @memberof module:lamb
  * @category Function
- * @function
  * @param {ArrayLike} args
  * @returns {Function}
  */
-var applyArgs = _curry(apply, 2, true);
+function applyArgs (args) {
+    return function (fn) {
+       return fn.apply(this, slice(Object(args)));
+    };
+}
 
 /**
  * Builds a function that passes only the specified amount of arguments to the given function.<br/>

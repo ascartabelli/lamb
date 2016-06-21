@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.30.0-alpha.2
+ * @version 0.30.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.30.0-alpha.2";
+    lamb._version =  "0.30.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3138,7 +3138,7 @@
      * @returns {*}
      */
     function apply (fn, args) {
-        return fn.apply(fn, slice(args));
+        return fn.apply(this, slice(Object(args)));
     }
 
     /**
@@ -3153,11 +3153,14 @@
      *
      * @memberof module:lamb
      * @category Function
-     * @function
      * @param {ArrayLike} args
      * @returns {Function}
      */
-    var applyArgs = _curry(apply, 2, true);
+    function applyArgs (args) {
+        return function (fn) {
+           return fn.apply(this, slice(Object(args)));
+        };
+    }
 
     /**
      * Builds a function that passes only the specified amount of arguments to the given function.<br/>
