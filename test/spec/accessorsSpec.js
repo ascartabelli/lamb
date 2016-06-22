@@ -91,7 +91,7 @@ describe("lamb.accessors", function () {
                 expect(newArr2).toEqual([99, 2, 3, 4, 5]);
             });
 
-            it("should return an array copy of the array-like if the index is not an integer", function () {
+            it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
                 [
                     lamb.setIndex(arr, NaN, 99),
                     lamb.setIndex(arr, null, 99),
@@ -103,6 +103,7 @@ describe("lamb.accessors", function () {
                     lamb.setIndex(arr, "2", 99),
                     lamb.setIndex(arr, "2.5", 99),
                     lamb.setIndex(arr, 2.5, 99),
+                    lamb.setIndex(arr),
                     lamb.setAt(NaN, 99)(arr),
                     lamb.setAt(null, 99)(arr),
                     lamb.setAt(void 0, 99)(arr),
@@ -112,7 +113,8 @@ describe("lamb.accessors", function () {
                     lamb.setAt("a", 99)(arr),
                     lamb.setAt("2", 99)(arr),
                     lamb.setAt("2.5", 99)(arr),
-                    lamb.setAt(2.5, 99)(arr)
+                    lamb.setAt(2.5, 99)(arr),
+                    lamb.setAt()(arr)
                 ].forEach(function (value) {
                     expect(value).toEqual(arr);
                     expect(value).not.toBe(arr);
@@ -253,8 +255,14 @@ describe("lamb.accessors", function () {
     });
 
     describe("Object accessors", function () {
+        var d = new Date();
+        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
+        var invalidKeysAsStrings = invalidKeys.map(String);
+        var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
+
         describe("getIn / getKey", function () {
             var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
+            Object.defineProperty(obj, "qux", {value: 4});
 
             it("should return the value of the given object property", function () {
                 expect(lamb.getIn(obj, "bar")).toBe(2);
@@ -264,6 +272,11 @@ describe("lamb.accessors", function () {
             it("should return `undefined` for a non-existent property", function () {
                 expect(lamb.getIn(obj, "a")).toBeUndefined();
                 expect(lamb.getKey("z")(obj)).toBeUndefined();
+            });
+
+            it("should be able to retrieve non-enumerable properties", function () {
+                expect(lamb.getIn(obj, "qux")).toBe(4);
+                expect(lamb.getKey("qux")(obj)).toBe(4);
             });
 
             it("should accept integers as keys and accept array-like objects", function () {
@@ -280,14 +293,11 @@ describe("lamb.accessors", function () {
             });
 
             it("should convert other values for the `key` parameter to string", function () {
-                var d = new Date();
-                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-                var stringKeys = keys.map(String);
                 var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                var testObj = lamb.make(stringKeys, values);
+                var testObj = lamb.make(invalidKeysAsStrings, values);
 
-                keys.forEach(function (key) {
-                    var value = values[stringKeys.indexOf(String(key))];
+                invalidKeys.forEach(function (key) {
+                    var value = values[invalidKeysAsStrings.indexOf(String(key))];
                     expect(lamb.getIn(testObj, key)).toBe(value);
                     expect(lamb.getKey(key)(testObj)).toBe(value);
                 });
@@ -309,7 +319,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should return convert to object every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.getIn(v, "a")).toBeUndefined();
                     expect(lamb.getKey("a")(v)).toBeUndefined();
                 });
@@ -321,6 +331,8 @@ describe("lamb.accessors", function () {
 
         describe("getPath / getPathIn", function () {
             var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+            Object.defineProperty(obj, "e", {value : 10});
+            obj.f = Object.create({}, {g: {value : 20}});
 
             it("should retrieve a nested object property using the supplied path", function () {
                 expect(lamb.getPath("a")(obj)).toBe(2);
@@ -329,6 +341,13 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "a")).toBe(2);
                 expect(lamb.getPathIn(obj, "b.a")).toBe(3);
                 expect(lamb.getPathIn(obj, "b.b")).toBe(obj.b.b);
+            });
+
+            it("should be able to access non enumerable properties", function () {
+                expect(lamb.getPath("e")(obj)).toBe(10);
+                expect(lamb.getPathIn(obj, "e")).toBe(10);
+                expect(lamb.getPath("f.g")(obj)).toBe(20);
+                expect(lamb.getPathIn(obj, "f.g")).toBe(20);
             });
 
             it("should be able to retrieve values from arrays and array-like objects", function () {
@@ -362,11 +381,14 @@ describe("lamb.accessors", function () {
                 var o = {a: ["abc", new String("def"), "ghi"]};
                 o.a["-1"] = "foo";
                 o.a[1]["-2"] = "bar";
+                Object.defineProperty(o.a, "-2", {value: 99});
 
                 expect(lamb.getPath("a.-1")(o)).toBe("foo");
                 expect(lamb.getPathIn(o, "a.-1")).toBe("foo");
                 expect(lamb.getPath("a.1.-2")(o)).toBe("bar");
                 expect(lamb.getPathIn(o, "a.1.-2")).toBe("bar");
+                expect(lamb.getPath("a.-2")(o)).toBe(99);
+                expect(lamb.getPathIn(o, "a.-2")).toBe(99);
             });
 
             it("should accept a custom path separator", function () {
@@ -376,7 +398,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "c.d/e.f", "/")).toBe(6);
             });
 
-            it("should return undefined for any non-existent path", function () {
+            it("should return undefined for a non-existent path in a valid source", function () {
                 expect(lamb.getPath("b.a.z")(obj)).toBeUndefined();
                 expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
                 expect(lamb.getPath("b.z.a")(obj)).toBeUndefined();
@@ -385,6 +407,56 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "b.b.10")).toBeUndefined();
                 expect(lamb.getPath("b.b.10.z")(obj)).toBeUndefined();
                 expect(lamb.getPathIn(obj, "b.b.10.z")).toBeUndefined();
+            });
+
+            it("should accept integers as paths containing a single key", function () {
+                expect(lamb.getPathIn([1, 2], 1)).toBe(2);
+                expect(lamb.getPath(1)([1, 2])).toBe(2);
+                expect(lamb.getPathIn([1, 2], -1)).toBe(2);
+                expect(lamb.getPath(-1)([1, 2])).toBe(2);
+                expect(lamb.getPathIn({"1": "a"}, 1)).toBe("a");
+                expect(lamb.getPath(1)({"1": "a"})).toBe("a");
+            });
+
+            it("should convert other values for the `path` parameter to string", function () {
+                var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                var testObj = lamb.make(invalidKeysAsStrings, values);
+
+                invalidKeys.forEach(function (key) {
+                    var value = values[invalidKeysAsStrings.indexOf(String(key))];
+                    expect(lamb.getPathIn(testObj, key, "_")).toBe(value);
+                    expect(lamb.getPath(key, "_")(testObj)).toBe(value);
+                });
+
+                var fooObj = {a: 2, "1": {"5": 3}, "undefined": 4};
+
+                expect(lamb.getPathIn(fooObj, 1.5)).toBe(3);
+                expect(lamb.getPath(1.5)(fooObj)).toBe(3);
+
+                expect(lamb.getPathIn(fooObj)).toBe(4);
+                expect(lamb.getPath()(fooObj)).toBe(4);
+            });
+
+            it("should throw an exception if called without arguments", function () {
+                expect(lamb.getPathIn).toThrow();
+                expect(lamb.getPath()).toThrow();
+            });
+
+            it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                expect(function () { lamb.getPathIn(null, "a"); }).toThrow();
+                expect(function () { lamb.getPathIn(void 0, "a"); }).toThrow();
+                expect(function () { lamb.getPath("a")(null); }).toThrow();
+                expect(function () { lamb.getPath("a")(void 0); }).toThrow();
+            });
+
+            it("should convert to object every other value", function () {
+                wannabeEmptyObjects.map(function (value) {
+                    expect(lamb.getPathIn(value, "a")).toBeUndefined();
+                    expect(lamb.getPath("a")(value)).toBeUndefined();
+                });
+
+                expect(lamb.getPathIn(/foo/, "lastIndex")).toBe(0);
+                expect(lamb.getPath("lastIndex")(/foo/)).toBe(0);
             });
         });
 
@@ -397,7 +469,6 @@ describe("lamb.accessors", function () {
 
             var fooEquivalent = {a: [1, 2, 3], b: 2, c: 3, z: 5};
             var fooEnumerables = {a: [1, 2, 3], b: 2, c: 3};
-            var wannabeEmptyObjects = [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()];
 
             // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
             afterEach(function () {
@@ -421,7 +492,7 @@ describe("lamb.accessors", function () {
                     expect(newObjB.z).toBeUndefined();
                 });
 
-                it("should add a new property if the given key doesn't exist on the source", function () {
+                it("should add a new property if the given key doesn't exist on the source or if it isn't enumerable", function () {
                     var newObjA = lamb.setIn(foo, "z", 99);
                     var newObjB = lamb.setKey("z", 0)(foo);
 
@@ -429,18 +500,51 @@ describe("lamb.accessors", function () {
                     expect(newObjB).toEqual({a: [1, 2, 3], b: 2, c: 3, z: 0});
                 });
 
-                it("should consider values other than objects or array-like objects as empty objects", function () {
-                    wannabeEmptyObjects.map(function (value) {
-                        expect(lamb.setIn(value, "a", 99)).toEqual({a: 99});
-                        expect(lamb.setKey("a", 99)(value)).toEqual({a: 99});
-                    });
-                });
-
                 it("should transform array-like objects in objects with numbered string as properties", function () {
                     expect(lamb.setIn([1, 2], "a", 99)).toEqual({"0": 1, "1": 2, "a": 99});
                     expect(lamb.setKey("a", 99)([1, 2])).toEqual({"0": 1, "1": 2, "a": 99});
                     expect(lamb.setIn("foo", "a", 99)).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
                     expect(lamb.setKey("a", 99)("foo")).toEqual({"0": "f", "1": "o", "2": "o", "a": 99});
+                });
+
+                it("should accept integers as keys", function () {
+                    expect(lamb.setIn([1, 2], 1, 3)).toEqual({"0": 1, "1": 3});
+                    expect(lamb.setKey(1, 3)([1, 2])).toEqual({"0": 1, "1": 3});
+                });
+
+                it("should convert other values for the `key` parameter to string", function () {
+                    var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    var testObj = lamb.make(invalidKeysAsStrings, values);
+
+                    invalidKeys.forEach(function (key) {
+                        var expected = lamb.merge(testObj);
+                        expected[String(key)] = 99;
+
+                        expect(lamb.setIn(testObj, key, 99)).toEqual(expected);
+                        expect(lamb.setKey(key, 99)(testObj)).toEqual(expected);
+                    });
+
+                    expect(lamb.setIn({a: 2})).toEqual({a: 2, "undefined": void 0});
+                    expect(lamb.setKey()({a: 2})).toEqual({a: 2, "undefined": void 0});
+                });
+
+                it("should throw an exception if called without arguments", function () {
+                    expect(lamb.setIn).toThrow();
+                    expect(lamb.setKey()).toThrow();
+                });
+
+                it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                    expect(function () { lamb.setIn(null, "a", 99); }).toThrow();
+                    expect(function () { lamb.setIn(void 0, "a", 99); }).toThrow();
+                    expect(function () { lamb.setKey("a", 99)(null); }).toThrow();
+                    expect(function () { lamb.setKey("a", 99)(void 0); }).toThrow();
+                });
+
+                it("should convert to object every other value", function () {
+                    wannabeEmptyObjects.map(function (value) {
+                        expect(lamb.setIn(value, "a", 99)).toEqual({a: 99});
+                        expect(lamb.setKey("a", 99)(value)).toEqual({a: 99});
+                    });
                 });
             });
 
@@ -504,7 +608,49 @@ describe("lamb.accessors", function () {
                     expect(lamb.updateKey("z", toUpperCase)(o)).toEqual({a: 1});
                 });
 
-                it("should consider values other than objects or array-like objects as empty objects", function () {
+                it("should accept integers as keys", function () {
+                    var inc = function (n) { return ++n; };
+
+                    expect(lamb.updateIn([1, 2], 1, inc)).toEqual({"0": 1, "1": 3});
+                    expect(lamb.updateKey(1, inc)([1, 2])).toEqual({"0": 1, "1": 3});
+                });
+
+                it("should convert other values for the `key` parameter to string", function () {
+                    var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    var testObj = lamb.make(invalidKeysAsStrings, values);
+
+                    invalidKeys.forEach(function (key) {
+                        var expected = lamb.merge(testObj);
+                        expected[String(key)] = 99;
+
+                        expect(lamb.updateIn(testObj, key, lamb.always(99))).toEqual(expected);
+                        expect(lamb.updateKey(key, lamb.always(99))(testObj)).toEqual(expected);
+                    });
+                });
+
+                it("should throw an exception if the `updater` isn't a function or if is missing", function () {
+                    [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                        expect(function () { lamb.updateIn({a: 2}, "a", value); }).toThrow();
+                        expect(function () { lamb.updateKey("a", value)({a: 2}); }).toThrow();
+                    });
+
+                    expect(function () { lamb.updateIn({a: 2}, "a"); }).toThrow();
+                    expect(function () { lamb.updateKey("a")({a: 2}); }).toThrow();
+                });
+
+                it("should throw an exception if called without arguments", function () {
+                    expect(lamb.updateIn).toThrow();
+                    expect(lamb.updateKey()).toThrow();
+                });
+
+                it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                    expect(function () { lamb.updateIn(null, "a", lamb.always(99)); }).toThrow();
+                    expect(function () { lamb.updateIn(void 0, "a", lamb.always(99)); }).toThrow();
+                    expect(function () { lamb.updateKey("a", lamb.always(99))(null); }).toThrow();
+                    expect(function () { lamb.updateKey("a", lamb.always(99))(void 0); }).toThrow();
+                });
+
+                it("should convert to object every other value", function () {
                     wannabeEmptyObjects.map(function (value) {
                         expect(lamb.updateIn(value, "a", lamb.always(99))).toEqual({});
                         expect(lamb.updateKey("a", lamb.always(99))(value)).toEqual({});
@@ -521,8 +667,6 @@ describe("lamb.accessors", function () {
             });
 
             var objCopy = JSON.parse(JSON.stringify(obj));
-
-            var wannabeEmptyObjects = [/foo/, 1, function () {}, null, NaN, void 0, true, new Date()];
 
             afterEach(function () {
                 expect(obj).toEqual(objCopy);
@@ -572,24 +716,22 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should add non-existent properties to existing objects", function () {
-                    var r1 = lamb.setPath("b.z", 99)(obj);
-                    var r2 = lamb.setPath("z.a", 99)(obj);
-                    var r3 = lamb.setPath("z.a.b", 99)(obj);
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", z: 99}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: 99}};
+                    var r3 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
 
-                    expect(r1).toEqual(
-                       {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", z: 99}, "c.d" : {"e.f": 6}}
-                    );
+                    expect(lamb.setPath("b.z", 99)(obj)).toEqual(r1);
                     expect(lamb.setPathIn(obj, "b.z", 99)).toEqual(r1);
-
-                    expect(r2).toEqual(
-                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: 99}}
-                    );
+                    expect(lamb.setPath("z.a", 99)(obj)).toEqual(r2);
                     expect(lamb.setPathIn(obj, "z.a", 99)).toEqual(r2);
-
-                    expect(r3).toEqual(
-                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
-                    );
+                    expect(lamb.setPath("z.a.b", 99)(obj)).toEqual(r3);
                     expect(lamb.setPathIn(obj, "z.a.b", 99)).toEqual(r3);
+
+                    var o = {a: null};
+                    var r4 = {a: {b: {c: 99}}};
+
+                    expect(lamb.setPath("a.b.c", 99)(o)).toEqual(r4);
+                    expect(lamb.setPathIn(o, "a.b.c", 99)).toEqual(r4);
                 });
 
                 it("should treat non-enumerable properties encountered in a path as non-existent properties", function () {
@@ -662,7 +804,65 @@ describe("lamb.accessors", function () {
                     expect(lamb.setPathIn(obj, "b.b.z", 99)).toEqual(r);
                 });
 
-                it("should consider values other than objects or array-like objects as empty objects", function () {
+                it("should accept integers as paths containing a single key", function () {
+                    expect(lamb.setPath(1, 99)([1, 2, 3])).toEqual([1, 99, 3]);
+                    expect(lamb.setPathIn([1, 2, 3], -1, 99)).toEqual([1, 2, 99]);
+                    expect(lamb.setPath(2, 99)([1, 2])).toEqual([1, 2]);
+                    expect(lamb.setPathIn({a: 1}, 1, 99)).toEqual({a: 1, "1": 99});
+                });
+
+                it("should give priority to object keys over array indexes when a negative index is encountered", function () {
+                    var o = {a: ["abc", "def", "ghi"]};
+                    o.a["-1"] = "foo";
+
+                    var r = {a: {"0": "abc", "1": "def", "2": "ghi", "-1": 99}};
+
+                    expect(lamb.setPath("a.-1", 99)(o)).toEqual(r);
+                    expect(lamb.setPathIn(o, "a.-1", 99)).toEqual(r);
+                });
+
+                it("should consider a negative integer to be an index if the property exists but it's not enumerable", function () {
+                    var o = {a: ["abc", "def", "ghi"]};
+                    Object.defineProperty(o.a, "-1", {value: 99});
+
+                    var r = {a: ["abc", "def", "foo"]};
+
+                    expect(lamb.setPath("a.-1", "foo")(o)).toEqual(r);
+                    expect(lamb.setPathIn(o, "a.-1", "foo")).toEqual(r);
+                });
+
+                it("should convert other values for the `path` parameter to string", function () {
+                    var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    var testObj = lamb.make(invalidKeysAsStrings, values);
+
+                    invalidKeys.forEach(function (key) {
+                        var expected = lamb.merge(testObj);
+                        expected[String(key)] = 99;
+
+                        expect(lamb.setPathIn(testObj, key, 99, "_")).toEqual(expected);
+                        expect(lamb.setPath(key, 99, "_")(testObj)).toEqual(expected);
+                    });
+
+                    expect(lamb.setPathIn({a: 2}, 1.5, 99)).toEqual({a: 2, "1": {"5": 99}});
+                    expect(lamb.setPath(1.5, 99)({a: 2})).toEqual({a: 2, "1": {"5": 99}});
+
+                    expect(lamb.setPathIn({a: 2})).toEqual({a: 2, "undefined": void 0});
+                    expect(lamb.setPath()({a: 2})).toEqual({a: 2, "undefined": void 0});
+                });
+
+                it("should throw an exception if called without arguments", function () {
+                    expect(lamb.setPathIn).toThrow();
+                    expect(lamb.setPath()).toThrow();
+                });
+
+                it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                    expect(function () { lamb.setPathIn(null, "a", 99); }).toThrow();
+                    expect(function () { lamb.setPathIn(void 0, "a", 99); }).toThrow();
+                    expect(function () { lamb.setPath("a", 99)(null); }).toThrow();
+                    expect(function () { lamb.setPath("a", 99)(void 0); }).toThrow();
+                });
+
+                it("should convert to object every other value", function () {
                     wannabeEmptyObjects.map(function (value) {
                         expect(lamb.setPathIn(value, "a", 99)).toEqual({a: 99});
                         expect(lamb.setPath("a", 99)(value)).toEqual({a: 99});
@@ -737,7 +937,6 @@ describe("lamb.accessors", function () {
                     expect(lamb.updatePathIn(obj, "b.b.1", double)).toEqual(r);
                     expect(lamb.updatePath("1", double)([1, 2, 3])).toEqual([1, 4, 3]);
                     expect(lamb.updatePathIn([1, 2, 3], "1", double)).toEqual([1, 4, 3]);
-
                 });
 
                 it("should allow using negative array indexes in path parts", function () {
@@ -810,6 +1009,15 @@ describe("lamb.accessors", function () {
                     expect(newObjG).not.toBe(arr);
                     expect(newObjH).toEqual(arr);
                     expect(newObjH).not.toBe(arr);
+
+                    var o = {a: null};
+
+                    var newObjI = lamb.updatePath("a.b.c", lamb.always(99))(o);
+                    var newObjJ = lamb.updatePathIn(o, "a.b.c", lamb.always(99));
+                    expect(newObjI).toEqual(o);
+                    expect(newObjI).not.toBe(o);
+                    expect(newObjJ).toEqual(o);
+                    expect(newObjJ).not.toBe(o);
                 });
 
                 it("should not see a non-existing path when the target is undefined", function () {
@@ -833,7 +1041,74 @@ describe("lamb.accessors", function () {
                     expect(lamb.updatePath("b.d.e", lamb.always(99))(fooObj)).toEqual({a: 1});
                 });
 
-                it("should consider values other than objects or array-like objects as empty objects", function () {
+                it("should accept integers as paths containing a single key", function () {
+                    expect(lamb.updatePath(1, lamb.always(99))([1, 2, 3])).toEqual([1, 99, 3]);
+                    expect(lamb.updatePathIn([1, 2, 3], -1, lamb.always(99))).toEqual([1, 2, 99]);
+                    expect(lamb.updatePath(2, lamb.always(99))([1, 2])).toEqual([1, 2]);
+                });
+
+                it("should give priority to object keys over array indexes when a negative index is encountered", function () {
+                    var o = {a: ["abc", "def", "ghi"]};
+                    o.a["-1"] = "foo";
+
+                    var r = {a: {"0": "abc", "1": "def", "2": "ghi", "-1": 99}};
+
+                    expect(lamb.updatePath("a.-1", lamb.always(99))(o)).toEqual(r);
+                    expect(lamb.updatePathIn(o, "a.-1", lamb.always(99))).toEqual(r);
+                });
+
+                it("should consider a negative integer to be an index if the property exists but it's not enumerable", function () {
+                    var o = {a: ["abc", "def", "ghi"]};
+                    Object.defineProperty(o.a, "-1", {value: 99});
+
+                    var r = {a: ["abc", "def", "GHI"]};
+
+                    expect(lamb.updatePath("a.-1", lamb.invoker("toUpperCase"))(o)).toEqual(r);
+                    expect(lamb.updatePathIn(o, "a.-1", lamb.invoker("toUpperCase"))).toEqual(r);
+                });
+
+                it("should convert other values for the `path` parameter to string", function () {
+                    var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    var testObj = lamb.make(invalidKeysAsStrings, values);
+
+                    invalidKeys.forEach(function (key) {
+                        var expected = lamb.merge(testObj);
+                        expected[String(key)] = 99;
+
+                        expect(lamb.updatePathIn(testObj, key, lamb.always(99), "_")).toEqual(expected);
+                        expect(lamb.updatePath(key, lamb.always(99), "_")(testObj)).toEqual(expected);
+                    });
+
+                    var fooObj = {a: 2, "1": {"5": 3}, "undefined": 4};
+                    var r = {a: 2, "1": {"5": 99}, "undefined": 4};
+
+                    expect(lamb.updatePathIn(fooObj, 1.5, lamb.always(99))).toEqual(r);
+                    expect(lamb.updatePath(1.5, lamb.always(99))(fooObj)).toEqual(r);
+                });
+
+                it("should throw an exception if the `updater` isn't a function or if is missing", function () {
+                    [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                        expect(function () { lamb.updatePathIn({a: 2}, "a", value); }).toThrow();
+                        expect(function () { lamb.updatePath("a", value)({a: 2}); }).toThrow();
+                    });
+
+                    expect(function () { lamb.updatePathIn({a: 2}, "a"); }).toThrow();
+                    expect(function () { lamb.updatePath("a")({a: 2}); }).toThrow();
+                });
+
+                it("should throw an exception if called without arguments", function () {
+                    expect(lamb.updatePathIn).toThrow();
+                    expect(lamb.updatePath()).toThrow();
+                });
+
+                it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
+                    expect(function () { lamb.updatePathIn(null, "a", lamb.always(99)); }).toThrow();
+                    expect(function () { lamb.updatePathIn(void 0, "a", lamb.always(99)); }).toThrow();
+                    expect(function () { lamb.updatePath("a", lamb.always(99))(null); }).toThrow();
+                    expect(function () { lamb.updatePath("a", lamb.always(99))(void 0); }).toThrow();
+                });
+
+                it("should convert to object every other value", function () {
                     wannabeEmptyObjects.map(function (value) {
                         expect(lamb.updatePathIn(value, "a", lamb.always(99))).toEqual({});
                         expect(lamb.updatePath("a", lamb.always(99))(value)).toEqual({});

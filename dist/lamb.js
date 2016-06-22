@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.31.0-alpha.1
+ * @version 0.31.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.31.0-alpha.1";
+    lamb._version =  "0.31.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -945,44 +945,42 @@
     lamb.type = type;
 
 
-    function _getNaturalIndex (index, len) {
+    function _getNaturalIndex (target, index) {
+        var len = target.length;
+
         if (_isInteger(index) && _isInteger(len)) {
             return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
         }
     }
 
-    function _getPathInfo (obj, parts) {
+    function _getPathInfo (obj, parts, walkNonEnumerables) {
         var target = obj;
         var i = -1;
         var len = parts.length;
-        var currentKey;
-        var idx;
+        var key;
+        var keyAsNumber;
 
         while (++i < len) {
-            currentKey = parts[i];
+            key = parts[i];
 
-            if (_isIndex(target, currentKey)) {
-                idx = _getNaturalIndex(+currentKey, target.length);
-
-                if (isUndefined(idx)) {
-                    break;
-                }
-
-                target = target[idx];
-            } else {
-                if (!_isEnumerable(target, currentKey)) {
-                    break;
-                }
-
-                target = target[currentKey];
+            if (!(_isEnumerable(target, key) || key in Object(target) && walkNonEnumerables)) {
+                keyAsNumber = Number(key);
+                key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) : void 0;
             }
+
+            if (isUndefined(key)) {
+                break;
+            }
+
+            target = target[key];
         }
 
         return i === len ? {isValid: true, target: target} : {isValid: false, target: void 0};
     }
 
-    function _isIndex (target, key) {
-        return Array.isArray(target) && parseInt(key, 10) == key;
+    function _isArrayIndex (target, key) {
+        var n = Number(key);
+        return Array.isArray(target) && _isInteger(n) && !(n < 0 && _isEnumerable(target, key));
     }
 
     function _isEnumerable (obj, key) {
@@ -995,9 +993,13 @@
 
     var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
 
+    function _makeTypeErrorFor(value, desiredType) {
+        return new TypeError("Cannot convert " + type(value).toLowerCase() + " to " + desiredType);
+    }
+
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);
-        var idx = _getNaturalIndex(index, result.length);
+        var idx = _getNaturalIndex(result, index);
 
         if (!isUndefined(idx)) {
             result[idx] = updater ? updater(arrayLike[idx]) : value;
@@ -1009,12 +1011,16 @@
     function _setPathIn (obj, parts, value) {
         var key = parts[0];
         var v = parts.length === 1 ? value : _setPathIn(
-            _getPathInfo(obj, [key]).target,
+            _getPathInfo(obj, [key], false).target,
             parts.slice(1),
             value
         );
 
-        return _isIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(obj, key, v);
+        return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(Object(obj), key, v);
+    }
+
+    function _toPathParts (path, separator) {
+        return String(path).split(separator || ".");
     }
 
     /**
@@ -1088,7 +1094,7 @@
      * @returns {*}
      */
     function getIndex (arrayLike, index) {
-        var idx = _getNaturalIndex(index, arrayLike.length);
+        var idx = _getNaturalIndex(arrayLike, index);
         return isUndefined(idx) ? idx : arrayLike[idx];
     }
 
@@ -1198,10 +1204,14 @@
      * @returns {*}
      */
     function getPathIn (obj, path, separator) {
-        return path.split(separator || ".").reduce(
-            adapter(tapArgs(getIn, Object), tapArgs(getIndex, Object, Number)),
-            obj
-        );
+        if (isNil(obj)) {
+            throw _makeTypeErrorFor(obj, "object");
+        }
+
+        var parts = _toPathParts(path, separator);
+        var pathInfo = _getPathInfo(obj, parts, true);
+
+        return pathInfo.target;
     }
 
     /**
@@ -1272,8 +1282,8 @@
 
     /**
      * Sets the specified key to the given value in a copy of the provided object.<br/>
-     * All the enumerable keys of the source object will be simply copied to an empty
-     * object without breaking references.<br/>
+     * All the remaining enumerable keys of the source object will be simply copied in the
+     * result object without breaking references.<br/>
      * If the specified key is not part of the source object, it will be added to the
      * result.<br/>
      * The main purpose of the function is to work on simple plain objects used as
@@ -1299,7 +1309,7 @@
      * @returns {Object}
      */
     function setIn (source, key, value) {
-        return _merge(_safeEnumerables, source, make([key], [value]));
+        return _merge(enumerables, source, make([key], [value]));
     }
 
     /**
@@ -1386,6 +1396,8 @@
      * which will be delegated to {@link module:lamb.setIn|setIn}.<br/>
      * As a result of that, array-like objects will be converted to objects having numbers as keys
      * and paths targeting non-object values will be converted to empty objects.<br/>
+     * You can anyway target array elements using integers in the path, even negative ones, but
+     * the priority will be given to existing, and enumerable, object keys.<br/>
      * Non-enumerable properties encountered in the path will be considered as non-existent properties.<br/>
      * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
      * use custom path separators.
@@ -1426,7 +1438,11 @@
      * @returns {Object|Array}
      */
     function setPathIn (source, path, value, separator) {
-        return _setPathIn(source, path.split(separator || "."), value);
+        if (isNil(source)) {
+            throw _makeTypeErrorFor(source, "object");
+        }
+
+        return _setPathIn(source, _toPathParts(path, separator), value);
     }
 
     /**
@@ -1485,7 +1501,7 @@
      * @returns {Object}
      */
     function updateIn (source, key, updater) {
-        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(_safeEnumerables, source);
+        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
     }
 
     /**
@@ -1563,7 +1579,8 @@
      * This function is meant for updating existing enumerable properties, and for those it
      * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
      * <code>source</code> is returned otherwise.<br/>
-     * Like the other "path" functions, negative indexes can be used to access array elements.
+     * Like the other "path" functions, negative indexes can be used to access array elements, but
+     * the priority will be given to existing, and enumerable, object keys.<br/>
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
      * var increment = _.partial(_.add, 1);
@@ -1602,13 +1619,13 @@
      * @returns {Object|Array}
      */
     function updatePathIn (source, path, updater, separator) {
-        var parts = path.split(separator || ".");
-        var pathInfo = _getPathInfo(source, parts);
+        var parts = _toPathParts(path, separator);
+        var pathInfo = _getPathInfo(source, parts, false);
 
         if (pathInfo.isValid) {
             return _setPathIn(source, parts, updater(pathInfo.target));
         } else {
-            return Array.isArray(source) ? slice(source) : _merge(_safeEnumerables, source);
+            return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
         }
     }
 
