@@ -59,7 +59,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.29.0</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>0.31.0</li></ul></dd>
     
 
     
@@ -1190,7 +1190,7 @@ isNil() // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3140">line 3140</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3157">line 3157</a>
     </li></ul></dd>
     
 
@@ -1349,7 +1349,7 @@ and builds a function waiting for the target of the application.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3160">line 3160</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3176">line 3176</a>
     </li></ul></dd>
     
 
@@ -1419,6 +1419,8 @@ applyDataTo(_.multiply) // => 12</code></pre>
 
 <div class="description">
     Builds a function that passes only the specified amount of arguments to the given function.<br/>
+As <a href="module-lamb.html#.slice">slice</a> is used to extract the arguments, you can also
+pass a negative arity.<br/>
 See also <a href="module-lamb.html#.binary">binary</a> and <a href="module-lamb.html#.unary">unary</a> for common use
 cases shortcuts.
 </div>
@@ -1536,7 +1538,7 @@ cases shortcuts.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3179">line 3179</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3205">line 3205</a>
     </li></ul></dd>
     
 
@@ -1579,13 +1581,18 @@ cases shortcuts.
     
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>var data = ["1-2", "13-5", "6-23"];
-var getDashIndex = _.invoker("indexOf", "-");
+    <pre class="prettyprint"><code>function maxArgument () {
+    return Math.max.apply(null, arguments);
+}
 
-data.map(getDashIndex) // => [1, 2, -1]
-data.map(_.aritize(getDashIndex, 1)) // = > [1, 2, 1]</code></pre>
+maxArgument(10, 11, 45, 99) // => 99
+_.aritize(maxArgument, 2)(10, 11, 45, 99) // => 11</code></pre>
+
+        <p class="code-caption">Using a negative arity:</p>
+    
+    <pre class="prettyprint"><code>_.aritize(maxArgument, -1)(10, 11, 45, 99) // => 45</code></pre>
 
 
 
@@ -1701,7 +1708,7 @@ See also <a href="module-lamb.html#.unary">unary</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3199">line 3199</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3233">line 3233</a>
     </li></ul></dd>
     
 
@@ -1990,7 +1997,7 @@ multiple <code>checker</code>s and combine them with <a href="module-lamb.html#.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3710">line 3710</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3744">line 3744</a>
     </li></ul></dd>
     
 
@@ -2874,7 +2881,7 @@ See also <a href="module-lamb.html#.isIn">isIn</a> for an uncurried version.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1674">line 1674</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1691">line 1691</a>
     </li></ul></dd>
     
 
@@ -3109,7 +3116,7 @@ containsNaN([0, 1, 2, 3, NaN]) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2586">line 2586</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2603">line 2603</a>
     </li></ul></dd>
     
 
@@ -3330,7 +3337,7 @@ _.count(persons, getAgeStatus) // => {"adult": 1, "minor": 3}</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2612">line 2612</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2629">line 2629</a>
     </li></ul></dd>
     
 
@@ -3569,7 +3576,7 @@ and <a href="module-lamb.html#.partial">partial</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3227">line 3227</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3261">line 3261</a>
     </li></ul></dd>
     
 
@@ -3795,7 +3802,7 @@ See also <a href="module-lamb.html#.curry">curry</a>, <a href="module-lamb.html#
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3273">line 3273</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3307">line 3307</a>
     </li></ul></dd>
     
 
@@ -4013,7 +4020,7 @@ collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3293">line 3293</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3327">line 3327</a>
     </li></ul></dd>
     
 
@@ -4231,7 +4238,7 @@ collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3245">line 3245</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3279">line 3279</a>
     </li></ul></dd>
     
 
@@ -4416,7 +4423,7 @@ See also <a href="module-lamb.html#.throttle">throttle</a> for a different behav
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3317">line 3317</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3351">line 3351</a>
     </li></ul></dd>
     
 
@@ -4628,7 +4635,7 @@ Note that since version <code>0.13.0</code> this function uses the <a href="modu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1697">line 1697</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1714">line 1714</a>
     </li></ul></dd>
     
 
@@ -4997,7 +5004,7 @@ Note that, being this only a shortcut for a specific use case of <a href="module
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1724">line 1724</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1741">line 1741</a>
     </li></ul></dd>
     
 
@@ -5172,7 +5179,7 @@ See the note and examples for <a href="module-lamb.html#.drop">drop</a> about pa
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1743">line 1743</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1760">line 1760</a>
     </li></ul></dd>
     
 
@@ -5386,7 +5393,7 @@ drop2([1, 2, 3, 4, 5]) // => [3, 4, 5]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1767">line 1767</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1784">line 1784</a>
     </li></ul></dd>
     
 
@@ -5559,7 +5566,7 @@ dropWhileIsEven([2, 4, 7, 8]) // => [7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3736">line 3736</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3770">line 3770</a>
     </li></ul></dd>
     
 
@@ -6022,7 +6029,7 @@ the optional context to build a function expecting the array-like object to act 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1792">line 1792</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1809">line 1809</a>
     </li></ul></dd>
     
 
@@ -6268,7 +6275,7 @@ the search is successful. Returns <code>undefined</code> otherwise.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1817">line 1817</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1834">line 1834</a>
     </li></ul></dd>
     
 
@@ -6509,7 +6516,7 @@ index if the search is successful. Returns <code>-1</code> otherwise.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1853">line 1853</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1870">line 1870</a>
     </li></ul></dd>
     
 
@@ -6750,7 +6757,7 @@ be concatenated, rather than pushed, to the final result.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1885">line 1885</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1902">line 1902</a>
     </li></ul></dd>
     
 
@@ -6965,7 +6972,7 @@ and the optional context. The resulting function expects the array to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1903">line 1903</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1920">line 1920</a>
     </li></ul></dd>
     
 
@@ -7133,7 +7140,7 @@ wordsToCharArray(["foo", "bar"]) // => ["f", "o", "o", "b", "a", "r"]</code></pr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1921">line 1921</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1938">line 1938</a>
     </li></ul></dd>
     
 
@@ -7303,7 +7310,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3344">line 3344</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3378">line 3378</a>
     </li></ul></dd>
     
 
@@ -7689,7 +7696,7 @@ In case of duplicate keys the last key / value pair is used.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3752">line 3752</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3786">line 3786</a>
     </li></ul></dd>
     
 
@@ -8292,7 +8299,7 @@ passed or if the index is out of bounds.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3372">line 3372</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3406">line 3406</a>
     </li></ul></dd>
     
 
@@ -8459,7 +8466,7 @@ to build a function expecting the array-like object holding the element we want 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1042">line 1042</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1048">line 1048</a>
     </li></ul></dd>
     
 
@@ -8659,7 +8666,7 @@ _.getAt(-3)("foo") // => "f"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1064">line 1064</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1070">line 1070</a>
     </li></ul></dd>
     
 
@@ -8858,7 +8865,7 @@ for any other value.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1090">line 1090</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1096">line 1096</a>
     </li></ul></dd>
     
 
@@ -9029,7 +9036,7 @@ Receives a property name and builds a function expecting the object from which w
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1113">line 1113</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1119">line 1119</a>
     </li></ul></dd>
     
 
@@ -9257,7 +9264,7 @@ path and separator, expecting the object to act upon.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1146">line 1146</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1152">line 1152</a>
     </li></ul></dd>
     
 
@@ -9535,7 +9542,7 @@ the last example explains this particular case.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1200">line 1200</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1206">line 1206</a>
     </li></ul></dd>
     
 
@@ -9810,7 +9817,7 @@ criterion to generate keys and values.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2674">line 2674</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2691">line 2691</a>
     </li></ul></dd>
     
 
@@ -10064,7 +10071,7 @@ of <a href="module-lamb.html#.group">group</a> expecting the array-like object t
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2713">line 2713</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2730">line 2730</a>
     </li></ul></dd>
     
 
@@ -10278,7 +10285,7 @@ var personsByAgeStatus = groupByAgeStatus(persons);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3782">line 3782</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3816">line 3816</a>
     </li></ul></dd>
     
 
@@ -10446,7 +10453,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3806">line 3806</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3840">line 3840</a>
     </li></ul></dd>
     
 
@@ -10632,7 +10639,7 @@ hasName(user2) // => false</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3827">line 3827</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3861">line 3861</a>
     </li></ul></dd>
     
 
@@ -10817,7 +10824,7 @@ the prototype chain.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3852">line 3852</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3886">line 3886</a>
     </li></ul></dd>
     
 
@@ -10986,7 +10993,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3870">line 3870</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3904">line 3904</a>
     </li></ul></dd>
     
 
@@ -11150,7 +11157,7 @@ Just a common use case of <a href="module-lamb.html#.getAt">getAt</a> exposed fo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1223">line 1223</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1233">line 1233</a>
     </li></ul></dd>
     
 
@@ -11493,7 +11500,7 @@ depending on the environment and the <a href="https://developer.mozilla.org/en-U
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3905">line 3905</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3939">line 3939</a>
     </li></ul></dd>
     
 
@@ -11744,7 +11751,7 @@ duplicate keys, otherwise only the last evaluated element will be in the result.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2768">line 2768</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2785">line 2785</a>
     </li></ul></dd>
     
 
@@ -11990,7 +11997,7 @@ of <a href="module-lamb.html#.index">index</a> expecting the array-like object t
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2799">line 2799</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2816">line 2816</a>
     </li></ul></dd>
     
 
@@ -12173,7 +12180,7 @@ var indexedUsers = indexByID(users);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1940">line 1940</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1957">line 1957</a>
     </li></ul></dd>
     
 
@@ -12393,7 +12400,7 @@ the element will be inserted at the start of the resulting array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1966">line 1966</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1983">line 1983</a>
     </li></ul></dd>
     
 
@@ -12589,7 +12596,7 @@ expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1991">line 1991</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2008">line 2008</a>
     </li></ul></dd>
     
 
@@ -12774,7 +12781,7 @@ Note that since version <code>0.13.0</code> this function uses the <a href="modu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2011">line 2011</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2028">line 2028</a>
     </li></ul></dd>
     
 
@@ -12994,7 +13001,7 @@ See also <a href="module-lamb.html#.invokerOn">invokerOn</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3407">line 3407</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3441">line 3441</a>
     </li></ul></dd>
     
 
@@ -13164,7 +13171,7 @@ Like <a href="module-lamb.html#.invoker">invoker</a>, if no method with the give
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3434">line 3434</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3468">line 3468</a>
     </li></ul></dd>
     
 
@@ -14041,7 +14048,7 @@ See also <a href="module-lamb.html#.contains">contains</a> for a curried version
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2039">line 2039</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2056">line 2056</a>
     </li></ul></dd>
     
 
@@ -15676,7 +15683,7 @@ object for any value but <code>null</code> and <code>undefined</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3933">line 3933</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3967">line 3967</a>
     </li></ul></dd>
     
 
@@ -15851,7 +15858,7 @@ Just a common use case of <a href="module-lamb.html#.getAt">getAt</a> exposed fo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1241">line 1241</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1251">line 1251</a>
     </li></ul></dd>
     
 
@@ -16032,7 +16039,7 @@ _.last([]) // => undefined</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2062">line 2062</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2079">line 2079</a>
     </li></ul></dd>
     
 
@@ -16216,7 +16223,7 @@ See also <a href="module-lamb.html#.tear">tear</a> and <a href="module-lamb.html
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3952">line 3952</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3986">line 3986</a>
     </li></ul></dd>
     
 
@@ -16644,7 +16651,7 @@ getSquareRoots(4, 9, 16) // => [2, 3, 4]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3461">line 3461</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3495">line 3495</a>
     </li></ul></dd>
     
 
@@ -16854,7 +16861,7 @@ The resulting function expects the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2082">line 2082</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2099">line 2099</a>
     </li></ul></dd>
     
 
@@ -17037,7 +17044,7 @@ the given sources.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3984">line 3984</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4018">line 4018</a>
     </li></ul></dd>
     
 
@@ -17216,7 +17223,7 @@ _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4012">line 4012</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4046">line 4046</a>
     </li></ul></dd>
     
 
@@ -17932,7 +17939,7 @@ See also <a href="module-lamb.html#.fromPairs">fromPairs</a> for the reverse ope
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4033">line 4033</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4067">line 4067</a>
     </li></ul></dd>
     
 
@@ -18099,7 +18106,7 @@ taken into account.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4053">line 4053</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4087">line 4087</a>
     </li></ul></dd>
     
 
@@ -18355,7 +18362,7 @@ _.ownValues(foo) // => [3]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4444">line 4444</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4478">line 4478</a>
     </li></ul></dd>
     
 
@@ -18609,7 +18616,7 @@ _.padLeft("", "-", 5) // => "-----"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4466">line 4466</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4500">line 4500</a>
     </li></ul></dd>
     
 
@@ -18775,7 +18782,7 @@ properties and <a href="module-lamb.html#.fromPairs">fromPairs</a> for the rever
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4068">line 4068</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4102">line 4102</a>
     </li></ul></dd>
     
 
@@ -19213,7 +19220,7 @@ the others with the remaining elements.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2103">line 2103</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2120">line 2120</a>
     </li></ul></dd>
     
 
@@ -19425,7 +19432,7 @@ The resulting function expects the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2144">line 2144</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2161">line 2161</a>
     </li></ul></dd>
     
 
@@ -19630,7 +19637,7 @@ Non existent properties will be ignored.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4087">line 4087</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4121">line 4121</a>
     </li></ul></dd>
     
 
@@ -19844,7 +19851,7 @@ The properties satisfying the predicate will be included in the resulting object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4116">line 4116</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4150">line 4150</a>
     </li></ul></dd>
     
 
@@ -20027,7 +20034,7 @@ See also <a href="module-lamb.html#.compose">compose</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3480">line 3480</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3514">line 3514</a>
     </li></ul></dd>
     
 
@@ -20211,7 +20218,7 @@ getMaxAndSquare(3, 5) // => 25</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2175">line 2175</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2192">line 2192</a>
     </li></ul></dd>
     
 
@@ -20392,7 +20399,7 @@ build a function waiting for the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2200">line 2200</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2217">line 2217</a>
     </li></ul></dd>
     
 
@@ -21525,7 +21532,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2223">line 2223</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2240">line 2240</a>
     </li></ul></dd>
     
 
@@ -21741,7 +21748,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2247">line 2247</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2264">line 2264</a>
     </li></ul></dd>
     
 
@@ -22129,7 +22136,7 @@ indicated in the provided lookup table.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4151">line 4151</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4185">line 4185</a>
     </li></ul></dd>
     
 
@@ -22304,7 +22311,7 @@ _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}</code><
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4197">line 4197</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4231">line 4231</a>
     </li></ul></dd>
     
 
@@ -22481,7 +22488,7 @@ a function expecting the object whose keys we want to <a href="module-lamb.html#
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4218">line 4218</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4252">line 4252</a>
     </li></ul></dd>
     
 
@@ -22678,7 +22685,7 @@ this function doesn't throw a RangeError if <code>count</code> is negative, but 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4485">line 4485</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4519">line 4519</a>
     </li></ul></dd>
     
 
@@ -22838,7 +22845,7 @@ _.repeat("Hello", 3) // => "HelloHelloHello"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2266">line 2266</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2283">line 2283</a>
     </li></ul></dd>
     
 
@@ -23027,7 +23034,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1267">line 1267</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1277">line 1277</a>
     </li></ul></dd>
     
 
@@ -23109,8 +23116,8 @@ _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)</code></pr
 
 <div class="description">
     Sets the specified key to the given value in a copy of the provided object.<br/>
-All the enumerable keys of the source object will be simply copied to an empty
-object without breaking references.<br/>
+All the remaining enumerable keys of the source object will be simply copied in the
+result object without breaking references.<br/>
 If the specified key is not part of the source object, it will be added to the
 result.<br/>
 The main purpose of the function is to work on simple plain objects used as
@@ -23256,7 +23263,7 @@ of the <code>source</code>'s one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1301">line 1301</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1311">line 1311</a>
     </li></ul></dd>
     
 
@@ -23478,7 +23485,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1327">line 1327</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1337">line 1337</a>
     </li></ul></dd>
     
 
@@ -23674,7 +23681,7 @@ how the copy of the source object is made.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1351">line 1351</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1361">line 1361</a>
     </li></ul></dd>
     
 
@@ -23938,7 +23945,7 @@ See <a href="module-lamb.html#.setPathIn">setPathIn</a> for more details and exa
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1374">line 1374</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1384">line 1384</a>
     </li></ul></dd>
     
 
@@ -24025,6 +24032,8 @@ to <a href="module-lamb.html#.setAt">setAt</a>, and everything else (including a
 which will be delegated to <a href="module-lamb.html#.setIn">setIn</a>.<br/>
 As a result of that, array-like objects will be converted to objects having numbers as keys
 and paths targeting non-object values will be converted to empty objects.<br/>
+You can anyway target array elements using integers in the path, even negative ones, but
+the priority will be given to existing, and enumerable, object keys.<br/>
 Non-enumerable properties encountered in the path will be considered as non-existent properties.<br/>
 Like <a href="module-lamb.html#.getPathIn">getPathIn</a> or <a href="module-lamb.html#.getPath">getPath</a> you can
 use custom path separators.
@@ -24248,7 +24257,7 @@ use custom path separators.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1428">line 1428</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1440">line 1440</a>
     </li></ul></dd>
     
 
@@ -24443,7 +24452,7 @@ var newUser = _.setPathIn(user, "scores.0.value", 8);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2284">line 2284</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2301">line 2301</a>
     </li></ul></dd>
     
 
@@ -24636,7 +24645,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4240">line 4240</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4274">line 4274</a>
     </li></ul></dd>
     
 
@@ -24850,7 +24859,7 @@ The properties satisfying the predicate will be omitted in the resulting object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4269">line 4269</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4303">line 4303</a>
     </li></ul></dd>
     
 
@@ -25338,7 +25347,7 @@ Please note that if the arguments received by the default comparer aren't of the
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2963">line 2963</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2980">line 2980</a>
     </li></ul></dd>
     
 
@@ -25644,7 +25653,7 @@ _.sort(chars, localeSorterDesc) // => ["è", "é", "e", "c", "b", "à", "a"]</co
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3028">line 3028</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3045">line 3045</a>
     </li></ul></dd>
     
 
@@ -25902,7 +25911,7 @@ See <a href="module-lamb.html#.sort">sort</a> for various examples.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3051">line 3051</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3068">line 3068</a>
     </li></ul></dd>
     
 
@@ -26124,7 +26133,7 @@ See <a href="module-lamb.html#.sort">sort</a> for various examples.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3067">line 3067</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3084">line 3084</a>
     </li></ul></dd>
     
 
@@ -26318,7 +26327,7 @@ See <a href="module-lamb.html#.sort">sort</a> for more examples.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3090">line 3090</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3107">line 3107</a>
     </li></ul></dd>
     
 
@@ -26669,7 +26678,7 @@ sortAsNumbers(weights) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2303">line 2303</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2320">line 2320</a>
     </li></ul></dd>
     
 
@@ -26863,7 +26872,7 @@ Note that, being this a partial application of <a href="module-lamb.html#.slice"
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2326">line 2326</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2343">line 2343</a>
     </li></ul></dd>
     
 
@@ -27038,7 +27047,7 @@ See the note and examples for <a href="module-lamb.html#.take">take</a> about pa
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2345">line 2345</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2362">line 2362</a>
     </li></ul></dd>
     
 
@@ -27232,7 +27241,7 @@ take2([1, 2, 3, 4, 5]) // => [1, 2]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2369">line 2369</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2386">line 2386</a>
     </li></ul></dd>
     
 
@@ -27454,7 +27463,7 @@ If a "tapper" isn't found the argument is passed as it is.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3499">line 3499</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3533">line 3533</a>
     </li></ul></dd>
     
 
@@ -27620,7 +27629,7 @@ See also <a href="module-lamb.html#.tearOwn">tearOwn</a> for picking only the ow
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4288">line 4288</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4322">line 4322</a>
     </li></ul></dd>
     
 
@@ -27779,7 +27788,7 @@ See also <a href="module-lamb.html#.make">make</a> for the reverse operation.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4308">line 4308</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4342">line 4342</a>
     </li></ul></dd>
     
 
@@ -27945,7 +27954,7 @@ _.tearOwn(foo) // => [["c"], [3]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4508">line 4508</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4542">line 4542</a>
     </li></ul></dd>
     
 
@@ -28131,7 +28140,7 @@ for a different behaviour where the first call is delayed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3532">line 3532</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3566">line 3566</a>
     </li></ul></dd>
     
 
@@ -28296,7 +28305,7 @@ shortest length.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2401">line 2401</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2418">line 2418</a>
     </li></ul></dd>
     
 
@@ -28648,7 +28657,7 @@ See also <a href="module-lamb.html#.binary">binary</a>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3563">line 3563</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3597">line 3597</a>
     </li></ul></dd>
     
 
@@ -28820,7 +28829,7 @@ weights.map(_.unary(parseInt)) // => [2, 10, 1, 7]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2429">line 2429</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2446">line 2446</a>
     </li></ul></dd>
     
 
@@ -29057,7 +29066,7 @@ Note that since version <code>0.13.0</code> this function uses the <a href="modu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2456">line 2456</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2473">line 2473</a>
     </li></ul></dd>
     
 
@@ -29256,7 +29265,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1453">line 1453</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1469">line 1469</a>
     </li></ul></dd>
     
 
@@ -29476,7 +29485,7 @@ will delegate the "set action" to <a href="module-lamb.html#.setIn">setIn</a>; a
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1487">line 1487</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1503">line 1503</a>
     </li></ul></dd>
     
 
@@ -29704,7 +29713,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1514">line 1514</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1530">line 1530</a>
     </li></ul></dd>
     
 
@@ -29898,7 +29907,7 @@ _.updateIndex(arr, 10, toUpperCase) // => ["a", "b", "c"] (not a reference to `a
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1534">line 1534</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1550">line 1550</a>
     </li></ul></dd>
     
 
@@ -30159,7 +30168,7 @@ incrementVisits(user) // => {name: "John", visits: 3}</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1556">line 1556</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1572">line 1572</a>
     </li></ul></dd>
     
 
@@ -30242,7 +30251,8 @@ function to it.<br/>
 This function is meant for updating existing enumerable properties, and for those it
 will delegate the "set action" to <a href="module-lamb.html#.setPathIn">setPathIn</a>; a copy of the
 <code>source</code> is returned otherwise.<br/>
-Like the other "path" functions, negative indexes can be used to access array elements.
+Like the other "path" functions, negative indexes can be used to access array elements, but
+the priority will be given to existing, and enumerable, object keys.<br/>
 </div>
 
 
@@ -30463,7 +30473,7 @@ Like the other "path" functions, negative indexes can be used to access array el
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1604">line 1604</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line1621">line 1621</a>
     </li></ul></dd>
     
 
@@ -30682,7 +30692,7 @@ var newUser = _.updatePathIn(user, "scores.0.value", increment);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4335">line 4335</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4369">line 4369</a>
     </li></ul></dd>
     
 
@@ -30866,7 +30876,7 @@ returning a function expecting the object to validate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4370">line 4370</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4404">line 4404</a>
     </li></ul></dd>
     
 
@@ -31047,7 +31057,7 @@ See also <a href="module-lamb.html#.ownValues">ownValues</a> for picking only th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4386">line 4386</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line4420">line 4420</a>
     </li></ul></dd>
     
 
@@ -31234,7 +31244,7 @@ you can also easily build new functions from existent ones.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3587">line 3587</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line3621">line 3621</a>
     </li></ul></dd>
     
 
@@ -31408,7 +31418,7 @@ See also <a href="module-lamb.html#.zipWithIndex">zipWithIndex</a> and <a href="
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2496">line 2496</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2513">line 2513</a>
     </li></ul></dd>
     
 
@@ -31572,7 +31582,7 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2509">line 2509</a>
+        <a href="lamb.js.html">lamb.js</a>, <a href="lamb.js.html#line2526">line 2526</a>
     </li></ul></dd>
     
 
@@ -31643,7 +31653,7 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jun 21 2016 12:34:37 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 24 2016 13:41:02 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
