@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.30.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.31.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,12 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.31.0 - *2016/06/24***
+  - **API change**: all path functions and object setters now throw a TypeError `nil` values received as `source`, other values will be converted to Object
+  - **API change**: `setPath`, `setPathIn` now convert to string the `path` parameter
+  - **API change**: the “set” and “update” path functions now give priority to existing object keys over array indexes, like the “get” path functions
+  - Completed “third round" of test updating
 
 - **v0.30.0 - *2016/06/21***
   - **API change**: `aritize` now adds `undefined` arguments if the desired arity is greater than the amount of received parameters
