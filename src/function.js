@@ -415,10 +415,11 @@ function tapArgs (fn) {
 
     return function () {
         var len = arguments.length;
+        var tappersLen = tappers.length;
         var args = [];
 
         for (var i = 0; i < len; i++) {
-            args.push(tappers[i] ? tappers[i](arguments[i]) : arguments[i]);
+            args.push(i < tappersLen ? tappers[i](arguments[i]) : arguments[i]);
         }
 
         return fn.apply(this, args);

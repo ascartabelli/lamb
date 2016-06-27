@@ -360,7 +360,7 @@ function make (keys, values) {
  * @example
  * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
  *
- * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+ * @example <caption>Arrays and array-like objects will be transformed to objects with numbers as keys:</caption>
  * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
  * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
  *

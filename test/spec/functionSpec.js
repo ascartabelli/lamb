@@ -405,10 +405,35 @@ describe("lamb.function", function () {
     });
 
     describe("mapArgs", function () {
-        it("should build a function that allows to map over the received arguments before applying them to the original one", function () {
-            var double = lamb.partial(lamb.multiply, 2);
+        var double = jasmine.createSpy("double").and.callFake(function (n) { return n * 2; });
 
+        afterEach(function () {
+            double.calls.reset();
+        });
+
+        it("should build a function that allows to map over the received arguments before applying them to the original one", function () {
             expect(lamb.mapArgs(lamb.add, double)(5, 3)).toBe(16);
+            expect(double.calls.count()).toBe(2);
+            expect(double.calls.argsFor(0)).toEqual([5, 0, [5, 3]]);
+            expect(double.calls.argsFor(1)).toEqual([3, 1, [5, 3]]);
+        });
+
+        it("should build a function throwing an exception if the mapper isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.mapArgs(lamb.add, value)).toThrow();
+            });
+
+            expect(lamb.mapArgs(lamb.add)).toThrow();
+        });
+
+        it("should build a function throwing an exception if `fn` isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.mapArgs(value, double)).toThrow();
+            });
+        });
+
+        it("should build a function throwing an exception if called without arguments", function () {
+            expect(lamb.mapArgs()).toThrow();
         });
     });
 
@@ -430,14 +455,47 @@ describe("lamb.function", function () {
     describe("tapArgs", function () {
         var someObject = {count: 5};
         var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
+        var add = jasmine.createSpy("add").and.callFake(lamb.add);
+
+        afterEach(function () {
+            add.calls.reset();
+        });
 
         it("should build a function that allows to tap into the arguments of the original one", function () {
-            var getDataAmount = lamb.tapArgs(lamb.add, lamb.getKey("count"), lamb.getKey("length"));
+            var getDataAmount = lamb.tapArgs(add, lamb.getKey("count"), lamb.getKey("length"));
             expect(getDataAmount(someObject, someArrayData)).toBe(15);
+            expect(add.calls.count()).toBe(1);
+            expect(add.calls.argsFor(0)).toEqual([someObject.count, someArrayData.length]);
         });
 
         it("should use arguments as they are when tappers are missing", function () {
-            expect(lamb.tapArgs(lamb.add, lamb.getKey("count"))(someObject, -10)).toBe(-5);
+            expect(lamb.tapArgs(add, lamb.getKey("count"))(someObject, -10)).toBe(-5);
+            expect(add.calls.count()).toBe(1);
+            expect(add.calls.argsFor(0)).toEqual([someObject.count, -10]);
+        });
+
+        it("should build a function throwing an exception if a tapper isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.tapArgs(lamb.add, value, lamb.always(99))(1, 2); }).toThrow();
+                expect(function () { lamb.tapArgs(lamb.add, lamb.always(99), value)(1, 2); }).toThrow();
+            });
+        });
+
+        it("should build a function that doesn't throw an exception if a tapper isn't a function but is not called", function () {
+            var inc = function (n) { return ++n; };
+
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.tapArgs(lamb.add, value, lamb.always(99))()).toEqual(NaN);
+                expect(lamb.tapArgs(inc, inc, value)(25)).toBe(27);
+            });
+        });
+
+        it("should build a function throwing an exception if `fn` isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.tapArgs(value, lamb.always(99))).toThrow();
+            });
+
+            expect(lamb.tapArgs()).toThrow();
         });
     });
 
