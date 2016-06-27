@@ -133,14 +133,39 @@ describe("lamb.logic", function () {
     });
 
     describe("condition", function () {
-        it("should build a function that conditionally executes the received functions evaluating a predicate", function () {
-            var halve = lamb.partial(lamb.multiply, .5);
-            var isGreaterThan5 = lamb.partial(lamb.isGT, lamb, 5);
-            var halveIfGreaterThan5 = lamb.condition(isGreaterThan5, halve, lamb.identity);
+        var halve = lamb.partial(lamb.multiply, .5);
+        var isGreaterThan5 = lamb.partial(lamb.isGT, lamb, 5);
+        var halveIfGreaterThan5 = lamb.condition(isGreaterThan5, halve, lamb.identity);
 
+        it("should build a function that conditionally executes the received functions evaluating a predicate", function () {
             expect(halveIfGreaterThan5(3)).toBe(3);
             expect(halveIfGreaterThan5(10)).toBe(5);
+        });
+
+        it("should execute `trueFn` if the predicate is satisfied even if `falseFn` is missing", function () {
+            expect(lamb.condition(isGreaterThan5, halve)(8)).toBe(4);
+        });
+
+        it("should return `undefined` if the predicate isn't satisfied and `falseFn` is missing", function () {
             expect(lamb.condition(isGreaterThan5, halve)(3)).toBeUndefined();
+        });
+
+        it("should build a function throwing an exception if the predicate isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.condition(value, lamb.always(99))).toThrow();
+            });
+        });
+
+        it("should build a function throwing an exception if `trueFn` isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.condition(lamb.always(true), value, lamb.always(99))).toThrow();
+            });
+
+            expect(lamb.condition(lamb.always(true))).toThrow();
+        });
+
+        it("should build a function throwing an exception if called without arguments", function () {
+            expect(lamb.condition()).toThrow();
         });
     });
 

@@ -20,11 +20,6 @@ describe("lamb.array", function () {
             expect(lamb.contains()([1, 3, void 0])).toBe(true);
         });
 
-        it("should start the check from the beginning of the array if the \"fromIndex\" parameter is not specified", function () {
-            expect(lamb.contains("foo")(testArray)).toBe(true);
-            expect(lamb.isIn(testArray, "foo")).toBe(true);
-        });
-
         it("should be able to start checking from a specific index", function () {
             expect(lamb.contains("foo", 0)(testArray)).toBe(true);
             expect(lamb.isIn(testArray, "foo", 0)).toBe(true);
@@ -34,6 +29,21 @@ describe("lamb.array", function () {
             expect(lamb.isIn(testArray, "foo", 1)).toBe(false);
         });
 
+        it("should convert to integer the value received as `fromIndex`", function () {
+            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+                expect(lamb.contains("foo", value)(testArray)).toBe(true);
+                expect(lamb.isIn(testArray, "foo", value)).toBe(true);
+            });
+
+            [[1], 1.5, new Date(), true, "2"].forEach(function (value) {
+                expect(lamb.contains("foo", value)(testArray)).toBe(false);
+                expect(lamb.isIn(testArray, "foo", value)).toBe(false);
+            });
+
+            expect(lamb.contains("foo")(testArray)).toBe(true);
+            expect(lamb.isIn(testArray, "foo")).toBe(true);
+        });
+
         it("should work with array-like objects", function () {
             expect(lamb.contains("f")("foo")).toBe(true);
             expect(lamb.isIn("foo", "f")).toBe(true);
@@ -41,9 +51,10 @@ describe("lamb.array", function () {
             expect(lamb.isIn("foo", "f", 1)).toBe(false);
         });
 
-        it("should throw an exception if called without the data argument", function () {
+        it("should throw an exception if called without the data argument or without arguments at all", function () {
             expect(lamb.isIn).toThrow();
             expect(lamb.contains(1)).toThrow();
+            expect(lamb.contains()).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
