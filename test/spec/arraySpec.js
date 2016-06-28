@@ -807,10 +807,15 @@ describe("lamb.array", function () {
         });
 
         it("should return a list of undefined values if no property is specified or if the property doesn't exist", function () {
+            var r = [void 0, void 0, void 0, void 0];
+
             ["length", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.pluck(arr, value)).toEqual([void 0, void 0, void 0, void 0]);
-                expect(lamb.pluckKey(value)(arr)).toEqual([void 0, void 0, void 0, void 0]);
+                expect(lamb.pluck(arr, value)).toEqual(r);
+                expect(lamb.pluckKey(value)(arr)).toEqual(r);
             });
+
+            expect(lamb.pluck(arr)).toEqual(r);
+            expect(lamb.pluckKey()(arr)).toEqual(r);
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -842,9 +847,23 @@ describe("lamb.array", function () {
         });
 
         it("should build a partial application of `reduceRight` expecting the array to act upon", function () {
-            expect(lamb.reduceRightWith(lamb.subtract)(arr)).toBe(-5);
-            expect(lamb.reduceRightWith(lamb.subtract, 0)(arr)).toBe(-15);
-            expect(lamb.reduceRightWith(lamb.subtract, 10)(arr)).toBe(-5);
+            var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
+                expect(list).toBe(arr);
+                expect(list[idx]).toBe(current);
+
+                return prev - current;
+            });
+
+            var prevValues = [5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4];
+
+            expect(lamb.reduceRightWith(subtract)(arr)).toBe(-5);
+            expect(lamb.reduceRightWith(subtract, 0)(arr)).toBe(-15);
+            expect(lamb.reduceRightWith(subtract, 10)(arr)).toBe(-5);
+
+            expect(subtract.calls.count()).toBe(prevValues.length);
+            prevValues.forEach(function (prevValue, idx) {
+                expect(subtract.calls.argsFor(idx)[0]).toEqual(prevValue);
+            });
         });
 
         it("should work with array-like objects", function () {
@@ -853,6 +872,14 @@ describe("lamb.array", function () {
             expect(lamb.reduceRightWith(fn)(s)).toBe(-5);
             expect(lamb.reduceRightWith(fn, 0)(s)).toBe(-15);
             expect(lamb.reduceRightWith(fn, 10)(s)).toBe(-5);
+        });
+
+        it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.reduceRightWith(value, 0)(arr); }).toThrow();
+            });
+
+            expect(function () { lamb.reduceRightWith()(arr); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -885,9 +912,23 @@ describe("lamb.array", function () {
         });
 
         it("should build a partial application of `reduce` expecting the array to act upon", function () {
-            expect(lamb.reduceWith(lamb.subtract)(arr)).toBe(-13);
-            expect(lamb.reduceWith(lamb.subtract, 0)(arr)).toBe(-15);
-            expect(lamb.reduceWith(lamb.subtract, 10)(arr)).toBe(-5);
+            var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
+                expect(list).toBe(arr);
+                expect(list[idx]).toBe(current);
+
+                return prev - current;
+            });
+
+            var prevValues = [1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0];
+
+            expect(lamb.reduceWith(subtract)(arr)).toBe(-13);
+            expect(lamb.reduceWith(subtract, 0)(arr)).toBe(-15);
+            expect(lamb.reduceWith(subtract, 10)(arr)).toBe(-5);
+
+            expect(subtract.calls.count()).toBe(prevValues.length);
+            prevValues.forEach(function (prevValue, idx) {
+                expect(subtract.calls.argsFor(idx)[0]).toEqual(prevValue);
+            });
         });
 
         it("should work with array-like objects", function () {
@@ -896,6 +937,14 @@ describe("lamb.array", function () {
             expect(lamb.reduceWith(fn)(s)).toBe(-13);
             expect(lamb.reduceWith(fn, 0)(s)).toBe(-15);
             expect(lamb.reduceWith(fn, 10)(s)).toBe(-5);
+        });
+
+        it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.reduceWith(value, 0)(arr); }).toThrow();
+            });
+
+            expect(function () { lamb.reduceWith()(arr); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {
