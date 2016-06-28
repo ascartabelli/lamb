@@ -149,9 +149,30 @@ describe("lamb.array", function () {
             expect(lamb.dropN(10)([1, 2, 3, 4])).toEqual([]);
         });
 
-        it("should throw an exception if called without the data argument", function () {
+        it("should convert to integer the value received as `n`", function () {
+            var arr = [1, 2, 3, 4 , 5];
+
+            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+                expect(lamb.dropN(value)(arr)).toEqual(arr);
+                expect(lamb.drop(arr, value)).toEqual(arr);
+            });
+
+            [[1], 1.5, true, "1"].forEach(function (value) {
+                expect(lamb.dropN(value)(arr)).toEqual([2, 3, 4 , 5]);
+                expect(lamb.drop(arr, value)).toEqual([2, 3, 4 , 5]);
+            });
+
+            expect(lamb.dropN(new Date())(arr)).toEqual([]);
+            expect(lamb.drop(arr, new Date())).toEqual([]);
+
+            expect(lamb.dropN()(arr)).toEqual(arr);
+            expect(lamb.drop(arr)).toEqual(arr);
+        });
+
+        it("should throw an exception if called without the data argument or without arguments at all", function () {
             expect(lamb.drop).toThrow();
             expect(lamb.dropN(1)).toThrow();
+            expect(lamb.dropN()).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
@@ -187,6 +208,14 @@ describe("lamb.array", function () {
             expect(dropWhileIsEven([1, 3, 5, 7])).toEqual([1, 3, 5, 7]);
         });
 
+        it("should build a function throwing an exception if the predicate isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.dropWhile(value)([1, 2]); }).toThrow();
+            });
+
+            expect(function () { lamb.dropWhile()([1, 2]); }).toThrow();
+        });
+
         it("should throw an exception if called without the data argument", function () {
             expect(dropWhileIsEven).toThrow();
         });
@@ -205,7 +234,8 @@ describe("lamb.array", function () {
 
     describe("filterWith", function () {
         var fakeContext = {};
-        var isLowerCase = function (s) {
+        var isLowerCase = function (s, idx, list) {
+            expect(list[idx]).toBe(s);
             expect(this).toBe(fakeContext);
             return s.toLowerCase() === s;
         };
@@ -269,6 +299,14 @@ describe("lamb.array", function () {
                 expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
             });
 
+            it("should throw an exception if the predicate isn't a function", function () {
+                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(function () { lamb.find(persons, value); }).toThrow();
+                });
+
+                expect(function () { lamb.find(persons); }).toThrow();
+            });
+
             it("should throw an exception if called without arguments", function () {
                 expect(lamb.find).toThrow();
             });
@@ -295,6 +333,14 @@ describe("lamb.array", function () {
                 expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
             });
 
+            it("should throw an exception if the predicate isn't a function", function () {
+                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(function () { lamb.findIndex(persons, value); }).toThrow();
+                });
+
+                expect(function () { lamb.findIndex(persons); }).toThrow();
+            });
+
             it("should throw an exception if called without arguments", function () {
                 expect(lamb.findIndex).toThrow();
             });
@@ -314,7 +360,11 @@ describe("lamb.array", function () {
 
     describe("flatMap / flatMapWith", function () {
         it("should behave like map if the mapping function returns a non-array value", function () {
-            var double = function (n) { return n * 2; };
+            var double = function (n, idx, list) {
+                expect(list).toBe(arr);
+                expect(list[idx]).toBe(n);
+                return n * 2;
+            };
             var arr = [1, 2, 3, 4, 5];
             var result = [2, 4, 6, 8, 10];
 
@@ -598,7 +648,8 @@ describe("lamb.array", function () {
 
     describe("mapWith", function () {
         var fakeContext = {};
-        var double = function (n) {
+        var double = function (n, idx, list) {
+            expect(list[idx]).toBe(n);
             expect(this).toBe(fakeContext);
             return n * 2;
         };
