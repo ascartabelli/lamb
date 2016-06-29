@@ -54,9 +54,10 @@ function _makeTypeErrorFor(value, desiredType) {
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
     var idx = _getNaturalIndex(result, index);
+    var isUpdate = arguments.length === 4;
 
     if (!isUndefined(idx)) {
-        result[idx] = updater ? updater(arrayLike[idx]) : value;
+        result[idx] = isUpdate ? updater(arrayLike[idx]) : value;
     }
 
     return result;
@@ -581,7 +582,7 @@ function updateIn (source, key, updater) {
  * @param {Function} updater
  * @returns {Array}
  */
-var updateIndex = partial(_setIndex, _, _, null);
+var updateIndex = partial(_setIndex, _, _, null, _);
 
 /**
  * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided

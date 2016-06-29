@@ -668,8 +668,8 @@ function shallowFlatten (array) {
 var tail = partial(slice, _, 1, void 0);
 
 /**
- * Retrieves the first <code>n</code> elements from an array or array-like object.
- * Note that, being this a partial application of {@link module:lamb.slice|slice},
+ * Retrieves the first <code>n</code> elements from an array or array-like object.<br/>
+ * Note that, being this a shortcut for a common use case of {@link module:lamb.slice|slice},
  * <code>n</code> can be a negative number.
  * @example
  * var arr = [1, 2, 3, 4, 5];
@@ -680,7 +680,6 @@ var tail = partial(slice, _, 1, void 0);
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -688,7 +687,9 @@ var tail = partial(slice, _, 1, void 0);
  * @param {Number} n
  * @returns {Array}
  */
-var take = partial(slice, _, 0, _);
+function take (arrayLike, n) {
+    return slice(arrayLike, 0, +n);
+}
 
 /**
  * A curried version of {@link module:lamb.take|take} that expects the number of elements
@@ -709,7 +710,7 @@ var take = partial(slice, _, 0, _);
  */
 function takeN (n) {
     return function (arrayLike) {
-        return slice(arrayLike, 0, n);
+        return slice(arrayLike, 0, +n);
     };
 }
 

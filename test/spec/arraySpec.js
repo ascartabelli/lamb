@@ -1085,9 +1085,30 @@ describe("lamb.array", function () {
             expect(lamb.takeN(-10)([1, 2, 3, 4])).toEqual([]);
         });
 
-        it("should throw an exception if called without the data argument", function () {
+        it("should convert to integer the value received as `n`", function () {
+            var arr = [1, 2, 3, 4 , 5];
+
+            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+                expect(lamb.takeN(value)(arr)).toEqual([]);
+                expect(lamb.take(arr, value)).toEqual([]);
+            });
+
+            [[1], 1.5, true, "1"].forEach(function (value) {
+                expect(lamb.takeN(value)(arr)).toEqual([1]);
+                expect(lamb.take(arr, value)).toEqual([1]);
+            });
+
+            expect(lamb.takeN(new Date())(arr)).toEqual(arr);
+            expect(lamb.take(arr, new Date())).toEqual(arr);
+
+            expect(lamb.takeN()(arr)).toEqual([]);
+            expect(lamb.take(arr)).toEqual([]);
+        });
+
+        it("should throw an exception if called without the data argument or without arguments at all", function () {
             expect(lamb.take).toThrow();
             expect(lamb.takeN(1)).toThrow();
+            expect(lamb.takeN()).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
@@ -1121,6 +1142,14 @@ describe("lamb.array", function () {
             expect(takeWhileIsEven([2, 3, 4, 6, 8])).toEqual([2]);
             expect(takeWhileIsEven([2, 4, 6, 7, 8])).toEqual([2, 4, 6]);
             expect(takeWhileIsEven([2, 4, 6, 8])).toEqual([2, 4, 6, 8]);
+        });
+
+        it("should build a function throwing an exception if the predicate isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.takeWhile(value)([1, 2]); }).toThrow();
+            });
+
+            expect(function () { lamb.takeWhile()([1, 2]); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {

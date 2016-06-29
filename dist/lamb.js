@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.32.0-alpha.4
+ * @version 0.32.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.32.0-alpha.4";
+    lamb._version =  "0.32.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1000,9 +1000,10 @@
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);
         var idx = _getNaturalIndex(result, index);
+        var isUpdate = arguments.length === 4;
 
         if (!isUndefined(idx)) {
-            result[idx] = updater ? updater(arrayLike[idx]) : value;
+            result[idx] = isUpdate ? updater(arrayLike[idx]) : value;
         }
 
         return result;
@@ -1527,7 +1528,7 @@
      * @param {Function} updater
      * @returns {Array}
      */
-    var updateIndex = partial(_setIndex, _, _, null);
+    var updateIndex = partial(_setIndex, _, _, null, _);
 
     /**
      * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
@@ -2320,8 +2321,8 @@
     var tail = partial(slice, _, 1, void 0);
 
     /**
-     * Retrieves the first <code>n</code> elements from an array or array-like object.
-     * Note that, being this a partial application of {@link module:lamb.slice|slice},
+     * Retrieves the first <code>n</code> elements from an array or array-like object.<br/>
+     * Note that, being this a shortcut for a common use case of {@link module:lamb.slice|slice},
      * <code>n</code> can be a negative number.
      * @example
      * var arr = [1, 2, 3, 4, 5];
@@ -2332,7 +2333,6 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -2340,7 +2340,9 @@
      * @param {Number} n
      * @returns {Array}
      */
-    var take = partial(slice, _, 0, _);
+    function take (arrayLike, n) {
+        return slice(arrayLike, 0, +n);
+    }
 
     /**
      * A curried version of {@link module:lamb.take|take} that expects the number of elements
@@ -2361,7 +2363,7 @@
      */
     function takeN (n) {
         return function (arrayLike) {
-            return slice(arrayLike, 0, n);
+            return slice(arrayLike, 0, +n);
         };
     }
 

@@ -233,6 +233,16 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
             });
 
+            it("should throw an exception if the `updater` isn't a function or if is missing", function () {
+                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(function () { lamb.updateIndex(arr, 0, value); }).toThrow();
+                    expect(function () { lamb.updateAt(0, value)(arr); }).toThrow();
+                });
+
+                expect(function () { lamb.updateIndex(arr, 0); }).toThrow();
+                expect(function () { lamb.updateAt(0)(arr); }).toThrow();
+            });
+
             it("should throw an exception if called without the data argument", function () {
                 expect(lamb.updateIndex).toThrow();
                 expect(lamb.updateAt(1, fn99)).toThrow();
