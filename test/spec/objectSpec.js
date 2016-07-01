@@ -17,15 +17,19 @@ describe("lamb.object", function () {
             expect(lamb.enumerables("abc")).toEqual(["0", "1", "2"]);
         });
 
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.enumerables).toThrow();
+        });
+
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.enumerables(null)}).toThrow();
             expect(function () {lamb.enumerables(void 0)}).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
-            expect(
-                [/foo/, 1, function () {}, NaN, true, new Date()].map(lamb.enumerables)
-            ).toEqual([[], [], [], [], [], []]);
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.enumerables(value)).toEqual([]);
+            });
         });
     });
 
@@ -325,6 +329,10 @@ describe("lamb.object", function () {
             expect(persons[3].baz).toBe(persons);
         });
 
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.immutable).toThrow();
+        });
+
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () { lamb.immutable(null); }).toThrow();
             expect(function () { lamb.immutable(void 0); }).toThrow();
@@ -357,15 +365,19 @@ describe("lamb.object", function () {
             expect(lamb.keys("abc")).toEqual(["0", "1", "2"]);
         });
 
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.keys).toThrow();
+        });
+
         it("should throw an exception if supplied with `null` or `undefined`", function () {
             expect(function () {lamb.keys(null)}).toThrow();
             expect(function () {lamb.keys(void 0)}).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
-            expect(
-                [/foo/, 1, function () {}, NaN, true, new Date()].map(lamb.keys)
-            ).toEqual([[], [], [], [], [], []]);
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.keys(value)).toEqual([]);
+            });
         });
     });
 
@@ -388,6 +400,10 @@ describe("lamb.object", function () {
 
         it("should accept array-like objects in both parameters", function () {
             expect(lamb.make("abcd", "1234")).toEqual({a: "1", b: "2", c: "3", d: "4"});
+        });
+
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.make).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined` in the `keys` or in the `values` parameter", function () {
@@ -487,13 +503,6 @@ describe("lamb.object", function () {
             expect(lamb.pairs(source)).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.ownPairs(null)}).toThrow();
-            expect(function () {lamb.ownPairs(void 0)}).toThrow();
-            expect(function () {lamb.pairs(null)}).toThrow();
-            expect(function () {lamb.pairs(void 0)}).toThrow();
-        });
-
         it("should work with array-like objects", function () {
             var r1 = [["0", 1], ["1", 2],["2", 3]];
             var r2 = [["0", "a"], ["1", "b"],["2", "c"]];
@@ -504,11 +513,23 @@ describe("lamb.object", function () {
             expect(lamb.pairs("abc")).toEqual(r2);
         });
 
-        it("should consider other values as empty objects", function () {
-            var others = [/foo/, 1, function () {}, NaN, true, new Date()];
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.ownPairs).toThrow();
+            expect(lamb.pairs).toThrow();
+        });
 
-            expect(others.map(lamb.ownPairs)).toEqual([[], [], [], [], [], []]);
-            expect(others.map(lamb.pairs)).toEqual([[], [], [], [], [], []]);
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () {lamb.ownPairs(null)}).toThrow();
+            expect(function () {lamb.ownPairs(void 0)}).toThrow();
+            expect(function () {lamb.pairs(null)}).toThrow();
+            expect(function () {lamb.pairs(void 0)}).toThrow();
+        });
+
+        it("should consider other values as empty objects", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.ownPairs(value)).toEqual([]);
+                expect(lamb.pairs(value)).toEqual([]);
+            });
         });
 
         describe("ownPairs", function () {
@@ -539,13 +560,6 @@ describe("lamb.object", function () {
             expect(lamb.values(source)).toEqual(result);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.ownValues(null)}).toThrow();
-            expect(function () {lamb.ownValues(void 0)}).toThrow();
-            expect(function () {lamb.values(null)}).toThrow();
-            expect(function () {lamb.values(void 0)}).toThrow();
-        });
-
         it("should accept array-like objects, returning an array copy of their values", function () {
             expect(lamb.ownValues([1, 2, 3])).toEqual([1, 2, 3]);
             expect(lamb.ownValues("abc")).toEqual(["a", "b", "c"]);
@@ -553,11 +567,23 @@ describe("lamb.object", function () {
             expect(lamb.values("abc")).toEqual(["a", "b", "c"]);
         });
 
-        it("should consider other values as empty objects", function () {
-            var others = [/foo/, 1, function () {}, NaN, true, new Date()];
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.ownValues).toThrow();
+            expect(lamb.values).toThrow();
+        });
 
-            expect(others.map(lamb.ownValues)).toEqual([[], [], [], [], [], []]);
-            expect(others.map(lamb.values)).toEqual([[], [], [], [], [], []]);
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () {lamb.ownValues(null)}).toThrow();
+            expect(function () {lamb.ownValues(void 0)}).toThrow();
+            expect(function () {lamb.values(null)}).toThrow();
+            expect(function () {lamb.values(void 0)}).toThrow();
+        });
+
+        it("should consider other values as empty objects", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.ownValues(value)).toEqual([]);
+                expect(lamb.values(value)).toEqual([]);
+            });
         });
 
         describe("ownValues", function () {
@@ -826,6 +852,14 @@ describe("lamb.object", function () {
                 expect(renameSpy.calls.argsFor(0).length).toBe(1);
                 expect(renameSpy.calls.argsFor(0)[0]).toBe(person);
             });
+
+            it("should build a function throwing an exception if `fn` isn't a function or is missing", function () {
+                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    expect(lamb.renameWith(value)).toThrow();
+                });
+
+                expect(lamb.renameWith()).toThrow();
+            });
         });
 
         it("should rename the keys of the given object according to the provided keys' map", function () {
@@ -920,7 +954,27 @@ describe("lamb.object", function () {
             expect(lamb.renameWith(lamb.always(s))(someObj)).toEqual(r2);
         });
 
-        it("should throw an exception if the source is null or undefined", function () {
+        it("should return a copy of the source object for any other value passed as the keys' map", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date(), null, void 0].forEach(function (value) {
+                var r1 = lamb.rename(obj, value);
+                var r2 = lamb.renameKeys(value)(obj);
+                var r3 = lamb.renameWith(lamb.always(value))(obj);
+                expect(r1).toEqual(objEquivalent);
+                expect(r2).toEqual(objEquivalent);
+                expect(r3).toEqual(objEquivalent);
+                expect(r1).not.toBe(obj);
+                expect(r2).not.toBe(obj);
+                expect(r3).not.toBe(obj);
+            });
+        });
+
+        it("should throw an exception if called without the source or the keys' map", function () {
+            expect(lamb.rename).toThrow();
+            expect(lamb.renameKeys()).toThrow();
+            expect(lamb.renameWith(lamb.always({}))).toThrow();
+        });
+
+        it("should throw an exception if the source is `null` or `undefined`", function () {
             expect(function () { lamb.rename(null, {}); }).toThrow();
             expect(function () { lamb.rename(void 0, {}); }).toThrow();
             expect(function () { lamb.renameKeys({})(null); }).toThrow();
@@ -934,20 +988,6 @@ describe("lamb.object", function () {
                 expect(lamb.rename(value, {"0": 9})).toEqual({});
                 expect(lamb.renameKeys({"0": 9})(value)).toEqual({});
                 expect(lamb.renameWith(lamb.always({"0": 9}))(value)).toEqual({});
-            });
-        });
-
-        it("should return a copy of the source object for any other value passed as the keys' map", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date(), null, void 0].forEach(function (value) {
-                var r1 = lamb.rename(obj, value);
-                var r2 = lamb.renameKeys(value)(obj);
-                var r3 = lamb.renameWith(lamb.always(value))(obj);
-                expect(r1).toEqual(objEquivalent);
-                expect(r2).toEqual(objEquivalent);
-                expect(r3).toEqual(objEquivalent);
-                expect(r1).not.toBe(obj);
-                expect(r2).not.toBe(obj);
-                expect(r3).not.toBe(obj);
             });
         });
     });
@@ -964,13 +1004,6 @@ describe("lamb.object", function () {
             expect(lamb.tearOwn({a: 1, b: 2, c: 3})).toEqual([["a", "b", "c"], [1, 2, 3]]);
         });
 
-        it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.tear(null)}).toThrow();
-            expect(function () {lamb.tear(void 0)}).toThrow();
-            expect(function () {lamb.tearOwn(null)}).toThrow();
-            expect(function () {lamb.tearOwn(void 0)}).toThrow();
-        });
-
         it("should work with array-like objects", function () {
             var r1 = [["0", "1", "2"], [1, 2, 3]];
             var r2 = [["0", "1", "2"], ["a", "b", "c"]];
@@ -981,12 +1014,23 @@ describe("lamb.object", function () {
             expect(lamb.tearOwn("abc")).toEqual(r2);
         });
 
-        it("should consider other values as empty objects", function () {
-            var others = [/foo/, 1, function () {}, NaN, true, new Date()];
-            var result = [[[], []], [[], []], [[], []], [[], []], [[], []], [[], []]];
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.tear).toThrow();
+            expect(lamb.tearOwn).toThrow();
+        });
 
-            expect(others.map(lamb.tear)).toEqual(result);
-            expect(others.map(lamb.tearOwn)).toEqual(result);
+        it("should throw an exception if supplied with `null` or `undefined`", function () {
+            expect(function () {lamb.tear(null)}).toThrow();
+            expect(function () {lamb.tear(void 0)}).toThrow();
+            expect(function () {lamb.tearOwn(null)}).toThrow();
+            expect(function () {lamb.tearOwn(void 0)}).toThrow();
+        });
+
+        it("should consider other values as empty objects", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.tear(value)).toEqual([[], []]);
+                expect(lamb.tearOwn(value)).toEqual([[], []]);
+            });
         });
 
         describe("tear", function () {
