@@ -28,7 +28,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.31.0
+ * @version 0.32.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -45,7 +45,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.31.0";
+    lamb._version =  "0.32.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1027,9 +1027,10 @@
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);
         var idx = _getNaturalIndex(result, index);
+        var isUpdate = arguments.length === 4;
 
         if (!isUndefined(idx)) {
-            result[idx] = updater ? updater(arrayLike[idx]) : value;
+            result[idx] = isUpdate ? updater(arrayLike[idx]) : value;
         }
 
         return result;
@@ -1554,7 +1555,7 @@
      * @param {Function} updater
      * @returns {Array}
      */
-    var updateIndex = partial(_setIndex, _, _, null);
+    var updateIndex = partial(_setIndex, _, _, null, _);
 
     /**
      * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
@@ -2347,8 +2348,8 @@
     var tail = partial(slice, _, 1, void 0);
 
     /**
-     * Retrieves the first &lt;code>n&lt;/code> elements from an array or array-like object.
-     * Note that, being this a partial application of {@link module:lamb.slice|slice},
+     * Retrieves the first &lt;code>n&lt;/code> elements from an array or array-like object.&lt;br/>
+     * Note that, being this a shortcut for a common use case of {@link module:lamb.slice|slice},
      * &lt;code>n&lt;/code> can be a negative number.
      * @example
      * var arr = [1, 2, 3, 4, 5];
@@ -2359,7 +2360,6 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -2367,7 +2367,9 @@
      * @param {Number} n
      * @returns {Array}
      */
-    var take = partial(slice, _, 0, _);
+    function take (arrayLike, n) {
+        return slice(arrayLike, 0, +n);
+    }
 
     /**
      * A curried version of {@link module:lamb.take|take} that expects the number of elements
@@ -2388,7 +2390,7 @@
      */
     function takeN (n) {
         return function (arrayLike) {
-            return slice(arrayLike, 0, n);
+            return slice(arrayLike, 0, +n);
         };
     }
 
@@ -3159,15 +3161,27 @@
     }
 
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
-        var slicer = isAutoCurry ? slice : function (a) {
-            return a.length ? [a[0]] : [];
+        var slicer = isAutoCurry ? function (argsObj) {
+            var len = argsObj.length;
+
+            if (len) {
+                for (var i = 0, args = []; i &lt; len; i++) {
+                    args[i] = argsObj[i];
+                }
+
+                return args;
+            } else {
+                return [void 0];
+            }
+        } : function (argsObj) {
+            return argsObj.length ? [argsObj[0]] : [void 0];
         };
 
         if ((arity >>> 0) !== arity) {
             arity = fn.length;
         }
 
-        return _currier(fn, arity, isRightCurry, slicer, []);
+        return arity > 1 ? _currier(fn, arity, isRightCurry, slicer, []) : fn;
     }
 
     /**
@@ -3276,8 +3290,7 @@
      * var multiplyBy10 = multiplyBy(10);
      *
      * multiplyBy10(5) // => 50
-     * multiplyBy10()(5) // => 50
-     * multiplyBy10()()(2) // => 20
+     * multiplyBy10(2) // => 20
      *
      * @memberof module:lamb
      * @category Function
@@ -3290,31 +3303,11 @@
     }
 
     /**
-     * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
-     * @example
-     * var divideBy = _.curryRight(_.divide);
-     * var halve = divideBy(2);
-     * halve(3) // => 1.5
-     * halve(3, 7) // => 1.5
-     *
-     * @memberof module:lamb
-     * @category Function
-     * @param {Function} fn
-     * @param {Number} [arity=fn.length]
-     * @returns {Function}
-     */
-    function curryRight (fn, arity) {
-        return _curry(fn, arity, true);
-    }
-
-    /**
      * Builds an auto-curried function. The resulting function can be called multiple times with
      * any number of arguments, and the original function will be applied only when the specified
      * (or derived) arity is consumed.&lt;br/>
      * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
      * for right currying.&lt;br/>
-     * Note that you can pass undefined values as arguments explicitly, if you are so inclined, but empty
-     * calls doesn't consume the arity.&lt;br/>
      * See also {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight} and
      * {@link module:lamb.partial|partial}.
      * @example
@@ -3323,7 +3316,7 @@
      * collectFourElements(2)(3)(4)(5) // => [2, 3, 4, 5]
      * collectFourElements(2)(3, 4)(5) // => [2, 3, 4, 5]
      * collectFourElements(2, 3, 4, 5) // => [2, 3, 4, 5]
-     * collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]
+     * collectFourElements(2, 3)(4, 5) // => [2, 3, 4, 5]
      *
      * @memberof module:lamb
      * @category Function
@@ -3343,7 +3336,7 @@
      * collectFourElements(2)(3)(4)(5) // => [5, 4, 3, 2]
      * collectFourElements(2)(3, 4)(5) // => [5, 4, 3, 2]
      * collectFourElements(2, 3, 4, 5) // => [5, 4, 3, 2]
-     * collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]
+     * collectFourElements(2, 3)(4, 5) // => [5, 4, 3, 2]
      *
      * @memberof module:lamb
      * @category Function
@@ -3353,6 +3346,24 @@
      */
     function curryableRight (fn, arity) {
         return _curry(fn, arity, true, true);
+    }
+
+    /**
+     * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
+     * @example
+     * var divideBy = _.curryRight(_.divide);
+     * var halve = divideBy(2);
+     * halve(3) // => 1.5
+     * halve(3, 7) // => 1.5
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {Function} fn
+     * @param {Number} [arity=fn.length]
+     * @returns {Function}
+     */
+    function curryRight (fn, arity) {
+        return _curry(fn, arity, true);
     }
 
     /**
@@ -3562,10 +3573,11 @@
 
         return function () {
             var len = arguments.length;
+            var tappersLen = tappers.length;
             var args = [];
 
             for (var i = 0; i &lt; len; i++) {
-                args.push(tappers[i] ? tappers[i](arguments[i]) : arguments[i]);
+                args.push(i &lt; tappersLen ? tappers[i](arguments[i]) : arguments[i]);
             }
 
             return fn.apply(this, args);
@@ -4029,7 +4041,7 @@
      * @example
      * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
      *
-     * @example &lt;caption>Arrays or array-like objects will be transformed to objects with numbers as keys:&lt;/caption>
+     * @example &lt;caption>Arrays and array-like objects will be transformed to objects with numbers as keys:&lt;/caption>
      * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
@@ -4704,7 +4716,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 24 2016 13:41:02 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jul 01 2016 08:13:40 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
