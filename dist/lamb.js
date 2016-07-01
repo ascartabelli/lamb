@@ -3134,15 +3134,27 @@
     }
 
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
-        var slicer = isAutoCurry ? slice : function (a) {
-            return a.length ? [a[0]] : [];
+        var slicer = isAutoCurry ? function (argsObj) {
+            var len = argsObj.length;
+
+            if (len) {
+                for (var i = 0, args = []; i < len; i++) {
+                    args[i] = argsObj[i];
+                }
+
+                return args;
+            } else {
+                return [void 0];
+            }
+        } : function (argsObj) {
+            return argsObj.length ? [argsObj[0]] : [void 0];
         };
 
         if ((arity >>> 0) !== arity) {
             arity = fn.length;
         }
 
-        return _currier(fn, arity, isRightCurry, slicer, []);
+        return arity > 1 ? _currier(fn, arity, isRightCurry, slicer, []) : fn;
     }
 
     /**
@@ -3251,8 +3263,7 @@
      * var multiplyBy10 = multiplyBy(10);
      *
      * multiplyBy10(5) // => 50
-     * multiplyBy10()(5) // => 50
-     * multiplyBy10()()(2) // => 20
+     * multiplyBy10(2) // => 20
      *
      * @memberof module:lamb
      * @category Function
@@ -3265,31 +3276,11 @@
     }
 
     /**
-     * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
-     * @example
-     * var divideBy = _.curryRight(_.divide);
-     * var halve = divideBy(2);
-     * halve(3) // => 1.5
-     * halve(3, 7) // => 1.5
-     *
-     * @memberof module:lamb
-     * @category Function
-     * @param {Function} fn
-     * @param {Number} [arity=fn.length]
-     * @returns {Function}
-     */
-    function curryRight (fn, arity) {
-        return _curry(fn, arity, true);
-    }
-
-    /**
      * Builds an auto-curried function. The resulting function can be called multiple times with
      * any number of arguments, and the original function will be applied only when the specified
      * (or derived) arity is consumed.<br/>
      * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
      * for right currying.<br/>
-     * Note that you can pass undefined values as arguments explicitly, if you are so inclined, but empty
-     * calls doesn't consume the arity.<br/>
      * See also {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight} and
      * {@link module:lamb.partial|partial}.
      * @example
@@ -3298,7 +3289,7 @@
      * collectFourElements(2)(3)(4)(5) // => [2, 3, 4, 5]
      * collectFourElements(2)(3, 4)(5) // => [2, 3, 4, 5]
      * collectFourElements(2, 3, 4, 5) // => [2, 3, 4, 5]
-     * collectFourElements()(2)()(3, 4, 5) // => [2, 3, 4, 5]
+     * collectFourElements(2, 3)(4, 5) // => [2, 3, 4, 5]
      *
      * @memberof module:lamb
      * @category Function
@@ -3318,7 +3309,7 @@
      * collectFourElements(2)(3)(4)(5) // => [5, 4, 3, 2]
      * collectFourElements(2)(3, 4)(5) // => [5, 4, 3, 2]
      * collectFourElements(2, 3, 4, 5) // => [5, 4, 3, 2]
-     * collectFourElements()(2)()(3, 4, 5) // => [5, 4, 3, 2]
+     * collectFourElements(2, 3)(4, 5) // => [5, 4, 3, 2]
      *
      * @memberof module:lamb
      * @category Function
@@ -3328,6 +3319,24 @@
      */
     function curryableRight (fn, arity) {
         return _curry(fn, arity, true, true);
+    }
+
+    /**
+     * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
+     * @example
+     * var divideBy = _.curryRight(_.divide);
+     * var halve = divideBy(2);
+     * halve(3) // => 1.5
+     * halve(3, 7) // => 1.5
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {Function} fn
+     * @param {Number} [arity=fn.length]
+     * @returns {Function}
+     */
+    function curryRight (fn, arity) {
+        return _curry(fn, arity, true);
     }
 
     /**
