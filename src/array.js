@@ -1,25 +1,4 @@
 
-function _findSliceEndIndex (arrayLike, predicate, predicateContext) {
-    var idx = -1;
-    var len = arrayLike.length;
-
-    while (++idx < len && predicate.call(predicateContext, arrayLike[idx], idx, arrayLike));
-
-    return idx;
-}
-
-function _flatten (array, output) {
-    array.forEach(function (value) {
-        if (Array.isArray(value)) {
-            _flatten(value, output);
-        } else {
-            output.push(value);
-        }
-    });
-
-    return output;
-}
-
 /**
  * Builds a predicate to check if an array-like object contains the given value.<br/>
  * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
@@ -131,7 +110,7 @@ function dropN (n) {
  */
 function dropWhile (predicate, predicateContext) {
     return function (arrayLike) {
-        return slice(arrayLike, _findSliceEndIndex(arrayLike, predicate, predicateContext));
+        return slice(arrayLike, _getNumConsecutiveHits(arrayLike, predicate, predicateContext));
     };
 }
 
@@ -734,7 +713,7 @@ function takeN (n) {
  */
 function takeWhile (predicate, predicateContext) {
     return function (arrayLike) {
-        return slice(arrayLike, 0, _findSliceEndIndex(arrayLike, predicate, predicateContext));
+        return slice(arrayLike, 0, _getNumConsecutiveHits(arrayLike, predicate, predicateContext));
     };
 }
 

@@ -1,12 +1,4 @@
 
-function _getPadding (source, char, len) {
-    if (!isNil(source) && type(source) !== "String") {
-        source = String(source);
-    }
-
-    return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
-}
-
 /**
  * Pads a string to the desired length with the given char starting from the beginning of the string.
  * @example

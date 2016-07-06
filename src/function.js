@@ -1,40 +1,4 @@
 
-function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
-    return function () {
-        var args = argsHolder.concat(slicer(arguments));
-
-        if (args.length >= arity) {
-            return fn.apply(this, isRightCurry ? args.reverse() : args);
-        } else {
-            return _currier(fn, arity, isRightCurry, slicer, args);
-        }
-    };
-}
-
-function _curry (fn, arity, isRightCurry, isAutoCurry) {
-    var slicer = isAutoCurry ? function (argsObj) {
-        var len = argsObj.length;
-
-        if (len) {
-            for (var i = 0, args = []; i < len; i++) {
-                args[i] = argsObj[i];
-            }
-
-            return args;
-        } else {
-            return [void 0];
-        }
-    } : function (argsObj) {
-        return argsObj.length ? [argsObj[0]] : [void 0];
-    };
-
-    if ((arity >>> 0) !== arity) {
-        arity = fn.length;
-    }
-
-    return arity > 1 ? _currier(fn, arity, isRightCurry, slicer, []) : fn;
-}
-
 /**
  * Applies the passed function to the given argument list.
  * @example

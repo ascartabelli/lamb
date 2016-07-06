@@ -14,6 +14,7 @@ var uglify = require("gulp-uglify");
 
 var scripts = [
     "./src/core.js",
+    "./src/privates.js",
     "./src/generics.js",
     "./src/logic.js",
     "./src/math.js",
