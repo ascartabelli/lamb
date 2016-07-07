@@ -118,15 +118,15 @@ function sort (arrayLike) {
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
- * @param {Array} array
+ * @param {ArrayLike} arrayLike
  * @param {*} element
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
  * @returns {Array}
  */
-function sortedInsert (array, element) {
+function sortedInsert (arrayLike, element) {
     var criteria = _makeCriteria(slice(arguments, 2));
-    var result = array.concat();
-    var idx = _getInsertionIndex(array, element, _compareWith(criteria), 0, array.length);
+    var result = slice(arrayLike);
+    var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
     result.splice(idx, 0, element);
     return result;

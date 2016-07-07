@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.33.0-alpha.4
+ * @version 0.33.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.33.0-alpha.4";
+    lamb._version =  "0.33.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -680,7 +680,7 @@
                     b = reader(b);
                 }
 
-                return (comparer || _comparer)(a, b);
+                return (typeof comparer === "function" ? comparer : _comparer)(a, b);
             }
         };
     }
@@ -691,6 +691,7 @@
      * of the keys in its first index and the corresponding list of values
      * in the second one.
      * @private
+     * @function
      * @param {Function} getKeys
      * @returns {Function}
      */
@@ -3394,15 +3395,15 @@
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
      * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
-     * @param {Array} array
+     * @param {ArrayLike} arrayLike
      * @param {*} element
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
      * @returns {Array}
      */
-    function sortedInsert (array, element) {
+    function sortedInsert (arrayLike, element) {
         var criteria = _makeCriteria(slice(arguments, 2));
-        var result = array.concat();
-        var idx = _getInsertionIndex(array, element, _compareWith(criteria), 0, array.length);
+        var result = slice(arrayLike);
+        var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
         result.splice(idx, 0, element);
         return result;

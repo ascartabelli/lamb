@@ -502,7 +502,7 @@ function _sorter (reader, isDescending, comparer) {
                 b = reader(b);
             }
 
-            return (comparer || _comparer)(a, b);
+            return (typeof comparer === "function" ? comparer : _comparer)(a, b);
         }
     };
 }
@@ -513,6 +513,7 @@ function _sorter (reader, isDescending, comparer) {
  * of the keys in its first index and the corresponding list of values
  * in the second one.
  * @private
+ * @function
  * @param {Function} getKeys
  * @returns {Function}
  */

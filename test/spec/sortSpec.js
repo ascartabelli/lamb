@@ -37,40 +37,6 @@ describe("lamb.sort", function () {
         var nameDesc = lamb.sorterDesc(lamb.getKey("name"));
         var surnameDesc = lamb.sorterDesc(lamb.getKey("surname"));
 
-        it("should throw an exception if no array-like object is supplied", function () {
-            expect(lamb.sort).toThrow();
-            expect(lamb.sortWith()).toThrow();
-        });
-
-        it("should use a default ascending sorter if no sorters are supplied", function () {
-            var sortedNumbersA = lamb.sort(numbers);
-            var sortedNumbersB = lamb.sortWith()(numbers);
-            var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
-            var stringResult = ["a", "b", "c", "d"];
-
-            expect(sortedNumbersA).toEqual(numbersResult);
-            expect(sortedNumbersB).toEqual(numbersResult);
-            expect(lamb.sort("cadb")).toEqual(stringResult);
-            expect(lamb.sortWith()("cadb")).toEqual(stringResult);
-        });
-
-        it("should automatically build a default sorting criterion if supplied only with a reader", function () {
-            var stringNumbers = ["2", "1", "10", "5"];
-            var stringNumbersAsc = ["1", "2", "5", "10"];
-            var mixedAsObject = [NaN, null, null, {}, void 0, NaN, -100, false, [], "1", 1, "10", "15", "20"];
-
-            expect(lamb.sort(stringNumbers, Number)).toEqual(stringNumbersAsc);
-            expect(lamb.sortWith(Number)(stringNumbers)).toEqual(stringNumbersAsc);
-            expect(lamb.sort(mixed, Number)).toEqual(mixedAsNumbersAsc);
-            expect(lamb.sortWith(Number)(mixed)).toEqual(mixedAsNumbersAsc);
-            expect(lamb.sort(mixed, Object)).toEqual(mixedAsObject);
-            expect(lamb.sortWith(Object)(mixed)).toEqual(mixedAsObject);
-        });
-
-        it("should treat values as strings if different types are received by the default comparer", function () {
-            expect(lamb.sort(mixed)).toEqual([[], -100, "1", 1, "10", "15", "20", NaN, NaN, false, null, null, {}, void 0]);
-        });
-
         it("should build a sorted copy of the provided array-like object", function () {
             var sortedNumbersA = lamb.sort(numbers, descSorter);
             var sortedNumbersB = lamb.sortWith(descSorter)(numbers);
@@ -110,6 +76,23 @@ describe("lamb.sort", function () {
             expect(myPersonsB).toEqual(personsByNameAscSurnameDesc);
         });
 
+        it("should automatically build a default sorting criterion if supplied only with a reader", function () {
+            var stringNumbers = ["2", "1", "10", "5"];
+            var stringNumbersAsc = ["1", "2", "5", "10"];
+            var mixedAsObject = [NaN, null, null, {}, void 0, NaN, -100, false, [], "1", 1, "10", "15", "20"];
+
+            expect(lamb.sort(stringNumbers, Number)).toEqual(stringNumbersAsc);
+            expect(lamb.sortWith(Number)(stringNumbers)).toEqual(stringNumbersAsc);
+            expect(lamb.sort(mixed, Number)).toEqual(mixedAsNumbersAsc);
+            expect(lamb.sortWith(Number)(mixed)).toEqual(mixedAsNumbersAsc);
+            expect(lamb.sort(mixed, Object)).toEqual(mixedAsObject);
+            expect(lamb.sortWith(Object)(mixed)).toEqual(mixedAsObject);
+        });
+
+        it("should treat values as strings if different types are received by the default comparer", function () {
+            expect(lamb.sort(mixed)).toEqual([[], -100, "1", 1, "10", "15", "20", NaN, NaN, false, null, null, {}, void 0]);
+        });
+
         it("should be able to use custom comparers", function () {
             var localeSorter = new Intl.Collator("it");
             var localeSorterDesc = lamb.sorterDesc(lamb.identity, localeSorter.compare);
@@ -121,6 +104,49 @@ describe("lamb.sort", function () {
             expect(lamb.sortWith(localeSorter)(chars)).toEqual(charsAsc);
             expect(lamb.sort(chars, localeSorterDesc)).toEqual(charsDesc);
             expect(lamb.sortWith(localeSorterDesc)(chars)).toEqual(charsDesc);
+        });
+
+        it("should use a default ascending sorter if no sorters are supplied", function () {
+            var sortedNumbersA = lamb.sort(numbers);
+            var sortedNumbersB = lamb.sortWith()(numbers);
+            var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
+            var stringResult = ["a", "b", "c", "d"];
+
+            expect(sortedNumbersA).toEqual(numbersResult);
+            expect(sortedNumbersB).toEqual(numbersResult);
+            expect(lamb.sort("cadb")).toEqual(stringResult);
+            expect(lamb.sortWith()("cadb")).toEqual(stringResult);
+        });
+
+        it("should build a default ascending sorter if any of the received criteria isn't a function or a Sorter", function () {
+            var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
+            var stringResult = ["a", "b", "c", "d"];
+
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.sort(numbers, value)).toEqual(numbersResult);
+                expect(lamb.sortWith(value)(numbers)).toEqual(numbersResult);
+                expect(lamb.sort("cadb", value)).toEqual(stringResult);
+                expect(lamb.sortWith(value)("cadb")).toEqual(stringResult);
+            });
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.sort(null); }).toThrow();
+            expect(function () { lamb.sort(void 0); }).toThrow();
+            expect(function () { lamb.sortWith()(null); }).toThrow();
+            expect(function () { lamb.sortWith()(void 0); }).toThrow();
+        });
+
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.sort).toThrow();
+            expect(lamb.sortWith()).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.sort(value)).toEqual([]);
+                expect(lamb.sortWith()(value)).toEqual([]);
+            });
         });
     });
 
@@ -192,14 +218,6 @@ describe("lamb.sort", function () {
             expect(lamb.sortedInsert([3, 2, 1], 2, descSorter)).toEqual([3, 2, 2, 1]);
         });
 
-        it("should use a default ascending sorter if no sorters are supplied", function () {
-            expect(lamb.sortedInsert([1, 2, 3], 2.5)).toEqual([1, 2, 2.5, 3]);
-        });
-
-        it("should automatically build a default sorting criterion if supplied only with a reader", function () {
-            expect(lamb.sortedInsert([1, 2, 3], "2.5", Number)).toEqual([1, 2, "2.5", 3]);
-        });
-
         it("should be able to insert values at the beginning and at the end of the array", function () {
             var arr = [1, 2, 3];
             expect(lamb.sortedInsert(arr, 0)).toEqual([0, 1, 2, 3]);
@@ -208,6 +226,42 @@ describe("lamb.sort", function () {
 
         it("should accept an empty list", function () {
             expect(lamb.sortedInsert([], 1)).toEqual([1]);
+        });
+
+        it("should accept array-like objects", function () {
+            var s = "abdefg";
+            var result = ["a", "b", "c", "d", "e", "f", "g"];
+
+            expect(lamb.sortedInsert(s, "c", lamb.sorter())).toEqual(result);
+        });
+
+        it("should automatically build a default sorting criterion if supplied only with a reader", function () {
+            expect(lamb.sortedInsert([1, 2, 3], "2.5", Number)).toEqual([1, 2, "2.5", 3]);
+        });
+
+        it("should use a default ascending sorter if no sorters are supplied", function () {
+            expect(lamb.sortedInsert([1, 2, 3], 2.5)).toEqual([1, 2, 2.5, 3]);
+        });
+
+        it("should use a default ascending sorter if any of the received criteria isn't a function or a Sorter", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.sortedInsert([1, 2, 3], 2.5, value)).toEqual([1, 2, 2.5, 3]);
+            });
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () {lamb.sortedInsert(null, 99); }).toThrow();
+            expect(function () {lamb.sortedInsert(void 0, 99); }).toThrow();
+        });
+
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.sortedInsert).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.sortedInsert(value, 99)).toEqual([99]);
+            });
         });
     });
 
@@ -232,10 +286,22 @@ describe("lamb.sort", function () {
             expect(typeof sorterDesc.compare).toBe("function");
             expect(sorterAsc.compare.length).toBe(2);
             expect(sorterDesc.compare.length).toBe(2);
+            expect(sorterAsc.compare("a", "b")).toBe(-1);
+            expect(sorterDesc.compare("a", "b")).toBe(-1);
         });
 
         it("should use a custom comparer if supplied with one", function () {
             expect(lamb.sorter(null, myComparer).compare(foo, bar)).toBe("foo");
+        });
+
+        it("should use a custom reader if supplied with one", function () {
+            lamb.sorter(myReader, myComparer).compare(foo, bar);
+
+            expect(myReader).toHaveBeenCalledTimes(2);
+            expect(myReader.calls.argsFor(0)[0]).toBe(foo);
+            expect(myReader.calls.argsFor(1)[0]).toBe(bar);
+            expect(myComparer).toHaveBeenCalledTimes(1);
+            expect(myComparer).toHaveBeenCalledWith(1, 2);
         });
 
         it("should pass values directly to the comparer if there's no reader function or if the reader is the identity function", function () {
@@ -249,14 +315,20 @@ describe("lamb.sort", function () {
             expect(myComparer.calls.argsFor(1)[1]).toBe(bar);
         });
 
-        it("should use a custom resader if supplied with one", function () {
-            lamb.sorter(myReader, myComparer).compare(foo, bar);
+        it("should build a default sorting criterion if the comparer isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                var sorterAsc = lamb.sorter(lamb.identity, value);
+                var sorterDesc = lamb.sorterDesc(lamb.identity, value);
 
-            expect(myReader).toHaveBeenCalledTimes(2);
-            expect(myReader.calls.argsFor(0)[0]).toBe(foo);
-            expect(myReader.calls.argsFor(1)[0]).toBe(bar);
-            expect(myComparer).toHaveBeenCalledTimes(1);
-            expect(myComparer).toHaveBeenCalledWith(1, 2);
+                expect(sorterAsc.isDescending).toBe(false);
+                expect(sorterDesc.isDescending).toBe(true);
+                expect(typeof sorterAsc.compare).toBe("function");
+                expect(typeof sorterDesc.compare).toBe("function");
+                expect(sorterAsc.compare.length).toBe(2);
+                expect(sorterDesc.compare.length).toBe(2);
+                expect(sorterAsc.compare("a", "b")).toBe(-1);
+                expect(sorterDesc.compare("a", "b")).toBe(-1);
+            });
         });
     });
 });
