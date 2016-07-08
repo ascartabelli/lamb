@@ -254,6 +254,14 @@ describe("lamb.array", function () {
             expect(getLowerCaseEls("fooBAR")).toEqual(["f", "o", "o"]);
         });
 
+        it("should throw an exception if the predicate isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.filterWith(value)(arr); }).toThrow();
+            });
+
+            expect(function () { lamb.filterWith()(arr); }).toThrow();
+        });
+
         it("should throw an exception if called without the data argument", function () {
             expect(getLowerCaseEls).toThrow();
         });
@@ -668,8 +676,12 @@ describe("lamb.array", function () {
             expect(makeDoubles("12345")).toEqual([2, 4, 6, 8, 10]);
         });
 
-        it("should throw an exception if isn't supplied with a mapping function", function () {
-            expect(function () { lamb.mapWith(null)(nummbers); }).toThrow();
+        it("should throw an exception if the iteratee isn't a function or is missing", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.mapWith(value)(numbers); }).toThrow();
+            });
+
+            expect(function () { lamb.mapWith()(numbers); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {
