@@ -469,13 +469,13 @@ describe("lamb.function", function () {
             expect(lamb.getArgAt(-2)("a", "b", "c")).toBe("b");
         });
 
-        it("should return undefined if no arguments are passed or if the index is out of bounds", function () {
+        it("should build a function returning `undefined` if no arguments are passed or if the index is out of bounds", function () {
             expect(lamb.getArgAt(6)("a", "b", "c")).toBeUndefined();
             expect(lamb.getArgAt(-4)("a", "b", "c")).toBeUndefined();
             expect(lamb.getArgAt(2)()).toBeUndefined();
         });
 
-        it("should return undefined if the index isn't an integer", function () {
+        it("should build a function returning `undefined` if the index isn't an integer", function () {
             [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
                 expect(lamb.getArgAt(v)("a", "b", "c")).toBeUndefined();
             });
@@ -483,43 +483,144 @@ describe("lamb.function", function () {
         });
     });
 
-    describe("invokerOn", function () {
-        it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
-            var someArray = [1, 2, 3, 4, 5];
-            var someString = "foo bar";
-            var callOnSomeArray = lamb.invokerOn(someArray);
-            var callOnSomeString = lamb.invokerOn(someString);
+    describe("invoker", function () {
+        var slice = lamb.invoker("slice");
+        var tail = lamb.invoker("slice", 1);
+        var arr = [1, 2, 3, 4, 5];
 
-            spyOn(someArray, "slice").and.callThrough();
-            spyOn(someArray, "join").and.callThrough();
+        beforeEach(function () {
+            spyOn(arr, "slice").and.callThrough();
+        });
 
-            expect(callOnSomeArray("slice", 1, 3)).toEqual([2, 3]);
-            expect(someArray.slice.calls.count()).toBe(1);
-            expect(someArray.slice.calls.first().object).toBe(someArray);
+        afterEach(function () {
+            arr.slice.calls.reset();
+        });
 
-            expect(callOnSomeArray("join", "")).toBe("12345");
-            expect(someArray.join.calls.count()).toBe(1);
-            expect(someArray.join.calls.first().object).toBe(someArray);
+        it("should build a function that will invoke the desired method on the given object", function () {
+            var s = "foo bar";
 
-            expect(callOnSomeString("slice", 1, 3)).toBe("oo");
-            expect(callOnSomeString("toUpperCase")).toBe("FOO BAR");
-            expect(callOnSomeString("foo")).toBeUndefined();
+            expect(slice(arr, 1, 3)).toEqual([2, 3]);
+            expect(arr.slice.calls.count()).toBe(1);
+            expect(arr.slice.calls.first().object).toBe(arr);
+            expect(arr.slice.calls.argsFor(0)).toEqual([1, 3]);
+            expect(slice(s, 1, 3)).toBe("oo");
+        });
+
+        it("should allow bound arguments", function () {
+            expect(tail(arr)).toEqual([2, 3, 4, 5]);
+            expect(tail(arr, -1)).toEqual([2, 3, 4]);
+            expect(arr.slice.calls.count()).toBe(2);
+            expect(arr.slice.calls.first().object).toBe(arr);
+            expect(arr.slice.calls.mostRecent().object).toBe(arr);
+            expect(arr.slice.calls.argsFor(0)).toEqual([1]);
+            expect(arr.slice.calls.argsFor(1)).toEqual([1, -1]);
+        });
+
+        it("should build a function returning `undefined` if the given method doesn't exist on the received object", function () {
+            expect(slice({})).toBeUndefined();
+            expect(slice(new Date())).toBeUndefined();
+        });
+
+        it("should accept an empty string as a method name", function () {
+            var obj = {"": function () { return 99; }};
+            expect(lamb.invoker("")(obj)).toBe(99);
+        });
+
+        it("should convert to string every value received as a method name", function () {
+            var d = new Date();
+            var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
+            var invalidMethodsAsStrings = invalidMethods.map(String);
+            var obj = {};
+
+            invalidMethodsAsStrings.forEach(function (method, idx) {
+                obj[method] = lamb.always(method);
+
+                expect(lamb.invoker(invalidMethods[idx])(obj)).toBe(method);
+            });
+
+            expect(lamb.invoker()(obj)).toBe("undefined");
+        });
+
+        it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", function () {
+            expect(function () { slice(null); }).toThrow();
+            expect(function () { slice(void 0); }).toThrow();
+            expect(slice).toThrow();
+        });
+
+        it("should build a function that converts to object every other value", function () {
+            [/foo/, 1, function () {}, NaN, true].forEach(function (value) {
+                expect(slice(value)).toBeUndefined();
+            });
         });
     });
 
-    describe("invoker", function () {
-        it("should build a function that will invoke the desired method on the given object", function () {
-            var slice = lamb.invoker("slice");
-            var someArray = [1, 2, 3, 4, 5];
-            var someString = "foo bar";
+    describe("invokerOn", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var callOnArr = lamb.invokerOn(arr);
 
-            spyOn(someArray, "slice").and.callThrough();
+        beforeEach(function () {
+            spyOn(arr, "slice").and.callThrough();
+            spyOn(arr, "join").and.callThrough();
+        });
 
-            expect(slice(someArray, 1, 3)).toEqual([2, 3]);
-            expect(someArray.slice.calls.count()).toBe(1);
-            expect(someArray.slice.calls.first().object).toBe(someArray);
-            expect(slice(someString, 1, 3)).toBe("oo");
-            expect(slice(1)).toBeUndefined();
+        afterEach(function () {
+            arr.slice.calls.reset();
+            arr.join.calls.reset();
+        });
+
+        it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
+            var s = "foo bar";
+            var callOnS = lamb.invokerOn(s);
+
+            expect(callOnArr("slice", 1, 3)).toEqual([2, 3]);
+            expect(arr.slice.calls.count()).toBe(1);
+            expect(arr.slice.calls.first().object).toBe(arr);
+            expect(arr.slice.calls.argsFor(0)).toEqual([1, 3]);
+
+            expect(callOnArr("join", "")).toBe("12345");
+            expect(arr.join.calls.count()).toBe(1);
+            expect(arr.join.calls.first().object).toBe(arr);
+            expect(arr.join.calls.argsFor(0)).toEqual([""]);
+
+            expect(callOnS("slice", 1, 3)).toBe("oo");
+            expect(callOnS("toUpperCase")).toBe("FOO BAR");
+        });
+
+        it("should build a function returning `undefined` if the given method doesn't exist on the received object", function () {
+            expect(callOnArr("foo")).toBeUndefined();
+        });
+
+        it("should accept an empty string as a method name", function () {
+            var obj = {"": function () { return 99; }};
+            expect(lamb.invokerOn(obj)("")).toBe(99);
+        });
+
+        it("should convert to string every value received as a method name", function () {
+            var d = new Date();
+            var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
+            var invalidMethodsAsStrings = invalidMethods.map(String);
+            var obj = {};
+            var callOnObj = lamb.invokerOn(obj);
+
+            invalidMethodsAsStrings.forEach(function (method, idx) {
+                obj[method] = lamb.always(method);
+
+                expect(callOnObj(invalidMethods[idx])).toBe(method);
+            });
+
+            expect(callOnObj()).toBe("undefined");
+        });
+
+        it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", function () {
+            expect(lamb.invokerOn(null)).toThrow();
+            expect(lamb.invokerOn(void 0)).toThrow();
+            expect(lamb.invokerOn()).toThrow();
+        });
+
+        it("should build a function that converts to object every other value", function () {
+            [/foo/, 1, function () {}, NaN, true].forEach(function (value) {
+                expect(lamb.invokerOn(value)("someMethod")).toBeUndefined();
+            });
         });
     });
 
