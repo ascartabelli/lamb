@@ -48,7 +48,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific version too:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.32.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.33.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -86,6 +86,10 @@ You can refer to the [changelog](#changelog) to see if your code is affected.
   See the main header: because it's docile like a lamb.
 
 ## <a name="changelog"></a> Changelog
+
+- **v0.33.0 - *2016/07/08***
+  - **API change**: `sortedInsert` now accepts array-like objects
+  - Completed "fifth round" of test updating
 
 - **v0.32.0 - *2016/07/01***
   - **API change**: `take` and `takeN` now convert `undefined` values passed as `n` to Number (zero) before calling `slice`
