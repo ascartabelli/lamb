@@ -5,17 +5,32 @@ describe("lamb.type", function () {
         it("should verify if the given value is null or undefined", function () {
             expect(lamb.isNil(null)).toBe(true);
             expect(lamb.isNil(void 0)).toBe(true);
-            expect(lamb.isNil(0)).toBe(false);
-            expect(lamb.isNil(NaN)).toBe(false);
+        });
+
+        it("should return true if called without arguments", function () {
+            expect(lamb.isNil()).toBe(true);
+        });
+
+        it("should return false for every other value", function () {
+            [[], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.isNil(value)).toBe(false);
+            });
         });
     });
 
     describe("isNull", function () {
         it("should verify if the given value is null", function () {
             expect(lamb.isNull(null)).toBe(true);
-            expect(lamb.isNull(void 0)).toBe(false);
-            expect(lamb.isNull(0)).toBe(false);
-            expect(lamb.isNull(NaN)).toBe(false);
+        });
+
+        it("should return false if called without arguments", function () {
+            expect(lamb.isNull()).toBe(false);
+        });
+
+        it("should return false for every other value", function () {
+            [void 0, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.isNull(value)).toBe(false);
+            });
         });
     });
 
@@ -26,15 +41,31 @@ describe("lamb.type", function () {
 
             expect(isArray([1, 2, 3])).toBe(true);
             expect(isFunction(function () {})).toBe(true);
+            expect(isArray({})).toBe(false);
+            expect(isFunction(new Date())).toBe(false);
+        });
+
+        it("should build a function returning false for every value if called without arguments or with an invalid type", function () {
+            [null, void 0, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.isType(value)(value)).toBe(false);
+                expect(lamb.isType()(value)).toBe(false);
+            });
         });
     });
 
     describe("isUndefined", function () {
         it("should verify if the given value is undefined", function () {
-            expect(lamb.isUndefined(null)).toBe(false);
             expect(lamb.isUndefined(void 0)).toBe(true);
-            expect(lamb.isUndefined(0)).toBe(false);
-            expect(lamb.isUndefined(NaN)).toBe(false);
+        });
+
+        it("should return true if called without arguments", function () {
+            expect(lamb.isUndefined()).toBe(true);
+        });
+
+        it("should return false for every other value", function () {
+            [null, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.isUndefined(value)).toBe(false);
+            });
         });
     });
 
