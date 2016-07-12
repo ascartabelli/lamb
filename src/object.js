@@ -40,7 +40,7 @@
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
         var getValues = partial(getPathIn, obj, _, pathSeparator);
-        return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
+        return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
     };
 }
 
@@ -444,11 +444,15 @@ function pick (source, whitelist) {
  * @returns {Function}
  */
 function pickIf (predicate, predicateContext) {
+    if (arguments.length === 2) {
+        predicate = predicate.bind(predicateContext);
+    }
+
     return function (source) {
         var result = {};
 
-        enumerables(source).forEach(function (key) {
-            if (predicate.call(predicateContext, source[key], key, source)) {
+        forEach(enumerables(source), function (key) {
+            if (predicate(source[key], key, source)) {
                 result[key] = source[key];
             }
         });
@@ -570,7 +574,7 @@ function renameWith (fn) {
 function skip (source, blacklist) {
     var result = {};
 
-    enumerables(source).forEach(function (key) {
+    forEach(enumerables(source), function (key) {
         if (!isIn(blacklist, key)) {
             result[key] = source[key];
         }
@@ -590,15 +594,14 @@ function skip (source, blacklist) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.skip|skip}
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
  */
-function skipIf (predicate, predicateContext) {
-    return pickIf(not(predicate), predicateContext);
-}
+var skipIf = tapArgs(pickIf, not);
 
 /**
  * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
@@ -663,7 +666,7 @@ var tearOwn = _tearFrom(keys);
  * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by {@link module:lamb.checker|checker}, or an empty array.
  */
 function validate (obj, checkers) {
-    return checkers.reduce(function (errors, checker) {
+    return reduce(checkers, function (errors, checker) {
         var result = checker(obj);
         result.length && errors.push(result);
         return errors;

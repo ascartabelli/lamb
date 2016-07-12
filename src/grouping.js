@@ -43,6 +43,7 @@ var count = _groupWith(partial(add, 1), 0);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.count|count}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
@@ -50,9 +51,7 @@ var count = _groupWith(partial(add, 1), 0);
  * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-function countBy (iteratee, iterateeContext) {
-    return partial(count, _, iteratee, iterateeContext);
-}
+var countBy = _partialWithIteratee(count);
 
 /**
  * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
@@ -144,6 +143,7 @@ var group = _groupWith(invoker("concat"), []);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.group|group}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
@@ -151,9 +151,7 @@ var group = _groupWith(invoker("concat"), []);
  * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-function groupBy (iteratee, iterateeContext) {
-    return partial(group, _, iteratee, iterateeContext);
-}
+var groupBy = _partialWithIteratee(group);
 
 /**
  * Similar to {@link module:lamb.group|group}, but the generated lookup table will have
@@ -230,6 +228,7 @@ var index = _groupWith(getArgAt(1));
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.index|index}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
@@ -237,9 +236,7 @@ var index = _groupWith(getArgAt(1));
  * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-function indexBy (iteratee, iterateeContext) {
-    return partial(index, _, iteratee, iterateeContext);
-}
+var indexBy = _partialWithIteratee(index);
 
 lamb.count = count;
 lamb.countBy = countBy;

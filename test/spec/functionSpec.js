@@ -640,10 +640,10 @@ describe("lamb.function", function () {
 
         it("should build a function throwing an exception if the mapper isn't a function or is missing", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.mapArgs(lamb.add, value)).toThrow();
+                expect(function () { lamb.mapArgs(lamb.add, value)(1, 2); }).toThrow();
             });
 
-            expect(lamb.mapArgs(lamb.add)).toThrow();
+            expect(function () { lamb.mapArgs(lamb.add)(1, 2); }).toThrow();
         });
 
         it("should build a function throwing an exception if `fn` isn't a function", function () {

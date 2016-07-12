@@ -127,7 +127,7 @@ function _curry (fn, arity, isRightCurry, isAutoCurry) {
  * @returns {Array} The output array filled with the results
  */
 function _flatten (array, output) {
-    array.forEach(function (value) {
+    forEach(array, function (value) {
         if (Array.isArray(value)) {
             _flatten(value, output);
         } else {
@@ -201,7 +201,11 @@ function _getNumConsecutiveHits (arrayLike, predicate, predicateContext) {
     var idx = -1;
     var len = arrayLike.length;
 
-    while (++idx < len && predicate.call(predicateContext, arrayLike[idx], idx, arrayLike));
+    if (arguments.length === 3) {
+        predicate = predicate.bind(predicateContext);
+    }
+
+    while (++idx < len && predicate(arrayLike[idx], idx, arrayLike));
 
     return idx;
 }
@@ -264,8 +268,12 @@ function _getPathInfo (obj, parts, walkNonEnumerables) {
  */
 function _groupWith (makeValue, startValue) {
     return function (arrayLike, iteratee, iterateeContext) {
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
         return reduce(arrayLike, function (result, element, idx) {
-            var key = iteratee.call(iterateeContext, element, idx, arrayLike);
+            var key = iteratee(element, idx, arrayLike);
             var value = makeValue(key in result ? result[key] : startValue , element);
 
             result[key] = value;
@@ -287,7 +295,7 @@ function _immutable (obj, seen) {
     if (seen.indexOf(obj) === -1) {
         seen.push(Object.freeze(obj));
 
-        Object.getOwnPropertyNames(obj).forEach(function (key) {
+        forEach(Object.getOwnPropertyNames(obj), function (key) {
             var value = obj[key];
 
             if (typeof value === "object" && !isNull(value)) {
@@ -364,7 +372,7 @@ function _keyToPairIn (obj) {
  * @returns {Sorter[]}
  */
 function _makeCriteria (sorters) {
-    return sorters.length ? sorters.map(_makeCriterion) : [_sorter()];
+    return sorters.length ? map(sorters, _makeCriterion) : [_sorter()];
 }
 
 /**
@@ -415,8 +423,28 @@ function _merge (getKeys) {
  * @returns {Function}
  */
 var _pairsFrom = _curry(function (getKeys, obj) {
-    return getKeys(obj).map(_keyToPairIn(obj));
+    return map(getKeys(obj), _keyToPairIn(obj));
 });
+
+/**
+ * Builds a partial application of a function expecting an iteratee and an
+ * optional context other than its main data argument.<br/>
+ * The context is passed to the function only when is explicitly given
+ * a value.
+ * @private
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function _partialWithIteratee (fn) {
+    return function (iteratee, iterateeContext) {
+        return partial(
+            arguments.length === 2 ? fn : binary(fn),
+            _,
+            iteratee,
+            iterateeContext
+        );
+    };
+}
 
 /**
  * Builds a list of the enumerable properties of an object.
@@ -478,7 +506,7 @@ function _setPathIn (obj, parts, value) {
     var key = parts[0];
     var v = parts.length === 1 ? value : _setPathIn(
         _getPathInfo(obj, [key], false).target,
-        parts.slice(1),
+        slice(parts, 1),
         value
     );
 
@@ -518,7 +546,7 @@ function _sorter (reader, isDescending, comparer) {
  * @returns {Function}
  */
 var _tearFrom = _curry(function (getKeys, obj) {
-    return getKeys(obj).reduce(function (result, key) {
+    return reduce(getKeys(obj), function (result, key) {
         result[0].push(key);
         result[1].push(obj[key]);
         return result;
@@ -557,5 +585,5 @@ var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
  * @returns {Function}
  */
 var _valuesFrom = _curry(function (getKeys, obj) {
-    return getKeys(obj).map(partial(getIn, obj));
+    return map(getKeys(obj), partial(getIn, obj));
 });

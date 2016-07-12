@@ -82,14 +82,13 @@ function compose () {
  * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
  * @function
  * @example
- * // Lamb's "filter" is actually implemented like this
- * var filter = _.generic(Array.prototype.filter);
- * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+ * // Lamb's "slice" is actually implemented like this
+ * var slice = _.generic(Array.prototype.slice);
  *
- * filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
+ * slice(["foo", "bar", "baz"], 0, -1) // => ["foo", "bar"]
  *
  * // the function will work with any array-like object
- * filter("fooBAR", isLowerCase) // => ["f", "o", "o"]
+ * slice("fooBAR", 0, 3) // => ["f", "o", "o"]
  *
  * @param {Function} method
  * @returns {Function}
@@ -142,7 +141,7 @@ function partial (fn) {
         }
 
         for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
-            newArgs.push(arguments[lastArgumentIdx]);
+            newArgs[i++] = arguments[lastArgumentIdx];
         }
 
         return fn.apply(this, newArgs);

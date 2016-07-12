@@ -68,8 +68,12 @@ function divide (a, b) {
 function generate (start, len, iteratee, iterateeContext) {
     var result = [start];
 
+    if (arguments.length === 4) {
+        iteratee = iteratee.bind(iterateeContext);
+    }
+
     for (var i = 0, limit = len - 1; i < limit; i++) {
-        result.push(iteratee.call(iterateeContext, result[i], i, result));
+        result.push(iteratee(result[i], i, result));
     }
 
     return result;

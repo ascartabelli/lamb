@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.34.0-alpha.1
+ * @version 0.34.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.34.0-alpha.1";
+    lamb._version =  "0.34.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -103,14 +103,13 @@
      * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
      * @function
      * @example
-     * // Lamb's "filter" is actually implemented like this
-     * var filter = _.generic(Array.prototype.filter);
-     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+     * // Lamb's "slice" is actually implemented like this
+     * var slice = _.generic(Array.prototype.slice);
      *
-     * filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
+     * slice(["foo", "bar", "baz"], 0, -1) // => ["foo", "bar"]
      *
      * // the function will work with any array-like object
-     * filter("fooBAR", isLowerCase) // => ["f", "o", "o"]
+     * slice("fooBAR", 0, 3) // => ["f", "o", "o"]
      *
      * @param {Function} method
      * @returns {Function}
@@ -163,7 +162,7 @@
             }
 
             for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
-                newArgs.push(arguments[lastArgumentIdx]);
+                newArgs[i++] = arguments[lastArgumentIdx];
             }
 
             return fn.apply(this, newArgs);
@@ -305,7 +304,7 @@
      * @returns {Array} The output array filled with the results
      */
     function _flatten (array, output) {
-        array.forEach(function (value) {
+        forEach(array, function (value) {
             if (Array.isArray(value)) {
                 _flatten(value, output);
             } else {
@@ -379,7 +378,11 @@
         var idx = -1;
         var len = arrayLike.length;
 
-        while (++idx < len && predicate.call(predicateContext, arrayLike[idx], idx, arrayLike));
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
+        while (++idx < len && predicate(arrayLike[idx], idx, arrayLike));
 
         return idx;
     }
@@ -442,8 +445,12 @@
      */
     function _groupWith (makeValue, startValue) {
         return function (arrayLike, iteratee, iterateeContext) {
+            if (arguments.length === 3) {
+                iteratee = iteratee.bind(iterateeContext);
+            }
+
             return reduce(arrayLike, function (result, element, idx) {
-                var key = iteratee.call(iterateeContext, element, idx, arrayLike);
+                var key = iteratee(element, idx, arrayLike);
                 var value = makeValue(key in result ? result[key] : startValue , element);
 
                 result[key] = value;
@@ -465,7 +472,7 @@
         if (seen.indexOf(obj) === -1) {
             seen.push(Object.freeze(obj));
 
-            Object.getOwnPropertyNames(obj).forEach(function (key) {
+            forEach(Object.getOwnPropertyNames(obj), function (key) {
                 var value = obj[key];
 
                 if (typeof value === "object" && !isNull(value)) {
@@ -542,7 +549,7 @@
      * @returns {Sorter[]}
      */
     function _makeCriteria (sorters) {
-        return sorters.length ? sorters.map(_makeCriterion) : [_sorter()];
+        return sorters.length ? map(sorters, _makeCriterion) : [_sorter()];
     }
 
     /**
@@ -593,8 +600,28 @@
      * @returns {Function}
      */
     var _pairsFrom = _curry(function (getKeys, obj) {
-        return getKeys(obj).map(_keyToPairIn(obj));
+        return map(getKeys(obj), _keyToPairIn(obj));
     });
+
+    /**
+     * Builds a partial application of a function expecting an iteratee and an
+     * optional context other than its main data argument.<br/>
+     * The context is passed to the function only when is explicitly given
+     * a value.
+     * @private
+     * @param {Function} fn
+     * @returns {Function}
+     */
+    function _partialWithIteratee (fn) {
+        return function (iteratee, iterateeContext) {
+            return partial(
+                arguments.length === 2 ? fn : binary(fn),
+                _,
+                iteratee,
+                iterateeContext
+            );
+        };
+    }
 
     /**
      * Builds a list of the enumerable properties of an object.
@@ -656,7 +683,7 @@
         var key = parts[0];
         var v = parts.length === 1 ? value : _setPathIn(
             _getPathInfo(obj, [key], false).target,
-            parts.slice(1),
+            slice(parts, 1),
             value
         );
 
@@ -696,7 +723,7 @@
      * @returns {Function}
      */
     var _tearFrom = _curry(function (getKeys, obj) {
-        return getKeys(obj).reduce(function (result, key) {
+        return reduce(getKeys(obj), function (result, key) {
             result[0].push(key);
             result[1].push(obj[key]);
             return result;
@@ -735,13 +762,16 @@
      * @returns {Function}
      */
     var _valuesFrom = _curry(function (getKeys, obj) {
-        return getKeys(obj).map(partial(getIn, obj));
+        return map(getKeys(obj), partial(getIn, obj));
     });
 
 
     /**
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code> test.<br/>
-     * It's a generic version of [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}.
+     * Since version <code>0.34.0</code> this function is no longer a generic version of
+     * [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}
+     * for performance reasons.<br/>
+     * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
      * var isLowerCase = function (s) { return s.toLowerCase() === s; };
      *
@@ -752,24 +782,59 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.filterWith|filterWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Array}
      */
-    var filter = generic(_arrayProto.filter);
+    function filter (arrayLike, predicate, predicateContext) {
+        var len = arrayLike.length;
+        var result = [];
+
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
+        for (var i = 0; i < len; i++) {
+            predicate(arrayLike[i], i, arrayLike) && result.push(arrayLike[i]);
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns a partial application of {@link module:lamb.filter|filter} that uses the given predicate and
+     * the optional context to build a function expecting the array-like object to act upon.
+     * @example
+     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+     * var getLowerCaseEntries = _.filterWith(isLowerCase);
+     *
+     * getLowerCaseEntries(["Foo", "bar", "baZ"]) // => ["bar"]
+     *
+     * // array-like objects can be used as well
+     * getLowerCaseEntries("fooBAR") // => ["f", "o", "o"]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.filter|filter}
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Function}
+     */
+    var filterWith = _partialWithIteratee(filter);
 
     /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
-     * It's a generic version of [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}.
+     * Since version <code>0.34.0</code> this function is no longer a generic version of
+     * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
+     * for performance reasons.<br/>
+     * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment</caption>
-     * var addClass = function (className) {
-     *     return function (element) {
-     *         element.classList.add(className);
-     *     };
-     * };
+     * var addClass = _.curry(function (className, element) {
+     *     element.classList.add(className);
+     * });
      * var paragraphs = document.querySelectorAll("#some-container p");
      *
      * _.forEach(paragraphs, addClass("main"));
@@ -777,43 +842,86 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      */
-    var forEach = generic(_arrayProto.forEach);
+    function forEach (arrayLike, iteratee, iterateeContext) {
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
+        for (var i = 0, len = arrayLike.length >>> 0; i < len; i++) {
+            iteratee(arrayLike[i], i, arrayLike);
+        }
+    }
 
     /**
-     * Creates an array from the results of the provided <code>iteratee</code>.<br/>
-     * It's a generic version of [Array.prototype.map]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map}.
+     * Builds a new array by applying the iteratee function to each element of the
+     * received array-like object.<br/>
+     * Since version <code>0.34.0</code> this function is no longer a generic version of
+     * [Array.prototype.map]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map}
+     * for performance reasons.<br/>
+     * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
-     * function getSquareRoots () {
-     *     return _.map(arguments, Math.sqrt);
-     * }
+     * _.map(["Joe", "Mario", "Jane"], _.invoker("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
      *
-     * getSquareRoots(4, 9, 16) // => [2, 3, 4]
+     * _.map([4, 9, 16], Math.sqrt); // => [2, 3, 4]
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.mapWith|mapWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    var map = generic(_arrayProto.map);
+    function map (arrayLike, iteratee, iterateeContext) {
+        var len = arrayLike.length >>> 0;
+        var result = Array(len);
+
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
+        for (var i = 0; i < len; i++) {
+            result[i] = iteratee(arrayLike[i], i, arrayLike);
+        }
+
+        return result;
+    }
 
     /**
-     * Reduces (or folds) the values of an array-like object, starting from the first, to a new value using the provided <code>accumulator</code> function.<br/>
-     * It's a generic version of [Array.prototype.reduce]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce}.
+     * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the optional context.
+     * The resulting function expects the array-like object to act upon.
+     * @example
+     * var square = function (n) { return n * n; };
+     * var getSquares = _.mapWith(square);
+     *
+     * getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.map|map}
+     * @param {ListIteratorCallback} iteratee
+     * @param {Object} [iterateeContext]
+     * @returns {function}
+     */
+    var mapWith = _partialWithIteratee(map);
+
+    /**
+     * Reduces (or folds) the values of an array-like object, starting from the first, to a new
+     * value using the provided <code>accumulator</code> function.<br/>
+     * Since version <code>0.34.0</code> this function is no longer a generic version of
+     * [Array.prototype.reduce]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce}
+     * for performance reasons.<br/>
+     * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
      * _.reduce([1, 2, 3, 4], _.add) // => 10
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.reduceRight|reduceRight}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
      * @param {ArrayLike} arrayLike
@@ -821,14 +929,36 @@
      * @param {*} [initialValue]
      * @returns {*}
      */
-    var reduce = generic(_arrayProto.reduce);
+    function reduce (arrayLike, accumulator, initialValue) {
+        var len = arrayLike.length >>> 0;
+        var result;
+        var i = 0;
+
+        if (arguments.length === 3) {
+            result = initialValue;
+        } else {
+            if (len === 0) {
+                return _reduce(arrayLike, accumulator);
+            }
+
+            result = arrayLike[i++];
+        }
+
+        for (; i < len; i++) {
+            result = accumulator(result, arrayLike[i], i, arrayLike);
+        }
+
+        return result;
+    }
 
     /**
      * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
-     * It's a generic version of [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}.
+     * Since version <code>0.34.0</code> this function is no longer a generic version of
+     * [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}
+     * for performance reasons.<br/>
+     * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.reduce|reduce}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
      * @param {ArrayLike} arrayLike
@@ -836,7 +966,71 @@
      * @param {*} [initialValue]
      * @returns {*}
      */
-    var reduceRight = generic(_arrayProto.reduceRight);
+    function reduceRight (arrayLike, accumulator, initialValue) {
+        var len = arrayLike.length >>> 0;
+        var result;
+        var i = len - 1;
+
+        if (arguments.length === 3) {
+            result = initialValue;
+        } else {
+            if (len === 0) {
+                return _reduceRight(arrayLike, accumulator);
+            }
+
+            result = arrayLike[i--];
+        }
+
+        for (; i > -1; i--) {
+            result = accumulator(result, arrayLike[i], i, arrayLike);
+        }
+
+        return result;
+    }
+
+    /**
+     * A partial application of {@link module:lamb.reduce|reduceRight} that uses the
+     * provided <code>accumulator</code> and the optional <code>initialValue</code> to
+     * build a function expecting the array-like object to act upon.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.reduceRightWith(_.add)(arr) // => 15
+     * _.reduceRightWith(_.subtract)(arr) // => -5
+     * _.reduceRightWith(_.subtract, 0)(arr) // => -15
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.reduceWith|reduceWith}
+     * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+     * @param {AccumulatorCallback} accumulator
+     * @param {*} [initialValue]
+     * @returns {Function}
+     */
+    var reduceRightWith = _partialWithIteratee(reduceRight);
+
+    /**
+     * A partial application of {@link module:lamb.reduce|reduce} that uses the
+     * provided <code>accumulator</code> and the optional <code>initialValue</code> to
+     * build a function expecting the array-like object to act upon.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.reduceWith(_.add)(arr) // => 15
+     * _.reduceWith(_.subtract)(arr) // => -13
+     * _.reduceWith(_.subtract, 0)(arr) // => -15
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.reduceRightWith|reduceRightWith}
+     * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+     * @param {AccumulatorCallback} accumulator
+     * @param {*} [initialValue]
+     * @returns {Function}
+     */
+    var reduceWith = _partialWithIteratee(reduce);
 
     /**
      * Builds an array by extracting a portion of an array-like object.<br/>
@@ -855,10 +1049,14 @@
     var slice = generic(_arrayProto.slice);
 
     lamb.filter = filter;
+    lamb.filterWith = filterWith;
     lamb.forEach = forEach;
     lamb.map = map;
+    lamb.mapWith = mapWith;
     lamb.reduce = reduce;
     lamb.reduceRight = reduceRight;
+    lamb.reduceRightWith = reduceRightWith;
+    lamb.reduceWith = reduceWith;
     lamb.slice = slice;
 
 
@@ -1263,8 +1461,12 @@
     function generate (start, len, iteratee, iterateeContext) {
         var result = [start];
 
+        if (arguments.length === 4) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
         for (var i = 0, limit = len - 1; i < limit; i++) {
-            result.push(iteratee.call(iterateeContext, result[i], i, result));
+            result.push(iteratee(result[i], i, result));
         }
 
         return result;
@@ -2175,7 +2377,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(slice(arguments, 1).map(unary(slice)));
+        var rest = shallowFlatten(map(slice(arguments, 1), unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
         return filter(array, not(isInRest));
     }
@@ -2245,32 +2447,11 @@
      * @returns {Function}
      */
     function dropWhile (predicate, predicateContext) {
-        return function (arrayLike) {
-            return slice(arrayLike, _getNumConsecutiveHits(arrayLike, predicate, predicateContext));
-        };
-    }
+        var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
 
-    /**
-     * Returns a partial application of {@link module:lamb.filter|filter} that uses the given predicate and
-     * the optional context to build a function expecting the array-like object to act upon.
-     * @example
-     * var isLowerCase = function (s) { return s.toLowerCase() === s; };
-     * var getLowerCaseEntries = _.filterWith(isLowerCase);
-     *
-     * getLowerCaseEntries(["Foo", "bar", "baZ"]) // => ["bar"]
-     *
-     * // array-like objects can be used as well
-     * getLowerCaseEntries("fooBAR") // => ["f", "o", "o"]
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.filter|filter}
-     * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
-     * @returns {Function}
-     */
-    function filterWith (predicate, predicateContext) {
-        return partial(filter, _, predicate, predicateContext);
+        return function (arrayLike) {
+            return slice(arrayLike, fn(arrayLike, predicate, predicateContext));
+        };
     }
 
     /**
@@ -2297,10 +2478,14 @@
     function find (arrayLike, predicate, predicateContext) {
         var result;
 
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
         for (var i = 0, len = arrayLike.length, element; i < len; i++) {
             element = arrayLike[i];
 
-            if (predicate.call(predicateContext, element, i, arrayLike)) {
+            if (predicate(element, i, arrayLike)) {
                 result = element;
                 break;
             }
@@ -2333,8 +2518,12 @@
     function findIndex (arrayLike, predicate, predicateContext) {
         var result = -1;
 
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
         for (var i = 0, len = arrayLike.length; i < len; i++) {
-            if (predicate.call(predicateContext, arrayLike[i], i, arrayLike)) {
+            if (predicate(arrayLike[i], i, arrayLike)) {
                 result = i;
                 break;
             }
@@ -2375,14 +2564,13 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.flatMap|flatMap}
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Function}
      */
-    function flatMapWith (iteratee, iterateeContext) {
-        return partial(flatMap, _, iteratee, iterateeContext);
-    }
+    var flatMapWith = _partialWithIteratee(flatMap);
 
     /**
      * Flattens an array.
@@ -2490,7 +2678,8 @@
      */
     function intersection () {
         var rest = slice(arguments, 1);
-        return uniques(arguments[0]).filter(function (item) {
+
+        return filter(uniques(arguments[0]), function (item) {
             return rest.every(contains(item));
         });
     }
@@ -2544,26 +2733,6 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the optional context.
-     * The resulting function expects the array-like object to act upon.
-     * @example
-     * var square = function (n) { return n * n; };
-     * var getSquares = _.mapWith(square);
-     *
-     * getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.map|map}
-     * @param {ListIteratorCallback} iteratee
-     * @param {Object} [iterateeContext]
-     * @returns {function}
-     */
-    function mapWith (iteratee, iterateeContext) {
-        return partial(map, _, iteratee, iterateeContext);
-    }
-
-    /**
      * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,
      * the others with the remaining elements.
      * @example
@@ -2584,9 +2753,13 @@
         var result = [[], []];
         var len = arrayLike.length;
 
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
         for (var i = 0, el; i < len; i++) {
             el = arrayLike[i];
-            result[predicate.call(predicateContext, el, i, arrayLike) ? 0 : 1].push(el);
+            result[predicate(el, i, arrayLike) ? 0 : 1].push(el);
         }
 
         return result;
@@ -2616,14 +2789,13 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.partition|partition}
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    function partitionWith (predicate, predicateContext) {
-        return partial(partition, _, predicate, predicateContext);
-    }
+    var partitionWith = _partialWithIteratee(partition);
 
     /**
      * "Plucks" the values of the specified key from a list of objects.
@@ -2677,57 +2849,7 @@
      * @param {String} key
      * @returns {Function}
      */
-    function pluckKey (key) {
-        return mapWith(getKey(key));
-    }
-
-    /**
-     * A partial application of {@link module:lamb.reduce|reduceRight} that uses the
-     * provided <code>accumulator</code> and the optional <code>initialValue</code> to
-     * build a function expecting the array-like object to act upon.
-     * @example
-     * var arr = [1, 2, 3, 4, 5];
-     *
-     * _.reduceRightWith(_.add)(arr) // => 15
-     * _.reduceRightWith(_.subtract)(arr) // => -5
-     * _.reduceRightWith(_.subtract, 0)(arr) // => -15
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.reduceWith|reduceWith}
-     * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
-     * @param {AccumulatorCallback} accumulator
-     * @param {*} [initialValue]
-     * @returns {Function}
-     */
-    function reduceRightWith (accumulator, initialValue) {
-        var fn = arguments.length === 2 ? reduceRight : binary(reduceRight);
-        return partial(fn, _, accumulator, initialValue);
-    }
-
-    /**
-     * A partial application of {@link module:lamb.reduce|reduce} that uses the
-     * provided <code>accumulator</code> and the optional <code>initialValue</code> to
-     * build a function expecting the array-like object to act upon.
-     * @example
-     * var arr = [1, 2, 3, 4, 5];
-     *
-     * _.reduceWith(_.add)(arr) // => 15
-     * _.reduceWith(_.subtract)(arr) // => -13
-     * _.reduceWith(_.subtract, 0)(arr) // => -15
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.reduceRightWith|reduceRightWith}
-     * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
-     * @param {AccumulatorCallback} accumulator
-     * @param {*} [initialValue]
-     * @returns {Function}
-     */
-    function reduceWith (accumulator, initialValue) {
-        var fn = arguments.length === 2 ? reduce : binary(reduce);
-        return partial(fn, _, accumulator, initialValue);
-    }
+    var pluckKey = compose(mapWith, getKey);
 
     /**
      * Reverses a copy of the given array-like object.
@@ -2848,8 +2970,10 @@
      * @returns {Function}
      */
     function takeWhile (predicate, predicateContext) {
+        var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
+
         return function (arrayLike) {
-            return slice(arrayLike, 0, _getNumConsecutiveHits(arrayLike, predicate, predicateContext));
+            return slice(arrayLike, 0, fn(arrayLike, predicate, predicateContext));
         };
     }
 
@@ -2939,12 +3063,16 @@
             iteratee = identity;
         }
 
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
         var result = [];
         var seen = [];
         var value;
 
         for (var i = 0, len = arrayLike.length; i < len; i++) {
-            value = iteratee.call(iterateeContext, arrayLike[i], i, arrayLike);
+            value = iteratee(arrayLike[i], i, arrayLike);
 
             if (!isIn(seen, value)) {
                 seen.push(value);
@@ -2994,7 +3122,6 @@
     lamb.drop = drop;
     lamb.dropN = dropN;
     lamb.dropWhile = dropWhile;
-    lamb.filterWith = filterWith;
     lamb.find = find;
     lamb.findIndex = findIndex;
     lamb.flatMap = flatMap;
@@ -3006,13 +3133,10 @@
     lamb.intersection = intersection;
     lamb.isIn = isIn;
     lamb.list = list;
-    lamb.mapWith = mapWith;
     lamb.partition = partition;
     lamb.partitionWith = partitionWith;
     lamb.pluck = pluck;
     lamb.pluckKey = pluckKey;
-    lamb.reduceRightWith = reduceRightWith;
-    lamb.reduceWith = reduceWith;
     lamb.reverse = reverse;
     lamb.shallowFlatten = shallowFlatten;
     lamb.tail = tail;
@@ -3070,6 +3194,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.count|count}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
@@ -3077,9 +3202,7 @@
      * @param {Object} [iterateeContext]
      * @returns {Function}
      */
-    function countBy (iteratee, iterateeContext) {
-        return partial(count, _, iteratee, iterateeContext);
-    }
+    var countBy = _partialWithIteratee(count);
 
     /**
      * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
@@ -3171,6 +3294,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.group|group}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
@@ -3178,9 +3302,7 @@
      * @param {Object} [iterateeContext]
      * @returns {Function}
      */
-    function groupBy (iteratee, iterateeContext) {
-        return partial(group, _, iteratee, iterateeContext);
-    }
+    var groupBy = _partialWithIteratee(group);
 
     /**
      * Similar to {@link module:lamb.group|group}, but the generated lookup table will have
@@ -3257,6 +3379,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.index|index}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
@@ -3264,9 +3387,7 @@
      * @param {Object} [iterateeContext]
      * @returns {Function}
      */
-    function indexBy (iteratee, iterateeContext) {
-        return partial(index, _, iteratee, iterateeContext);
-    }
+    var indexBy = _partialWithIteratee(index);
 
     lamb.count = count;
     lamb.countBy = countBy;
@@ -4014,7 +4135,7 @@
     function checker (predicate, message, keyPaths, pathSeparator) {
         return function (obj) {
             var getValues = partial(getPathIn, obj, _, pathSeparator);
-            return predicate.apply(obj, keyPaths.map(getValues)) ? [] : [message, keyPaths];
+            return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
         };
     }
 
@@ -4418,11 +4539,15 @@
      * @returns {Function}
      */
     function pickIf (predicate, predicateContext) {
+        if (arguments.length === 2) {
+            predicate = predicate.bind(predicateContext);
+        }
+
         return function (source) {
             var result = {};
 
-            enumerables(source).forEach(function (key) {
-                if (predicate.call(predicateContext, source[key], key, source)) {
+            forEach(enumerables(source), function (key) {
+                if (predicate(source[key], key, source)) {
                     result[key] = source[key];
                 }
             });
@@ -4544,7 +4669,7 @@
     function skip (source, blacklist) {
         var result = {};
 
-        enumerables(source).forEach(function (key) {
+        forEach(enumerables(source), function (key) {
             if (!isIn(blacklist, key)) {
                 result[key] = source[key];
             }
@@ -4564,15 +4689,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.skip|skip}
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    function skipIf (predicate, predicateContext) {
-        return pickIf(not(predicate), predicateContext);
-    }
+    var skipIf = tapArgs(pickIf, not);
 
     /**
      * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
@@ -4637,7 +4761,7 @@
      * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by {@link module:lamb.checker|checker}, or an empty array.
      */
     function validate (obj, checkers) {
-        return checkers.reduce(function (errors, checker) {
+        return reduce(checkers, function (errors, checker) {
             var result = checker(obj);
             result.length && errors.push(result);
             return errors;

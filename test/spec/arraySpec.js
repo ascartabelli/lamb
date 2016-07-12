@@ -232,52 +232,6 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("filterWith", function () {
-        var fakeContext = {};
-        var isLowerCase = function (s, idx, list) {
-            expect(list[idx]).toBe(s);
-            expect(this).toBe(fakeContext);
-            return s.toLowerCase() === s;
-        };
-        var getLowerCaseEls = lamb.filterWith(isLowerCase, fakeContext);
-        var arr = ["Foo", "bar", "baZ"];
-
-        afterEach(function () {
-            expect(arr).toEqual(["Foo", "bar", "baZ"]);
-        });
-
-        it("should build a partial application of `filter` expecting the array-like object to act upon", function () {
-            expect(getLowerCaseEls(arr)).toEqual(["bar"]);
-        });
-
-        it("should work with array-like objects", function () {
-            expect(getLowerCaseEls("fooBAR")).toEqual(["f", "o", "o"]);
-        });
-
-        it("should throw an exception if the predicate isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.filterWith(value)(arr); }).toThrow();
-            });
-
-            expect(function () { lamb.filterWith()(arr); }).toThrow();
-        });
-
-        it("should throw an exception if called without the data argument", function () {
-            expect(getLowerCaseEls).toThrow();
-        });
-
-        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { getLowerCaseEls(null); }).toThrow();
-            expect(function () { getLowerCaseEls(void 0); }).toThrow();
-        });
-
-        it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(getLowerCaseEls(value)).toEqual([]);
-            });
-        });
-    });
-
     describe("find / findIndex", function () {
         var persons = [
             {"name": "Jane", "surname": "Doe", "age": 12},
@@ -559,9 +513,9 @@ describe("lamb.array", function () {
             // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
             var r = [99, 1, 2, 3, 4, 5];
 
-            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (idx) {
-                expect(lamb.insert(arr, idx, 99)).toEqual(r);
-                expect(lamb.insertAt(idx, 99)(arr)).toEqual(r);
+            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (value) {
+                expect(lamb.insert(arr, value, 99)).toEqual(r);
+                expect(lamb.insertAt(value, 99)(arr)).toEqual(r);
             });
 
             expect(lamb.insert(arr, [3], 99)).toEqual(result);
@@ -651,52 +605,6 @@ describe("lamb.array", function () {
             expect(lamb.list(123)).toEqual([123]);
             expect(lamb.list(1, 2, 3)).toEqual([1, 2, 3]);
             expect(lamb.list(null, void 0)).toEqual([null, void 0]);
-        });
-    });
-
-    describe("mapWith", function () {
-        var fakeContext = {};
-        var double = function (n, idx, list) {
-            expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
-            return n * 2;
-        };
-        var makeDoubles = lamb.mapWith(double, fakeContext);
-        var numbers = [1, 2, 3, 4, 5];
-
-        afterEach(function () {
-            expect(numbers).toEqual([1, 2, 3, 4, 5]);
-        });
-
-        it("should accept a mapping function and return a partially applied version of map expecting the array to operate upon as argument", function () {
-            expect(makeDoubles(numbers)).toEqual([2, 4, 6, 8, 10]);
-        });
-
-        it("should work with array-like objects", function () {
-            expect(makeDoubles("12345")).toEqual([2, 4, 6, 8, 10]);
-        });
-
-        it("should throw an exception if the iteratee isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.mapWith(value)(numbers); }).toThrow();
-            });
-
-            expect(function () { lamb.mapWith()(numbers); }).toThrow();
-        });
-
-        it("should throw an exception if called without the data argument", function () {
-            expect(makeDoubles).toThrow();
-        });
-
-        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { makeDoubles(null); }).toThrow();
-            expect(function () { makeDoubles(void 0); }).toThrow();
-        });
-
-        it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(makeDoubles(value)).toEqual([]);
-            });
         });
     });
 
@@ -846,136 +754,6 @@ describe("lamb.array", function () {
             [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
                 expect(lamb.pluck(value, "foo")).toEqual([]);
                 expect(lamb.pluckKey("foo")(value)).toEqual([]);
-            });
-        });
-    });
-
-    describe("reduceRightWith", function () {
-        var arr = [1, 2, 3, 4, 5];
-        var s = "12345";
-
-        afterEach(function () {
-            expect(arr).toEqual([1, 2, 3, 4, 5]);
-        });
-
-        it("should build a partial application of `reduceRight` expecting the array to act upon", function () {
-            var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
-                expect(list).toBe(arr);
-                expect(list[idx]).toBe(current);
-
-                return prev - current;
-            });
-
-            var prevValues = [5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4];
-
-            expect(lamb.reduceRightWith(subtract)(arr)).toBe(-5);
-            expect(lamb.reduceRightWith(subtract, 0)(arr)).toBe(-15);
-            expect(lamb.reduceRightWith(subtract, 10)(arr)).toBe(-5);
-
-            expect(subtract.calls.count()).toBe(prevValues.length);
-            prevValues.forEach(function (prevValue, idx) {
-                expect(subtract.calls.argsFor(idx)[0]).toEqual(prevValue);
-            });
-        });
-
-        it("should work with array-like objects", function () {
-            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
-
-            expect(lamb.reduceRightWith(fn)(s)).toBe(-5);
-            expect(lamb.reduceRightWith(fn, 0)(s)).toBe(-15);
-            expect(lamb.reduceRightWith(fn, 10)(s)).toBe(-5);
-        });
-
-        it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.reduceRightWith(value, 0)(arr); }).toThrow();
-            });
-
-            expect(function () { lamb.reduceRightWith()(arr); }).toThrow();
-        });
-
-        it("should throw an exception if called without the data argument", function () {
-            expect(lamb.reduceRightWith(lamb.add, 0)).toThrow();
-        });
-
-        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(null); }).toThrow();
-            expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(void 0); }).toThrow();
-        });
-
-        it("should throw an exception when supplied with an empty array-like without an initial value", function () {
-            expect(function () { lamb.reduceRightWith(lamb.subtract)([]); }).toThrow();
-            expect(function () { lamb.reduceRightWith(lamb.subtract)(""); }).toThrow();
-        });
-
-        it("should treat every other value as an empty array and return the initial value", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.reduceRightWith(lamb.subtract, 99)(value)).toEqual(99);
-            });
-        });
-    });
-
-    describe("reduceWith", function () {
-        var arr = [1, 2, 3, 4, 5];
-        var s = "12345";
-
-        afterEach(function () {
-            expect(arr).toEqual([1, 2, 3, 4, 5]);
-        });
-
-        it("should build a partial application of `reduce` expecting the array to act upon", function () {
-            var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
-                expect(list).toBe(arr);
-                expect(list[idx]).toBe(current);
-
-                return prev - current;
-            });
-
-            var prevValues = [1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0];
-
-            expect(lamb.reduceWith(subtract)(arr)).toBe(-13);
-            expect(lamb.reduceWith(subtract, 0)(arr)).toBe(-15);
-            expect(lamb.reduceWith(subtract, 10)(arr)).toBe(-5);
-
-            expect(subtract.calls.count()).toBe(prevValues.length);
-            prevValues.forEach(function (prevValue, idx) {
-                expect(subtract.calls.argsFor(idx)[0]).toEqual(prevValue);
-            });
-        });
-
-        it("should work with array-like objects", function () {
-            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
-
-            expect(lamb.reduceWith(fn)(s)).toBe(-13);
-            expect(lamb.reduceWith(fn, 0)(s)).toBe(-15);
-            expect(lamb.reduceWith(fn, 10)(s)).toBe(-5);
-        });
-
-        it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.reduceWith(value, 0)(arr); }).toThrow();
-            });
-
-            expect(function () { lamb.reduceWith()(arr); }).toThrow();
-        });
-
-        it("should throw an exception if called without the data argument", function () {
-            expect(lamb.reduceWith(lamb.add, 0)).toThrow();
-        });
-
-        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.reduceWith(lamb.subtract, 0)(null); }).toThrow();
-            expect(function () { lamb.reduceWith(lamb.subtract, 0)(void 0); }).toThrow();
-        });
-
-        it("should throw an exception when supplied with an empty array-like without an initial value", function () {
-            expect(function () { lamb.reduceWith(lamb.subtract)([]); }).toThrow();
-            expect(function () { lamb.reduceWith(lamb.subtract)(""); }).toThrow();
-        });
-
-        it("should treat every other value as an empty array and return the initial value", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.reduceWith(lamb.subtract, 99)(value)).toEqual(99);
             });
         });
     });
@@ -1227,7 +1005,9 @@ describe("lamb.array", function () {
         });
 
         it("should return the unique elements of an array of complex values when supplied with an iteratee", function () {
+            var fakeContext = {};
             var iteratee = function (obj) {
+                expect(this).toBe(fakeContext);
                 return obj.id;
             };
 
@@ -1246,7 +1026,8 @@ describe("lamb.array", function () {
                 {"id": "3", "name": "baz"}
             ];
 
-            expect(lamb.uniques(data, iteratee)).toEqual(expectedResult);
+            expect(lamb.uniques(data, iteratee, fakeContext)).toEqual(expectedResult);
+            expect(lamb.uniques(data, lamb.getKey("id"))).toEqual(expectedResult);
         });
 
         it("should throw an exception if called without arguments", function () {
