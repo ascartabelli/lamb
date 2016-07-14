@@ -391,7 +391,14 @@ function isIn (arrayLike, value, fromIndex) {
  * @returns {Array}
  */
 function list () {
-    return arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
+    var len = arguments.length;
+    var result = Array(len);
+
+    for (var i = 0; i < len; i++) {
+        result[i] = arguments[i];
+    }
+
+    return result;
 }
 
 /**

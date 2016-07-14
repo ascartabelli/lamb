@@ -293,12 +293,7 @@ function getArgAt (index) {
  */
 function invoker (methodName) {
     var boundArgs = slice(arguments, 1);
-
-    return function (target) {
-        var args = slice(arguments, 1);
-        var method = target[methodName];
-        return type(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
-    };
+    return partial(_invoker, boundArgs, methodName);
 }
 
 /**
@@ -319,11 +314,7 @@ function invoker (methodName) {
  * @returns {Function}
  */
 function invokerOn (target) {
-    return function (methodName) {
-        var args = slice(arguments, 1);
-        var method = target[methodName];
-        return type(method) === "Function" ? method.apply(target, args) : void 0;
-    };
+    return partial(_invoker, [], _, target);
 }
 
 /**

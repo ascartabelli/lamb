@@ -308,6 +308,25 @@ function _immutable (obj, seen) {
 }
 
 /**
+ * If a method with the given name exists on the target, applies it with the provided
+ * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
+ * The arguments for the method are built by concatenating the array of bound arguments,
+ * optionally received by {@link module:lamb.invoker|invoker}, with the final set of, also
+ * optional, <code>args</code>.
+ * @private
+ * @param {Array} boundArgs
+ * @param {String} methodName
+ * @param {Object} target
+ * @param {...*} [args]
+ * @returns {*}
+ */
+function _invoker (boundArgs, methodName, target) {
+    var args = boundArgs.concat(slice(arguments, 3));
+    var method = target[methodName];
+    return type(method) === "Function" ? method.apply(target, args) : void 0;
+}
+
+/**
  * Accepts a target object and a key name and verifies that the target is an array and that
  * the key is an existing index.
  * @private
@@ -386,6 +405,42 @@ function _makeCriterion (criterion) {
 }
 
 /**
+ * Builds a reduce function. The <code>step</code> parameter must be <code>1</code>
+ * to build  {@link module:lamb.reduce|reduce} and <code>-1</code> to build
+ * {@link module:lamb.reduceRight|reduceRight}.
+ * @private
+ * @param {Number} step
+ * @returns {Function}
+ */
+function _makeReducer (step) {
+    return function (arrayLike, accumulator, initialValue) {
+        var len = arrayLike.length >>> 0;
+        var idx = step === 1 ? 0 : len - 1;
+        var nCalls;
+        var result;
+
+        if (arguments.length === 3) {
+            nCalls = len;
+            result = initialValue;
+        } else {
+            if (len === 0) {
+                throw new TypeError("Reduce of empty array-like with no initial value");
+            }
+
+            result = arrayLike[idx];
+            idx += step;
+            nCalls = len - 1;
+        }
+
+        for (; nCalls--; idx += step) {
+            result = accumulator(result, arrayLike[idx], idx, arrayLike);
+        }
+
+        return result;
+    };
+}
+
+/**
  * Builds a TypeError stating that it's not possible to convert the given value to the
  * desired type.
  * @private
@@ -428,21 +483,19 @@ var _pairsFrom = _curry(function (getKeys, obj) {
 
 /**
  * Builds a partial application of a function expecting an iteratee and an
- * optional context other than its main data argument.<br/>
- * The context is passed to the function only when is explicitly given
- * a value.
+ * optional argument other than its main data parameter.<br/>
+ * The optional argument is passed to the function only when is explicitly given
+ * a value.<br/>
+ * The optional argument is usually the iteratee context, but reduce functions
+ * pass their initial value instead.
  * @private
  * @param {Function} fn
  * @returns {Function}
  */
 function _partialWithIteratee (fn) {
-    return function (iteratee, iterateeContext) {
-        return partial(
-            arguments.length === 2 ? fn : binary(fn),
-            _,
-            iteratee,
-            iterateeContext
-        );
+    return function (iteratee, optionalArgument) {
+        var f = arguments.length === 2 ? fn : binary(fn);
+        return partial(f, _, iteratee, optionalArgument);
     };
 }
 

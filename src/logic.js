@@ -69,11 +69,13 @@ function allOf () {
     var predicates = slice(arguments);
 
     return function () {
-        var args = arguments;
+        for (var i = 0, len = predicates.length; i < len; i++) {
+            if(!predicates[i].apply(this, arguments)) {
+                return false;
+            }
+        }
 
-        return predicates.every(function (predicate) {
-            return predicate.apply(this, args);
-        }, this);
+        return true;
     };
 }
 
@@ -100,11 +102,13 @@ function anyOf () {
     var predicates = slice(arguments);
 
     return function () {
-        var args = arguments;
+        for (var i = 0, len = predicates.length; i < len; i++) {
+            if (predicates[i].apply(this, arguments)) {
+                return true;
+            }
+        }
 
-        return predicates.some(function (predicate) {
-            return predicate.apply(this, args);
-        }, this);
+        return false;
     };
 }
 

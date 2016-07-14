@@ -155,6 +155,7 @@ var mapWith = _partialWithIteratee(map);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.reduceRight|reduceRight}
  * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
  * @param {ArrayLike} arrayLike
@@ -162,27 +163,7 @@ var mapWith = _partialWithIteratee(map);
  * @param {*} [initialValue]
  * @returns {*}
  */
-function reduce (arrayLike, accumulator, initialValue) {
-    var len = arrayLike.length >>> 0;
-    var result;
-    var i = 0;
-
-    if (arguments.length === 3) {
-        result = initialValue;
-    } else {
-        if (len === 0) {
-            return _reduce(arrayLike, accumulator);
-        }
-
-        result = arrayLike[i++];
-    }
-
-    for (; i < len; i++) {
-        result = accumulator(result, arrayLike[i], i, arrayLike);
-    }
-
-    return result;
-}
+var reduce = _makeReducer(1);
 
 /**
  * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
@@ -192,6 +173,7 @@ function reduce (arrayLike, accumulator, initialValue) {
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.reduce|reduce}
  * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
  * @param {ArrayLike} arrayLike
@@ -199,27 +181,7 @@ function reduce (arrayLike, accumulator, initialValue) {
  * @param {*} [initialValue]
  * @returns {*}
  */
-function reduceRight (arrayLike, accumulator, initialValue) {
-    var len = arrayLike.length >>> 0;
-    var result;
-    var i = len - 1;
-
-    if (arguments.length === 3) {
-        result = initialValue;
-    } else {
-        if (len === 0) {
-            return _reduceRight(arrayLike, accumulator);
-        }
-
-        result = arrayLike[i--];
-    }
-
-    for (; i > -1; i--) {
-        result = accumulator(result, arrayLike[i], i, arrayLike);
-    }
-
-    return result;
-}
+var reduceRight = _makeReducer(-1);
 
 /**
  * A partial application of {@link module:lamb.reduce|reduceRight} that uses the

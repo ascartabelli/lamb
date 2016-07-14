@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.34.0-alpha.4
+ * @version 0.34.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.34.0-alpha.4";
+    lamb._version =  "0.34.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -485,6 +485,25 @@
     }
 
     /**
+     * If a method with the given name exists on the target, applies it with the provided
+     * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
+     * The arguments for the method are built by concatenating the array of bound arguments,
+     * optionally received by {@link module:lamb.invoker|invoker}, with the final set of, also
+     * optional, <code>args</code>.
+     * @private
+     * @param {Array} boundArgs
+     * @param {String} methodName
+     * @param {Object} target
+     * @param {...*} [args]
+     * @returns {*}
+     */
+    function _invoker (boundArgs, methodName, target) {
+        var args = boundArgs.concat(slice(arguments, 3));
+        var method = target[methodName];
+        return type(method) === "Function" ? method.apply(target, args) : void 0;
+    }
+
+    /**
      * Accepts a target object and a key name and verifies that the target is an array and that
      * the key is an existing index.
      * @private
@@ -563,6 +582,42 @@
     }
 
     /**
+     * Builds a reduce function. The <code>step</code> parameter must be <code>1</code>
+     * to build  {@link module:lamb.reduce|reduce} and <code>-1</code> to build
+     * {@link module:lamb.reduceRight|reduceRight}.
+     * @private
+     * @param {Number} step
+     * @returns {Function}
+     */
+    function _makeReducer (step) {
+        return function (arrayLike, accumulator, initialValue) {
+            var len = arrayLike.length >>> 0;
+            var idx = step === 1 ? 0 : len - 1;
+            var nCalls;
+            var result;
+
+            if (arguments.length === 3) {
+                nCalls = len;
+                result = initialValue;
+            } else {
+                if (len === 0) {
+                    throw new TypeError("Reduce of empty array-like with no initial value");
+                }
+
+                result = arrayLike[idx];
+                idx += step;
+                nCalls = len - 1;
+            }
+
+            for (; nCalls--; idx += step) {
+                result = accumulator(result, arrayLike[idx], idx, arrayLike);
+            }
+
+            return result;
+        };
+    }
+
+    /**
      * Builds a TypeError stating that it's not possible to convert the given value to the
      * desired type.
      * @private
@@ -605,21 +660,19 @@
 
     /**
      * Builds a partial application of a function expecting an iteratee and an
-     * optional context other than its main data argument.<br/>
-     * The context is passed to the function only when is explicitly given
-     * a value.
+     * optional argument other than its main data parameter.<br/>
+     * The optional argument is passed to the function only when is explicitly given
+     * a value.<br/>
+     * The optional argument is usually the iteratee context, but reduce functions
+     * pass their initial value instead.
      * @private
      * @param {Function} fn
      * @returns {Function}
      */
     function _partialWithIteratee (fn) {
-        return function (iteratee, iterateeContext) {
-            return partial(
-                arguments.length === 2 ? fn : binary(fn),
-                _,
-                iteratee,
-                iterateeContext
-            );
+        return function (iteratee, optionalArgument) {
+            var f = arguments.length === 2 ? fn : binary(fn);
+            return partial(f, _, iteratee, optionalArgument);
         };
     }
 
@@ -922,6 +975,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.reduceRight|reduceRight}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
      * @param {ArrayLike} arrayLike
@@ -929,27 +983,7 @@
      * @param {*} [initialValue]
      * @returns {*}
      */
-    function reduce (arrayLike, accumulator, initialValue) {
-        var len = arrayLike.length >>> 0;
-        var result;
-        var i = 0;
-
-        if (arguments.length === 3) {
-            result = initialValue;
-        } else {
-            if (len === 0) {
-                return _reduce(arrayLike, accumulator);
-            }
-
-            result = arrayLike[i++];
-        }
-
-        for (; i < len; i++) {
-            result = accumulator(result, arrayLike[i], i, arrayLike);
-        }
-
-        return result;
-    }
+    var reduce = _makeReducer(1);
 
     /**
      * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
@@ -959,6 +993,7 @@
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.reduce|reduce}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
      * @param {ArrayLike} arrayLike
@@ -966,27 +1001,7 @@
      * @param {*} [initialValue]
      * @returns {*}
      */
-    function reduceRight (arrayLike, accumulator, initialValue) {
-        var len = arrayLike.length >>> 0;
-        var result;
-        var i = len - 1;
-
-        if (arguments.length === 3) {
-            result = initialValue;
-        } else {
-            if (len === 0) {
-                return _reduceRight(arrayLike, accumulator);
-            }
-
-            result = arrayLike[i--];
-        }
-
-        for (; i > -1; i--) {
-            result = accumulator(result, arrayLike[i], i, arrayLike);
-        }
-
-        return result;
-    }
+    var reduceRight = _makeReducer(-1);
 
     /**
      * A partial application of {@link module:lamb.reduce|reduceRight} that uses the
@@ -1130,11 +1145,13 @@
         var predicates = slice(arguments);
 
         return function () {
-            var args = arguments;
+            for (var i = 0, len = predicates.length; i < len; i++) {
+                if(!predicates[i].apply(this, arguments)) {
+                    return false;
+                }
+            }
 
-            return predicates.every(function (predicate) {
-                return predicate.apply(this, args);
-            }, this);
+            return true;
         };
     }
 
@@ -1161,11 +1178,13 @@
         var predicates = slice(arguments);
 
         return function () {
-            var args = arguments;
+            for (var i = 0, len = predicates.length; i < len; i++) {
+                if (predicates[i].apply(this, arguments)) {
+                    return true;
+                }
+            }
 
-            return predicates.some(function (predicate) {
-                return predicate.apply(this, args);
-            }, this);
+            return false;
         };
     }
 
@@ -1617,11 +1636,12 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
-     * @function
      * @param {*} value
      * @returns {Boolean}
      */
-    var isNil = anyOf(isNull, isUndefined);
+    function isNil (value) {
+        return isNull(value) || isUndefined(value);
+    }
 
     /**
      * Verifies if a value is <code>null</code>.
@@ -2729,7 +2749,14 @@
      * @returns {Array}
      */
     function list () {
-        return arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
+        var len = arguments.length;
+        var result = Array(len);
+
+        for (var i = 0; i < len; i++) {
+            result[i] = arguments[i];
+        }
+
+        return result;
     }
 
     /**
@@ -3892,12 +3919,7 @@
      */
     function invoker (methodName) {
         var boundArgs = slice(arguments, 1);
-
-        return function (target) {
-            var args = slice(arguments, 1);
-            var method = target[methodName];
-            return type(method) === "Function" ? method.apply(target, boundArgs.concat(args)) : void 0;
-        };
+        return partial(_invoker, boundArgs, methodName);
     }
 
     /**
@@ -3918,11 +3940,7 @@
      * @returns {Function}
      */
     function invokerOn (target) {
-        return function (methodName) {
-            var args = slice(arguments, 1);
-            var method = target[methodName];
-            return type(method) === "Function" ? method.apply(target, args) : void 0;
-        };
+        return partial(_invoker, [], _, target);
     }
 
     /**

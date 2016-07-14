@@ -11,11 +11,12 @@
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
- * @function
  * @param {*} value
  * @returns {Boolean}
  */
-var isNil = anyOf(isNull, isUndefined);
+function isNil (value) {
+    return isNull(value) || isUndefined(value);
+}
 
 /**
  * Verifies if a value is <code>null</code>.
