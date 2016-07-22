@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.35.0-alpha.1
+ * @version 0.35.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.35.0-alpha.1";
+    lamb._version =  "0.35.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1234,8 +1234,8 @@
      *
      * @memberof module:lamb
      * @category Logic
-     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
-     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
+     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -1367,8 +1367,8 @@
      *
      * @memberof module:lamb
      * @category Logic
-     * @see [SameValue comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue}
-     * @see [SameValueZero comparison]{@link https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero}
+     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
