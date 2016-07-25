@@ -1,0 +1,11 @@
+{
+	"name": "Lamb",
+	"icons": [
+		{
+			"src": "images\/icons\/android-chrome-192x192.png?v=1.0",
+			"sizes": "192x192",
+			"type": "image\/png"
+		}
+	],
+	"theme_color": "#57a3d5"
+}

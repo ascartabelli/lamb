@@ -39,7 +39,7 @@ h4, h5, h6, .container-overview .subsection-title {
 }
 
 a, a:visited, a:active {
-    color: #0095dd;
+    color: #57a3d5;
     text-decoration: none;
 }
 
@@ -70,6 +70,11 @@ tt, code, kbd, samp {
 #main {
     float: left;
     width: 80%;
+}
+
+#main > header {
+    border-bottom: 2px solid #57a3d5;
+    margin-right: 10px;
 }
 
 article dl {
