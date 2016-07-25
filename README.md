@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.34.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.34.1/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
