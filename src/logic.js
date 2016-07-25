@@ -12,16 +12,16 @@
  *     _.condition(_.isType("String"), filterString)
  * );
  *
- * filterAdapter([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
- * filterAdapter("123456", isEven)) // => "246"
- * filterAdapter({}, isEven)) // => undefined
+ * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
+ * filterAdapter("123456", isEven) // => "246"
+ * filterAdapter({}, isEven) // => undefined
  *
  * // obviously it's composable
  * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
  *
- * filterWithDefault([1, 2, 3, 4, 5, 6], isEven)) // => [2, 4, 6]
- * filterWithDefault("123456", isEven)) // => "246"
- * filterWithDefault({}, isEven)) // => "Not implemented"
+ * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
+ * filterWithDefault("123456", isEven) // => "246"
+ * filterWithDefault({}, isEven) // => "Not implemented"
  *
  * @memberof module:lamb
  * @category Logic

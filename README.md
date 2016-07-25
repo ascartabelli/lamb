@@ -4,6 +4,8 @@ A lightweight, and docile, JavaScript (ES5) library to help embracing functional
 
 [![NPM version](https://img.shields.io/npm/v/lamb.svg)](https://www.npmjs.com/package/lamb) [![Build Status](https://img.shields.io/travis/ascartabelli/lamb/master.svg)](https://travis-ci.org/ascartabelli/lamb) [![Coveralls Status](https://img.shields.io/coveralls/ascartabelli/lamb/master.svg)](https://coveralls.io/github/ascartabelli/lamb)
 
+![Lamb logo](https://ascartabelli.github.io/lamb/images/logo_600x130.png "Lamb, because it's docile like a lamb")
+
 ## Documentation.
 
 The API documentation is [here](https://ascartabelli.github.io/lamb/module-lamb.html).
@@ -82,6 +84,10 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 - ***Are there plans for the future?***
   Absolutely yes: this isn't a complete work at all, only a first public release.
   I need better documentation and examples for starters, and I also want to add a bunch of other functions and concepts into the mix.
+
+- ***I really like Lamb's logo: are you the designer?***
+  I like it a lot too and, no, it isn't my doing: the author is a very talented designer who never signs his works by choice and doesn't want to be credited for it.
+  Other than being eternally grateful, the least I can do is offer my services as a middleman and put you in touch if you need his craft.
 
 - ***Why "Lamb"?***
   See the main header: because it's docile like a lamb.
