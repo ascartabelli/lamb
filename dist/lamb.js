@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.34.1
+ * @version 0.35.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.34.1";
+    lamb._version =  "0.35.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1432,6 +1432,9 @@
      * _.clamp(-5, 0, 10) // => 0
      * _.clamp(5, 0, 10) // => 5
      * _.clamp(15, 0, 10) // => 10
+     * _.clamp(0, 0, 10) // => 0
+     * _.clamp(10, 0, 10) // => 10
+     * _.is(_.clamp(-0, 0, 10), -0) // => true
      *
      * @memberof module:lamb
      * @category Math

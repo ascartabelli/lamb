@@ -20,6 +20,9 @@ function add (a, b) {
  * _.clamp(-5, 0, 10) // => 0
  * _.clamp(5, 0, 10) // => 5
  * _.clamp(15, 0, 10) // => 10
+ * _.clamp(0, 0, 10) // => 0
+ * _.clamp(10, 0, 10) // => 10
+ * _.is(_.clamp(-0, 0, 10), -0) // => true
  *
  * @memberof module:lamb
  * @category Math
