@@ -635,13 +635,15 @@ describe("lamb.object", function () {
 
         var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
 
-        describe("pick", function () {
+        describe("pick / pickKeys", function () {
             it("should return an object having only the specified properties of the source object (if they exist)", function () {
                 expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({"foo" : 1, "baz" : 3});
+                expect(lamb.pickKeys(["foo", "baz", "foobaz"])(simpleObj)).toEqual({"foo" : 1, "baz" : 3});
             });
 
             it("should include inherited properties", function () {
                 expect(lamb.pick(simpleObj, ["foo", "bar"])).toEqual({"foo": 1, "bar": 2});
+                expect(lamb.pickKeys(["foo", "bar"])(simpleObj)).toEqual({"foo": 1, "bar": 2});
             });
 
             it("should accept arrays and array-like objects and integers as keys", function () {
@@ -651,43 +653,56 @@ describe("lamb.object", function () {
                 };
 
                 expect(lamb.pick(names, ["0", 2])).toEqual(result);
+                expect(lamb.pickKeys(["0", 2])(names)).toEqual(result);
                 expect(lamb.pick("bar", [0, 2])).toEqual({"0": "b", "2": "r"});
+                expect(lamb.pickKeys([0, 2])("bar")).toEqual({"0": "b", "2": "r"});
             });
 
             it("should return an empty object if supplied with an empty list of keys", function () {
                 expect(lamb.pick(simpleObj, [])).toEqual({});
+                expect(lamb.pickKeys([])(simpleObj)).toEqual({});
             });
 
             it("should accept an array-like object as the `whitelist` parameter", function () {
                 expect(lamb.pick({a: 1, b: 2, c: 3}, "ac")).toEqual({a: 1, c: 3});
+                expect(lamb.pickKeys("ac")({a: 1, b: 2, c: 3})).toEqual({a: 1, c: 3});
             });
 
-            it("should throw an exception if called without arguments", function () {
+            it("should throw an exception if called without the main data argument", function () {
                 expect(lamb.pick).toThrow();
+                expect(lamb.pickKeys(["a", "b"])).toThrow();
             });
 
             it("should throw an exception if supplied with `null` or `undefined` in place of the `whitelist`", function () {
                 expect(function () { lamb.pick({a: 1}, null); }).toThrow();
                 expect(function () { lamb.pick({a: 1}, void 0); }).toThrow();
+                expect(function () { lamb.pickKeys(null)({a: 1}); }).toThrow();
+                expect(function () { lamb.pickKeys(void 0)({a: 1}); }).toThrow();
+                expect(function () { lamb.pickKeys()({a: 1}); }).toThrow();
             });
 
             it("should treat other values for the `whitelist` parameter as an empty array and return an empty object", function () {
                 [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
                     expect(lamb.pick({a: 1, b: 2}, value)).toEqual({});
+                    expect(lamb.pickKeys(value)({a: 1, b: 2})).toEqual({});
                 });
             });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.pick(null, ["a", "b"]); }).toThrow();
                 expect(function () { lamb.pick(void 0, ["a", "b"]); }).toThrow();
+                expect(function () { lamb.pickKeys(["a", "b"])(null); }).toThrow();
+                expect(function () { lamb.pickKeys(["a", "b"])(void 0); }).toThrow();
             });
 
             it("should convert to object every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.pick(v, ["a"])).toEqual({});
+                    expect(lamb.pickKeys(["a"])(v)).toEqual({});
                 });
 
                 expect(lamb.pick(/foo/, ["lastIndex"])).toEqual({"lastIndex": 0});
+                expect(lamb.pickKeys(["lastIndex"])(/foo/)).toEqual({"lastIndex": 0});
             });
         });
 
@@ -728,58 +743,73 @@ describe("lamb.object", function () {
             });
         });
 
-        describe("skip", function () {
+        describe("skip / skipKeys", function () {
             it("should return a copy of the given object without the specified properties", function () {
-                var expected = {"foo" : 1};
-                var result = lamb.skip(simpleObj, ["bar", "baz"]);
-
-                expect(result).toEqual(expected);
+                expect(lamb.skip(simpleObj, ["bar", "baz"])).toEqual({"foo" : 1});
+                expect(lamb.skipKeys(["bar", "baz"])(simpleObj)).toEqual({"foo" : 1});
             });
 
             it("should include inherited properties", function () {
                 expect(lamb.skip(simpleObj, ["foo"])).toEqual({"bar": 2, "baz": 3});
+                expect(lamb.skipKeys(["foo"])(simpleObj)).toEqual({"bar": 2, "baz": 3});
             });
 
             it("should return a copy of the source object if supplied with an empty list of keys", function () {
-                var result = lamb.skip(simpleObj, []);
+                var r1 = lamb.skip(simpleObj, []);
+                var r2 = lamb.skipKeys([])(simpleObj);
 
-                expect(result).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
-                expect(result).not.toBe(simpleObj);
+                expect(r1).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                expect(r1).not.toBe(simpleObj);
+                expect(r2).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                expect(r2).not.toBe(simpleObj);
             });
 
             it("should accept an array-like object as the `blacklist` parameter", function () {
                 expect(lamb.skip({a: 1, b: 2, c: 3}, "ac")).toEqual({b: 2});
+                expect(lamb.skipKeys("ac")({a: 1, b: 2, c: 3})).toEqual({b: 2});
             });
 
-            it("should throw an exception if called without arguments", function () {
+            it("should throw an exception if called without the main data argument", function () {
                 expect(lamb.skip).toThrow();
+                expect(lamb.skipKeys(["a", "b"])).toThrow();
             });
 
             it("should throw an exception if supplied with `null` or `undefined` in place of the `blacklist`", function () {
                 expect(function () { lamb.skip({a: 1}, null); }).toThrow();
                 expect(function () { lamb.skip({a: 1}, void 0); }).toThrow();
+                expect(function () { lamb.skipKeys(null)({a: 1}); }).toThrow();
+                expect(function () { lamb.skipKeys(void 0)({a: 1}); }).toThrow();
+                expect(function () { lamb.skipKeys()({a: 1}); }).toThrow();
+
             });
 
             it("should treat other values for the `blacklist` parameter as an empty array and return a copy of the source object", function () {
                 [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                    var result = lamb.skip(simpleObj, value);
+                    var r1 = lamb.skip(simpleObj, value);
+                    var r2 = lamb.skipKeys(value)(simpleObj);
 
-                    expect(result).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
-                    expect(result).not.toBe(simpleObj);
+                    expect(r1).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                    expect(r1).not.toBe(simpleObj);
+                    expect(r2).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                    expect(r2).not.toBe(simpleObj);
                 });
             });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
                 expect(function () { lamb.skip(null, ["a", "b"]); }).toThrow();
                 expect(function () { lamb.skip(void 0, ["a", "b"]); }).toThrow();
+                expect(function () { lamb.skipKeys(["a", "b"])(null); }).toThrow();
+                expect(function () { lamb.skipKeys(["a", "b"])(void 0); }).toThrow();
             });
 
             it("should convert to object every other value", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
                     expect(lamb.skip(v, ["a"])).toEqual({});
+                    expect(lamb.skipKeys(["a"])(v)).toEqual({});
                 });
 
                 expect(lamb.skip(/foo/, ["lastIndex"])).toEqual({});
+                expect(lamb.skipKeys(["lastIndex"])(/foo/)).toEqual({});
             });
         });
 
