@@ -83,14 +83,17 @@ function allOf () {
  * Builds a predicate that returns true if at least one of the given predicates is satisfied.
  * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
  * @example
- * // Lamb's "isNil" is actually implemented like this
- * var isNil = _.anyOf(_.isNull, _.isUndefined);
+ * var users = [
+ *     {id: 1, name: "John", group: "guest"},
+ *     {id: 2, name: "Jane", group: "root"},
+ *     {id: 3, name: "Mario", group: "admin"}
+ * ];
+ * var isInGroup = _.partial(_.hasKeyValue, "group");
+ * var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
  *
- * isNil(NaN) // => false
- * isNil({}) // => false
- * isNil(null) // => true
- * isNil(void 0) // => true
- * isNil() // => true
+ * isSuperUser(users[0]) // => false
+ * isSuperUser(users[1]) // => true
+ * isSuperUser(users[2]) // => true
  *
  * @memberof module:lamb
  * @category Logic
