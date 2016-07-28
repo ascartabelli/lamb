@@ -210,6 +210,35 @@ describe("lamb.function", function () {
         });
     });
 
+    describe("collect", function () {
+        it("should collect the values returned by the given series of functions applied with the provided parameters", function () {
+            var min = jasmine.createSpy("min").and.callFake(Math.min);
+            var max = jasmine.createSpy("max").and.callFake(Math.max);
+            var minAndMax = lamb.collect(min, max);
+
+            expect(minAndMax(3, 1, -2, 5, 4, -1)).toEqual([-2, 5]);
+            expect(min.calls.count()).toBe(1);
+            expect(max.calls.count()).toBe(1);
+            expect(min.calls.argsFor(0)).toEqual([3, 1, -2, 5, 4, -1]);
+            expect(max.calls.argsFor(0)).toEqual([3, 1, -2, 5, 4, -1]);
+        });
+
+        it("should return an empty array if it doesn't receive any function", function () {
+            expect(lamb.collect()(1, 2, 3)).toEqual([]);
+        });
+
+        it("should call the received functions even if there are no provided parameters", function () {
+            expect(lamb.collect(lamb.identity, lamb.always(99))()).toEqual([void 0, 99]);
+        });
+
+        it("should build a function returning an exception if it receives a value that isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.collect(lamb.always(99), value)(1, 2, 3); }).toThrow();
+                expect(function () { lamb.collect(value, lamb.always(99))(1, 2, 3); }).toThrow();
+            });
+        });
+    });
+
     describe("currying", function () {
         var fooSubtract = function (a, b, c) {
             return a - b - c;
