@@ -41,7 +41,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.34.1
+ * @version 0.35.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -58,7 +58,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.34.1";
+    lamb._version =  "0.35.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1199,14 +1199,17 @@
      * Builds a predicate that returns true if at least one of the given predicates is satisfied.
      * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
      * @example
-     * // Lamb's "isNil" is actually implemented like this
-     * var isNil = _.anyOf(_.isNull, _.isUndefined);
+     * var users = [
+     *     {id: 1, name: "John", group: "guest"},
+     *     {id: 2, name: "Jane", group: "root"},
+     *     {id: 3, name: "Mario", group: "admin"}
+     * ];
+     * var isInGroup = _.partial(_.hasKeyValue, "group");
+     * var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
      *
-     * isNil(NaN) // => false
-     * isNil({}) // => false
-     * isNil(null) // => true
-     * isNil(void 0) // => true
-     * isNil() // => true
+     * isSuperUser(users[0]) // => false
+     * isSuperUser(users[1]) // => true
+     * isSuperUser(users[2]) // => true
      *
      * @memberof module:lamb
      * @category Logic
@@ -1472,6 +1475,9 @@
      * _.clamp(-5, 0, 10) // => 0
      * _.clamp(5, 0, 10) // => 5
      * _.clamp(15, 0, 10) // => 10
+     * _.clamp(0, 0, 10) // => 0
+     * _.clamp(10, 0, 10) // => 10
+     * _.is(_.clamp(-0, 0, 10), -0) // => true
      *
      * @memberof module:lamb
      * @category Math
@@ -3677,7 +3683,7 @@
      * @returns {*}
      */
     function apply (fn, args) {
-        return fn.apply(this, slice(Object(args)));
+        return fn.apply(this, Object(args));
     }
 
     /**
@@ -3697,7 +3703,7 @@
      */
     function applyArgs (args) {
         return function (fn) {
-           return fn.apply(this, slice(Object(args)));
+           return fn.apply(this, Object(args));
         };
     }
 
@@ -3755,6 +3761,40 @@
     function binary (fn) {
         return function (a, b) {
             return fn.call(this, a, b);
+        };
+    }
+
+    /**
+     * Accepts a series of functions and builds a new function. The functions in the series
+     * will then be applied, in order, with the values received by the function built with
+     * &lt;code>collect&lt;/code>.&lt;br/>
+     * The collected results will be returned in an array.
+     * @example
+     * var user = {
+     *     id: "jdoe",
+     *     name: "John",
+     *     surname: "Doe",
+     *     scores: [2, 4, 7]
+     * };
+     * var getIDAndLastScore = _.collect(_.getKey("id"), _.getPath("scores.-1"));
+     *
+     * getIDAndLastScore(user) // => ["jdoe", 7]
+     *
+     * @example
+     * var minAndMax = _.collect(Math.min, Math.max);
+     *
+     * minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @param {...Function} fn
+     * @returns {Function}
+     */
+    function collect () {
+        var functions = slice(arguments);
+
+        return function () {
+            return map(functions, applyArgs(arguments));
         };
     }
 
@@ -4135,6 +4175,7 @@
     lamb.applyArgs = applyArgs;
     lamb.aritize = aritize;
     lamb.binary = binary;
+    lamb.collect = collect;
     lamb.curry = curry;
     lamb.curryRight = curryRight;
     lamb.curryable = curryable;
@@ -4561,7 +4602,7 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.pickIf|pickIf}, {@link module:lamb.pickKeys|pickKeys}
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
      * @param {Object} source
      * @param {String[]} whitelist
@@ -4590,8 +4631,8 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.pick|pick}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -4613,6 +4654,43 @@
             return result;
         };
     }
+
+    /**
+     * A curried version of {@link module:lamb.pick|pick}, expecting a whitelist of keys to build
+     * a function waiting for the object to act upon.
+     * @example
+     * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
+     * var getUserInfo = _.pickKeys(["id", "active"]);
+     *
+     * getUserInfo(user) // => {id: 1, active: false}
+     *
+     * @example &lt;caption>A useful composition with &lt;code>mapWith&lt;/code>:&lt;/caption>
+     * var users = [
+     *     {id: 1, name: "Jane", surname: "Doe", active: false},
+     *     {id: 2, name: "John", surname: "Doe", active: true},
+     *     {id: 3, name: "Mario", surname: "Rossi", active: true},
+     *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
+     * ];
+     * var select = _.compose(_.mapWith, _.pickKeys);
+     * var selectUserInfo = select(["id", "active"]);
+     *
+     * selectUserInfo(users) // =>
+     * // [
+     * //     {id: 1, active: false},
+     * //     {id: 2, active: true},
+     * //     {id: 3, active: true},
+     * //     {id: 4, active: false}
+     * // ]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+     * @param {String[]} whitelist
+     * @returns {Function}
+     */
+    var pickKeys = _curry(pick, 2, true);
 
     /**
      * Creates a copy of the given object with its enumerable keys renamed as
@@ -4718,8 +4796,8 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.skipIf|skipIf}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
@@ -4748,13 +4826,50 @@
      * @memberof module:lamb
      * @category Object
      * @function
-     * @see {@link module:lamb.skip|skip}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
      */
     var skipIf = tapArgs(pickIf, not);
+
+    /**
+     * A curried version of {@link module:lamb.skip|skip}, expecting a blacklist of keys to build
+     * a function waiting for the object to act upon.
+     * @example
+     * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
+     * var getUserInfo = _.skipKeys(["name", "surname"]);
+     *
+     * getUserInfo(user) // => {id: 1, active: false}
+     *
+     * @example &lt;caption>A useful composition with &lt;code>mapWith&lt;/code>:&lt;/caption>
+     * var users = [
+     *     {id: 1, name: "Jane", surname: "Doe", active: false},
+     *     {id: 2, name: "John", surname: "Doe", active: true},
+     *     {id: 3, name: "Mario", surname: "Rossi", active: true},
+     *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
+     * ];
+     * var discard = _.compose(_.mapWith, _.skipKeys);
+     * var discardNames = discard(["name", "surname"]);
+     *
+     * discardNames(users) // =>
+     * // [
+     * //     {id: 1, active: false},
+     * //     {id: 2, active: true},
+     * //     {id: 3, active: true},
+     * //     {id: 4, active: false}
+     * // ]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+     * @param {String[]} blacklist
+     * @returns {Function}
+     */
+    var skipKeys = _curry(skip, 2, true);
 
     /**
      * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
@@ -4889,11 +5004,13 @@
     lamb.pairs = pairs;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
+    lamb.pickKeys = pickKeys;
     lamb.rename = rename;
     lamb.renameKeys = renameKeys;
     lamb.renameWith = renameWith;
     lamb.skip = skip;
     lamb.skipIf = skipIf;
+    lamb.skipKeys = skipKeys;
     lamb.tear = tear;
     lamb.tearOwn = tearOwn;
     lamb.validate = validate;
@@ -5115,13 +5232,13 @@
 </div>
 
 <nav id="main-navigation">
-    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/ascartabelli/lamb">GitHub Repository</a></h2><h2><a href="changelog.html">Changelog</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.contains">contains</a></li><li><a href="module-lamb.html#.count">count</a></li><li><a href="module-lamb.html#.countBy">countBy</a></li><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatMapWith">flatMapWith</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.getAt">getAt</a></li><li><a href="module-lamb.html#.getIndex">getIndex</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.head">head</a></li><li><a href="module-lamb.html#.index">index</a></li><li><a href="module-lamb.html#.indexBy">indexBy</a></li><li><a href="module-lamb.html#.init">init</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.insertAt">insertAt</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.isIn">isIn</a></li><li><a href="module-lamb.html#.last">last</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.partition">partition</a></li><li><a href="module-lamb.html#.partitionWith">partitionWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.pluckKey">pluckKey</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.reduceRightWith">reduceRightWith</a></li><li><a href="module-lamb.html#.reduceWith">reduceWith</a></li><li><a href="module-lamb.html#.reverse">reverse</a></li><li><a href="module-lamb.html#.setAt">setAt</a></li><li><a href="module-lamb.html#.setIndex">setIndex</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sort">sort</a></li><li><a href="module-lamb.html#.sortedInsert">sortedInsert</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.sorterDesc">sorterDesc</a></li><li><a href="module-lamb.html#.sortWith">sortWith</a></li><li><a href="module-lamb.html#.tail">tail</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.transpose">transpose</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li><li><a href="module-lamb.html#.updateAt">updateAt</a></li><li><a href="module-lamb.html#.updateIndex">updateIndex</a></li><li><a href="module-lamb.html#.zip">zip</a></li><li><a href="module-lamb.html#.zipWithIndex">zipWithIndex</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.binary">binary</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.getArgAt">getArgAt</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.invokerOn">invokerOn</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.unary">unary</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.isSVZ">isSVZ</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.clamp">clamp</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.generate">generate</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.enumerables">enumerables</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.getIn">getIn</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getPath">getPath</a></li><li><a href="module-lamb.html#.getPathIn">getPathIn</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.keys">keys</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.merge">merge</a></li><li><a href="module-lamb.html#.mergeOwn">mergeOwn</a></li><li><a href="module-lamb.html#.ownPairs">ownPairs</a></li><li><a href="module-lamb.html#.ownValues">ownValues</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.rename">rename</a></li><li><a href="module-lamb.html#.renameKeys">renameKeys</a></li><li><a href="module-lamb.html#.renameWith">renameWith</a></li><li><a href="module-lamb.html#.setIn">setIn</a></li><li><a href="module-lamb.html#.setKey">setKey</a></li><li><a href="module-lamb.html#.setPath">setPath</a></li><li><a href="module-lamb.html#.setPathIn">setPathIn</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.tearOwn">tearOwn</a></li><li><a href="module-lamb.html#.updateIn">updateIn</a></li><li><a href="module-lamb.html#.updateKey">updateKey</a></li><li><a href="module-lamb.html#.updatePath">updatePath</a></li><li><a href="module-lamb.html#.updatePathIn">updatePathIn</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#Sorter">Sorter</a></li><li><a href="global.html#String">String</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/ascartabelli/lamb">GitHub Repository</a></h2><h2><a href="changelog.html">Changelog</a></h2><h2><a href="module-lamb.html">Functions List</a></h2><h3 id="cat-Array">Array</h3><ul><li><a href="module-lamb.html#.contains">contains</a></li><li><a href="module-lamb.html#.count">count</a></li><li><a href="module-lamb.html#.countBy">countBy</a></li><li><a href="module-lamb.html#.difference">difference</a></li><li><a href="module-lamb.html#.drop">drop</a></li><li><a href="module-lamb.html#.dropN">dropN</a></li><li><a href="module-lamb.html#.dropWhile">dropWhile</a></li><li><a href="module-lamb.html#.filter">filter</a></li><li><a href="module-lamb.html#.filterWith">filterWith</a></li><li><a href="module-lamb.html#.find">find</a></li><li><a href="module-lamb.html#.findIndex">findIndex</a></li><li><a href="module-lamb.html#.flatMap">flatMap</a></li><li><a href="module-lamb.html#.flatMapWith">flatMapWith</a></li><li><a href="module-lamb.html#.flatten">flatten</a></li><li><a href="module-lamb.html#.forEach">forEach</a></li><li><a href="module-lamb.html#.getAt">getAt</a></li><li><a href="module-lamb.html#.getIndex">getIndex</a></li><li><a href="module-lamb.html#.group">group</a></li><li><a href="module-lamb.html#.groupBy">groupBy</a></li><li><a href="module-lamb.html#.head">head</a></li><li><a href="module-lamb.html#.index">index</a></li><li><a href="module-lamb.html#.indexBy">indexBy</a></li><li><a href="module-lamb.html#.init">init</a></li><li><a href="module-lamb.html#.insert">insert</a></li><li><a href="module-lamb.html#.insertAt">insertAt</a></li><li><a href="module-lamb.html#.intersection">intersection</a></li><li><a href="module-lamb.html#.isIn">isIn</a></li><li><a href="module-lamb.html#.last">last</a></li><li><a href="module-lamb.html#.list">list</a></li><li><a href="module-lamb.html#.map">map</a></li><li><a href="module-lamb.html#.mapWith">mapWith</a></li><li><a href="module-lamb.html#.partition">partition</a></li><li><a href="module-lamb.html#.partitionWith">partitionWith</a></li><li><a href="module-lamb.html#.pluck">pluck</a></li><li><a href="module-lamb.html#.pluckKey">pluckKey</a></li><li><a href="module-lamb.html#.reduce">reduce</a></li><li><a href="module-lamb.html#.reduceRight">reduceRight</a></li><li><a href="module-lamb.html#.reduceRightWith">reduceRightWith</a></li><li><a href="module-lamb.html#.reduceWith">reduceWith</a></li><li><a href="module-lamb.html#.reverse">reverse</a></li><li><a href="module-lamb.html#.setAt">setAt</a></li><li><a href="module-lamb.html#.setIndex">setIndex</a></li><li><a href="module-lamb.html#.shallowFlatten">shallowFlatten</a></li><li><a href="module-lamb.html#.slice">slice</a></li><li><a href="module-lamb.html#.sort">sort</a></li><li><a href="module-lamb.html#.sortedInsert">sortedInsert</a></li><li><a href="module-lamb.html#.sorter">sorter</a></li><li><a href="module-lamb.html#.sorterDesc">sorterDesc</a></li><li><a href="module-lamb.html#.sortWith">sortWith</a></li><li><a href="module-lamb.html#.tail">tail</a></li><li><a href="module-lamb.html#.take">take</a></li><li><a href="module-lamb.html#.takeN">takeN</a></li><li><a href="module-lamb.html#.takeWhile">takeWhile</a></li><li><a href="module-lamb.html#.transpose">transpose</a></li><li><a href="module-lamb.html#.union">union</a></li><li><a href="module-lamb.html#.uniques">uniques</a></li><li><a href="module-lamb.html#.updateAt">updateAt</a></li><li><a href="module-lamb.html#.updateIndex">updateIndex</a></li><li><a href="module-lamb.html#.zip">zip</a></li><li><a href="module-lamb.html#.zipWithIndex">zipWithIndex</a></li></ul><h3 id="cat-Core">Core</h3><ul><li><a href="module-lamb.html#.always">always</a></li><li><a href="module-lamb.html#.generic">generic</a></li><li><a href="module-lamb.html#.identity">identity</a></li></ul><h3 id="cat-Function">Function</h3><ul><li><a href="module-lamb.html#.apply">apply</a></li><li><a href="module-lamb.html#.applyArgs">applyArgs</a></li><li><a href="module-lamb.html#.aritize">aritize</a></li><li><a href="module-lamb.html#.binary">binary</a></li><li><a href="module-lamb.html#.collect">collect</a></li><li><a href="module-lamb.html#.compose">compose</a></li><li><a href="module-lamb.html#.curry">curry</a></li><li><a href="module-lamb.html#.curryable">curryable</a></li><li><a href="module-lamb.html#.curryableRight">curryableRight</a></li><li><a href="module-lamb.html#.curryRight">curryRight</a></li><li><a href="module-lamb.html#.debounce">debounce</a></li><li><a href="module-lamb.html#.flip">flip</a></li><li><a href="module-lamb.html#.getArgAt">getArgAt</a></li><li><a href="module-lamb.html#.invoker">invoker</a></li><li><a href="module-lamb.html#.invokerOn">invokerOn</a></li><li><a href="module-lamb.html#.mapArgs">mapArgs</a></li><li><a href="module-lamb.html#.partial">partial</a></li><li><a href="module-lamb.html#.pipe">pipe</a></li><li><a href="module-lamb.html#.tapArgs">tapArgs</a></li><li><a href="module-lamb.html#.throttle">throttle</a></li><li><a href="module-lamb.html#.unary">unary</a></li><li><a href="module-lamb.html#.wrap">wrap</a></li></ul><h3 id="cat-Logic">Logic</h3><ul><li><a href="module-lamb.html#.adapter">adapter</a></li><li><a href="module-lamb.html#.allOf">allOf</a></li><li><a href="module-lamb.html#.anyOf">anyOf</a></li><li><a href="module-lamb.html#.condition">condition</a></li><li><a href="module-lamb.html#.is">is</a></li><li><a href="module-lamb.html#.isGT">isGT</a></li><li><a href="module-lamb.html#.isGTE">isGTE</a></li><li><a href="module-lamb.html#.isLT">isLT</a></li><li><a href="module-lamb.html#.isLTE">isLTE</a></li><li><a href="module-lamb.html#.isNot">isNot</a></li><li><a href="module-lamb.html#.isSVZ">isSVZ</a></li><li><a href="module-lamb.html#.not">not</a></li></ul><h3 id="cat-Math">Math</h3><ul><li><a href="module-lamb.html#.add">add</a></li><li><a href="module-lamb.html#.clamp">clamp</a></li><li><a href="module-lamb.html#.divide">divide</a></li><li><a href="module-lamb.html#.generate">generate</a></li><li><a href="module-lamb.html#.modulo">modulo</a></li><li><a href="module-lamb.html#.multiply">multiply</a></li><li><a href="module-lamb.html#.randomInt">randomInt</a></li><li><a href="module-lamb.html#.range">range</a></li><li><a href="module-lamb.html#.remainder">remainder</a></li><li><a href="module-lamb.html#.subtract">subtract</a></li></ul><h3 id="cat-Object">Object</h3><ul><li><a href="module-lamb.html#.checker">checker</a></li><li><a href="module-lamb.html#.enumerables">enumerables</a></li><li><a href="module-lamb.html#.fromPairs">fromPairs</a></li><li><a href="module-lamb.html#.getIn">getIn</a></li><li><a href="module-lamb.html#.getKey">getKey</a></li><li><a href="module-lamb.html#.getPath">getPath</a></li><li><a href="module-lamb.html#.getPathIn">getPathIn</a></li><li><a href="module-lamb.html#.has">has</a></li><li><a href="module-lamb.html#.hasKey">hasKey</a></li><li><a href="module-lamb.html#.hasKeyValue">hasKeyValue</a></li><li><a href="module-lamb.html#.hasOwn">hasOwn</a></li><li><a href="module-lamb.html#.hasOwnKey">hasOwnKey</a></li><li><a href="module-lamb.html#.immutable">immutable</a></li><li><a href="module-lamb.html#.keys">keys</a></li><li><a href="module-lamb.html#.make">make</a></li><li><a href="module-lamb.html#.merge">merge</a></li><li><a href="module-lamb.html#.mergeOwn">mergeOwn</a></li><li><a href="module-lamb.html#.ownPairs">ownPairs</a></li><li><a href="module-lamb.html#.ownValues">ownValues</a></li><li><a href="module-lamb.html#.pairs">pairs</a></li><li><a href="module-lamb.html#.pick">pick</a></li><li><a href="module-lamb.html#.pickIf">pickIf</a></li><li><a href="module-lamb.html#.pickKeys">pickKeys</a></li><li><a href="module-lamb.html#.rename">rename</a></li><li><a href="module-lamb.html#.renameKeys">renameKeys</a></li><li><a href="module-lamb.html#.renameWith">renameWith</a></li><li><a href="module-lamb.html#.setIn">setIn</a></li><li><a href="module-lamb.html#.setKey">setKey</a></li><li><a href="module-lamb.html#.setPath">setPath</a></li><li><a href="module-lamb.html#.setPathIn">setPathIn</a></li><li><a href="module-lamb.html#.skip">skip</a></li><li><a href="module-lamb.html#.skipIf">skipIf</a></li><li><a href="module-lamb.html#.skipKeys">skipKeys</a></li><li><a href="module-lamb.html#.tear">tear</a></li><li><a href="module-lamb.html#.tearOwn">tearOwn</a></li><li><a href="module-lamb.html#.updateIn">updateIn</a></li><li><a href="module-lamb.html#.updateKey">updateKey</a></li><li><a href="module-lamb.html#.updatePath">updatePath</a></li><li><a href="module-lamb.html#.updatePathIn">updatePathIn</a></li><li><a href="module-lamb.html#.validate">validate</a></li><li><a href="module-lamb.html#.validateWith">validateWith</a></li><li><a href="module-lamb.html#.values">values</a></li></ul><h3 id="cat-String">String</h3><ul><li><a href="module-lamb.html#.padLeft">padLeft</a></li><li><a href="module-lamb.html#.padRight">padRight</a></li><li><a href="module-lamb.html#.repeat">repeat</a></li><li><a href="module-lamb.html#.testWith">testWith</a></li></ul><h3 id="cat-Type">Type</h3><ul><li><a href="module-lamb.html#.isNil">isNil</a></li><li><a href="module-lamb.html#.isNull">isNull</a></li><li><a href="module-lamb.html#.isType">isType</a></li><li><a href="module-lamb.html#.isUndefined">isUndefined</a></li><li><a href="module-lamb.html#.type">type</a></li></ul><h3>Type Definitions</h3><ul><li><a href="global.html#AccumulatorCallback">AccumulatorCallback</a></li><li><a href="global.html#arguments">arguments</a></li><li><a href="global.html#Array">Array</a></li><li><a href="global.html#ArrayLike">ArrayLike</a></li><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#function">function</a></li><li><a href="global.html#ListIteratorCallback">ListIteratorCallback</a></li><li><a href="global.html#Number">Number</a></li><li><a href="global.html#Object">Object</a></li><li><a href="global.html#ObjectIteratorCallback">ObjectIteratorCallback</a></li><li><a href="global.html#RegExp">RegExp</a></li><li><a href="global.html#Sorter">Sorter</a></li><li><a href="global.html#String">String</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Jul 25 2016 15:08:07 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jul 29 2016 12:01:41 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
