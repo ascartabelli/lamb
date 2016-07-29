@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.34.1/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.35.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -94,6 +94,11 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 
 ## <a name="recent_changes"></a> Recent changes
 
+- **v0.35.0 - *2016/07/29***
+  - **Fully compatible with versions down to 0.34.x**
+  - Added `collect`, `pickKeys` and `skipKeys`
+  - Updated the examples of `anyOf` and `clamp`
+
 - **v0.34.0 - *2016/07/19***
   - **API change**: `filter`, `forEach`, `map`, `reduce` and `reduceRight` aren’t array generics anymore and have been replaced with performant custom implementations as JS engines didn’t get any better. Unlike native methods, these custom implementations won’t skip unassigned or deleted indexes in arrays.
   - Overall performance improvements (other than the ones caused by the aforementioned custom implementations) and some code clean-up
@@ -113,9 +118,3 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
   - **API change**: `setPath`, `setPathIn` now convert to string the `path` parameter
   - **API change**: the “set” and “update” path functions now give priority to existing object keys over array indexes, like the “get” path functions
   - Completed “third round" of test updating
-
-- **v0.30.0 - *2016/06/21***
-  - **API change**: `aritize` now adds `undefined` arguments if the desired arity is greater than the amount of received parameters
-  - **API change**: `apply` and `applyArgs` now treat non-array-like values for the `args` parameter as empty arrays
-  - **API change**: `allOf`, `anyOf`, `apply`, `applyArgs`, `aritize`, `binary` and `unary` now keep the functions' context
-  - Completed “second round" of test updating
