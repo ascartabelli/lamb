@@ -73,6 +73,50 @@ function aritize (fn, arity) {
 }
 
 /**
+ * Decorates the received function so that it can be called with
+ * placeholders to build a partial application of it.<br/>
+ * The difference with {@link module:lamb.partial|partial} is that, as long as
+ * you call the generated function with placeholders, another partial application
+ * of the original function will be built.<br/>
+ * The final application will happen when one of the generated functions is
+ * invoked without placeholders, using the parameters collected so far. <br/>
+ * This function comes in handy when you need to build different specialized
+ * functions starting from a basic one, but it's also useful when dealing with
+ * optional parameters as you can decide to apply the function even if its arity
+ * hasn't been entirely consumed.
+ * @example <caption>Explaining the function's behaviour:</caption>
+ * var f = _.asPartial(function (a, b, c) {
+ *     return a + b + c;
+ * });
+ *
+ * f(4, 3, 2) // => 9
+ * f(4, _, 2)(3) // => 9
+ * f(_, 3, _)(4, _)(2) // => 9
+ *
+ * @example <caption>Exploiting optional parameters: </caption>
+ * var f = _.asPartial(function (a, b, c) {
+ *     return a + b + (c || 0);
+ * });
+ *
+ * var addFive = f(5, _);
+ * addFive(2) // => 7
+ *
+ * var addNine = addFive(4, _);
+ * addNine(11) // => 20
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @see {@link module:lamb.partial|partial}
+ * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+ * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function asPartial (fn) {
+    return _asPartial(fn, []);
+}
+
+/**
  * Builds a function that passes only two arguments to the given function.<br/>
  * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
  * exposed for convenience.<br/>
@@ -131,9 +175,7 @@ function collect () {
  * expecting only one argument. Each function of the sequence is a partial application of the
  * original one, which will be applied when the specified (or derived) arity is consumed.<br/>
  * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
- * for right currying.<br/>
- * See also {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
- * and {@link module:lamb.partial|partial}.
+ * for right currying.
  * @example
  * var multiplyBy = _.curry(_.multiply);
  * var multiplyBy10 = multiplyBy(10);
@@ -143,6 +185,9 @@ function collect () {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.curryRight|curryRight}
+ * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -156,9 +201,7 @@ function curry (fn, arity) {
  * any number of arguments, and the original function will be applied only when the specified
  * (or derived) arity is consumed.<br/>
  * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
- * for right currying.<br/>
- * See also {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight} and
- * {@link module:lamb.partial|partial}.
+ * for right currying.
  * @example
  * var collectFourElements = _.curryable(_.list, 4);
  *
@@ -169,6 +212,9 @@ function curry (fn, arity) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -189,6 +235,9 @@ function curryable (fn, arity) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.curryable|curryable}
+ * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -207,6 +256,9 @@ function curryableRight (fn, arity) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.curry|curry}
+ * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -502,6 +554,7 @@ var wrap = binary(flip(partial));
 lamb.apply = apply;
 lamb.applyArgs = applyArgs;
 lamb.aritize = aritize;
+lamb.asPartial = asPartial;
 lamb.binary = binary;
 lamb.collect = collect;
 lamb.curry = curry;

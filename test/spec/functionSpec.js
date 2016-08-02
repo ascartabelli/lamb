@@ -167,6 +167,99 @@ describe("lamb.function", function () {
         });
     });
 
+    describe("asPartial", function () {
+        var fooSubtract = function (a, b, c, d) {
+            return a - b - c - d;
+        };
+        var _ = lamb;
+        var fooSubtractSpy = jasmine.createSpy("fooSubtractSpy").and.callFake(fooSubtract);
+
+        afterEach(function () {
+            fooSubtractSpy.calls.reset();
+        });
+
+        it("should build a function that returns a partial application of the original one as long as it's called with placeholders", function () {
+            var fn = _.asPartial(fooSubtract);
+
+            expect(fn(_, 4, _, _)(_, 3, _)(5, _)(2)).toBe(-4);
+            expect(fn(_)(_, _)(_)(5, _)(_, 3)(4, _)(2)).toBe(-4);
+            expect(fn(_, 4, _, _)(_, 3, _)(5, _, _, _, 2, _, _)(99, 6)).toBe(-101);
+            expect(fn(3, 2, 1, 0)).toBe(0);
+            expect(fn(5, _, 3)(_)(_, _)(4, _)(2)).toBe(-4);
+            expect(fn(_, 2, _, 0)(_, _)(3, _)(_)(1)).toBe(0);
+            expect(fn(5, _, _, _)(4, 3, 2)).toBe(-4);
+        });
+
+        it("should be safe to call the partial application multiple times with different values for unfilled placeholders", function () {
+            var fn = _.asPartial(fooSubtract)(_, 5, _, _);
+            var minusTen1 = fn(_, 4, _)(_, 1);
+            var minusTen2 = fn(_, 3, 2);
+            var minusTen3 = fn(_, -5, 10);
+
+            var numbers = [-1000, 6, 502, 856, 790, 547, 157, 750, 111, -419];
+            var results = [-1010, -4, 492, 846, 780, 537, 147, 740, 101, -429];
+
+            expect(numbers.map(minusTen1)).toEqual(results);
+            expect(numbers.map(minusTen2)).toEqual(results);
+            expect(numbers.map(minusTen3)).toEqual(results);
+        });
+
+        it("should build a function that applies the original function when it's called without placeholders even if its arity isn't consumed", function () {
+            var fn = _.asPartial(fooSubtractSpy);
+
+            expect(fn(5, _, 3)(4)).toEqual(NaN);
+            expect(fooSubtractSpy.calls.count()).toBe(1);
+            expect(fooSubtractSpy.calls.argsFor(0)).toEqual([5, 4, 3]);
+        });
+
+        it("should pass all the received arguments, even if they exceed the original function's arity", function () {
+            var fn = _.asPartial(fooSubtractSpy);
+
+            expect(fn(_, 4, _, 2)(5, 3, 6, 7, 8)).toBe(-4);
+            expect(fooSubtractSpy.calls.count()).toBe(1);
+            expect(fooSubtractSpy.calls.argsFor(0)).toEqual([5, 4, 3, 2, 6, 7, 8]);
+        });
+
+        it("should not add a `undefined` parameter if a partial application is called without arguments", function () {
+            var fn = _.asPartial(fooSubtractSpy);
+
+            expect(fn(_, 4, 3, 2)(5, _)()).toBe(-4);
+            expect(fooSubtractSpy.calls.argsFor(0)).toEqual([5, 4, 3, 2, _]);
+        });
+
+        it("should let the value of unfilled placeholders to be the \"lamb\" object", function () {
+            var foo = lamb.asPartial(lamb.list)(_, 2, _, 3, _, 5, _);
+
+            expect(foo(1)).toEqual([1, 2, _, 3, _, 5, _]);
+        });
+
+        it("should preserve the function's context", function () {
+            var fn = lamb.asPartial(function (a, b) {
+                this.values.push(a - b);
+            });
+
+            var obj = {
+                values: [1, 2, 3],
+                foo: fn(4, _),
+                bar: fn(_, 4)
+            };
+
+            obj.foo(5);
+            expect(obj.values).toEqual([1, 2, 3, -1]);
+
+            obj.bar(5);
+            expect(obj.values).toEqual([1, 2, 3, -1, 1]);
+        });
+
+        it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", function () {
+            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.asPartial(value)).toThrow();
+            });
+
+            expect(lamb.asPartial()).toThrow();
+        });
+    });
+
     describe("binary", function () {
         var binaryList;
 

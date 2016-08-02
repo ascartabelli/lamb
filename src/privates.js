@@ -1,3 +1,39 @@
+/**
+ * Keeps building a partial application of the received function as long
+ * as it's called with placeholders; applies the original function with
+ * the collected parameters otherwise.
+ * @private
+ * @param {Function} fn
+ * @param {Array} argsHolder
+ * @returns {Function|*}
+ */
+function _asPartial (fn, argsHolder) {
+    return function () {
+        var argsHolderLen = argsHolder.length;
+        var argsLen = arguments.length;
+        var lastIdx = 0;
+        var newArgs = [];
+        var canApply = true;
+
+        for (var i = 0; i < argsLen; i++) {
+            if (arguments[i] === _) {
+                canApply = false;
+                break;
+            }
+        }
+
+        for (var idx = 0, boundArg; idx < argsHolderLen; idx++) {
+            boundArg = argsHolder[idx];
+            newArgs[idx] = lastIdx < argsLen && boundArg === _ ? arguments[lastIdx++] : boundArg;
+        }
+
+        while (lastIdx < argsLen) {
+            newArgs[idx++] = arguments[lastIdx++];
+        }
+
+        return canApply ? fn.apply(this, newArgs) : _asPartial(fn, newArgs);
+    };
+}
 
 /**
  * The default comparer for sorting functions.<br/>

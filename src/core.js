@@ -131,17 +131,17 @@ function partial (fn) {
     var args = slice(arguments, 1);
 
     return function () {
-        var lastArgumentIdx = 0;
+        var lastIdx = 0;
         var newArgs = [];
         var argsLen = args.length;
 
         for (var i = 0, boundArg; i < argsLen; i++) {
             boundArg = args[i];
-            newArgs[i] = boundArg === _ ? arguments[lastArgumentIdx++] : boundArg;
+            newArgs[i] = boundArg === _ ? arguments[lastIdx++] : boundArg;
         }
 
-        for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
-            newArgs[i++] = arguments[lastArgumentIdx];
+        for (var len = arguments.length; lastIdx < len; lastIdx++) {
+            newArgs[i++] = arguments[lastIdx];
         }
 
         return fn.apply(this, newArgs);

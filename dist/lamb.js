@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.36.0-alpha.3
+ * @version 0.36.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.36.0-alpha.3";
+    lamb._version =  "0.36.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -152,17 +152,17 @@
         var args = slice(arguments, 1);
 
         return function () {
-            var lastArgumentIdx = 0;
+            var lastIdx = 0;
             var newArgs = [];
             var argsLen = args.length;
 
             for (var i = 0, boundArg; i < argsLen; i++) {
                 boundArg = args[i];
-                newArgs[i] = boundArg === _ ? arguments[lastArgumentIdx++] : boundArg;
+                newArgs[i] = boundArg === _ ? arguments[lastIdx++] : boundArg;
             }
 
-            for (var len = arguments.length; lastArgumentIdx < len; lastArgumentIdx++) {
-                newArgs[i++] = arguments[lastArgumentIdx];
+            for (var len = arguments.length; lastIdx < len; lastIdx++) {
+                newArgs[i++] = arguments[lastIdx];
             }
 
             return fn.apply(this, newArgs);
@@ -175,6 +175,42 @@
     lamb.identity = identity;
     lamb.partial = partial;
 
+    /**
+     * Keeps building a partial application of the received function as long
+     * as it's called with placeholders; applies the original function with
+     * the collected parameters otherwise.
+     * @private
+     * @param {Function} fn
+     * @param {Array} argsHolder
+     * @returns {Function|*}
+     */
+    function _asPartial (fn, argsHolder) {
+        return function () {
+            var argsHolderLen = argsHolder.length;
+            var argsLen = arguments.length;
+            var lastIdx = 0;
+            var newArgs = [];
+            var canApply = true;
+
+            for (var i = 0; i < argsLen; i++) {
+                if (arguments[i] === _) {
+                    canApply = false;
+                    break;
+                }
+            }
+
+            for (var idx = 0, boundArg; idx < argsHolderLen; idx++) {
+                boundArg = argsHolder[idx];
+                newArgs[idx] = lastIdx < argsLen && boundArg === _ ? arguments[lastIdx++] : boundArg;
+            }
+
+            while (lastIdx < argsLen) {
+                newArgs[idx++] = arguments[lastIdx++];
+            }
+
+            return canApply ? fn.apply(this, newArgs) : _asPartial(fn, newArgs);
+        };
+    }
 
     /**
      * The default comparer for sorting functions.<br/>
@@ -3705,6 +3741,50 @@
     }
 
     /**
+     * Decorates the received function so that it can be called with
+     * placeholders to build a partial application of it.<br/>
+     * The difference with {@link module:lamb.partial|partial} is that, as long as
+     * you call the generated function with placeholders, another partial application
+     * of the original function will be built.<br/>
+     * The final application will happen when one of the generated functions is
+     * invoked without placeholders, using the parameters collected so far. <br/>
+     * This function comes in handy when you need to build different specialized
+     * functions starting from a basic one, but it's also useful when dealing with
+     * optional parameters as you can decide to apply the function even if its arity
+     * hasn't been entirely consumed.
+     * @example <caption>Explaining the function's behaviour:</caption>
+     * var f = _.asPartial(function (a, b, c) {
+     *     return a + b + c;
+     * });
+     *
+     * f(4, 3, 2) // => 9
+     * f(4, _, 2)(3) // => 9
+     * f(_, 3, _)(4, _)(2) // => 9
+     *
+     * @example <caption>Exploiting optional parameters: </caption>
+     * var f = _.asPartial(function (a, b, c) {
+     *     return a + b + (c || 0);
+     * });
+     *
+     * var addFive = f(5, _);
+     * addFive(2) // => 7
+     *
+     * var addNine = addFive(4, _);
+     * addNine(11) // => 20
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @see {@link module:lamb.partial|partial}
+     * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @param {Function} fn
+     * @returns {Function}
+     */
+    function asPartial (fn) {
+        return _asPartial(fn, []);
+    }
+
+    /**
      * Builds a function that passes only two arguments to the given function.<br/>
      * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
      * exposed for convenience.<br/>
@@ -3763,9 +3843,7 @@
      * expecting only one argument. Each function of the sequence is a partial application of the
      * original one, which will be applied when the specified (or derived) arity is consumed.<br/>
      * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
-     * for right currying.<br/>
-     * See also {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
-     * and {@link module:lamb.partial|partial}.
+     * for right currying.
      * @example
      * var multiplyBy = _.curry(_.multiply);
      * var multiplyBy10 = multiplyBy(10);
@@ -3775,6 +3853,9 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -3788,9 +3869,7 @@
      * any number of arguments, and the original function will be applied only when the specified
      * (or derived) arity is consumed.<br/>
      * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
-     * for right currying.<br/>
-     * See also {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight} and
-     * {@link module:lamb.partial|partial}.
+     * for right currying.
      * @example
      * var collectFourElements = _.curryable(_.list, 4);
      *
@@ -3801,6 +3880,9 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -3821,6 +3903,9 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.curryable|curryable}
+     * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -3839,6 +3924,9 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.curry|curry}
+     * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -4134,6 +4222,7 @@
     lamb.apply = apply;
     lamb.applyArgs = applyArgs;
     lamb.aritize = aritize;
+    lamb.asPartial = asPartial;
     lamb.binary = binary;
     lamb.collect = collect;
     lamb.curry = curry;
