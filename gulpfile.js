@@ -62,7 +62,7 @@ gulp.task("minify", ["concat"], function () {
     return gulp.src("./dist/lamb.js")
         .pipe(sourcemaps.init())
         .pipe(uglify({
-            preserveComments: "some"
+            preserveComments: "license"
         }))
         .pipe(rename({extname: ".min.js"}))
         .pipe(sourcemaps.write("./"))
