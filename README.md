@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.35.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.36.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -94,6 +94,10 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 
 ## <a name="recent_changes"></a> Recent changes
 
+- **v0.36.0 - *2016/08/04***
+  - **Fully compatible with versions down to 0.34.x**
+  - Added `asPartial`
+
 - **v0.35.0 - *2016/07/29***
   - **Fully compatible with versions down to 0.34.x**
   - Added `collect`, `pickKeys` and `skipKeys`
@@ -112,9 +116,3 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
   - **API change**: `tapArgs`, `updateAt` and `updateIndex` are now more strict about their function parameter as “falsy” values failed to throw an exception before
   - **API change**: curry functions now let empty calls consume the arity
   - Completed “fourth round" of test updating
-
-- **v0.31.0 - *2016/06/24***
-  - **API change**: all path functions and object setters now throw a TypeError `nil` values received as `source`, other values will be converted to Object
-  - **API change**: `setPath`, `setPathIn` now convert to string the `path` parameter
-  - **API change**: the “set” and “update” path functions now give priority to existing object keys over array indexes, like the “get” path functions
-  - Completed “third round" of test updating
