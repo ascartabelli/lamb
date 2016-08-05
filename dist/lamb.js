@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.36.0
+ * @version 0.37.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.36.0";
+    lamb._version =  "0.37.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -149,7 +149,7 @@
      * @returns {Function}
      */
     function partial (fn) {
-        var args = slice(arguments, 1);
+        var args = _listFrom1.apply(null, arguments);
 
         return function () {
             var lastIdx = 0;
@@ -174,6 +174,30 @@
     lamb.generic = generic;
     lamb.identity = identity;
     lamb.partial = partial;
+
+    /**
+     * Builds helper functions to extract portions of the arguments
+     * object rather efficiently without having to write for loops
+     * manually for each case.<br/>
+     * The arguments object needs to be passed to the apply method
+     * of the generated function.
+     * @private
+     * @param {Number} idx
+     * @returns {Function}
+     */
+    function _argsToArrayFrom (idx) {
+        return function () {
+            var argsLen = arguments.length || idx;
+            var len = argsLen - idx;
+            var result = Array(len);
+
+            for (var i = 0; i < len; i++) {
+                result[i] = arguments[i + idx];
+            }
+
+            return result;
+        };
+    }
 
     /**
      * Keeps building a partial application of the received function as long
@@ -534,8 +558,13 @@
      * @returns {*}
      */
     function _invoker (boundArgs, methodName, target) {
-        var args = boundArgs.concat(slice(arguments, 3));
         var method = target[methodName];
+        var args = _listFrom3.apply(null, arguments);
+
+        if (boundArgs.length) {
+            args = boundArgs.concat(args);
+        }
+
         return type(method) === "Function" ? method.apply(target, args) : void 0;
     }
 
@@ -595,6 +624,39 @@
            return [key, obj[key]];
         };
     }
+
+    /**
+     * Builds an array with the received arguments excluding the first one.<br/>
+     * To be used with the arguments object, which needs to be passed to the apply
+     * method of this function.
+     * @private
+     * @function
+     * @param {...*} value
+     * @returns {Array}
+     */
+    var _listFrom1 = _argsToArrayFrom(1);
+
+    /**
+     * Builds an array with the received arguments, excluding the first two.<br/>
+     * To be used with the arguments object, which needs to be passed to the apply
+     * method of this function.
+     * @private
+     * @function
+     * @param {...*} value
+     * @returns {Array}
+     */
+    var _listFrom2 = _argsToArrayFrom(2);
+
+    /**
+     * Builds an array with the received arguments, excluding the first three.<br/>
+     * To be used with the arguments object, which needs to be passed to the apply
+     * method of this function.
+     * @private
+     * @function
+     * @param {...*} value
+     * @returns {Array}
+     */
+    var _listFrom3 = _argsToArrayFrom(3);
 
     /**
      * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
@@ -673,7 +735,7 @@
      * @returns {Object}
      */
     function _merge (getKeys) {
-        return reduce(slice(arguments, 1), function (result, source) {
+        return reduce(_listFrom1.apply(null, arguments), function (result, source) {
             forEach(getKeys(source), function (key) {
                 result[key] = source[key];
             });
@@ -1141,7 +1203,7 @@
      * @returns {Function}
      */
     function adapter () {
-        var functions = slice(arguments);
+        var functions = list.apply(null, arguments);
 
         return function () {
             var len = functions.length;
@@ -1178,7 +1240,7 @@
      * @returns {Function}
      */
     function allOf () {
-        var predicates = slice(arguments);
+        var predicates = list.apply(null, arguments);
 
         return function () {
             for (var i = 0, len = predicates.length; i < len; i++) {
@@ -1214,7 +1276,7 @@
      * @returns {Function}
      */
     function anyOf () {
-        var predicates = slice(arguments);
+        var predicates = list.apply(null, arguments);
 
         return function () {
             for (var i = 0, len = predicates.length; i < len; i++) {
@@ -2439,7 +2501,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(map(slice(arguments, 1), unary(slice)));
+        var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
         return filter(array, not(isInRest));
     }
@@ -2739,7 +2801,7 @@
      * @return {Array}
      */
     function intersection () {
-        var rest = slice(arguments, 1);
+        var rest = _listFrom1.apply(null, arguments);
 
         return filter(uniques(arguments[0]), function (item) {
             return rest.every(contains(item));
@@ -2787,19 +2849,11 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @param {...*} value
      * @returns {Array}
      */
-    function list () {
-        var len = arguments.length;
-        var result = Array(len);
-
-        for (var i = 0; i < len; i++) {
-            result[i] = arguments[i];
-        }
-
-        return result;
-    }
+    var list = _argsToArrayFrom(0);
 
     /**
      * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,
@@ -3526,7 +3580,7 @@
      * @returns {Array}
      */
     function sort (arrayLike) {
-        var criteria = _makeCriteria(slice(arguments, 1));
+        var criteria = _makeCriteria(_listFrom1.apply(null, arguments));
         var data = [];
         var result = [];
         var len = arrayLike.length;
@@ -3591,7 +3645,7 @@
      * @returns {Array}
      */
     function sortedInsert (arrayLike, element) {
-        var criteria = _makeCriteria(slice(arguments, 2));
+        var criteria = _makeCriteria(_listFrom2.apply(null, arguments));
         var result = slice(arrayLike);
         var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
@@ -3653,7 +3707,7 @@
      * @returns {Function}
      */
     function sortWith () {
-        var sorters = slice(arguments);
+        var sorters = list.apply(null, arguments);
 
         return function (arrayLike) {
             return sort.apply(null, [arrayLike].concat(sorters));
@@ -3728,7 +3782,7 @@
      */
     function aritize (fn, arity) {
         return function () {
-            var args = slice(arguments, 0, arity);
+            var args = slice(list.apply(null, arguments), 0, arity);
             var argsLen = args.length;
             var n = Math.floor(arity);
 
@@ -3831,7 +3885,7 @@
      * @returns {Function}
      */
     function collect () {
-        var functions = slice(arguments);
+        var functions = list.apply(null, arguments);
 
         return function () {
             return map(functions, applyArgs(arguments));
@@ -3984,7 +4038,7 @@
      */
     function flip (fn) {
         return function () {
-            var args = slice(arguments).reverse();
+            var args = list.apply(null, arguments).reverse();
             return fn.apply(this, args);
         };
     }
@@ -4046,7 +4100,7 @@
      * @returns {Function}
      */
     function invoker (methodName) {
-        var boundArgs = slice(arguments, 1);
+        var boundArgs = _listFrom1.apply(null, arguments);
         return partial(_invoker, boundArgs, methodName);
     }
 
@@ -4129,7 +4183,7 @@
      * @returns {Function}
      */
     function tapArgs (fn) {
-        var tappers = slice(arguments, 1);
+        var tappers = _listFrom1.apply(null, arguments);
 
         return function () {
             var len = arguments.length;

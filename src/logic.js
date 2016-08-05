@@ -29,7 +29,7 @@
  * @returns {Function}
  */
 function adapter () {
-    var functions = slice(arguments);
+    var functions = list.apply(null, arguments);
 
     return function () {
         var len = functions.length;
@@ -66,7 +66,7 @@ function adapter () {
  * @returns {Function}
  */
 function allOf () {
-    var predicates = slice(arguments);
+    var predicates = list.apply(null, arguments);
 
     return function () {
         for (var i = 0, len = predicates.length; i < len; i++) {
@@ -102,7 +102,7 @@ function allOf () {
  * @returns {Function}
  */
 function anyOf () {
-    var predicates = slice(arguments);
+    var predicates = list.apply(null, arguments);
 
     return function () {
         for (var i = 0, len = predicates.length; i < len; i++) {

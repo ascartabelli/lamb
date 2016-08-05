@@ -1,4 +1,28 @@
 /**
+ * Builds helper functions to extract portions of the arguments
+ * object rather efficiently without having to write for loops
+ * manually for each case.<br/>
+ * The arguments object needs to be passed to the apply method
+ * of the generated function.
+ * @private
+ * @param {Number} idx
+ * @returns {Function}
+ */
+function _argsToArrayFrom (idx) {
+    return function () {
+        var argsLen = arguments.length || idx;
+        var len = argsLen - idx;
+        var result = Array(len);
+
+        for (var i = 0; i < len; i++) {
+            result[i] = arguments[i + idx];
+        }
+
+        return result;
+    };
+}
+
+/**
  * Keeps building a partial application of the received function as long
  * as it's called with placeholders; applies the original function with
  * the collected parameters otherwise.
@@ -357,8 +381,13 @@ function _immutable (obj, seen) {
  * @returns {*}
  */
 function _invoker (boundArgs, methodName, target) {
-    var args = boundArgs.concat(slice(arguments, 3));
     var method = target[methodName];
+    var args = _listFrom3.apply(null, arguments);
+
+    if (boundArgs.length) {
+        args = boundArgs.concat(args);
+    }
+
     return type(method) === "Function" ? method.apply(target, args) : void 0;
 }
 
@@ -418,6 +447,39 @@ function _keyToPairIn (obj) {
        return [key, obj[key]];
     };
 }
+
+/**
+ * Builds an array with the received arguments excluding the first one.<br/>
+ * To be used with the arguments object, which needs to be passed to the apply
+ * method of this function.
+ * @private
+ * @function
+ * @param {...*} value
+ * @returns {Array}
+ */
+var _listFrom1 = _argsToArrayFrom(1);
+
+/**
+ * Builds an array with the received arguments, excluding the first two.<br/>
+ * To be used with the arguments object, which needs to be passed to the apply
+ * method of this function.
+ * @private
+ * @function
+ * @param {...*} value
+ * @returns {Array}
+ */
+var _listFrom2 = _argsToArrayFrom(2);
+
+/**
+ * Builds an array with the received arguments, excluding the first three.<br/>
+ * To be used with the arguments object, which needs to be passed to the apply
+ * method of this function.
+ * @private
+ * @function
+ * @param {...*} value
+ * @returns {Array}
+ */
+var _listFrom3 = _argsToArrayFrom(3);
 
 /**
  * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
@@ -496,7 +558,7 @@ function _makeTypeErrorFor(value, desiredType) {
  * @returns {Object}
  */
 function _merge (getKeys) {
-    return reduce(slice(arguments, 1), function (result, source) {
+    return reduce(_listFrom1.apply(null, arguments), function (result, source) {
         forEach(getKeys(source), function (key) {
             result[key] = source[key];
         });

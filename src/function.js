@@ -60,7 +60,7 @@ function applyArgs (args) {
  */
 function aritize (fn, arity) {
     return function () {
-        var args = slice(arguments, 0, arity);
+        var args = slice(list.apply(null, arguments), 0, arity);
         var argsLen = args.length;
         var n = Math.floor(arity);
 
@@ -163,7 +163,7 @@ function binary (fn) {
  * @returns {Function}
  */
 function collect () {
-    var functions = slice(arguments);
+    var functions = list.apply(null, arguments);
 
     return function () {
         return map(functions, applyArgs(arguments));
@@ -316,7 +316,7 @@ function debounce (fn, timespan) {
  */
 function flip (fn) {
     return function () {
-        var args = slice(arguments).reverse();
+        var args = list.apply(null, arguments).reverse();
         return fn.apply(this, args);
     };
 }
@@ -378,7 +378,7 @@ function getArgAt (index) {
  * @returns {Function}
  */
 function invoker (methodName) {
-    var boundArgs = slice(arguments, 1);
+    var boundArgs = _listFrom1.apply(null, arguments);
     return partial(_invoker, boundArgs, methodName);
 }
 
@@ -461,7 +461,7 @@ var pipe = flip(compose);
  * @returns {Function}
  */
 function tapArgs (fn) {
-    var tappers = slice(arguments, 1);
+    var tappers = _listFrom1.apply(null, arguments);
 
     return function () {
         var len = arguments.length;

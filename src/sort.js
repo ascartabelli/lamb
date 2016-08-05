@@ -59,7 +59,7 @@
  * @returns {Array}
  */
 function sort (arrayLike) {
-    var criteria = _makeCriteria(slice(arguments, 1));
+    var criteria = _makeCriteria(_listFrom1.apply(null, arguments));
     var data = [];
     var result = [];
     var len = arrayLike.length;
@@ -124,7 +124,7 @@ function sort (arrayLike) {
  * @returns {Array}
  */
 function sortedInsert (arrayLike, element) {
-    var criteria = _makeCriteria(slice(arguments, 2));
+    var criteria = _makeCriteria(_listFrom2.apply(null, arguments));
     var result = slice(arrayLike);
     var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
@@ -186,7 +186,7 @@ var sorterDesc = partial(_sorter, _, true, _);
  * @returns {Function}
  */
 function sortWith () {
-    var sorters = slice(arguments);
+    var sorters = list.apply(null, arguments);
 
     return function (arrayLike) {
         return sort.apply(null, [arrayLike].concat(sorters));

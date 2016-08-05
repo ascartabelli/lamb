@@ -39,7 +39,7 @@ function contains (value, fromIndex) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = shallowFlatten(map(slice(arguments, 1), unary(slice)));
+    var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
     var isInRest = partial(isIn, rest, _, 0);
     return filter(array, not(isInRest));
 }
@@ -339,7 +339,7 @@ function insertAt (index, element) {
  * @return {Array}
  */
 function intersection () {
-    var rest = slice(arguments, 1);
+    var rest = _listFrom1.apply(null, arguments);
 
     return filter(uniques(arguments[0]), function (item) {
         return rest.every(contains(item));
@@ -387,19 +387,11 @@ function isIn (arrayLike, value, fromIndex) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @param {...*} value
  * @returns {Array}
  */
-function list () {
-    var len = arguments.length;
-    var result = Array(len);
-
-    for (var i = 0; i < len; i++) {
-        result[i] = arguments[i];
-    }
-
-    return result;
-}
+var list = _argsToArrayFrom(0);
 
 /**
  * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,

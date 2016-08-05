@@ -128,7 +128,7 @@ function identity (value) {
  * @returns {Function}
  */
 function partial (fn) {
-    var args = slice(arguments, 1);
+    var args = _listFrom1.apply(null, arguments);
 
     return function () {
         var lastIdx = 0;
