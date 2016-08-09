@@ -1,11 +1,12 @@
-
 /**
- * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted copy of an
- * array-like object using the given criteria.<br/>
- * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
- * pass simple "reader" functions and default ascending sorters will be built for you.<br/>
- * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
- * Please note that if the arguments received by the default comparer aren't of the same type, they will be compared as strings.
+ * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted
+ * copy of an array-like object using the given criteria.<br/>
+ * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you
+ * can also pass simple "reader" functions and default ascending sorters will be built for you.<br/>
+ * A "reader" is a function that evaluates the array element and supplies the value to be used
+ * in the comparison.<br/>
+ * Please note that if the arguments received by the default comparer aren't of the same type,
+ * they will be compared as strings.
  *
  * @example <caption>Stable sort:</caption>
  * var persons = [
@@ -117,10 +118,12 @@ function sort (arrayLike) {
  * @category Array
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
- * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
+ * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element
+ * at a specific index
  * @param {ArrayLike} arrayLike
  * @param {*} element
- * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
+ * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria
+ * used to sort the array.
  * @returns {Array}
  */
 function sortedInsert (arrayLike, element) {
@@ -129,11 +132,13 @@ function sortedInsert (arrayLike, element) {
     var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
     result.splice(idx, 0, element);
+
     return result;
 }
 
 /**
- * Creates an ascending sort criterion with the provided <code>reader</code> and <code>comparer</code>.<br/>
+ * Creates an ascending sort criterion with the provided <code>reader</code> and
+ * <code>comparer</code>.<br/>
  * See {@link module:lamb.sort|sort} for various examples.
  *
  * @memberof module:lamb
@@ -142,14 +147,17 @@ function sortedInsert (arrayLike, element) {
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorterDesc|sorterDesc}
- * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
+ * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
+ * simple value from a complex one. The function should evaluate the array element and supply the
+ * value to be passed to the comparer.
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
  */
 var sorter = partial(_sorter, _, false, _);
 
 /**
- * Creates a descending sort criterion with the provided <code>reader</code> and <code>comparer</code>.<br/>
+ * Creates a descending sort criterion with the provided <code>reader</code> and
+ * <code>comparer</code>.<br/>
  * See {@link module:lamb.sort|sort} for various examples.
  *
  * @memberof module:lamb
@@ -158,18 +166,21 @@ var sorter = partial(_sorter, _, false, _);
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}
- * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
+ * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
+ * simple value from a complex one. The function should evaluate the array element and supply the
+ * value to be passed to the comparer.
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
  */
 var sorterDesc = partial(_sorter, _, true, _);
 
 /**
- * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria. The returned
- * function expects the array-like object to sort.
- * As usual, sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
- * pass simple "reader" functions and default ascending sorters will be built.<br/>
- * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
+ * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria.
+ * The returned function expects the array-like object to sort.
+ * As usual, sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function,
+ * but you can also pass simple "reader" functions and default ascending sorters will be built.<br/>
+ * A "reader" is a function that evaluates the array element and supplies the value to be used in
+ * the comparison.<br/>
  * See {@link module:lamb.sort|sort} for more examples.
  *
  * @example

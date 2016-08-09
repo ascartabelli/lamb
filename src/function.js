@@ -1,4 +1,3 @@
-
 /**
  * Applies the passed function to the given argument list.
  * @example
@@ -31,7 +30,7 @@ function apply (fn, args) {
  */
 function applyArgs (args) {
     return function (fn) {
-       return fn.apply(this, Object(args));
+        return fn.apply(this, Object(args));
     };
 }
 
@@ -268,8 +267,10 @@ function curryRight (fn, arity) {
 }
 
 /**
- * Returns a function that will execute the given function only if it stops being called for the specified timespan.<br/>
- * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call happens immediately.
+ * Returns a function that will execute the given function only if it stops being called for the
+ * specified timespan.<br/>
+ * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call
+ * happens immediately.
  * @example <caption>A common use case of <code>debounce</code> in a browser environment</caption>
  * var updateLayout = function () {
  *     // some heavy DOM operations here
@@ -291,12 +292,11 @@ function debounce (fn, timespan) {
     var timeoutID;
 
     return function () {
-        var context = this;
         var args = arguments;
         var debounced = function () {
             timeoutID = null;
-            fn.apply(context, args);
-        };
+            fn.apply(this, args);
+        }.bind(this);
 
         clearTimeout(timeoutID);
         timeoutID = setTimeout(debounced, timespan);
@@ -317,6 +317,7 @@ function debounce (fn, timespan) {
 function flip (fn) {
     return function () {
         var args = list.apply(null, arguments).reverse();
+
         return fn.apply(this, args);
     };
 }
@@ -339,26 +340,28 @@ function flip (fn) {
  *
  * @memberof module:lamb
  * @category Function
- * @param {Number} index
+ * @param {Number} idx
  * @returns {Function}
  */
-function getArgAt (index) {
-    return compose(getAt(index), list);
+function getArgAt (idx) {
+    return compose(getAt(idx), list);
 }
 
 /**
  * Builds a function that will invoke the given method name on any received object and return
  * the result. If no method with such name is found the function will return <code>undefined</code>.
- * Along with the method name it's possible to supply some arguments that will be bound to the method call.<br/>
- * Further arguments can also be passed when the function is actually called, and they will be concatenated
- * to the bound ones.<br/>
- * If different objects share a method name it's possible to build polymorphic functions as you can see in
- * the example below.<br/>
- * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this behaviour
- * by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex polymorphic functions
- * without the need of homonymy.<br/>
- * Returning <code>undefined</code> or checking for such value is meant to favor composition and interoperability
- * between the aforementioned functions: for a more standard behaviour see also {@link module:lamb.generic|generic}.
+ * Along with the method name it's possible to supply some arguments that will be bound to the
+ * method call.<br/>
+ * Further arguments can also be passed when the function is actually called, and they will be
+ * concatenated to the bound ones.<br/>
+ * If different objects share a method name it's possible to build polymorphic functions as you
+ * can see in the example below.<br/>
+ * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this
+ * behaviour by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex
+ * polymorphic functions without the need of homonymy.<br/>
+ * Returning <code>undefined</code> or checking for such value is meant to favor composition and
+ * interoperability between the aforementioned functions: for a more standard behaviour see also
+ * {@link module:lamb.generic|generic}.
  * See also {@link module:lamb.invokerOn|invokerOn}.
  * @example <caption>Basic polymorphism with <code>invoker</code></caption>
  * var polySlice = _.invoker("slice");
@@ -379,12 +382,15 @@ function getArgAt (index) {
  */
 function invoker (methodName) {
     var boundArgs = _listFrom1.apply(null, arguments);
+
     return partial(_invoker, boundArgs, methodName);
 }
 
 /**
- * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
- * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
+ * Accepts an object and builds a function expecting a method name, and optionally arguments,
+ * to call on such object.
+ * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the
+ * function will return <code>undefined</code>.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var arr = [1, 2, 3, 4, 5];
@@ -404,7 +410,8 @@ function invokerOn (target) {
 }
 
 /**
- * Builds a function that allows to map over the received arguments before applying them to the original one.
+ * Builds a function that allows to map over the received arguments before applying them
+ * to the original one.
  * @example
  * var sumArray = _.reduceWith(_.add);
  * var sum = _.compose(sumArray, _.list);
@@ -478,8 +485,8 @@ function tapArgs (fn) {
 
 /**
  * Returns a function that will invoke the passed function at most once in the given timespan.<br/>
- * The first call in this case happens as soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
- * for a different behaviour where the first call is delayed.
+ * The first call in this case happens as soon as the function is invoked; see also
+ * {@link module:lamb.debounce|debounce} for a different behaviour where the first call is delayed.
  * @example
  * var log = _.throttle(console.log.bind(console), 5000);
  *
@@ -533,10 +540,11 @@ function unary (fn) {
 
 /**
  * Wraps the function <code>fn</code> inside a <code>wrapper</code> function.<br/>
- * This allows to conditionally execute <code>fn</code>, to tamper with its arguments or return value
- * and to run code before and after its execution.<br/>
- * Being this nothing more than a "{@link module:lamb.flip|flipped}" [partial application]{@link module:lamb.partial},
- * you can also easily build new functions from existent ones.
+ * This allows to conditionally execute <code>fn</code>, to tamper with its arguments
+ * or return value and to run code before and after its execution.<br/>
+ * Being this nothing more than a "{@link module:lamb.flip|flipped}"
+ * [partial application]{@link module:lamb.partial}, you can also easily build new
+ * functions from existent ones.
  * @example
  * var arrayMax = _.wrap(Math.max, _.apply);
  *

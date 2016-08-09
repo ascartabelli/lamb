@@ -1,9 +1,9 @@
-
 /**
- * Accepts a series of functions and builds a function that applies the received arguments to each one and
- * returns the first non-<code>undefined</code> value.<br/>
- * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
- * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
+ * Accepts a series of functions and builds a function that applies the received
+ * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
+ * Meant to work in sinergy with {@link module:lamb.condition|condition} and
+ * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
+ * to mimic conditional logic and also to build polymorphic functions.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var filterString = _.compose(_.invoker("join", ""), _.filter);
@@ -49,7 +49,8 @@ function adapter () {
 
 /**
  * Builds a predicate that returns true if all the given predicates are satisfied.
- * The arguments passed to the resulting function are applied to every predicate unless one of them returns false.
+ * The arguments passed to the resulting function are applied to every predicate
+ * unless one of them returns false.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var isPositive = function (n) { return n > 0; };
@@ -70,7 +71,7 @@ function allOf () {
 
     return function () {
         for (var i = 0, len = predicates.length; i < len; i++) {
-            if(!predicates[i].apply(this, arguments)) {
+            if (!predicates[i].apply(this, arguments)) {
                 return false;
             }
         }
@@ -81,7 +82,8 @@ function allOf () {
 
 /**
  * Builds a predicate that returns true if at least one of the given predicates is satisfied.
- * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
+ * The arguments passed to the resulting function are applied to every predicate until one
+ * of them returns true.
  * @example
  * var users = [
  *     {id: 1, name: "John", group: "guest"},
@@ -116,11 +118,12 @@ function anyOf () {
 }
 
 /**
- * Builds a function that will apply the received arguments to <code>trueFn</code>, if the predicate is satisfied with
- * the same arguments, or to <code>falseFn</code> otherwise.<br/>
- * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function will return <code>undefined</code>.<br/>
- * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>, it's probably better to
- * use {@link module:lamb.adapter|adapter} to build more complex behaviours.
+ * Builds a function that will apply the received arguments to <code>trueFn</code>,
+ * if the predicate is satisfied with the same arguments, or to <code>falseFn</code> otherwise.<br/>
+ * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function
+ * will return <code>undefined</code>.<br/>
+ * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>,
+ * it's probably better to use {@link module:lamb.adapter|adapter} to build more complex behaviours.
  * @example
  * var isEven = function (n) { return n % 2 === 0};
  * var halve = function (n) { return n / 2; };
@@ -140,6 +143,7 @@ function anyOf () {
 function condition (predicate, trueFn, falseFn) {
     return function () {
         var applyArgsTo = applyArgs(arguments);
+
         return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
     };
 }
@@ -148,7 +152,8 @@ function condition (predicate, trueFn, falseFn) {
  * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
  * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
  * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
- * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.<br/>
+ * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
+ * <code>NaN</code> is equal to itself.<br/>
  * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
  * @example
  * var testObject = {};
@@ -177,15 +182,15 @@ function is (a, b) {
  * var pastDate = new Date(2010, 2, 12);
  * var today = new Date();
  *
- * _.isGT(today, pastDate) // true
- * _.isGT(pastDate, today) // false
- * _.isGT(3, 4) // false
- * _.isGT(3, 3) // false
- * _.isGT(3, 2) // true
- * _.isGT(0, -0) // false
- * _.isGT(-0, 0) // false
- * _.isGT("a", "A") // true
- * _.isGT("b", "a") // true
+ * _.isGT(today, pastDate) // => true
+ * _.isGT(pastDate, today) // => false
+ * _.isGT(3, 4) // => false
+ * _.isGT(3, 3) // => false
+ * _.isGT(3, 2) // => true
+ * _.isGT(0, -0) // => false
+ * _.isGT(-0, 0) // => false
+ * _.isGT("a", "A") // => true
+ * _.isGT("b", "a") // => true
  *
  * @memberof module:lamb
  * @category Logic
@@ -199,13 +204,14 @@ function isGT (a, b) {
 
 /**
  * Verifies that the first given value is greater than or equal to the second.
- * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+ * Regarding equality, beware that this is simply a wrapper for the native operator,
+ * so <code>-0 === 0</code>.
  * @example
- * _.isGTE(3, 4) // false
- * _.isGTE(3, 3) // true
- * _.isGTE(3, 2) // true
- * _.isGTE(0, -0) // true
- * _.isGTE(-0, 0) // true
+ * _.isGTE(3, 4) // => false
+ * _.isGTE(3, 3) // => true
+ * _.isGTE(3, 2) // => true
+ * _.isGTE(0, -0) // => true
+ * _.isGTE(-0, 0) // => true
  *
  * @memberof module:lamb
  * @category Logic
@@ -223,15 +229,15 @@ function isGTE (a, b) {
  * var pastDate = new Date(2010, 2, 12);
  * var today = new Date();
  *
- * _.isLT(today, pastDate) // false
- * _.isLT(pastDate, today) // true
- * _.isLT(3, 4) // true
- * _.isLT(3, 3) // false
- * _.isLT(3, 2) // false
- * _.isLT(0, -0) // false
- * _.isLT(-0, 0) // false
- * _.isLT("a", "A") // false
- * _.isLT("a", "b") // true
+ * _.isLT(today, pastDate) // => false
+ * _.isLT(pastDate, today) // => true
+ * _.isLT(3, 4) // => true
+ * _.isLT(3, 3) // => false
+ * _.isLT(3, 2) // => false
+ * _.isLT(0, -0) // => false
+ * _.isLT(-0, 0) // => false
+ * _.isLT("a", "A") // => false
+ * _.isLT("a", "b") // => true
  *
  * @memberof module:lamb
  * @category Logic
@@ -245,13 +251,14 @@ function isLT (a, b) {
 
 /**
  * Verifies that the first given value is less than or equal to the second.
- * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+ * Regarding equality, beware that this is simply a wrapper for the native operator,
+ * so <code>-0 === 0</code>.
  * @example
- * _.isLTE(3, 4) // true
- * _.isLTE(3, 3) // true
- * _.isLTE(3, 2) // false
- * _.isLTE(0, -0) // true
- * _.isLTE(-0, 0) // true
+ * _.isLTE(3, 4) // => true
+ * _.isLTE(3, 3) // => true
+ * _.isLTE(3, 2) // => false
+ * _.isLTE(0, -0) // => true
+ * _.isLTE(-0, 0) // => true
  *
  * @memberof module:lamb
  * @category Logic
@@ -301,6 +308,7 @@ var isNot = not(is);
  * @returns {Boolean}
  */
 function isSVZ (a, b) {
+    // eslint-disable-next-line no-self-compare
     return a !== a ? b !== b : a === b;
 }
 

@@ -1,4 +1,3 @@
-
 /**
  * Builds a predicate to check if an array-like object contains the given value.<br/>
  * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
@@ -23,7 +22,8 @@ function contains (value, fromIndex) {
 
 /**
  * Returns an array of items present only in the first of the given arrays.<br/>
- * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that since version <code>0.13.0</code> this function uses the
+ * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 4, 5];
@@ -41,6 +41,7 @@ function contains (value, fromIndex) {
 function difference (array) {
     var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
     var isInRest = partial(isIn, rest, _, 0);
+
     return filter(array, not(isInRest));
 }
 
@@ -91,7 +92,8 @@ function dropN (n) {
 }
 
 /**
- * Builds a function that drops the first <code>n</code> elements satisfying a predicate from an array or array-like object.
+ * Builds a function that drops the first <code>n</code> elements satisfying a predicate
+ * from an array or array-like object.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var dropWhileIsEven = _.dropWhile(isEven);
@@ -295,7 +297,9 @@ var init = partial(slice, _, 0, -1);
  */
 function insert (arrayLike, index, element) {
     var result = slice(arrayLike);
+
     result.splice(index, 0, element);
+
     return result;
 }
 
@@ -324,7 +328,8 @@ function insertAt (index, element) {
 
 /**
  * Returns an array of every item present in all given arrays.<br/>
- * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that since version <code>0.13.0</code> this function uses the
+ * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 5, 4, 6];
@@ -336,7 +341,7 @@ function insertAt (index, element) {
  * @memberof module:lamb
  * @category Array
  * @param {...Array} array
- * @return {Array}
+ * @returns {Array}
  */
 function intersection () {
     var rest = _listFrom1.apply(null, arguments);
@@ -427,7 +432,8 @@ function partition (arrayLike, predicate, predicateContext) {
 }
 
 /**
- * Builds a partial application of {@link module:lamb.partition|partition} using the given predicate and the optional context.
+ * Builds a partial application of {@link module:lamb.partition|partition} using the given
+ * predicate and the optional context.
  * The resulting function expects the array-like object to act upon.
  * @example
  * var users = [
@@ -613,7 +619,8 @@ function takeN (n) {
 }
 
 /**
- * Builds a function that takes the first <code>n</code> elements satisfying a predicate from an array or array-like object.
+ * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
+ * an array or array-like object.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var takeWhileIsEven = _.takeWhile(isEven);
@@ -697,11 +704,12 @@ var union = compose(uniques, flatMapWith(unary(slice)), list);
 /**
  * Returns an array comprised of the unique elements of the given array-like object.<br/>
  * Can work with lists of complex objects if supplied with an iteratee.<br/>
- * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
- * @example <caption>with simple values</caption>
+ * Note that since version <code>0.13.0</code> this function uses the
+ * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * @example <caption>With simple values:</caption>
  * _.uniques([1, 2, 2, 3, 4, 3, 5, 1]) // => [1, 2, 3, 4, 5]
  *
- * @example <caption>with complex values</caption>
+ * @example <caption>With complex values:</caption>
  * var data  = [
  *     {id: "1"},
  *     {id: "4"},
@@ -715,7 +723,7 @@ var union = compose(uniques, flatMapWith(unary(slice)), list);
  * @memberof module:lamb
  * @category Array
  * @param {ArrayLike} arrayLike
- * @param {ListIteratorCallback} [iteratee] Defaults to the [identity function]{@link module:lamb.identity}.
+ * @param {ListIteratorCallback} [iteratee={@link module:lamb.identity|identity}]
  * @param {Object} [iterateeContext]
  * @returns {Array}
  */
@@ -747,7 +755,8 @@ function uniques (arrayLike, iteratee, iterateeContext) {
 /**
  * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
  * The received array-like objects will be truncated to the shortest length.<br/>
- * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose} for the reverse operation.
+ * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose}
+ * for the reverse operation.
  * @example
  * _.zip(
  *     ["a", "b", "c"],

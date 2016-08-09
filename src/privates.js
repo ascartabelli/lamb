@@ -77,6 +77,8 @@ function _comparer (a, b) {
         b = String(b);
     }
 
+    /* eslint-disable no-self-compare */
+
     if (!isSVZ(a, b)) {
         if (a > b || a !== a) {
             result = 1;
@@ -84,6 +86,8 @@ function _comparer (a, b) {
             result = -1;
         }
     }
+
+    /* eslint-enable no-self-compare */
 
     return result;
 }
@@ -131,6 +135,7 @@ function _compareWith (criteria) {
  * @param {Boolean} isRightCurry
  * @param {Function} slicer
  * @param {Array} argsHolder
+ * @returns {Function}
  */
 function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
     return function () {
@@ -154,6 +159,7 @@ function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
  * @param {Number} [arity=fn.length]
  * @param {Boolean} isRightCurry
  * @param {Boolean} isAutoCurry
+ * @returns {Function}
  */
 function _curry (fn, arity, isRightCurry, isAutoCurry) {
     var slicer = isAutoCurry ? function (argsObj) {
@@ -201,12 +207,13 @@ function _flatten (array, output) {
 /**
  * Establishes at which index an element should be inserted in a sorted array to respect
  * the array order. Needs the comparer used to sort the array.
+ * @private
  * @param {Array} array
  * @param {*} element
  * @param {Function} comparer
  * @param {Number} start
  * @param {Number} end
- * @private
+ * @returns {Number}
  */
 function _getInsertionIndex (array, element, comparer, start, end) {
     if (array.length === 0) {
@@ -240,13 +247,15 @@ function _getInsertionIndex (array, element, comparer, start, end) {
  * @private
  * @param {ArrayLike} target
  * @param {Number} index
- * @returns {Number|undefined}
+ * @returns {Number|Undefined}
  */
 function _getNaturalIndex (target, index) {
     var len = target.length;
 
     if (_isInteger(index) && _isInteger(len)) {
         return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+    } else {
+        return void 0;
     }
 }
 
@@ -256,16 +265,19 @@ function _getNaturalIndex (target, index) {
  * @param {ArrayLike} arrayLike
  * @param {Function} predicate
  * @param {Object} predicateContext
+ * @returns {Number}
  */
 function _getNumConsecutiveHits (arrayLike, predicate, predicateContext) {
-    var idx = -1;
+    var idx = 0;
     var len = arrayLike.length;
 
     if (arguments.length === 3) {
         predicate = predicate.bind(predicateContext);
     }
 
-    while (++idx < len && predicate(arrayLike[idx], idx, arrayLike));
+    while (idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
+        idx++;
+    }
 
     return idx;
 }
@@ -334,7 +346,7 @@ function _groupWith (makeValue, startValue) {
 
         return reduce(arrayLike, function (result, element, idx) {
             var key = iteratee(element, idx, arrayLike);
-            var value = makeValue(key in result ? result[key] : startValue , element);
+            var value = makeValue(key in result ? result[key] : startValue, element);
 
             result[key] = value;
 
@@ -401,6 +413,7 @@ function _invoker (boundArgs, methodName, target) {
  */
 function _isArrayIndex (target, key) {
     var n = Number(key);
+
     return Array.isArray(target) && _isInteger(n) && !(n < 0 && _isEnumerable(target, key));
 }
 
@@ -444,7 +457,7 @@ var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
  */
 function _keyToPairIn (obj) {
     return function (key) {
-       return [key, obj[key]];
+        return [key, obj[key]];
     };
 }
 
@@ -546,7 +559,7 @@ function _makeReducer (step) {
  * @param {String} desiredType
  * @returns {TypeError}
  */
-function _makeTypeErrorFor(value, desiredType) {
+function _makeTypeErrorFor (value, desiredType) {
     return new TypeError("Cannot convert " + type(value).toLowerCase() + " to " + desiredType);
 }
 
@@ -593,6 +606,7 @@ var _pairsFrom = _curry(function (getKeys, obj) {
 function _partialWithIteratee (fn) {
     return function (iteratee, optionalArgument) {
         var f = arguments.length === 2 ? fn : binary(fn);
+
         return partial(f, _, iteratee, optionalArgument);
     };
 }
@@ -631,6 +645,7 @@ var _safeKeys = compose(Object.keys, Object);
  * @param {Number} index
  * @param {*} [value]
  * @param {Function} [updater]
+ * @returns {Array}
  */
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
@@ -667,10 +682,11 @@ function _setPathIn (obj, parts, value) {
 /**
  * Builds a sorting criterion. If the comparer function is missing, the default
  * comparer will be used instead.
+ * @private
  * @param {Function} reader
  * @param {Boolean} isDescending
  * @param {Function} [comparer]
- * @private
+ * @returns {Sorter}
  */
 function _sorter (reader, isDescending, comparer) {
     return {
@@ -700,6 +716,7 @@ var _tearFrom = _curry(function (getKeys, obj) {
     return reduce(getKeys(obj), function (result, key) {
         result[0].push(key);
         result[1].push(obj[key]);
+
         return result;
     }, [[], []]);
 });

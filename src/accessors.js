@@ -1,4 +1,3 @@
-
 /**
  * A curried version of {@link module:lamb.getIndex|getIndex} that uses the provided index
  * to build a function expecting the array-like object holding the element we want to retrieve.
@@ -71,12 +70,14 @@ function getIn (obj, key) {
  */
 function getIndex (arrayLike, index) {
     var idx = _getNaturalIndex(arrayLike, index);
+
     return isUndefined(idx) ? idx : arrayLike[idx];
 }
 
 /**
  * A curried version of {@link module:lamb.getIn|getIn}.<br/>
- * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
+ * Receives a property name and builds a function expecting the object from which we want to retrieve
+ * the property.
  * @example
  * var user1 = {name: "john"};
  * var user2 = {name: "jane"};
@@ -308,7 +309,7 @@ function setIn (source, key, value) {
  * @param {ArrayLike} arrayLike
  * @param {Number} index
  * @param {*} value
- * @returns {*}
+ * @returns {Array}
  */
 var setIndex = aritize(_setIndex, 3);
 
@@ -477,7 +478,9 @@ function updateAt (index, updater) {
  * @returns {Object}
  */
 function updateIn (source, key, updater) {
-    return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+    return _isEnumerable(source, key) ?
+        setIn(source, key, updater(source[key])) :
+        _merge(enumerables, source);
 }
 
 /**
@@ -559,15 +562,15 @@ function updatePath (path, updater, separator) {
  * the priority will be given to existing, and enumerable, object keys.<br/>
  * @example
  * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
- * var increment = _.partial(_.add, 1);
+ * var inc = _.partial(_.add, 1);
  *
- * _.updatePathIn(user, "status.visits", increment) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
+ * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
  *
  * @example <caption>Targeting arrays</caption>
- * _.updatePathIn(user, "status.scores.0", increment) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
+ * _.updatePathIn(user, "status.scores.0", inc) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
  *
  * // you can use negative indexes as well
- * _.updatePathIn(user, "status.scores.-1", increment) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
+ * _.updatePathIn(user, "status.scores.-1", inc) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
  *
  * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
  * var user = {id: 1, scores: [

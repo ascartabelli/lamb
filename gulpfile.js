@@ -28,6 +28,15 @@ var scripts = [
     "./src/string.js"
 ];
 
+function lint () {
+    // isolated because of shelljs, again
+    var eslint = require("gulp-eslint");
+    return gulp.src("./dist/lamb.js")
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+}
+
 gulp.task("analysis", function (done) {
     // required here in an isolated task as plato loads jshint,
     // which uses shelljs that pollutes the String.prototype
@@ -58,6 +67,8 @@ gulp.task("coverage", ["concat"], function (cb) {
         });
 });
 
+gulp.task("lint", ["concat"], lint);
+
 gulp.task("minify", ["concat"], function () {
     return gulp.src("./dist/lamb.js")
         .pipe(sourcemaps.init())
@@ -76,6 +87,8 @@ gulp.task("test", ["concat"], function () {
         }));
 });
 
+gulp.task("travis", ["concat", "minify", "test"], lint);
+
 gulp.task("test-verbose", ["concat"], function () {
     return gulp.src("./test/spec/*.js")
         .pipe(jasmine({
@@ -84,4 +97,4 @@ gulp.task("test-verbose", ["concat"], function () {
         }));
 });
 
-gulp.task("default", ["concat", "minify", "coverage"]);
+gulp.task("default", ["concat", "minify", "coverage"], lint);

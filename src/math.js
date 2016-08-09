@@ -1,4 +1,3 @@
-
 /**
  * Adds two numbers.
  * @example
@@ -83,9 +82,11 @@ function generate (start, len, iteratee, iterateeContext) {
 }
 
 /**
- * Performs the modulo operation and should not be confused with the {@link module:lamb.remainder|remainder}.
- * The function performs a floored division to calculate the result and not a truncated one, hence the sign of
- * the dividend is not kept, unlike the {@link module:lamb.remainder|remainder}.
+ * Performs the modulo operation and should not be confused with the
+ * {@link module:lamb.remainder|remainder}.
+ * The function performs a floored division to calculate the result and not
+ * a truncated one, hence the sign of the dividend is not kept, unlike the
+ * {@link module:lamb.remainder|remainder}.
  * @example
  * _.modulo(5, 3) // => 2
  * _.remainder(5, 3) // => 2
@@ -164,6 +165,7 @@ function range (start, limit, step) {
     }
 
     var len = Math.max(Math.ceil((limit - start) / step), 0);
+
     return generate(start, len, partial(add, step));
 }
 

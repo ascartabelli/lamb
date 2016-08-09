@@ -1,9 +1,9 @@
-
 /**
- * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
- * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
- * other words all the received <code>keyPaths</code> will be passed as arguments to the <code>predicate</code>
- * to run the test.<br/>
+ * Builds a <code>checker</code> function meant to be used with
+ * {@link module:lamb.validate|validate}.<br/>
+ * Note that the function accepts multiple <code>keyPaths</code> as a means to
+ * compare their values. In other words all the received <code>keyPaths</code> will be
+ * passed as arguments to the <code>predicate</code> to run the test.<br/>
  * If you want to run the same single property check with multiple properties, you should build
  * multiple <code>checker</code>s and combine them with {@link module:lamb.validate|validate}.
  * @example
@@ -33,13 +33,15 @@
  * @see {@link module:lamb.validate|validate}, {@link module:lamb.validateWith|validateWith}
  * @param {Function} predicate - The predicate to test the object properties
  * @param {String} message - The error message
- * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getPathIn|paths}, to test.
+ * @param {String[]} keyPaths - The array of keys, or {@link module:lamb.getPathIn|paths}, to test.
  * @param {String} [pathSeparator="."]
- * @returns {Array<String, String[]>} An error in the form <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
+ * @returns {Array<String, String[]>} An error in the form
+ * <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
  */
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
         var getValues = partial(getPathIn, obj, _, pathSeparator);
+
         return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
     };
 }
@@ -263,10 +265,13 @@ function immutable (obj) {
 var keys = _unsafeKeyListFrom(_safeKeys);
 
 /**
- * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
- * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
+ * Builds an object from the two given lists, using the first one as keys and the last
+ * one as values.<br/>
+ * If the list of keys is longer than the values one, the keys will be created with
+ * <code>undefined</code> values.<br/>
  * If more values than keys are supplied, the extra values will be ignored.<br/>
- * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for the reverse operation.
+ * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for
+ * the reverse operation.
  * @example
  * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
  * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
@@ -275,16 +280,16 @@ var keys = _unsafeKeyListFrom(_safeKeys);
  *
  * @memberof module:lamb
  * @category Object
- * @param {String[]} keys
+ * @param {String[]} names
  * @param {ArrayLike} values
  * @returns {Object}
  */
-function make (keys, values) {
+function make (names, values) {
     var result = {};
     var valuesLen = values.length;
 
-    for (var i = 0, len = keys.length; i < len; i++) {
-        result[keys[i]] = i < valuesLen ? values[i] : void 0;
+    for (var i = 0, len = names.length; i < len; i++) {
+        result[names[i]] = i < valuesLen ? values[i] : void 0;
     }
 
     return result;
@@ -298,7 +303,7 @@ function make (keys, values) {
  * @example
  * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
  *
- * @example <caption>Arrays and array-like objects will be transformed to objects with numbers as keys:</caption>
+ * @example <caption>Array-like objects will be transformed to objects with numbers as keys:</caption>
  * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
  * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
  *
@@ -314,7 +319,8 @@ function make (keys, values) {
 var merge = partial(_merge, _safeEnumerables);
 
 /**
- * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
+ * Same as {@link module:lamb.merge|merge}, but only the own properties of the
+ * sources are taken into account.
  * @example <caption>showing the difference with <code>merge</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
@@ -326,7 +332,7 @@ var merge = partial(_merge, _safeEnumerables);
  * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
  * _.mergeOwn(foo, bar) // => {c: 3, d: 4}
  *
- * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+ * @example <caption>Array-like objects will be transformed to objects with numbers as keys:</caption>
  * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
  * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
  *
@@ -427,7 +433,8 @@ function pick (source, whitelist) {
 }
 
 /**
- * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
+ * Builds a function expecting an object whose enumerable properties will be checked
+ * against the given predicate.<br/>
  * The properties satisfying the predicate will be included in the resulting object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
@@ -438,7 +445,8 @@ function pick (source, whitelist) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
- * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+ * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+ * {@link module:lamb.skipIf|skipIf}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -492,7 +500,8 @@ function pickIf (predicate, predicateContext) {
  * @category Object
  * @function
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
- * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+ * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+ * {@link module:lamb.skipIf|skipIf}
  * @param {String[]} whitelist
  * @returns {Function}
  */
@@ -556,7 +565,11 @@ function rename (source, keysMap) {
  *     "last_name": "surname"
  * });
  *
- * persons.map(normalizeKeys) // => [{"name": "John", "surname": "Doe"}, {"name": "Mario", "surname": "Rossi"}]
+ * persons.map(normalizeKeys) // =>
+ * // [
+ * //     {"name": "John", "surname": "Doe"},
+ * //     {"name": "Mario", "surname": "Rossi"}
+ * // ]
  *
  * @memberof module:lamb
  * @category Object
@@ -603,7 +616,8 @@ function renameWith (fn) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+ * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+ * {@link module:lamb.pickIf|pickIf}
  * @param {Object} source
  * @param {String[]} blacklist
  * @returns {Object}
@@ -621,7 +635,8 @@ function skip (source, blacklist) {
 }
 
 /**
- * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
+ * Builds a function expecting an object whose enumerable properties will be checked
+ * against the given predicate.<br/>
  * The properties satisfying the predicate will be omitted in the resulting object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
@@ -633,7 +648,8 @@ function skip (source, blacklist) {
  * @category Object
  * @function
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+ * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+ * {@link module:lamb.pickIf|pickIf}
  * @param {ObjectIteratorCallback} predicate
  * @param {Object} [predicateContext]
  * @returns {Function}
@@ -671,16 +687,18 @@ var skipIf = tapArgs(pickIf, not);
  * @category Object
  * @function
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+ * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+ * {@link module:lamb.pickIf|pickIf}
  * @param {String[]} blacklist
  * @returns {Function}
  */
 var skipKeys = _curry(skip, 2, true);
 
 /**
- * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
- * the other containing the corresponding values.<br/>
- * Although this "tearing apart" may sound as a rather violent process, the source object will be unharmed.<br/>
+ * Tears an object apart by transforming it in an array of two lists: one containing
+ * its enumerable keys, the other containing the corresponding values.<br/>
+ * Although this "tearing apart" may sound as a rather violent process, the source
+ * object will be unharmed.<br/>
  * See also {@link module:lamb.tearOwn|tearOwn} for picking only the own enumerable properties and
  * {@link module:lamb.make|make} for the reverse operation.
  * @example
@@ -695,7 +713,8 @@ var skipKeys = _curry(skip, 2, true);
 var tear = _tearFrom(enumerables);
 
 /**
- * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are taken into account.<br/>
+ * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
+ * taken into account.<br/>
  * See also {@link module:lamb.make|make} for the reverse operation.
  * @example <caption>showing the difference with <code>tear</code></caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
@@ -729,7 +748,11 @@ var tearOwn = _tearFrom(keys);
  * var user2 = {name: "jane", surname: "", age: 15};
  *
  * _.validate(user1, userCheckers) // => []
- * _.validate(user2, userCheckers) // => [["Surname is required", ["surname"]], ["Must be at least 18 years old", ["age"]]]
+ * _.validate(user2, userCheckers) // =>
+ * // [
+ * //     ["Surname is required", ["surname"]],
+ * //     ["Must be at least 18 years old", ["age"]]
+ * // ]
  *
  * @memberof module:lamb
  * @category Object
@@ -737,19 +760,22 @@ var tearOwn = _tearFrom(keys);
  * @see {@link module:lamb.checker|checker}
  * @param {Object} obj
  * @param {Function[]} checkers
- * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by {@link module:lamb.checker|checker}, or an empty array.
+ * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
+ * {@link module:lamb.checker|checker}, or an empty array.
  */
 function validate (obj, checkers) {
-    return reduce(checkers, function (errors, checker) {
-        var result = checker(obj);
+    return reduce(checkers, function (errors, _checker) {
+        var result = _checker(obj);
+
         result.length && errors.push(result);
+
         return errors;
     }, []);
 }
 
 /**
- * A curried version of {@link module:lamb.validate|validate} accepting a list of {@link module:lamb.checker|checkers} and
- * returning a function expecting the object to validate.
+ * A curried version of {@link module:lamb.validate|validate} accepting a list of
+ * {@link module:lamb.checker|checkers} and returning a function expecting the object to validate.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
  * var isAdult = function (age) { return age >= 18; };
@@ -764,7 +790,11 @@ function validate (obj, checkers) {
  * var user2 = {name: "jane", surname: "", age: 15};
  *
  * validateUser(user1) // => []
- * validateUser(user2) // => [["Surname is required", ["surname"]], ["Must be at least 18 years old", ["age"]]]
+ * validateUser(user2) // =>
+ * // [
+ * //     ["Surname is required", ["surname"]],
+ * //     ["Must be at least 18 years old", ["age"]]
+ * // ]
  *
  * @memberof module:lamb
  * @category Object

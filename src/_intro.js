@@ -6,7 +6,7 @@
  * @license <%= pkg.license %>
  * @preserve
  */
-!function (host) {
+(function (host) {
     "use strict";
 
     var lamb = Object.create(null);
@@ -18,4 +18,4 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "<%= pkg.version %>";
+    lamb._version = "<%= pkg.version %>";

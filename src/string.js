@@ -1,4 +1,3 @@
-
 /**
  * Pads a string to the desired length with the given char starting from the beginning of the string.
  * @example
@@ -45,8 +44,10 @@ function padRight (source, char, len) {
 
 /**
  * Builds a new string by repeating the source string the desired amount of times.<br/>
- * Note that unlike the current ES6 proposal for [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
- * this function doesn't throw a RangeError if <code>count</code> is negative, but returns an empty string instead.
+ * Note that unlike the current ES6 proposal for
+ * [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
+ * this function doesn't throw a RangeError if <code>count</code> is negative,
+ * but returns an empty string instead.
  * @example
  * _.repeat("Hello", -1) // => ""
  * _.repeat("Hello", 1) // => "Hello"
@@ -55,13 +56,13 @@ function padRight (source, char, len) {
  * @memberof module:lamb
  * @category String
  * @param {String} source
- * @param {Number} count
+ * @param {Number} times
  * @returns {String}
  */
-function repeat (source, count) {
+function repeat (source, times) {
     var result = "";
 
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < times; i++) {
         result += source;
     }
 

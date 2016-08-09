@@ -1,12 +1,12 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.37.0-alpha.1
+ * @version 0.37.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
  */
-!function (host) {
+(function (host) {
     "use strict";
 
     var lamb = Object.create(null);
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version =  "0.37.0-alpha.1";
+    lamb._version = "0.37.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -100,7 +100,8 @@
      * Creates generic functions out of methods.
      * @memberof module:lamb
      * @category Core
-     * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+     * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
+     * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
      * @function
      * @example
      * // Lamb's "slice" is actually implemented like this
@@ -134,8 +135,8 @@
     }
 
     /**
-     * Builds a partially applied function. The <code>lamb</code> object itself can be used as a placeholder argument:
-     * it's useful to alias it as <code>_</code> or <code>__</code>.
+     * Builds a partially applied function. The <code>lamb</code> object itself can be used
+     * as a placeholder argument and it's useful to alias it as <code>_</code> or <code>__</code>.
      * @example
      * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
      * var parseInt10 = _.partial(parseInt, _, 10);
@@ -254,6 +255,8 @@
             b = String(b);
         }
 
+        /* eslint-disable no-self-compare */
+
         if (!isSVZ(a, b)) {
             if (a > b || a !== a) {
                 result = 1;
@@ -261,6 +264,8 @@
                 result = -1;
             }
         }
+
+        /* eslint-enable no-self-compare */
 
         return result;
     }
@@ -308,6 +313,7 @@
      * @param {Boolean} isRightCurry
      * @param {Function} slicer
      * @param {Array} argsHolder
+     * @returns {Function}
      */
     function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
         return function () {
@@ -331,6 +337,7 @@
      * @param {Number} [arity=fn.length]
      * @param {Boolean} isRightCurry
      * @param {Boolean} isAutoCurry
+     * @returns {Function}
      */
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
         var slicer = isAutoCurry ? function (argsObj) {
@@ -378,12 +385,13 @@
     /**
      * Establishes at which index an element should be inserted in a sorted array to respect
      * the array order. Needs the comparer used to sort the array.
+     * @private
      * @param {Array} array
      * @param {*} element
      * @param {Function} comparer
      * @param {Number} start
      * @param {Number} end
-     * @private
+     * @returns {Number}
      */
     function _getInsertionIndex (array, element, comparer, start, end) {
         if (array.length === 0) {
@@ -417,13 +425,15 @@
      * @private
      * @param {ArrayLike} target
      * @param {Number} index
-     * @returns {Number|undefined}
+     * @returns {Number|Undefined}
      */
     function _getNaturalIndex (target, index) {
         var len = target.length;
 
         if (_isInteger(index) && _isInteger(len)) {
             return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+        } else {
+            return void 0;
         }
     }
 
@@ -433,16 +443,19 @@
      * @param {ArrayLike} arrayLike
      * @param {Function} predicate
      * @param {Object} predicateContext
+     * @returns {Number}
      */
     function _getNumConsecutiveHits (arrayLike, predicate, predicateContext) {
-        var idx = -1;
+        var idx = 0;
         var len = arrayLike.length;
 
         if (arguments.length === 3) {
             predicate = predicate.bind(predicateContext);
         }
 
-        while (++idx < len && predicate(arrayLike[idx], idx, arrayLike));
+        while (idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
+            idx++;
+        }
 
         return idx;
     }
@@ -511,7 +524,7 @@
 
             return reduce(arrayLike, function (result, element, idx) {
                 var key = iteratee(element, idx, arrayLike);
-                var value = makeValue(key in result ? result[key] : startValue , element);
+                var value = makeValue(key in result ? result[key] : startValue, element);
 
                 result[key] = value;
 
@@ -578,6 +591,7 @@
      */
     function _isArrayIndex (target, key) {
         var n = Number(key);
+
         return Array.isArray(target) && _isInteger(n) && !(n < 0 && _isEnumerable(target, key));
     }
 
@@ -621,7 +635,7 @@
      */
     function _keyToPairIn (obj) {
         return function (key) {
-           return [key, obj[key]];
+            return [key, obj[key]];
         };
     }
 
@@ -723,7 +737,7 @@
      * @param {String} desiredType
      * @returns {TypeError}
      */
-    function _makeTypeErrorFor(value, desiredType) {
+    function _makeTypeErrorFor (value, desiredType) {
         return new TypeError("Cannot convert " + type(value).toLowerCase() + " to " + desiredType);
     }
 
@@ -770,6 +784,7 @@
     function _partialWithIteratee (fn) {
         return function (iteratee, optionalArgument) {
             var f = arguments.length === 2 ? fn : binary(fn);
+
             return partial(f, _, iteratee, optionalArgument);
         };
     }
@@ -808,6 +823,7 @@
      * @param {Number} index
      * @param {*} [value]
      * @param {Function} [updater]
+     * @returns {Array}
      */
     function _setIndex (arrayLike, index, value, updater) {
         var result = slice(arrayLike);
@@ -844,10 +860,11 @@
     /**
      * Builds a sorting criterion. If the comparer function is missing, the default
      * comparer will be used instead.
+     * @private
      * @param {Function} reader
      * @param {Boolean} isDescending
      * @param {Function} [comparer]
-     * @private
+     * @returns {Sorter}
      */
     function _sorter (reader, isDescending, comparer) {
         return {
@@ -877,6 +894,7 @@
         return reduce(getKeys(obj), function (result, key) {
             result[0].push(key);
             result[1].push(obj[key]);
+
             return result;
         }, [[], []]);
     });
@@ -916,9 +934,9 @@
         return map(getKeys(obj), partial(getIn, obj));
     });
 
-
     /**
-     * Builds an array comprised of all values of the array-like object passing the <code>predicate</code> test.<br/>
+     * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
+     * test.<br/>
      * Since version <code>0.34.0</code> this function is no longer a generic version of
      * [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}
      * for performance reasons.<br/>
@@ -996,6 +1014,7 @@
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
+     * @returns {Undefined}
      */
     function forEach (arrayLike, iteratee, iterateeContext) {
         if (arguments.length === 3) {
@@ -1043,8 +1062,8 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the optional context.
-     * The resulting function expects the array-like object to act upon.
+     * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the
+     * optional context. The resulting function expects the array-like object to act upon.
      * @example
      * var square = function (n) { return n * n; };
      * var getSquares = _.mapWith(square);
@@ -1084,7 +1103,8 @@
     var reduce = _makeReducer(1);
 
     /**
-     * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
+     * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last
+     * element instead.<br/>
      * Since version <code>0.34.0</code> this function is no longer a generic version of
      * [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}
      * for performance reasons.<br/>
@@ -1156,7 +1176,8 @@
      * @function
      * @param {ArrayLike} arrayLike - Any array like object.
      * @param {Number} [start=0] - Zero-based index at which to begin extraction.
-     * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction. Extracts up to but not including end.
+     * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction.
+     * Extracts up to but not including end.
      * @returns {Array}
      */
     var slice = generic(_arrayProto.slice);
@@ -1172,12 +1193,12 @@
     lamb.reduceWith = reduceWith;
     lamb.slice = slice;
 
-
     /**
-     * Accepts a series of functions and builds a function that applies the received arguments to each one and
-     * returns the first non-<code>undefined</code> value.<br/>
-     * Meant to work in sinergy with {@link module:lamb.condition|condition} and {@link module:lamb.invoker|invoker},
-     * can be useful as a strategy pattern for functions, to mimic conditional logic and also to build polymorphic functions.
+     * Accepts a series of functions and builds a function that applies the received
+     * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
+     * Meant to work in sinergy with {@link module:lamb.condition|condition} and
+     * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
+     * to mimic conditional logic and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var filterString = _.compose(_.invoker("join", ""), _.filter);
@@ -1223,7 +1244,8 @@
 
     /**
      * Builds a predicate that returns true if all the given predicates are satisfied.
-     * The arguments passed to the resulting function are applied to every predicate unless one of them returns false.
+     * The arguments passed to the resulting function are applied to every predicate
+     * unless one of them returns false.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var isPositive = function (n) { return n > 0; };
@@ -1244,7 +1266,7 @@
 
         return function () {
             for (var i = 0, len = predicates.length; i < len; i++) {
-                if(!predicates[i].apply(this, arguments)) {
+                if (!predicates[i].apply(this, arguments)) {
                     return false;
                 }
             }
@@ -1255,7 +1277,8 @@
 
     /**
      * Builds a predicate that returns true if at least one of the given predicates is satisfied.
-     * The arguments passed to the resulting function are applied to every predicate until one of them returns true.
+     * The arguments passed to the resulting function are applied to every predicate until one
+     * of them returns true.
      * @example
      * var users = [
      *     {id: 1, name: "John", group: "guest"},
@@ -1290,11 +1313,12 @@
     }
 
     /**
-     * Builds a function that will apply the received arguments to <code>trueFn</code>, if the predicate is satisfied with
-     * the same arguments, or to <code>falseFn</code> otherwise.<br/>
-     * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function will return <code>undefined</code>.<br/>
-     * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>, it's probably better to
-     * use {@link module:lamb.adapter|adapter} to build more complex behaviours.
+     * Builds a function that will apply the received arguments to <code>trueFn</code>,
+     * if the predicate is satisfied with the same arguments, or to <code>falseFn</code> otherwise.<br/>
+     * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function
+     * will return <code>undefined</code>.<br/>
+     * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>,
+     * it's probably better to use {@link module:lamb.adapter|adapter} to build more complex behaviours.
      * @example
      * var isEven = function (n) { return n % 2 === 0};
      * var halve = function (n) { return n / 2; };
@@ -1314,6 +1338,7 @@
     function condition (predicate, trueFn, falseFn) {
         return function () {
             var applyArgsTo = applyArgs(arguments);
+
             return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
         };
     }
@@ -1322,7 +1347,8 @@
      * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
      * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
      * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
-     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally, <code>NaN</code> is equal to itself.<br/>
+     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
+     * <code>NaN</code> is equal to itself.<br/>
      * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
      * @example
      * var testObject = {};
@@ -1351,15 +1377,15 @@
      * var pastDate = new Date(2010, 2, 12);
      * var today = new Date();
      *
-     * _.isGT(today, pastDate) // true
-     * _.isGT(pastDate, today) // false
-     * _.isGT(3, 4) // false
-     * _.isGT(3, 3) // false
-     * _.isGT(3, 2) // true
-     * _.isGT(0, -0) // false
-     * _.isGT(-0, 0) // false
-     * _.isGT("a", "A") // true
-     * _.isGT("b", "a") // true
+     * _.isGT(today, pastDate) // => true
+     * _.isGT(pastDate, today) // => false
+     * _.isGT(3, 4) // => false
+     * _.isGT(3, 3) // => false
+     * _.isGT(3, 2) // => true
+     * _.isGT(0, -0) // => false
+     * _.isGT(-0, 0) // => false
+     * _.isGT("a", "A") // => true
+     * _.isGT("b", "a") // => true
      *
      * @memberof module:lamb
      * @category Logic
@@ -1373,13 +1399,14 @@
 
     /**
      * Verifies that the first given value is greater than or equal to the second.
-     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+     * Regarding equality, beware that this is simply a wrapper for the native operator,
+     * so <code>-0 === 0</code>.
      * @example
-     * _.isGTE(3, 4) // false
-     * _.isGTE(3, 3) // true
-     * _.isGTE(3, 2) // true
-     * _.isGTE(0, -0) // true
-     * _.isGTE(-0, 0) // true
+     * _.isGTE(3, 4) // => false
+     * _.isGTE(3, 3) // => true
+     * _.isGTE(3, 2) // => true
+     * _.isGTE(0, -0) // => true
+     * _.isGTE(-0, 0) // => true
      *
      * @memberof module:lamb
      * @category Logic
@@ -1397,15 +1424,15 @@
      * var pastDate = new Date(2010, 2, 12);
      * var today = new Date();
      *
-     * _.isLT(today, pastDate) // false
-     * _.isLT(pastDate, today) // true
-     * _.isLT(3, 4) // true
-     * _.isLT(3, 3) // false
-     * _.isLT(3, 2) // false
-     * _.isLT(0, -0) // false
-     * _.isLT(-0, 0) // false
-     * _.isLT("a", "A") // false
-     * _.isLT("a", "b") // true
+     * _.isLT(today, pastDate) // => false
+     * _.isLT(pastDate, today) // => true
+     * _.isLT(3, 4) // => true
+     * _.isLT(3, 3) // => false
+     * _.isLT(3, 2) // => false
+     * _.isLT(0, -0) // => false
+     * _.isLT(-0, 0) // => false
+     * _.isLT("a", "A") // => false
+     * _.isLT("a", "b") // => true
      *
      * @memberof module:lamb
      * @category Logic
@@ -1419,13 +1446,14 @@
 
     /**
      * Verifies that the first given value is less than or equal to the second.
-     * Regarding equality, beware that this is simply a wrapper for the native operator, so <code>-0 === 0</code>.
+     * Regarding equality, beware that this is simply a wrapper for the native operator,
+     * so <code>-0 === 0</code>.
      * @example
-     * _.isLTE(3, 4) // true
-     * _.isLTE(3, 3) // true
-     * _.isLTE(3, 2) // false
-     * _.isLTE(0, -0) // true
-     * _.isLTE(-0, 0) // true
+     * _.isLTE(3, 4) // => true
+     * _.isLTE(3, 3) // => true
+     * _.isLTE(3, 2) // => false
+     * _.isLTE(0, -0) // => true
+     * _.isLTE(-0, 0) // => true
      *
      * @memberof module:lamb
      * @category Logic
@@ -1475,6 +1503,7 @@
      * @returns {Boolean}
      */
     function isSVZ (a, b) {
+        // eslint-disable-next-line no-self-compare
         return a !== a ? b !== b : a === b;
     }
 
@@ -1510,7 +1539,6 @@
     lamb.isNot = isNot;
     lamb.isSVZ = isSVZ;
     lamb.not = not;
-
 
     /**
      * Adds two numbers.
@@ -1596,9 +1624,11 @@
     }
 
     /**
-     * Performs the modulo operation and should not be confused with the {@link module:lamb.remainder|remainder}.
-     * The function performs a floored division to calculate the result and not a truncated one, hence the sign of
-     * the dividend is not kept, unlike the {@link module:lamb.remainder|remainder}.
+     * Performs the modulo operation and should not be confused with the
+     * {@link module:lamb.remainder|remainder}.
+     * The function performs a floored division to calculate the result and not
+     * a truncated one, hence the sign of the dividend is not kept, unlike the
+     * {@link module:lamb.remainder|remainder}.
      * @example
      * _.modulo(5, 3) // => 2
      * _.remainder(5, 3) // => 2
@@ -1677,6 +1707,7 @@
         }
 
         var len = Math.max(Math.ceil((limit - start) / step), 0);
+
         return generate(start, len, partial(add, step));
     }
 
@@ -1727,7 +1758,6 @@
     lamb.remainder = remainder;
     lamb.subtract = subtract;
 
-
     /**
      * Verifies if a value is <code>null</code> or <code>undefined</code>.
      * @example
@@ -1739,7 +1769,8 @@
      *
      * @memberof module:lamb
      * @category Type
-     * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
+     * @see {@link module:lamb.isNull|isNull}
+     * @see {@link module:lamb.isUndefined|isUndefined}
      * @param {*} value
      * @returns {Boolean}
      */
@@ -1775,7 +1806,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.type|type}
-     * @param {String} typeTag
+     * @param {String} typeName
      * @returns {Function}
      */
     function isType (typeName) {
@@ -1798,7 +1829,6 @@
      * @returns {Boolean}
      */
     function isUndefined (value) {
-        // using void because undefined could be theoretically shadowed
         return value === void 0;
     }
 
@@ -1831,7 +1861,6 @@
     lamb.isType = isType;
     lamb.isUndefined = isUndefined;
     lamb.type = type;
-
 
     /**
      * A curried version of {@link module:lamb.getIndex|getIndex} that uses the provided index
@@ -1905,12 +1934,14 @@
      */
     function getIndex (arrayLike, index) {
         var idx = _getNaturalIndex(arrayLike, index);
+
         return isUndefined(idx) ? idx : arrayLike[idx];
     }
 
     /**
      * A curried version of {@link module:lamb.getIn|getIn}.<br/>
-     * Receives a property name and builds a function expecting the object from which we want to retrieve the property.
+     * Receives a property name and builds a function expecting the object from which we want to retrieve
+     * the property.
      * @example
      * var user1 = {name: "john"};
      * var user2 = {name: "jane"};
@@ -2142,7 +2173,7 @@
      * @param {ArrayLike} arrayLike
      * @param {Number} index
      * @param {*} value
-     * @returns {*}
+     * @returns {Array}
      */
     var setIndex = aritize(_setIndex, 3);
 
@@ -2311,7 +2342,9 @@
      * @returns {Object}
      */
     function updateIn (source, key, updater) {
-        return _isEnumerable(source, key) ? setIn(source, key, updater(source[key])) : _merge(enumerables, source);
+        return _isEnumerable(source, key) ?
+            setIn(source, key, updater(source[key])) :
+            _merge(enumerables, source);
     }
 
     /**
@@ -2393,15 +2426,15 @@
      * the priority will be given to existing, and enumerable, object keys.<br/>
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
-     * var increment = _.partial(_.add, 1);
+     * var inc = _.partial(_.add, 1);
      *
-     * _.updatePathIn(user, "status.visits", increment) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
+     * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
      *
      * @example <caption>Targeting arrays</caption>
-     * _.updatePathIn(user, "status.scores.0", increment) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
+     * _.updatePathIn(user, "status.scores.0", inc) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
      *
      * // you can use negative indexes as well
-     * _.updatePathIn(user, "status.scores.-1", increment) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
+     * _.updatePathIn(user, "status.scores.-1", inc) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
      *
      * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
      * var user = {id: 1, scores: [
@@ -2460,7 +2493,6 @@
     lamb.updatePath = updatePath;
     lamb.updatePathIn = updatePathIn;
 
-
     /**
      * Builds a predicate to check if an array-like object contains the given value.<br/>
      * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
@@ -2485,7 +2517,8 @@
 
     /**
      * Returns an array of items present only in the first of the given arrays.<br/>
-     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * Note that since version <code>0.13.0</code> this function uses the
+     * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 4, 5];
@@ -2503,6 +2536,7 @@
     function difference (array) {
         var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
+
         return filter(array, not(isInRest));
     }
 
@@ -2553,7 +2587,8 @@
     }
 
     /**
-     * Builds a function that drops the first <code>n</code> elements satisfying a predicate from an array or array-like object.
+     * Builds a function that drops the first <code>n</code> elements satisfying a predicate
+     * from an array or array-like object.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var dropWhileIsEven = _.dropWhile(isEven);
@@ -2757,7 +2792,9 @@
      */
     function insert (arrayLike, index, element) {
         var result = slice(arrayLike);
+
         result.splice(index, 0, element);
+
         return result;
     }
 
@@ -2786,7 +2823,8 @@
 
     /**
      * Returns an array of every item present in all given arrays.<br/>
-     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * Note that since version <code>0.13.0</code> this function uses the
+     * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 5, 4, 6];
@@ -2798,7 +2836,7 @@
      * @memberof module:lamb
      * @category Array
      * @param {...Array} array
-     * @return {Array}
+     * @returns {Array}
      */
     function intersection () {
         var rest = _listFrom1.apply(null, arguments);
@@ -2889,7 +2927,8 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.partition|partition} using the given predicate and the optional context.
+     * Builds a partial application of {@link module:lamb.partition|partition} using the given
+     * predicate and the optional context.
      * The resulting function expects the array-like object to act upon.
      * @example
      * var users = [
@@ -3075,7 +3114,8 @@
     }
 
     /**
-     * Builds a function that takes the first <code>n</code> elements satisfying a predicate from an array or array-like object.
+     * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
+     * an array or array-like object.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var takeWhileIsEven = _.takeWhile(isEven);
@@ -3159,11 +3199,12 @@
     /**
      * Returns an array comprised of the unique elements of the given array-like object.<br/>
      * Can work with lists of complex objects if supplied with an iteratee.<br/>
-     * Note that since version <code>0.13.0</code> this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
-     * @example <caption>with simple values</caption>
+     * Note that since version <code>0.13.0</code> this function uses the
+     * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * @example <caption>With simple values:</caption>
      * _.uniques([1, 2, 2, 3, 4, 3, 5, 1]) // => [1, 2, 3, 4, 5]
      *
-     * @example <caption>with complex values</caption>
+     * @example <caption>With complex values:</caption>
      * var data  = [
      *     {id: "1"},
      *     {id: "4"},
@@ -3177,7 +3218,7 @@
      * @memberof module:lamb
      * @category Array
      * @param {ArrayLike} arrayLike
-     * @param {ListIteratorCallback} [iteratee] Defaults to the [identity function]{@link module:lamb.identity}.
+     * @param {ListIteratorCallback} [iteratee={@link module:lamb.identity|identity}]
      * @param {Object} [iterateeContext]
      * @returns {Array}
      */
@@ -3209,7 +3250,8 @@
     /**
      * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
      * The received array-like objects will be truncated to the shortest length.<br/>
-     * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose} for the reverse operation.
+     * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose}
+     * for the reverse operation.
      * @example
      * _.zip(
      *     ["a", "b", "c"],
@@ -3271,7 +3313,6 @@
     lamb.uniques = uniques;
     lamb.zip = zip;
     lamb.zipWithIndex = zipWithIndex;
-
 
     /**
      * Transforms an array-like object in a lookup table with the keys generated by the provided
@@ -3519,14 +3560,15 @@
     lamb.index = index;
     lamb.indexBy = indexBy;
 
-
     /**
-     * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted copy of an
-     * array-like object using the given criteria.<br/>
-     * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
-     * pass simple "reader" functions and default ascending sorters will be built for you.<br/>
-     * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
-     * Please note that if the arguments received by the default comparer aren't of the same type, they will be compared as strings.
+     * Returns a [stably]{@link https://en.wikipedia.org/wiki/Sorting_algorithm#Stability} sorted
+     * copy of an array-like object using the given criteria.<br/>
+     * Sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you
+     * can also pass simple "reader" functions and default ascending sorters will be built for you.<br/>
+     * A "reader" is a function that evaluates the array element and supplies the value to be used
+     * in the comparison.<br/>
+     * Please note that if the arguments received by the default comparer aren't of the same type,
+     * they will be compared as strings.
      *
      * @example <caption>Stable sort:</caption>
      * var persons = [
@@ -3638,10 +3680,12 @@
      * @category Array
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
-     * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element at a specific index
+     * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element
+     * at a specific index
      * @param {ArrayLike} arrayLike
      * @param {*} element
-     * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria used to sort the array.
+     * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria
+     * used to sort the array.
      * @returns {Array}
      */
     function sortedInsert (arrayLike, element) {
@@ -3650,11 +3694,13 @@
         var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
         result.splice(idx, 0, element);
+
         return result;
     }
 
     /**
-     * Creates an ascending sort criterion with the provided <code>reader</code> and <code>comparer</code>.<br/>
+     * Creates an ascending sort criterion with the provided <code>reader</code> and
+     * <code>comparer</code>.<br/>
      * See {@link module:lamb.sort|sort} for various examples.
      *
      * @memberof module:lamb
@@ -3663,14 +3709,17 @@
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorterDesc|sorterDesc}
-     * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
+     * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
+     * simple value from a complex one. The function should evaluate the array element and supply the
+     * value to be passed to the comparer.
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
      */
     var sorter = partial(_sorter, _, false, _);
 
     /**
-     * Creates a descending sort criterion with the provided <code>reader</code> and <code>comparer</code>.<br/>
+     * Creates a descending sort criterion with the provided <code>reader</code> and
+     * <code>comparer</code>.<br/>
      * See {@link module:lamb.sort|sort} for various examples.
      *
      * @memberof module:lamb
@@ -3679,18 +3728,21 @@
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}
-     * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a simple value from a complex one. The function should evaluate the array element and supply the value to be passed to the comparer.
+     * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
+     * simple value from a complex one. The function should evaluate the array element and supply the
+     * value to be passed to the comparer.
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
      */
     var sorterDesc = partial(_sorter, _, true, _);
 
     /**
-     * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria. The returned
-     * function expects the array-like object to sort.
-     * As usual, sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function, but you can also
-     * pass simple "reader" functions and default ascending sorters will be built.<br/>
-     * A "reader" is a function that evaluates the array element and supplies the value to be used in the comparison.<br/>
+     * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria.
+     * The returned function expects the array-like object to sort.
+     * As usual, sorting criteria are built using Lamb's {@link module:lamb.sorter|sorter} function,
+     * but you can also pass simple "reader" functions and default ascending sorters will be built.<br/>
+     * A "reader" is a function that evaluates the array element and supplies the value to be used in
+     * the comparison.<br/>
      * See {@link module:lamb.sort|sort} for more examples.
      *
      * @example
@@ -3719,7 +3771,6 @@
     lamb.sorter = sorter;
     lamb.sorterDesc = sorterDesc;
     lamb.sortWith = sortWith;
-
 
     /**
      * Applies the passed function to the given argument list.
@@ -3753,7 +3804,7 @@
      */
     function applyArgs (args) {
         return function (fn) {
-           return fn.apply(this, Object(args));
+            return fn.apply(this, Object(args));
         };
     }
 
@@ -3990,8 +4041,10 @@
     }
 
     /**
-     * Returns a function that will execute the given function only if it stops being called for the specified timespan.<br/>
-     * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call happens immediately.
+     * Returns a function that will execute the given function only if it stops being called for the
+     * specified timespan.<br/>
+     * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call
+     * happens immediately.
      * @example <caption>A common use case of <code>debounce</code> in a browser environment</caption>
      * var updateLayout = function () {
      *     // some heavy DOM operations here
@@ -4013,12 +4066,11 @@
         var timeoutID;
 
         return function () {
-            var context = this;
             var args = arguments;
             var debounced = function () {
                 timeoutID = null;
-                fn.apply(context, args);
-            };
+                fn.apply(this, args);
+            }.bind(this);
 
             clearTimeout(timeoutID);
             timeoutID = setTimeout(debounced, timespan);
@@ -4039,6 +4091,7 @@
     function flip (fn) {
         return function () {
             var args = list.apply(null, arguments).reverse();
+
             return fn.apply(this, args);
         };
     }
@@ -4061,26 +4114,28 @@
      *
      * @memberof module:lamb
      * @category Function
-     * @param {Number} index
+     * @param {Number} idx
      * @returns {Function}
      */
-    function getArgAt (index) {
-        return compose(getAt(index), list);
+    function getArgAt (idx) {
+        return compose(getAt(idx), list);
     }
 
     /**
      * Builds a function that will invoke the given method name on any received object and return
      * the result. If no method with such name is found the function will return <code>undefined</code>.
-     * Along with the method name it's possible to supply some arguments that will be bound to the method call.<br/>
-     * Further arguments can also be passed when the function is actually called, and they will be concatenated
-     * to the bound ones.<br/>
-     * If different objects share a method name it's possible to build polymorphic functions as you can see in
-     * the example below.<br/>
-     * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this behaviour
-     * by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex polymorphic functions
-     * without the need of homonymy.<br/>
-     * Returning <code>undefined</code> or checking for such value is meant to favor composition and interoperability
-     * between the aforementioned functions: for a more standard behaviour see also {@link module:lamb.generic|generic}.
+     * Along with the method name it's possible to supply some arguments that will be bound to the
+     * method call.<br/>
+     * Further arguments can also be passed when the function is actually called, and they will be
+     * concatenated to the bound ones.<br/>
+     * If different objects share a method name it's possible to build polymorphic functions as you
+     * can see in the example below.<br/>
+     * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this
+     * behaviour by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex
+     * polymorphic functions without the need of homonymy.<br/>
+     * Returning <code>undefined</code> or checking for such value is meant to favor composition and
+     * interoperability between the aforementioned functions: for a more standard behaviour see also
+     * {@link module:lamb.generic|generic}.
      * See also {@link module:lamb.invokerOn|invokerOn}.
      * @example <caption>Basic polymorphism with <code>invoker</code></caption>
      * var polySlice = _.invoker("slice");
@@ -4101,12 +4156,15 @@
      */
     function invoker (methodName) {
         var boundArgs = _listFrom1.apply(null, arguments);
+
         return partial(_invoker, boundArgs, methodName);
     }
 
     /**
-     * Accepts an object and builds a function expecting a method name, and optionally arguments, to call on such object.
-     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the function will return <code>undefined</code>.
+     * Accepts an object and builds a function expecting a method name, and optionally arguments,
+     * to call on such object.
+     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the
+     * function will return <code>undefined</code>.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var arr = [1, 2, 3, 4, 5];
@@ -4126,7 +4184,8 @@
     }
 
     /**
-     * Builds a function that allows to map over the received arguments before applying them to the original one.
+     * Builds a function that allows to map over the received arguments before applying them
+     * to the original one.
      * @example
      * var sumArray = _.reduceWith(_.add);
      * var sum = _.compose(sumArray, _.list);
@@ -4200,8 +4259,8 @@
 
     /**
      * Returns a function that will invoke the passed function at most once in the given timespan.<br/>
-     * The first call in this case happens as soon as the function is invoked; see also {@link module:lamb.debounce|debounce}
-     * for a different behaviour where the first call is delayed.
+     * The first call in this case happens as soon as the function is invoked; see also
+     * {@link module:lamb.debounce|debounce} for a different behaviour where the first call is delayed.
      * @example
      * var log = _.throttle(console.log.bind(console), 5000);
      *
@@ -4255,10 +4314,11 @@
 
     /**
      * Wraps the function <code>fn</code> inside a <code>wrapper</code> function.<br/>
-     * This allows to conditionally execute <code>fn</code>, to tamper with its arguments or return value
-     * and to run code before and after its execution.<br/>
-     * Being this nothing more than a "{@link module:lamb.flip|flipped}" [partial application]{@link module:lamb.partial},
-     * you can also easily build new functions from existent ones.
+     * This allows to conditionally execute <code>fn</code>, to tamper with its arguments
+     * or return value and to run code before and after its execution.<br/>
+     * Being this nothing more than a "{@link module:lamb.flip|flipped}"
+     * [partial application]{@link module:lamb.partial}, you can also easily build new
+     * functions from existent ones.
      * @example
      * var arrayMax = _.wrap(Math.max, _.apply);
      *
@@ -4295,12 +4355,12 @@
     lamb.unary = unary;
     lamb.wrap = wrap;
 
-
     /**
-     * Builds a <code>checker</code> function meant to be used with {@link module:lamb.validate|validate}.<br/>
-     * Note that the function accepts multiple <code>keyPaths</code> as a means to compare their values. In
-     * other words all the received <code>keyPaths</code> will be passed as arguments to the <code>predicate</code>
-     * to run the test.<br/>
+     * Builds a <code>checker</code> function meant to be used with
+     * {@link module:lamb.validate|validate}.<br/>
+     * Note that the function accepts multiple <code>keyPaths</code> as a means to
+     * compare their values. In other words all the received <code>keyPaths</code> will be
+     * passed as arguments to the <code>predicate</code> to run the test.<br/>
      * If you want to run the same single property check with multiple properties, you should build
      * multiple <code>checker</code>s and combine them with {@link module:lamb.validate|validate}.
      * @example
@@ -4330,13 +4390,15 @@
      * @see {@link module:lamb.validate|validate}, {@link module:lamb.validateWith|validateWith}
      * @param {Function} predicate - The predicate to test the object properties
      * @param {String} message - The error message
-     * @param {String[]} keyPaths - The array of property names, or {@link module:lamb.getPathIn|paths}, to test.
+     * @param {String[]} keyPaths - The array of keys, or {@link module:lamb.getPathIn|paths}, to test.
      * @param {String} [pathSeparator="."]
-     * @returns {Array<String, String[]>} An error in the form <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
+     * @returns {Array<String, String[]>} An error in the form
+     * <code>["message", ["propertyA", "propertyB"]]</code> or an empty array.
      */
     function checker (predicate, message, keyPaths, pathSeparator) {
         return function (obj) {
             var getValues = partial(getPathIn, obj, _, pathSeparator);
+
             return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
         };
     }
@@ -4560,10 +4622,13 @@
     var keys = _unsafeKeyListFrom(_safeKeys);
 
     /**
-     * Builds an object from the two given lists, using the first one as keys and the last one as values.<br/>
-     * If the list of keys is longer than the values one, the keys will be created with <code>undefined</code> values.<br/>
+     * Builds an object from the two given lists, using the first one as keys and the last
+     * one as values.<br/>
+     * If the list of keys is longer than the values one, the keys will be created with
+     * <code>undefined</code> values.<br/>
      * If more values than keys are supplied, the extra values will be ignored.<br/>
-     * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for the reverse operation.
+     * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for
+     * the reverse operation.
      * @example
      * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
      * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
@@ -4572,16 +4637,16 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @param {String[]} keys
+     * @param {String[]} names
      * @param {ArrayLike} values
      * @returns {Object}
      */
-    function make (keys, values) {
+    function make (names, values) {
         var result = {};
         var valuesLen = values.length;
 
-        for (var i = 0, len = keys.length; i < len; i++) {
-            result[keys[i]] = i < valuesLen ? values[i] : void 0;
+        for (var i = 0, len = names.length; i < len; i++) {
+            result[names[i]] = i < valuesLen ? values[i] : void 0;
         }
 
         return result;
@@ -4595,7 +4660,7 @@
      * @example
      * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
      *
-     * @example <caption>Arrays and array-like objects will be transformed to objects with numbers as keys:</caption>
+     * @example <caption>Array-like objects will be transformed to objects with numbers as keys:</caption>
      * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
@@ -4611,7 +4676,8 @@
     var merge = partial(_merge, _safeEnumerables);
 
     /**
-     * Same as {@link module:lamb.merge|merge}, but only the own properties of the sources are taken into account.
+     * Same as {@link module:lamb.merge|merge}, but only the own properties of the
+     * sources are taken into account.
      * @example <caption>showing the difference with <code>merge</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
@@ -4623,7 +4689,7 @@
      * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
      * _.mergeOwn(foo, bar) // => {c: 3, d: 4}
      *
-     * @example <caption>Arrays or array-like objects will be transformed to objects with numbers as keys:</caption>
+     * @example <caption>Array-like objects will be transformed to objects with numbers as keys:</caption>
      * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
@@ -4724,7 +4790,8 @@
     }
 
     /**
-     * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
+     * Builds a function expecting an object whose enumerable properties will be checked
+     * against the given predicate.<br/>
      * The properties satisfying the predicate will be included in the resulting object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
@@ -4735,7 +4802,8 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+     * {@link module:lamb.skipIf|skipIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -4789,7 +4857,8 @@
      * @category Object
      * @function
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+     * {@link module:lamb.skipIf|skipIf}
      * @param {String[]} whitelist
      * @returns {Function}
      */
@@ -4853,7 +4922,11 @@
      *     "last_name": "surname"
      * });
      *
-     * persons.map(normalizeKeys) // => [{"name": "John", "surname": "Doe"}, {"name": "Mario", "surname": "Rossi"}]
+     * persons.map(normalizeKeys) // =>
+     * // [
+     * //     {"name": "John", "surname": "Doe"},
+     * //     {"name": "Mario", "surname": "Rossi"}
+     * // ]
      *
      * @memberof module:lamb
      * @category Object
@@ -4900,7 +4973,8 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+     * {@link module:lamb.pickIf|pickIf}
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
@@ -4918,7 +4992,8 @@
     }
 
     /**
-     * Builds a function expecting an object whose enumerable properties will be checked against the given predicate.<br/>
+     * Builds a function expecting an object whose enumerable properties will be checked
+     * against the given predicate.<br/>
      * The properties satisfying the predicate will be omitted in the resulting object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
@@ -4930,7 +5005,8 @@
      * @category Object
      * @function
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+     * {@link module:lamb.pickIf|pickIf}
      * @param {ObjectIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {Function}
@@ -4968,16 +5044,18 @@
      * @category Object
      * @function
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+     * {@link module:lamb.pickIf|pickIf}
      * @param {String[]} blacklist
      * @returns {Function}
      */
     var skipKeys = _curry(skip, 2, true);
 
     /**
-     * Tears an object apart by transforming it in an array of two lists: one containing its enumerable keys,
-     * the other containing the corresponding values.<br/>
-     * Although this "tearing apart" may sound as a rather violent process, the source object will be unharmed.<br/>
+     * Tears an object apart by transforming it in an array of two lists: one containing
+     * its enumerable keys, the other containing the corresponding values.<br/>
+     * Although this "tearing apart" may sound as a rather violent process, the source
+     * object will be unharmed.<br/>
      * See also {@link module:lamb.tearOwn|tearOwn} for picking only the own enumerable properties and
      * {@link module:lamb.make|make} for the reverse operation.
      * @example
@@ -4992,7 +5070,8 @@
     var tear = _tearFrom(enumerables);
 
     /**
-     * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are taken into account.<br/>
+     * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
+     * taken into account.<br/>
      * See also {@link module:lamb.make|make} for the reverse operation.
      * @example <caption>showing the difference with <code>tear</code></caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
@@ -5026,7 +5105,11 @@
      * var user2 = {name: "jane", surname: "", age: 15};
      *
      * _.validate(user1, userCheckers) // => []
-     * _.validate(user2, userCheckers) // => [["Surname is required", ["surname"]], ["Must be at least 18 years old", ["age"]]]
+     * _.validate(user2, userCheckers) // =>
+     * // [
+     * //     ["Surname is required", ["surname"]],
+     * //     ["Must be at least 18 years old", ["age"]]
+     * // ]
      *
      * @memberof module:lamb
      * @category Object
@@ -5034,19 +5117,22 @@
      * @see {@link module:lamb.checker|checker}
      * @param {Object} obj
      * @param {Function[]} checkers
-     * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by {@link module:lamb.checker|checker}, or an empty array.
+     * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
+     * {@link module:lamb.checker|checker}, or an empty array.
      */
     function validate (obj, checkers) {
-        return reduce(checkers, function (errors, checker) {
-            var result = checker(obj);
+        return reduce(checkers, function (errors, _checker) {
+            var result = _checker(obj);
+
             result.length && errors.push(result);
+
             return errors;
         }, []);
     }
 
     /**
-     * A curried version of {@link module:lamb.validate|validate} accepting a list of {@link module:lamb.checker|checkers} and
-     * returning a function expecting the object to validate.
+     * A curried version of {@link module:lamb.validate|validate} accepting a list of
+     * {@link module:lamb.checker|checkers} and returning a function expecting the object to validate.
      * @example
      * var hasContent = function (s) { return s.trim().length > 0; };
      * var isAdult = function (age) { return age >= 18; };
@@ -5061,7 +5147,11 @@
      * var user2 = {name: "jane", surname: "", age: 15};
      *
      * validateUser(user1) // => []
-     * validateUser(user2) // => [["Surname is required", ["surname"]], ["Must be at least 18 years old", ["age"]]]
+     * validateUser(user2) // =>
+     * // [
+     * //     ["Surname is required", ["surname"]],
+     * //     ["Must be at least 18 years old", ["age"]]
+     * // ]
      *
      * @memberof module:lamb
      * @category Object
@@ -5120,7 +5210,6 @@
     lamb.validateWith = validateWith;
     lamb.values = values;
 
-
     /**
      * Pads a string to the desired length with the given char starting from the beginning of the string.
      * @example
@@ -5167,8 +5256,10 @@
 
     /**
      * Builds a new string by repeating the source string the desired amount of times.<br/>
-     * Note that unlike the current ES6 proposal for [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
-     * this function doesn't throw a RangeError if <code>count</code> is negative, but returns an empty string instead.
+     * Note that unlike the current ES6 proposal for
+     * [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
+     * this function doesn't throw a RangeError if <code>count</code> is negative,
+     * but returns an empty string instead.
      * @example
      * _.repeat("Hello", -1) // => ""
      * _.repeat("Hello", 1) // => "Hello"
@@ -5177,13 +5268,13 @@
      * @memberof module:lamb
      * @category String
      * @param {String} source
-     * @param {Number} count
+     * @param {Number} times
      * @returns {String}
      */
-    function repeat (source, count) {
+    function repeat (source, times) {
         var result = "";
 
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < times; i++) {
             result += source;
         }
 
@@ -5216,17 +5307,20 @@
     if (typeof exports === "object") {
         module.exports = lamb;
     } else if (typeof define === "function" && define.amd) {
-        define(function() { return lamb; });
+        define(function () {
+            return lamb;
+        });
     } else {
         host.lamb = lamb;
     }
-}(this);
+})(this);
 
 /**
  * @callback AccumulatorCallback
  * @global
- * @param {*} previousValue The value returned it the last execution of the accumulator or, in the first iteration, the {@link module:lamb.reduce|initialValue} if supplied.
- * @param {*} currentValue The value being processed in the current iteration.
+ * @param {*} previousValue - The value returned it the last execution of the accumulator or, in the first
+ * iteration, the {@link module:lamb.reduce|initialValue} if supplied.
+ * @param {*} currentValue - The value being processed in the current iteration.
  * @param {Number} idx - The index of the element being processed.
  * @param {ArrayLike} arrayLike - The list being traversed.
  */
@@ -5311,8 +5405,9 @@
  */
 
 /**
- * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert}, {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith},
- * and it's usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
+ * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert},
+ * {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith}, and it's
+ * usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
  * @typedef {Sorter} Sorter
  * @global
  * @property {Boolean} isDescending
@@ -5324,4 +5419,11 @@
  * @typedef {String} String
  * @global
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String|String} in Mozilla documentation.
+ */
+
+/**
+ * The built-in primitive value <code>undefined</code>
+ * @typedef {Undefined} Undefined
+ * @global
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined|undefined} in Mozilla documentation.
  */

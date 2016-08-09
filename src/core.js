@@ -79,7 +79,8 @@ function compose () {
  * Creates generic functions out of methods.
  * @memberof module:lamb
  * @category Core
- * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}. Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+ * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
+ * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
  * @function
  * @example
  * // Lamb's "slice" is actually implemented like this
@@ -113,8 +114,8 @@ function identity (value) {
 }
 
 /**
- * Builds a partially applied function. The <code>lamb</code> object itself can be used as a placeholder argument:
- * it's useful to alias it as <code>_</code> or <code>__</code>.
+ * Builds a partially applied function. The <code>lamb</code> object itself can be used
+ * as a placeholder argument and it's useful to alias it as <code>_</code> or <code>__</code>.
  * @example
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  * var parseInt10 = _.partial(parseInt, _, 10);

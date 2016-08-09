@@ -1,4 +1,3 @@
-
 /**
  * Verifies if a value is <code>null</code> or <code>undefined</code>.
  * @example
@@ -10,7 +9,8 @@
  *
  * @memberof module:lamb
  * @category Type
- * @see {@link module:lamb.isNull|isNull} and {@link module:lamb.isNull|isUndefined} for individual checks.
+ * @see {@link module:lamb.isNull|isNull}
+ * @see {@link module:lamb.isUndefined|isUndefined}
  * @param {*} value
  * @returns {Boolean}
  */
@@ -46,7 +46,7 @@ function isNull (value) {
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.type|type}
- * @param {String} typeTag
+ * @param {String} typeName
  * @returns {Function}
  */
 function isType (typeName) {
@@ -69,7 +69,6 @@ function isType (typeName) {
  * @returns {Boolean}
  */
 function isUndefined (value) {
-    // using void because undefined could be theoretically shadowed
     return value === void 0;
 }
 

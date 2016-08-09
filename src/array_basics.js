@@ -1,6 +1,6 @@
-
 /**
- * Builds an array comprised of all values of the array-like object passing the <code>predicate</code> test.<br/>
+ * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
+ * test.<br/>
  * Since version <code>0.34.0</code> this function is no longer a generic version of
  * [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}
  * for performance reasons.<br/>
@@ -78,6 +78,7 @@ var filterWith = _partialWithIteratee(filter);
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
+ * @returns {Undefined}
  */
 function forEach (arrayLike, iteratee, iterateeContext) {
     if (arguments.length === 3) {
@@ -125,8 +126,8 @@ function map (arrayLike, iteratee, iterateeContext) {
 }
 
 /**
- * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the optional context.
- * The resulting function expects the array-like object to act upon.
+ * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the
+ * optional context. The resulting function expects the array-like object to act upon.
  * @example
  * var square = function (n) { return n * n; };
  * var getSquares = _.mapWith(square);
@@ -166,7 +167,8 @@ var mapWith = _partialWithIteratee(map);
 var reduce = _makeReducer(1);
 
 /**
- * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last element instead.<br/>
+ * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last
+ * element instead.<br/>
  * Since version <code>0.34.0</code> this function is no longer a generic version of
  * [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}
  * for performance reasons.<br/>
@@ -238,7 +240,8 @@ var reduceWith = _partialWithIteratee(reduce);
  * @function
  * @param {ArrayLike} arrayLike - Any array like object.
  * @param {Number} [start=0] - Zero-based index at which to begin extraction.
- * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction. Extracts up to but not including end.
+ * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction.
+ * Extracts up to but not including end.
  * @returns {Array}
  */
 var slice = generic(_arrayProto.slice);

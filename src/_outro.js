@@ -3,17 +3,20 @@
     if (typeof exports === "object") {
         module.exports = lamb;
     } else if (typeof define === "function" && define.amd) {
-        define(function() { return lamb; });
+        define(function () {
+            return lamb;
+        });
     } else {
         host.lamb = lamb;
     }
-}(this);
+})(this);
 
 /**
  * @callback AccumulatorCallback
  * @global
- * @param {*} previousValue The value returned it the last execution of the accumulator or, in the first iteration, the {@link module:lamb.reduce|initialValue} if supplied.
- * @param {*} currentValue The value being processed in the current iteration.
+ * @param {*} previousValue - The value returned it the last execution of the accumulator or, in the first
+ * iteration, the {@link module:lamb.reduce|initialValue} if supplied.
+ * @param {*} currentValue - The value being processed in the current iteration.
  * @param {Number} idx - The index of the element being processed.
  * @param {ArrayLike} arrayLike - The list being traversed.
  */
@@ -98,8 +101,9 @@
  */
 
 /**
- * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert}, {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith},
- * and it's usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
+ * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert},
+ * {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith}, and it's
+ * usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
  * @typedef {Sorter} Sorter
  * @global
  * @property {Boolean} isDescending
@@ -111,4 +115,11 @@
  * @typedef {String} String
  * @global
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String|String} in Mozilla documentation.
+ */
+
+/**
+ * The built-in primitive value <code>undefined</code>
+ * @typedef {Undefined} Undefined
+ * @global
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined|undefined} in Mozilla documentation.
  */
