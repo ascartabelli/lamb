@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.36.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.37.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -94,6 +94,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 
 ## <a name="recent_changes"></a> Recent changes
 
+- **v0.37.0 - *2016/08/10***
+  - **API change**: `sortedInsert` now returns an array copy of the given array-like if there is no element to insert, though still accepts `undefined` values if they are passed explicitly
+  - Greatly improved performance of all curry (and curried) functions
+  - Optimized `invoker` and `invokerOn`
+  - Minor performance improvements in the usage of the arguments object
+
 - **v0.36.0 - *2016/08/04***
   - **Fully compatible with versions down to 0.34.x**
   - Added `asPartial`
@@ -110,9 +116,3 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 - **v0.33.0 - *2016/07/08***
   - **API change**: `sortedInsert` now accepts array-like objects
   - Completed "fifth round" of test updating
-
-- **v0.32.0 - *2016/07/01***
-  - **API change**: `take` and `takeN` now convert `undefined` values passed as `n` to Number (zero) before calling `slice`
-  - **API change**: `tapArgs`, `updateAt` and `updateIndex` are now more strict about their function parameter as “falsy” values failed to throw an exception before
-  - **API change**: curry functions now let empty calls consume the arity
-  - Completed “fourth round" of test updating
