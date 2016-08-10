@@ -249,6 +249,16 @@ describe("lamb.sort", function () {
             });
         });
 
+        it("should return an array copy of the array-like if there is no element to insert", function () {
+            expect(lamb.sortedInsert([1, 2, 3])).toEqual([1, 2, 3]);
+            expect(lamb.sortedInsert("abc")).toEqual(["a", "b", "c"]);
+        });
+
+        it("should allow to insert `nil` values if the value is passed explicitly", function () {
+            expect(lamb.sortedInsert([1, 2, 3], null)).toEqual([1, 2, 3, null]);
+            expect(lamb.sortedInsert([1, 2, 3], void 0)).toEqual([1, 2, 3, void 0]);
+        });
+
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () {lamb.sortedInsert(null, 99); }).toThrow();
             expect(function () {lamb.sortedInsert(void 0, 99); }).toThrow();

@@ -485,17 +485,6 @@ function _keyToPairIn (obj) {
 var _listFrom1 = _argsToArrayFrom(1);
 
 /**
- * Builds an array with the received arguments, excluding the first two.<br/>
- * To be used with the arguments object, which needs to be passed to the apply
- * method of this function.
- * @private
- * @function
- * @param {...*} value
- * @returns {Array}
- */
-var _listFrom2 = _argsToArrayFrom(2);
-
-/**
  * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
  * a single default sorting criterion if the sorter list is empty.
  * @private

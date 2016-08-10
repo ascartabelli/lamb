@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.37.0-alpha.6
+ * @version 0.37.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.37.0-alpha.6";
+    lamb._version = "0.37.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -661,17 +661,6 @@
      * @returns {Array}
      */
     var _listFrom1 = _argsToArrayFrom(1);
-
-    /**
-     * Builds an array with the received arguments, excluding the first two.<br/>
-     * To be used with the arguments object, which needs to be passed to the apply
-     * method of this function.
-     * @private
-     * @function
-     * @param {...*} value
-     * @returns {Array}
-     */
-    var _listFrom2 = _argsToArrayFrom(2);
 
     /**
      * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
@@ -3690,8 +3679,20 @@
      * @returns {Array}
      */
     function sortedInsert (arrayLike, element) {
-        var criteria = _makeCriteria(_listFrom2.apply(null, arguments));
         var result = slice(arrayLike);
+
+        if (arguments.length === 1) {
+            return result;
+        }
+
+        var len = arguments.length - 2;
+        var sorters = Array(len);
+
+        for (var i = 0; i < len; i++) {
+            sorters[i] = arguments[i + 2];
+        }
+
+        var criteria = _makeCriteria(sorters);
         var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
         result.splice(idx, 0, element);

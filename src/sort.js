@@ -127,8 +127,20 @@ function sort (arrayLike) {
  * @returns {Array}
  */
 function sortedInsert (arrayLike, element) {
-    var criteria = _makeCriteria(_listFrom2.apply(null, arguments));
     var result = slice(arrayLike);
+
+    if (arguments.length === 1) {
+        return result;
+    }
+
+    var len = arguments.length - 2;
+    var sorters = Array(len);
+
+    for (var i = 0; i < len; i++) {
+        sorters[i] = arguments[i + 2];
+    }
+
+    var criteria = _makeCriteria(sorters);
     var idx = _getInsertionIndex(result, element, _compareWith(criteria), 0, result.length);
 
     result.splice(idx, 0, element);
