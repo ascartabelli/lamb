@@ -39,7 +39,7 @@ function contains (value, fromIndex) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
+    var rest = shallowFlatten(map(_argsTail.apply(null, arguments), unary(slice)));
     var isInRest = partial(isIn, rest, _, 0);
 
     return filter(array, not(isInRest));
@@ -344,7 +344,7 @@ function insertAt (index, element) {
  * @returns {Array}
  */
 function intersection () {
-    var rest = _listFrom1.apply(null, arguments);
+    var rest = _argsTail.apply(null, arguments);
 
     return filter(uniques(arguments[0]), function (item) {
         return rest.every(contains(item));

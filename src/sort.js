@@ -60,7 +60,7 @@
  * @returns {Array}
  */
 function sort (arrayLike) {
-    var criteria = _makeCriteria(_listFrom1.apply(null, arguments));
+    var criteria = _makeCriteria(_argsTail.apply(null, arguments));
     var data = [];
     var result = [];
     var len = arrayLike.length;

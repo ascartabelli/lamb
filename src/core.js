@@ -129,7 +129,7 @@ function identity (value) {
  * @returns {Function}
  */
 function partial (fn) {
-    var args = _listFrom1.apply(null, arguments);
+    var args = _argsTail.apply(null, arguments);
 
     return function () {
         var lastIdx = 0;

@@ -381,7 +381,7 @@ function getArgAt (idx) {
  * @returns {Function}
  */
 function invoker (methodName) {
-    return partial(_invoker, _listFrom1.apply(null, arguments), methodName);
+    return partial(_invoker, _argsTail.apply(null, arguments), methodName);
 }
 
 /**
@@ -466,7 +466,7 @@ var pipe = flip(compose);
  * @returns {Function}
  */
 function tapArgs (fn) {
-    var tappers = _listFrom1.apply(null, arguments);
+    var tappers = _argsTail.apply(null, arguments);
 
     return function () {
         var len = arguments.length;

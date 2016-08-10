@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.37.0-alpha.7
+ * @version 0.37.0-alpha.10
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.37.0-alpha.7";
+    lamb._version = "0.37.0-alpha.10";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -150,7 +150,7 @@
      * @returns {Function}
      */
     function partial (fn) {
-        var args = _listFrom1.apply(null, arguments);
+        var args = _argsTail.apply(null, arguments);
 
         return function () {
             var lastIdx = 0;
@@ -175,6 +175,17 @@
     lamb.generic = generic;
     lamb.identity = identity;
     lamb.partial = partial;
+
+    /**
+     * Builds an array with the received arguments excluding the first one.<br/>
+     * To be used with the arguments object, which needs to be passed to the apply
+     * method of this function.
+     * @private
+     * @function
+     * @param {...*} value
+     * @returns {Array}
+     */
+    var _argsTail = _argsToArrayFrom(1);
 
     /**
      * Builds helper functions to extract portions of the arguments
@@ -311,24 +322,35 @@
      * @param {Function} fn
      * @param {Number} arity
      * @param {Boolean} isRightCurry
-     * @param {Function} slicer
+     * @param {Boolean} isAutoCurry
      * @param {Array} argsHolder
      * @returns {Function}
      */
-    function _currier (fn, arity, isRightCurry, slicer, argsHolder) {
+    function _currier (fn, arity, isRightCurry, isAutoCurry, argsHolder) {
         return function () {
-            var args = argsHolder.concat(slicer(arguments));
+            var holderLen = argsHolder.length;
+            var argsLen = arguments.length;
+            var newArgsLen = holderLen + (argsLen > 1 && isAutoCurry ? argsLen : 1);
+            var newArgs = Array(newArgsLen);
 
-            if (args.length >= arity) {
-                return fn.apply(this, isRightCurry ? args.reverse() : args);
+            for (var i = 0; i < holderLen; i++) {
+                newArgs[i] = argsHolder[i];
+            }
+
+            for (; i < newArgsLen; i++) {
+                newArgs[i] = arguments[i - holderLen];
+            }
+
+            if (newArgsLen >= arity) {
+                return fn.apply(this, isRightCurry ? newArgs.reverse() : newArgs);
             } else {
-                return _currier(fn, arity, isRightCurry, slicer, args);
+                return _currier(fn, arity, isRightCurry, isAutoCurry, newArgs);
             }
         };
     }
 
     /**
-     * Prepares a function for currying by setting the proper parameters for
+     * Prepares a function for currying by setting the proper arity for
      * the <code>_currier</code> function.
      * If the desumed arity isn't greater than one, it will return the received
      * function itself, instead.
@@ -340,27 +362,11 @@
      * @returns {Function}
      */
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
-        var slicer = isAutoCurry ? function (argsObj) {
-            var len = argsObj.length;
-
-            if (len) {
-                for (var i = 0, args = []; i < len; i++) {
-                    args[i] = argsObj[i];
-                }
-
-                return args;
-            } else {
-                return [void 0];
-            }
-        } : function (argsObj) {
-            return argsObj.length ? [argsObj[0]] : [void 0];
-        };
-
-        if ((arity >>> 0) !== arity) {
+        if (arity >>> 0 !== arity) {
             arity = fn.length;
         }
 
-        return arity > 1 ? _currier(fn, arity, isRightCurry, slicer, []) : fn;
+        return arity > 1 ? _currier(fn, arity, isRightCurry, isAutoCurry, []) : fn;
     }
 
     /**
@@ -652,17 +658,6 @@
     }
 
     /**
-     * Builds an array with the received arguments excluding the first one.<br/>
-     * To be used with the arguments object, which needs to be passed to the apply
-     * method of this function.
-     * @private
-     * @function
-     * @param {...*} value
-     * @returns {Array}
-     */
-    var _listFrom1 = _argsToArrayFrom(1);
-
-    /**
      * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
      * a single default sorting criterion if the sorter list is empty.
      * @private
@@ -739,7 +734,7 @@
      * @returns {Object}
      */
     function _merge (getKeys) {
-        return reduce(_listFrom1.apply(null, arguments), function (result, source) {
+        return reduce(_argsTail.apply(null, arguments), function (result, source) {
             forEach(getKeys(source), function (key) {
                 result[key] = source[key];
             });
@@ -2524,7 +2519,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(map(_listFrom1.apply(null, arguments), unary(slice)));
+        var rest = shallowFlatten(map(_argsTail.apply(null, arguments), unary(slice)));
         var isInRest = partial(isIn, rest, _, 0);
 
         return filter(array, not(isInRest));
@@ -2829,7 +2824,7 @@
      * @returns {Array}
      */
     function intersection () {
-        var rest = _listFrom1.apply(null, arguments);
+        var rest = _argsTail.apply(null, arguments);
 
         return filter(uniques(arguments[0]), function (item) {
             return rest.every(contains(item));
@@ -3612,7 +3607,7 @@
      * @returns {Array}
      */
     function sort (arrayLike) {
-        var criteria = _makeCriteria(_listFrom1.apply(null, arguments));
+        var criteria = _makeCriteria(_argsTail.apply(null, arguments));
         var data = [];
         var result = [];
         var len = arrayLike.length;
@@ -4157,7 +4152,7 @@
      * @returns {Function}
      */
     function invoker (methodName) {
-        return partial(_invoker, _listFrom1.apply(null, arguments), methodName);
+        return partial(_invoker, _argsTail.apply(null, arguments), methodName);
     }
 
     /**
@@ -4242,7 +4237,7 @@
      * @returns {Function}
      */
     function tapArgs (fn) {
-        var tappers = _listFrom1.apply(null, arguments);
+        var tappers = _argsTail.apply(null, arguments);
 
         return function () {
             var len = arguments.length;
