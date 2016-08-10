@@ -381,9 +381,7 @@ function getArgAt (idx) {
  * @returns {Function}
  */
 function invoker (methodName) {
-    var boundArgs = _listFrom1.apply(null, arguments);
-
-    return partial(_invoker, boundArgs, methodName);
+    return partial(_invoker, _listFrom1.apply(null, arguments), methodName);
 }
 
 /**

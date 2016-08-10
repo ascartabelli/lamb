@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.37.0-alpha.4
+ * @version 0.37.0-alpha.6
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.37.0-alpha.4";
+    lamb._version = "0.37.0-alpha.6";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -572,13 +572,25 @@
      */
     function _invoker (boundArgs, methodName, target) {
         var method = target[methodName];
-        var args = _listFrom3.apply(null, arguments);
 
-        if (boundArgs.length) {
-            args = boundArgs.concat(args);
+        if (typeof method !== "function") {
+            return void 0;
         }
 
-        return type(method) === "Function" ? method.apply(target, args) : void 0;
+        var boundArgsLen = boundArgs.length;
+        var ofs = 3 - boundArgsLen;
+        var len = arguments.length - ofs;
+        var args = Array(len);
+
+        for (var i = 0; i < boundArgsLen; i++) {
+            args[i] = boundArgs[i];
+        }
+
+        for (; i < len; i++) {
+            args[i] = arguments[i + ofs];
+        }
+
+        return method.apply(target, args);
     }
 
     /**
@@ -660,17 +672,6 @@
      * @returns {Array}
      */
     var _listFrom2 = _argsToArrayFrom(2);
-
-    /**
-     * Builds an array with the received arguments, excluding the first three.<br/>
-     * To be used with the arguments object, which needs to be passed to the apply
-     * method of this function.
-     * @private
-     * @function
-     * @param {...*} value
-     * @returns {Array}
-     */
-    var _listFrom3 = _argsToArrayFrom(3);
 
     /**
      * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
@@ -4155,9 +4156,7 @@
      * @returns {Function}
      */
     function invoker (methodName) {
-        var boundArgs = _listFrom1.apply(null, arguments);
-
-        return partial(_invoker, boundArgs, methodName);
+        return partial(_invoker, _listFrom1.apply(null, arguments), methodName);
     }
 
     /**
