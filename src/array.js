@@ -208,14 +208,31 @@ function findIndex (arrayLike, predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.flatMapWith|flatMapWith}
  * @param {Array} array
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {Array}
  */
-var flatMap = compose(shallowFlatten, map);
+function flatMap (array, iteratee, iterateeContext) {
+    if (arguments.length === 3) {
+        iteratee = iteratee.bind(iterateeContext);
+    }
+
+    return reduce(array, function (result, el, idx, arr) {
+        var v = iteratee(el, idx, arr);
+
+        if (!Array.isArray(v)) {
+            v = [v];
+        }
+
+        for (var i = 0, len = v.length, rLen = result.length; i < len; i++) {
+            result[rLen + i] = v[i];
+        }
+
+        return result;
+    }, []);
+}
 
 /**
  * Builds a partial application of {@link module:lamb.flatMap|flatMap} using the given iteratee

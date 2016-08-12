@@ -345,6 +345,19 @@ describe("lamb.array", function () {
             expect(lamb.flatMapWith(splitString)(arr)).toEqual(result);
         });
 
+        it("should keeps its behaviour consistent even if the received function returns mixed results", function () {
+            var fn = function (n, idx, list) {
+                expect(list).toBe(arr);
+                expect(list[idx]).toBe(n);
+                return n % 2 === 0 ? [n, n + 10] : n * 2;
+            };
+            var arr = [1, 2, 3, 4, 5];
+            var result = [2, 2, 12, 6, 4, 14, 10];
+
+            expect(lamb.flatMap(arr, fn)).toEqual(result);
+            expect(lamb.flatMapWith(fn)(arr)).toEqual(result);
+        });
+
         it("should not flatten nested arrays", function () {
             var splitString = function (s) {
                 return String(s) === s ? s.split("") : [[s, "not a string"]];

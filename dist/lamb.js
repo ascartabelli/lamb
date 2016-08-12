@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.37.0
+ * @version 0.38.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.37.0";
+    lamb._version = "0.38.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2688,14 +2688,31 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.flatMapWith|flatMapWith}
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    var flatMap = compose(shallowFlatten, map);
+    function flatMap (array, iteratee, iterateeContext) {
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
+        return reduce(array, function (result, el, idx, arr) {
+            var v = iteratee(el, idx, arr);
+
+            if (!Array.isArray(v)) {
+                v = [v];
+            }
+
+            for (var i = 0, len = v.length, rLen = result.length; i < len; i++) {
+                result[rLen + i] = v[i];
+            }
+
+            return result;
+        }, []);
+    }
 
     /**
      * Builds a partial application of {@link module:lamb.flatMap|flatMap} using the given iteratee
