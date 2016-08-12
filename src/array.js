@@ -268,7 +268,7 @@ var flatMapWith = _partialWithIteratee(flatMap);
  * @returns {Array}
  */
 function flatten (array) {
-    return Array.isArray(array) ? _flatten(array, []) : slice(array);
+    return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array);
 }
 
 /**
@@ -568,7 +568,7 @@ function reverse (arrayLike) {
  * @returns {Array}
  */
 function shallowFlatten (array) {
-    return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
+    return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array);
 }
 
 /**

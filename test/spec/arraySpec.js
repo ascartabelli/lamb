@@ -429,8 +429,11 @@ describe("lamb.array", function () {
 
     describe("flatten", function () {
         it("should return a deep flattened array", function () {
-            var input = [[1, [2, [3, ["a", ["b", ["c"]]]]]]];
-            expect(lamb.flatten(input)).toEqual([1, 2, 3, "a", "b", "c"]);
+            var a1 = [[1, [2, [3, 4, ["a", ["b", ["c"]]]]]]];
+            var a2 = [1, 2, [3, 4, [5, 6]], 7, 8];
+
+            expect(lamb.flatten(a1)).toEqual([1, 2, 3, 4, "a", "b", "c"]);
+            expect(lamb.flatten(a2)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
         });
 
         it("shouldn't flatten an array that is a value in an object", function () {

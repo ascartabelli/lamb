@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.38.0-alpha.1
+ * @version 0.38.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.38.0-alpha.1";
+    lamb._version = "0.38.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -372,18 +372,30 @@
     /**
      * Flattens an array.
      * @private
-     * @param {Array} array
-     * @param {Array} output The empty array to collect the result
+     * @param {Array} array - The source array
+     * @param {Boolean} isDeep - Whether to perform a deep flattening or not
+     * @param {Array} output - An array to collect the result
+     * @param {Number} idx - The next index to be filled in the output
      * @returns {Array} The output array filled with the results
      */
-    function _flatten (array, output) {
-        forEach(array, function (value) {
-            if (Array.isArray(value)) {
-                _flatten(value, output);
+    function _flatten (array, isDeep, output, idx) {
+        for (var i = 0, len = array.length, value, j, vLen; i < len; i++) {
+            value = array[i];
+
+            if (!Array.isArray(value)) {
+                output[idx++] = value;
+            } else if (isDeep) {
+                _flatten(value, true, output, idx);
+                idx = output.length;
             } else {
-                output.push(value);
+                vLen = value.length;
+                output.length += vLen;
+
+                for (j = 0; j < vLen; j++) {
+                    output[idx++] = value[j];
+                }
             }
-        });
+        }
 
         return output;
     }
@@ -2748,7 +2760,7 @@
      * @returns {Array}
      */
     function flatten (array) {
-        return Array.isArray(array) ? _flatten(array, []) : slice(array);
+        return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array);
     }
 
     /**
@@ -3048,7 +3060,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-        return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
+        return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array);
     }
 
     /**
