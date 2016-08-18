@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.38.0-alpha.4
+ * @version 0.38.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.38.0-alpha.4";
+    lamb._version = "0.38.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -3183,14 +3183,27 @@
      */
     function transpose (arrayLike) {
         var result = [];
-        var minLen = Math.min.apply(null, pluck(arrayLike, "length")) >>> 0;
-        var len = arrayLike.length;
+        var len = arrayLike.length >>> 0;
 
-        for (var i = 0, j; i < minLen; i++) {
-            result.push([]);
+        if (len === 0) {
+            return result;
+        }
+
+        var minLen = arrayLike[0].length >>> 0;
+
+        for (var j = 1, elementLen; j < len && minLen > 0; j++) {
+            elementLen = arrayLike[j].length >>> 0;
+
+            if (elementLen < minLen) {
+                minLen = elementLen;
+            }
+        }
+
+        for (var i = 0, el; i < minLen; i++) {
+            el = result[i] = Array(len);
 
             for (j = 0; j < len; j++) {
-                result[i][j] = arrayLike[j][i];
+                el[j] = arrayLike[j][i];
             }
         }
 

@@ -690,14 +690,27 @@ function takeWhile (predicate, predicateContext) {
  */
 function transpose (arrayLike) {
     var result = [];
-    var minLen = Math.min.apply(null, pluck(arrayLike, "length")) >>> 0;
-    var len = arrayLike.length;
+    var len = arrayLike.length >>> 0;
 
-    for (var i = 0, j; i < minLen; i++) {
-        result.push([]);
+    if (len === 0) {
+        return result;
+    }
+
+    var minLen = arrayLike[0].length >>> 0;
+
+    for (var j = 1, elementLen; j < len && minLen > 0; j++) {
+        elementLen = arrayLike[j].length >>> 0;
+
+        if (elementLen < minLen) {
+            minLen = elementLen;
+        }
+    }
+
+    for (var i = 0, el; i < minLen; i++) {
+        el = result[i] = Array(len);
 
         for (j = 0; j < len; j++) {
-            result[i][j] = arrayLike[j][i];
+            el[j] = arrayLike[j][i];
         }
     }
 
