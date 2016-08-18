@@ -23,7 +23,9 @@
  * @param {Object} [iterateeContext]
  * @returns {Object}
  */
-var count = _groupWith(partial(add, 1), 0);
+var count = _groupWith(function (a) {
+    return a ? ++a : 1;
+});
 
 /**
  * Using the provided iteratee, and its optional context, builds a partial application of
@@ -110,7 +112,15 @@ var countBy = _partialWithIteratee(count);
  * @param {Object} [iterateeContext]
  * @returns {Object}
  */
-var group = _groupWith(invoker("concat"), []);
+var group = _groupWith(function (a, b) {
+    if (!a) {
+        return [b];
+    }
+
+    a[a.length] = b;
+
+    return a;
+});
 
 /**
  * Using the provided iteratee, and its optional context, builds a partial application
@@ -203,7 +213,9 @@ var groupBy = _partialWithIteratee(group);
  * @param {Object} [iterateeContext]
  * @returns {Object}
  */
-var index = _groupWith(getArgAt(1));
+var index = _groupWith(function (a, b) {
+    return b;
+});
 
 /**
  * Using the provided iteratee, and its optional context, builds a partial application

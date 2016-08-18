@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.38.0-alpha.2
+ * @version 0.38.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.38.0-alpha.2";
+    lamb._version = "0.38.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -531,23 +531,24 @@
      * Builds a "grouping function" for an array-like object.
      * @private
      * @param {Function} makeValue
-     * @param {*} startValue
      * @returns {Function}
      */
-    function _groupWith (makeValue, startValue) {
+    function _groupWith (makeValue) {
         return function (arrayLike, iteratee, iterateeContext) {
             if (arguments.length === 3) {
                 iteratee = iteratee.bind(iterateeContext);
             }
 
-            return reduce(arrayLike, function (result, element, idx) {
-                var key = iteratee(element, idx, arrayLike);
-                var value = makeValue(key in result ? result[key] : startValue, element);
+            var result = {};
+            var len = arrayLike.length;
 
-                result[key] = value;
+            for (var i = 0, element, key; i < len; i++) {
+                element = arrayLike[i];
+                key = iteratee(element, i, arrayLike);
+                result[key] = makeValue(result[key], element);
+            }
 
-                return result;
-            }, {});
+            return result;
         };
     }
 
@@ -3353,7 +3354,9 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var count = _groupWith(partial(add, 1), 0);
+    var count = _groupWith(function (a) {
+        return a ? ++a : 1;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application of
@@ -3440,7 +3443,15 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var group = _groupWith(invoker("concat"), []);
+    var group = _groupWith(function (a, b) {
+        if (!a) {
+            return [b];
+        }
+
+        a[a.length] = b;
+
+        return a;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application
@@ -3533,7 +3544,9 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var index = _groupWith(getArgAt(1));
+    var index = _groupWith(function (a, b) {
+        return b;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application

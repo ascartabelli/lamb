@@ -353,23 +353,24 @@ function _getPathInfo (obj, parts, walkNonEnumerables) {
  * Builds a "grouping function" for an array-like object.
  * @private
  * @param {Function} makeValue
- * @param {*} startValue
  * @returns {Function}
  */
-function _groupWith (makeValue, startValue) {
+function _groupWith (makeValue) {
     return function (arrayLike, iteratee, iterateeContext) {
         if (arguments.length === 3) {
             iteratee = iteratee.bind(iterateeContext);
         }
 
-        return reduce(arrayLike, function (result, element, idx) {
-            var key = iteratee(element, idx, arrayLike);
-            var value = makeValue(key in result ? result[key] : startValue, element);
+        var result = {};
+        var len = arrayLike.length;
 
-            result[key] = value;
+        for (var i = 0, element, key; i < len; i++) {
+            element = arrayLike[i];
+            key = iteratee(element, i, arrayLike);
+            result[key] = makeValue(result[key], element);
+        }
 
-            return result;
-        }, {});
+        return result;
     };
 }
 
