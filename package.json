@@ -6,7 +6,7 @@
   "description": "A lightweight, and docile, JavaScript library to help embracing functional programming.",
   "homepage": "https://ascartabelli.github.io/lamb/",
   "keywords": [
-    "functional",
+    "functional programming",
     "utility",
     "library",
     "server",
@@ -31,7 +31,7 @@
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.38.0-alpha.8",
+  "version": "0.38.0",
   "devDependencies": {
     "coveralls": "^2.11.12",
     "gulp": "^3.9.1",

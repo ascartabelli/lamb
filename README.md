@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.37.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.38.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -94,6 +94,13 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 
 ## <a name="recent_changes"></a> Recent changes
 
+- **v0.38.0 - *2016/08/19***
+  - **Fully compatible with versions down to 0.37.x**
+  - Improved performance of `flatMap`, `flatMapWith`, `flatten` and `shallowFlatten`
+  - Greatly improved performance of all grouping functions
+  - Greatly improved performance of `transpose`, improved performance of `zip` as a consequence
+  - Greatly improved performance of `getArgAt`
+
 - **v0.37.0 - *2016/08/10***
   - **API change**: `sortedInsert` now returns an array copy of the given array-like if there is no element to insert, though still accepts `undefined` values if they are passed explicitly
   - Greatly improved performance of all curry (and curried) functions
@@ -112,7 +119,3 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 - **v0.34.0 - *2016/07/19***
   - **API change**: `filter`, `forEach`, `map`, `reduce` and `reduceRight` aren’t array generics anymore and have been replaced with performant custom implementations as JS engines didn’t get any better. Unlike native methods, these custom implementations won’t skip unassigned or deleted indexes in arrays.
   - Overall performance improvements (other than the ones caused by the aforementioned custom implementations) and some code clean-up
-
-- **v0.33.0 - *2016/07/08***
-  - **API change**: `sortedInsert` now accepts array-like objects
-  - Completed "fifth round" of test updating
