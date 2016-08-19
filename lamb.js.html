@@ -41,7 +41,7 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli &lt;andrea.scartabelli@gmail.com>
- * @version 0.37.0
+ * @version 0.38.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -58,7 +58,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.37.0";
+    lamb._version = "0.38.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -412,18 +412,30 @@
     /**
      * Flattens an array.
      * @private
-     * @param {Array} array
-     * @param {Array} output The empty array to collect the result
+     * @param {Array} array - The source array
+     * @param {Boolean} isDeep - Whether to perform a deep flattening or not
+     * @param {Array} output - An array to collect the result
+     * @param {Number} idx - The next index to be filled in the output
      * @returns {Array} The output array filled with the results
      */
-    function _flatten (array, output) {
-        forEach(array, function (value) {
-            if (Array.isArray(value)) {
-                _flatten(value, output);
+    function _flatten (array, isDeep, output, idx) {
+        for (var i = 0, len = array.length, value, j, vLen; i &lt; len; i++) {
+            value = array[i];
+
+            if (!Array.isArray(value)) {
+                output[idx++] = value;
+            } else if (isDeep) {
+                _flatten(value, true, output, idx);
+                idx = output.length;
             } else {
-                output.push(value);
+                vLen = value.length;
+                output.length += vLen;
+
+                for (j = 0; j &lt; vLen; j++) {
+                    output[idx++] = value[j];
+                }
             }
-        });
+        }
 
         return output;
     }
@@ -559,23 +571,24 @@
      * Builds a "grouping function" for an array-like object.
      * @private
      * @param {Function} makeValue
-     * @param {*} startValue
      * @returns {Function}
      */
-    function _groupWith (makeValue, startValue) {
+    function _groupWith (makeValue) {
         return function (arrayLike, iteratee, iterateeContext) {
             if (arguments.length === 3) {
                 iteratee = iteratee.bind(iterateeContext);
             }
 
-            return reduce(arrayLike, function (result, element, idx) {
-                var key = iteratee(element, idx, arrayLike);
-                var value = makeValue(key in result ? result[key] : startValue, element);
+            var result = {};
+            var len = arrayLike.length;
 
-                result[key] = value;
+            for (var i = 0, element, key; i &lt; len; i++) {
+                element = arrayLike[i];
+                key = iteratee(element, i, arrayLike);
+                result[key] = makeValue(result[key], element);
+            }
 
-                return result;
-            }, {});
+            return result;
         };
     }
 
@@ -2530,6 +2543,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.isIn|isIn}
      * @param {*} value
      * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
      * @returns {Function}
@@ -2728,14 +2742,31 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.flatMapWith|flatMapWith}
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    var flatMap = compose(shallowFlatten, map);
+    function flatMap (array, iteratee, iterateeContext) {
+        if (arguments.length === 3) {
+            iteratee = iteratee.bind(iterateeContext);
+        }
+
+        return reduce(array, function (result, el, idx, arr) {
+            var v = iteratee(el, idx, arr);
+
+            if (!Array.isArray(v)) {
+                v = [v];
+            }
+
+            for (var i = 0, len = v.length, rLen = result.length; i &lt; len; i++) {
+                result[rLen + i] = v[i];
+            }
+
+            return result;
+        }, []);
+    }
 
     /**
      * Builds a partial application of {@link module:lamb.flatMap|flatMap} using the given iteratee
@@ -2771,7 +2802,7 @@
      * @returns {Array}
      */
     function flatten (array) {
-        return Array.isArray(array) ? _flatten(array, []) : slice(array);
+        return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array);
     }
 
     /**
@@ -2887,6 +2918,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.contains|contains}
      * @param {ArrayLike} arrayLike
      * @param {*} value
      * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
@@ -3071,7 +3103,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-        return Array.isArray(array) ? _arrayProto.concat.apply([], array) : slice(array);
+        return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array);
     }
 
     /**
@@ -3193,14 +3225,27 @@
      */
     function transpose (arrayLike) {
         var result = [];
-        var minLen = Math.min.apply(null, pluck(arrayLike, "length")) >>> 0;
-        var len = arrayLike.length;
+        var len = arrayLike.length >>> 0;
 
-        for (var i = 0, j; i &lt; minLen; i++) {
-            result.push([]);
+        if (len === 0) {
+            return result;
+        }
+
+        var minLen = arrayLike[0].length >>> 0;
+
+        for (var j = 1, elementLen; j &lt; len &amp;&amp; minLen > 0; j++) {
+            elementLen = arrayLike[j].length >>> 0;
+
+            if (elementLen &lt; minLen) {
+                minLen = elementLen;
+            }
+        }
+
+        for (var i = 0, el; i &lt; minLen; i++) {
+            el = result[i] = Array(len);
 
             for (j = 0; j &lt; len; j++) {
-                result[i][j] = arrayLike[j][i];
+                el[j] = arrayLike[j][i];
             }
         }
 
@@ -3364,7 +3409,9 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var count = _groupWith(partial(add, 1), 0);
+    var count = _groupWith(function (a) {
+        return a ? ++a : 1;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application of
@@ -3451,7 +3498,15 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var group = _groupWith(invoker("concat"), []);
+    var group = _groupWith(function (a, b) {
+        if (!a) {
+            return [b];
+        }
+
+        a[a.length] = b;
+
+        return a;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application
@@ -3544,7 +3599,9 @@
      * @param {Object} [iterateeContext]
      * @returns {Object}
      */
-    var index = _groupWith(getArgAt(1));
+    var index = _groupWith(function (a, b) {
+        return b;
+    });
 
     /**
      * Using the provided iteratee, and its optional context, builds a partial application
@@ -4155,7 +4212,9 @@
      * @returns {Function}
      */
     function getArgAt (idx) {
-        return compose(getAt(idx), list);
+        return function () {
+            return arguments[_getNaturalIndex({length: arguments.length}, idx)];
+        };
     }
 
     /**
@@ -4499,6 +4558,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.hasKey|hasKey}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4524,6 +4585,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.has|has}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @param {String} key
      * @returns {Function}
      */
@@ -4569,6 +4632,8 @@
      * @memberof module:lamb
      * @category Object
      * @function
+     * @see {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4588,6 +4653,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.hasOwn|hasOwn}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @param {String} key
      * @returns {Function}
      */
@@ -5478,7 +5545,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Aug 10 2016 15:36:16 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Aug 19 2016 10:57:46 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
