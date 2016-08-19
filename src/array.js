@@ -10,6 +10,7 @@
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.isIn|isIn}
  * @param {*} value
  * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
  * @returns {Function}
@@ -384,6 +385,7 @@ function intersection () {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.contains|contains}
  * @param {ArrayLike} arrayLike
  * @param {*} value
  * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.

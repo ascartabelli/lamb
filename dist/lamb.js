@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.38.0-alpha.7
+ * @version 0.38.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.38.0-alpha.7";
+    lamb._version = "0.38.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2503,6 +2503,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.isIn|isIn}
      * @param {*} value
      * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
      * @returns {Function}
@@ -2877,6 +2878,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.contains|contains}
      * @param {ArrayLike} arrayLike
      * @param {*} value
      * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
@@ -4516,6 +4518,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.hasKey|hasKey}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4541,6 +4545,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.has|has}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @param {String} key
      * @returns {Function}
      */
@@ -4586,6 +4592,8 @@
      * @memberof module:lamb
      * @category Object
      * @function
+     * @see {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4605,6 +4613,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.hasOwn|hasOwn}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @param {String} key
      * @returns {Function}
      */

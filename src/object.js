@@ -107,6 +107,8 @@ function fromPairs (pairsList) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.hasKey|hasKey}
+ * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @param {Object} obj
  * @param {String} key
  * @returns {Boolean}
@@ -132,6 +134,8 @@ function has (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.has|has}
+ * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @param {String} key
  * @returns {Function}
  */
@@ -177,6 +181,8 @@ var hasKeyValue = function (key, value) {
  * @memberof module:lamb
  * @category Object
  * @function
+ * @see {@link module:lamb.hasOwnKey|hasOwnKey}
+ * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @param {Object} obj
  * @param {String} key
  * @returns {Boolean}
@@ -196,6 +202,8 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.hasOwn|hasOwn}
+ * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @param {String} key
  * @returns {Function}
  */
