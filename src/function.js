@@ -344,7 +344,9 @@ function flip (fn) {
  * @returns {Function}
  */
 function getArgAt (idx) {
-    return compose(getAt(idx), list);
+    return function () {
+        return arguments[_getNaturalIndex({length: arguments.length}, idx)];
+    };
 }
 
 /**
