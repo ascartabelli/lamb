@@ -737,20 +737,27 @@ var union = compose(uniques, flatMapWith(unary(slice)), list);
  * Returns an array comprised of the unique elements of the given array-like object.<br/>
  * Can work with lists of complex objects if supplied with an iteratee.<br/>
  * Note that since version <code>0.13.0</code> this function uses the
- * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+ * When two values are considered equal, the first occurence will be the one included
+ * in the result array.
  * @example <caption>With simple values:</caption>
- * _.uniques([1, 2, 2, 3, 4, 3, 5, 1]) // => [1, 2, 3, 4, 5]
+ * _.uniques([-0, 1, 2, 0, 2, 3, 4, 3, 5, 1]) // => [-0, 1, 2, 3, 4, 5]
  *
  * @example <caption>With complex values:</caption>
  * var data  = [
- *     {id: "1"},
- *     {id: "4"},
- *     {id: "5"},
- *     {id: "1"},
- *     {id: "5"},
+ *     {id: "1", name: "John"},
+ *     {id: "4", name: "Jane"},
+ *     {id: "5", name: "Joe"},
+ *     {id: "1", name: "Mario"},
+ *     {id: "5", name: "Paolo"},
  * ];
  *
- * _.uniques(data, _.getKey("id")) // => [{id: "1"}, {id: "4"}, {"id": 5}]
+ * _.uniques(data, _.getKey("id")) // =>
+ * // [
+ * //     {id: "1", name: "John"},
+ * //     {id: "4", name: "Jane"},
+ * //     {id: "5", name: "Joe"}
+ * // ]
  *
  * @memberof module:lamb
  * @category Array
@@ -762,22 +769,25 @@ var union = compose(uniques, flatMapWith(unary(slice)), list);
 function uniques (arrayLike, iteratee, iterateeContext) {
     if (typeof iteratee !== "function") {
         iteratee = identity;
-    }
-
-    if (arguments.length === 3) {
+    } else if (arguments.length === 3) {
         iteratee = iteratee.bind(iterateeContext);
     }
 
     var result = [];
-    var seen = [];
-    var value;
+    var len = arrayLike.length;
 
-    for (var i = 0, len = arrayLike.length; i < len; i++) {
+    for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
         value = iteratee(arrayLike[i], i, arrayLike);
 
-        if (!isIn(seen, value)) {
-            seen.push(value);
-            result.push(arrayLike[i]);
+        // eslint-disable-next-line no-self-compare
+        if (value === value) {
+            if (seen.indexOf(value) === -1) {
+                seen[seen.length] = value;
+                result[result.length] = arrayLike[i];
+            }
+        } else if (!hasNaN) {
+            hasNaN = true;
+            result[result.length] = arrayLike[i];
         }
     }
 

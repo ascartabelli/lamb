@@ -1013,11 +1013,45 @@ describe("lamb.array", function () {
     });
 
     describe("uniques", function () {
+        var data = [
+            {"id": "1", "name": "foo"},
+            {"id": "1", "name": "foo"},
+            {"id": "2", "name": "bar"},
+            {"id": "3", "name": "baz"},
+            {"id": "2", "name": "bar"},
+            {"id": "1", "name": "foo"}
+        ];
+
+        var dataUniques = [
+            {"id": "1", "name": "foo"},
+            {"id": "2", "name": "bar"},
+            {"id": "3", "name": "baz"}
+        ];
+
         it("should return the unique elements of an array of simple values", function () {
-            expect(lamb.uniques([])).toEqual([]);
-            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, -0, 2, NaN, 1, 1, NaN])).toEqual([0, 2, 3, 4, NaN, 1]);
-            expect(Object.is(0, lamb.uniques([0, -0])[0])).toBe(true);
+            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, 5, 2, 1, 1])).toEqual([0, 2, 3, 4, 5, 1]);
             expect(lamb.uniques(["foo", "bar", "bar", "baz"])).toEqual(["foo", "bar", "baz"]);
+            expect(lamb.uniques(Array(3))).toEqual([void 0]);
+        });
+
+        it("should use the SameValueZero comparison", function () {
+            expect(lamb.uniques([0, 1, 2, NaN, 1, 2, -0, NaN])).toEqual([0, 1, 2, NaN]);
+        });
+
+        it("should return a copy of the source array if it's empty or already contains unique values", function () {
+            var a1 = [];
+            var r1 = lamb.uniques(a1);
+            var a2 = [1, 2, 3, 4, 5];
+            var r2 = lamb.uniques(a2);
+
+            expect(r1).toEqual([]);
+            expect(r1).not.toBe(a1);
+            expect(r2).toEqual(a2);
+            expect(r2).not.toBe(a2);
+        });
+
+        it("should work with array-like objects", function () {
+            expect(lamb.uniques("hello world")).toEqual(["h", "e", "l", "o", " ", "w", "r", "d"]);
         });
 
         it("should return the unique elements of an array of complex values when supplied with an iteratee", function () {
@@ -1027,23 +1061,19 @@ describe("lamb.array", function () {
                 return obj.id;
             };
 
-            var data = [
-                {"id": "1", "name": "foo"},
-                {"id": "1", "name": "foo"},
-                {"id": "2", "name": "bar"},
-                {"id": "3", "name": "baz"},
-                {"id": "2", "name": "bar"},
-                {"id": "1", "name": "foo"}
-            ];
+            expect(lamb.uniques(data, iteratee, fakeContext)).toEqual(dataUniques);
+            expect(lamb.uniques("bArBaz", lamb.invoker("toUpperCase"))).toEqual(["b", "A", "r", "z"]);
+        });
 
-            var expectedResult = [
-                {"id": "1", "name": "foo"},
-                {"id": "2", "name": "bar"},
-                {"id": "3", "name": "baz"}
-            ];
+        it("should prefer the first encountered value if two values are considered equal", function () {
+            expect(Object.is(0, lamb.uniques([0, -0])[0])).toBe(true);
+            expect(lamb.uniques([2, -0, 3, 3, 0, 1])).toEqual([2, -0, 3, 1]);
 
-            expect(lamb.uniques(data, iteratee, fakeContext)).toEqual(expectedResult);
-            expect(lamb.uniques(data, lamb.getKey("id"))).toEqual(expectedResult);
+            var r = lamb.uniques(data, lamb.getKey("id"));
+
+            expect(r).toEqual(dataUniques);
+            expect(r[0]).toBe(data[0]);
+            expect(r[1]).toBe(data[2]);
         });
 
         it("should throw an exception if called without arguments", function () {
