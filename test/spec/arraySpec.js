@@ -1007,7 +1007,8 @@ describe("lamb.array", function () {
 
         it("should treat every other value as an empty array", function () {
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.union(value)).toEqual([]);
+                expect(lamb.union(value, [3, 5])).toEqual([3, 5]);
+                expect(lamb.union([3, 5], value)).toEqual([3, 5]);
             });
         });
     });

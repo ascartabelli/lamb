@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.39.0-alpha.1
+ * @version 0.39.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.39.0-alpha.1";
+    lamb._version = "0.39.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -459,7 +459,7 @@
      * Gets the number of consecutive elements satisfying a predicate in an array-like object.
      * @private
      * @param {ArrayLike} arrayLike
-     * @param {Function} predicate
+     * @param {ListIteratorCallback} predicate
      * @param {Object} predicateContext
      * @returns {Number}
      */
@@ -667,6 +667,29 @@
     function _keyToPairIn (obj) {
         return function (key) {
             return [key, obj[key]];
+        };
+    }
+
+    /**
+     * Helper to build the {@link module:lamb.everyIn|everyIn} or the
+     * {@link module:lamb.someIn|someIn} function.
+     * @private
+     * @param {Boolean} defaultResult
+     * @returns {Function}
+     */
+    function _makeArrayChecker (defaultResult) {
+        return function (arrayLike, predicate, predicateContext) {
+            if (arguments.length === 3) {
+                predicate = predicate.bind(predicateContext);
+            }
+
+            for (var i = 0, len = arrayLike.length; i < len; i++) {
+                if (defaultResult ^ !!predicate(arrayLike[i], i, arrayLike)) {
+                    return !defaultResult;
+                }
+            }
+
+            return defaultResult;
         };
     }
 
@@ -933,6 +956,71 @@
     });
 
     /**
+     * Checks if all the elements in an array-like object satisfy the given predicate.<br/>
+     * The function will stop calling the predicate as soon as it returns a <em>falsy</em> value.<br/>
+     * Note that an empty array-like will always produce a <code>true</code> result regardless of the
+     * predicate because of [vacuous truth]{@link https://en.wikipedia.org/wiki/Vacuous_truth}.<br/>
+     * Also note that unlike the native
+     * [Array.prototype.every]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every},
+     * this function won't skip deleted or unassigned indexes.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "age": 12, active: true},
+     *     {"name": "John", "age": 40, active: true},
+     *     {"name": "Mario", "age": 17, active: true},
+     *     {"name": "Paolo", "age": 15, active: true}
+     * ];
+     * var isAdult = function (user) { return user.age >= 18; };
+     * var isActive = _.hasKeyValue("active", true);
+     *
+     * _.everyIn(persons, isAdult) // => false
+     * _.everyIn(persons, isActive) // => true
+     *
+     * @example <caption>Showing the difference with <code>Array.prototype.every</code>:</caption>
+     * var isDefined = _.not(_.isUndefined);
+     * var arr = new Array(5);
+     * arr[3] = 99;
+     *
+     * arr.every(isDefined) // => true
+     * _.everyIn(arr, isDefined) // => false
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.every|every}
+     * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} predicateContext
+     * @returns {Boolean}
+     */
+    var everyIn = _makeArrayChecker(true);
+
+    /**
+     * A curried version of {@link module:lamb.everyIn|everyIn} expecting a predicate and its optional
+     * context to build a function waiting for the array-like to act upon.
+     * @example
+     * var data = [2, 3, 5, 6, 8];
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var isInteger = function (n) { return Math.floor(n) === n; };
+     * var allEvens = _.every(isEven);
+     * var allIntegers = _.every(isInteger);
+     *
+     * allEvens(data) // => false
+     * allIntegers(data) // => true
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.everyIn|everyIn}
+     * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} predicateContext
+     * @returns {Function}
+     */
+    var every = _partialWithIteratee(everyIn);
+
+    /**
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
      * test.<br/>
      * Since version <code>0.34.0</code> this function is no longer a generic version of
@@ -1180,6 +1268,70 @@
      */
     var slice = generic(_arrayProto.slice);
 
+    /**
+     * Checks if at least one element in an array-like object satisfies the given predicate.<br/>
+     * The function will stop calling the predicate as soon as it returns a <em>truthy</em> value.<br/>
+     * Note that unlike the native
+     * [Array.prototype.some]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some},
+     * this function won't skip deleted or unassigned indexes.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "age": 12, active: false},
+     *     {"name": "John", "age": 40, active: false},
+     *     {"name": "Mario", "age": 17, active: false},
+     *     {"name": "Paolo", "age": 15, active: false}
+     * ];
+     * var isAdult = function (user) { return user.age >= 18; };
+     * var isActive = _.hasKeyValue("active", true);
+     *
+     * _.someIn(persons, isAdult) // => true
+     * _.someIn(persons, isActive) // => false
+     *
+     * @example <caption>Showing the difference with <code>Array.prototype.some</code>:</caption>
+     * var arr = new Array(5);
+     * arr[3] = 99;
+     *
+     * arr.some(_.isUndefined) // => false
+     * _.someIn(arr, _.isUndefined) // => true
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.some|some}
+     * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} predicateContext
+     * @returns {Boolean}
+     */
+    var someIn = _makeArrayChecker(false);
+
+    /**
+     * A curried version of {@link module:lamb.someIn|someIn} expecting a predicate and its optional
+     * context to build a function waiting for the array-like to act upon.
+     * @example
+     * var data = [1, 3, 5, 6, 7, 8];
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var isInteger = function (n) { return Math.floor(n) === n; };
+     * var containsEvens = _.some(isEven);
+     * var containsStrings = _.some(_.isType("String"));
+     *
+     * containsEvens(data) // => true
+     * containsStrings(data) // => false
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.someIn|someIn}
+     * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} predicateContext
+     * @returns {Function}
+     */
+    var some = _partialWithIteratee(someIn);
+
+    lamb.every = every;
+    lamb.everyIn = everyIn;
     lamb.filter = filter;
     lamb.filterWith = filterWith;
     lamb.forEach = forEach;
@@ -1190,6 +1342,8 @@
     lamb.reduceRightWith = reduceRightWith;
     lamb.reduceWith = reduceWith;
     lamb.slice = slice;
+    lamb.some = some;
+    lamb.someIn = someIn;
 
     /**
      * Accepts a series of functions and builds a function that applies the received
