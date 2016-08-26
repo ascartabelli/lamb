@@ -365,7 +365,7 @@ function intersection () {
     var rest = _argsTail.apply(null, arguments);
 
     return filter(uniques(arguments[0]), function (item) {
-        return rest.every(contains(item));
+        return everyIn(rest, contains(item));
     });
 }
 

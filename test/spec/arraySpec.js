@@ -1,6 +1,9 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.array", function () {
+    // for checking "truthy" and "falsy" values returned by predicates
+    var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+
     describe("contains / isIn", function () {
         var testArray = ["foo", NaN, 0, 12];
 
@@ -208,6 +211,12 @@ describe("lamb.array", function () {
             expect(dropWhileIsEven([1, 3, 5, 7])).toEqual([1, 3, 5, 7]);
         });
 
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            var dropWhileisVowel = lamb.dropWhile(isVowel);
+
+            expect(dropWhileisVowel("aiuola")).toEqual(["l", "a"]);
+        });
+
         it("should build a function throwing an exception if the predicate isn't a function", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
                 expect(function () { lamb.dropWhile(value)([1, 2]); }).toThrow();
@@ -245,8 +254,8 @@ describe("lamb.array", function () {
 
         var isVowel = function (char, idx, s) {
             expect(this).toBe(fakeContext);
-            expect(s[idx]).toBe(testString[idx]);
-            return "AEIOUaeiou".indexOf(char) !== -1;
+            expect(s[idx]).toBe(char);
+            return ~"AEIOUaeiou".indexOf(char);
         };
 
         var is40YO = lamb.hasKeyValue("age", 40);
@@ -254,11 +263,15 @@ describe("lamb.array", function () {
         describe("find", function () {
             it("should find an element in an array-like object by using the given predicate", function () {
                 expect(lamb.find(persons, is40YO)).toEqual(persons[1]);
-                expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
             });
 
             it("should return `undefined` if there is no element satisfying the predicate", function () {
                 expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
+            });
+
+            it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+                expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
+                expect(lamb.find("zxc", isVowel, fakeContext)).toBeUndefined();
             });
 
             it("should throw an exception if the predicate isn't a function", function () {
@@ -288,11 +301,15 @@ describe("lamb.array", function () {
         describe("findIndex", function () {
             it("should find the index of an element in an array-like object by using the given predicate", function () {
                 expect(lamb.findIndex(persons, is40YO)).toBe(1);
-                expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
             });
 
             it("should return `-1` if there is no element satisfying the predicate", function () {
                 expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
+            });
+
+            it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+                expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
+                expect(lamb.findIndex("zxc", isVowel, fakeContext)).toBe(-1);
             });
 
             it("should throw an exception if the predicate isn't a function", function () {
@@ -679,8 +696,7 @@ describe("lamb.array", function () {
             expect(lamb.partitionWith(isEven, fakeContext)(numbers)).toEqual(result);
         });
 
-        it("should work with array-like objects", function () {
-            var isVowel = function (char) { return ~"aeiou".indexOf(char); };
+        it("should work with array-like objects and treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
             var testString = "Hello world";
             var result = [["e", "o", "o"], ["H", "l", "l", " ", "w", "r", "l", "d"]];
 
@@ -948,6 +964,12 @@ describe("lamb.array", function () {
             expect(takeWhileIsEven([2, 3, 4, 6, 8])).toEqual([2]);
             expect(takeWhileIsEven([2, 4, 6, 7, 8])).toEqual([2, 4, 6]);
             expect(takeWhileIsEven([2, 4, 6, 8])).toEqual([2, 4, 6, 8]);
+        });
+
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            var takeWhileisVowel = lamb.takeWhile(isVowel);
+
+            expect(takeWhileisVowel("aiuola")).toEqual(["a", "i", "u", "o"]);
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {

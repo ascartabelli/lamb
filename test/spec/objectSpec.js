@@ -635,6 +635,9 @@ describe("lamb.object", function () {
 
         var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
 
+        // for checking "truthy" and "falsy" values returned by predicates
+        var isNameKey2 = function (value, key) { return ~key.indexOf("name"); };
+
         describe("pick / pickKeys", function () {
             it("should return an object having only the specified properties of the source object (if they exist)", function () {
                 expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({"foo" : 1, "baz" : 3});
@@ -720,6 +723,10 @@ describe("lamb.object", function () {
 
                 expect(lamb.pickIf(isEven)([1, 2, 3, 4])).toEqual({"1": 2, "3": 4});
                 expect(lamb.pickIf(isEven)("1234")).toEqual({"1": "2", "3": "4"});
+            });
+
+            it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+                expect(persons.map(lamb.pickIf(isNameKey2))).toEqual(names);
             });
 
             it("should throw an exception if the predicate isn't a function or if is missing", function () {
@@ -827,6 +834,10 @@ describe("lamb.object", function () {
 
                 expect(lamb.skipIf(isEven)([1, 2, 3, 4])).toEqual({"0": 1, "2": 3});
                 expect(lamb.skipIf(isEven)("1234")).toEqual({"0": "1", "2": "3"});
+            });
+
+            it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+                expect(persons.map(lamb.skipIf(isNameKey2))).toEqual(agesAndCities);
             });
 
             it("should throw an exception if the predicate isn't a function or if is missing", function () {
@@ -1110,6 +1121,22 @@ describe("lamb.object", function () {
 
             it("should be possible to make a checker involving more than one property", function () {
                 expect(pwdConfirmCheck(persons[0])).toEqual(["Passwords don't match", ["login.password", "login.passwordConfirm"]]);
+            });
+
+            it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+                var hasEvens = lamb.partial(lamb.find, lamb, function (n) { return n % 2 === 0; });
+                var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+                var o = {a: [1, 3, 5, 6, 7], b: [1, 3, 5, 7], c: "a", d: "b"};
+
+                var checker1 = lamb.checker(hasEvens, "error", ["a"]);
+                var checker2 = lamb.checker(hasEvens, "error", ["b"]);
+                var checker3 = lamb.checker(isVowel, "error", ["c"]);
+                var checker4 = lamb.checker(isVowel, "error", ["d"]);
+
+                expect(checker1(o)).toEqual([]);
+                expect(checker2(o)).toEqual(["error", ["b"]]);
+                expect(checker3(o)).toEqual([]);
+                expect(checker4(o)).toEqual(["error", ["d"]]);
             });
         });
 

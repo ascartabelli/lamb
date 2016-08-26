@@ -5,6 +5,10 @@ describe("lamb.logic", function () {
     var isGreaterThanTwo = function (n) { return n > 2; };
     var isLessThanTen = function (n) { return n < 10; };
 
+    // for checking "truthy" and "falsy" values returned by predicates
+    var hasEvens = lamb.partial(lamb.find, lamb, isEven);
+    var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+
     function Foo (value) {
         this.value = value;
     }
@@ -77,6 +81,13 @@ describe("lamb.logic", function () {
             expect([2, 3, 16].map(check)).toEqual([false, false, false]);
         });
 
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            expect(lamb.allOf(hasEvens)([1, 3, 5, 7])).toBe(false);
+            expect(lamb.allOf(hasEvens)([1, 2, 5, 7])).toBe(true);
+            expect(lamb.allOf(isVowel)("b")).toBe(false);
+            expect(lamb.allOf(isVowel)("a")).toBe(true);
+        });
+
         it("should keep the predicate context", function () {
             expect(new Foo(6).isPositiveEven()).toBe(true);
             expect(new Foo(5).isPositiveEven()).toBe(false);
@@ -105,6 +116,13 @@ describe("lamb.logic", function () {
         it("should return false if none of the given predicates is satisfied", function () {
             var check = lamb.anyOf(isEven, isLessThanTen);
             expect([33, 35, 55].map(check)).toEqual([false, false, false]);
+        });
+
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            expect(lamb.anyOf(hasEvens)([1, 3, 5, 7])).toBe(false);
+            expect(lamb.anyOf(hasEvens)([1, 2, 5, 7])).toBe(true);
+            expect(lamb.anyOf(isVowel)("b")).toBe(false);
+            expect(lamb.anyOf(isVowel)("a")).toBe(true);
         });
 
         it("should keep the predicate context", function () {
@@ -148,6 +166,15 @@ describe("lamb.logic", function () {
 
         it("should return `undefined` if the predicate isn't satisfied and `falseFn` is missing", function () {
             expect(lamb.condition(isGreaterThan5, halve)(3)).toBeUndefined();
+        });
+
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            var fn = lamb.partial(lamb.condition, lamb, lamb.always("yes"), lamb.always("no"));
+
+            expect(fn(hasEvens)([1, 3, 5, 7])).toBe("no");
+            expect(fn(hasEvens)([1, 2, 5, 7])).toBe("yes");
+            expect(fn(isVowel)("b")).toBe("no");
+            expect(fn(isVowel)("a")).toBe("yes");
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
