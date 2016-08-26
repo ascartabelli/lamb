@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.38.0/dist/lamb.min.js"></script>
+<script src="https://npmcdn.com/lamb@0.39.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -94,6 +94,14 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 
 ## <a name="recent_changes"></a> Recent changes
 
+- **v0.39.0 - *2016/08/26***
+  - **Fully compatible with versions down to 0.37.x**
+  - Added `every`, `everyIn`, `some`, `someIn`
+  - Updated tests for functions using predicates
+  - Made `intersection` use `everyIn` instead of the native method
+  - Updated doc comments, examples and tests for `uniques`
+  - Minor performance improvement of `uniques`
+
 - **v0.38.0 - *2016/08/19***
   - **Fully compatible with versions down to 0.37.x**
   - Improved performance of `flatMap`, `flatMapWith`, `flatten` and `shallowFlatten`
@@ -115,7 +123,3 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
   - **Fully compatible with versions down to 0.34.x**
   - Added `collect`, `pickKeys` and `skipKeys`
   - Updated the examples of `anyOf` and `clamp`
-
-- **v0.34.0 - *2016/07/19***
-  - **API change**: `filter`, `forEach`, `map`, `reduce` and `reduceRight` aren’t array generics anymore and have been replaced with performant custom implementations as JS engines didn’t get any better. Unlike native methods, these custom implementations won’t skip unassigned or deleted indexes in arrays.
-  - Overall performance improvements (other than the ones caused by the aforementioned custom implementations) and some code clean-up
