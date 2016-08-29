@@ -323,6 +323,32 @@ function immutable (obj) {
 var keys = _unsafeKeyListFrom(_safeKeys);
 
 /**
+ * Builds a predicate to check if the given key satisfies the desided condition
+ * on an object.
+ * @example
+ * var users = [
+ *     {name: "John", age: 25},
+ *     {name: "Jane", age: 15},
+ * ];
+ * var isGreaterThan = _.curryRight(_.isGT);
+ * var isAdult = _.keySatisfies(isGreaterThan(17), "age");
+ *
+ * isAdult(users[0]) // => true
+ * isAdult(users[1]) // => false
+ *
+ * @memberof module:lamb
+ * @category Object
+ * @param {Function} predicate
+ * @param {String} key
+ * @returns {Function}
+ */
+function keySatisfies (predicate, key) {
+    return function (obj) {
+        return predicate.call(this, obj[key]);
+    };
+}
+
+/**
  * Builds an object from the two given lists, using the first one as keys and the last
  * one as values.<br/>
  * If the list of keys is longer than the values one, the keys will be created with
@@ -865,11 +891,11 @@ var tearOwn = _tearFrom(keys);
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
- * var isAdult = function (age) { return age >= 18; };
+ * var isGreaterThan = _.curryRight(_.isGT);
  * var userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
- *     _.checker(isAdult, "Must be at least 18 years old", ["age"])
+ *     _.checker(isGreaterThan(17), "Must be at least 18 years old", ["age"])
  * ];
  *
  * var user1 = {name: "john", surname: "doe", age: 30};
@@ -906,11 +932,11 @@ function validate (obj, checkers) {
  * {@link module:lamb.checker|checkers} and returning a function expecting the object to validate.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
- * var isAdult = function (age) { return age >= 18; };
+ * var isGreaterThan = _.curryRight(_.isGT);
  * var userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
- *     _.checker(isAdult, "Must be at least 18 years old", ["age"])
+ *     _.checker(isGreaterThan(17), "Must be at least 18 years old", ["age"])
  * ];
  * var validateUser = _.validateWith(userCheckers);
  *
@@ -961,6 +987,7 @@ lamb.hasOwnKey = hasOwnKey;
 lamb.hasPathValue = hasPathValue;
 lamb.immutable = immutable;
 lamb.keys = keys;
+lamb.keySatisfies = keySatisfies;
 lamb.make = make;
 lamb.merge = merge;
 lamb.mergeOwn = mergeOwn;
