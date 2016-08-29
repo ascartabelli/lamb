@@ -162,7 +162,9 @@ function hasKey (key) {
  * @returns {Function}
  */
 var hasKeyValue = function (key, value) {
-    return compose(partial(isSVZ, value), getKey(key));
+    return function (obj) {
+        return isSVZ(value, obj[key]);
+    };
 };
 
 /**
