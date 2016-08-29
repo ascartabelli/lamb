@@ -503,6 +503,14 @@ describe("lamb.object", function () {
             expect(lamb.pairs(source)).toEqual(result);
         });
 
+        it("should keep `undefined` values in the result", function () {
+            var source = {a: null, b: void 0};
+            var result = [["a", null], ["b", void 0]];
+
+            expect(lamb.ownPairs(source)).toEqual(result);
+            expect(lamb.pairs(source)).toEqual(result);
+        });
+
         it("should work with array-like objects", function () {
             var r1 = [["0", 1], ["1", 2],["2", 3]];
             var r2 = [["0", "a"], ["1", "b"],["2", "c"]];
@@ -565,6 +573,14 @@ describe("lamb.object", function () {
             expect(lamb.ownValues("abc")).toEqual(["a", "b", "c"]);
             expect(lamb.values([1, 2, 3])).toEqual([1, 2, 3]);
             expect(lamb.values("abc")).toEqual(["a", "b", "c"]);
+        });
+
+        it("should keep `undefined` values in the result", function () {
+            var source = {a: null, b: void 0};
+            var result = [null, void 0];
+
+            expect(lamb.ownValues(source)).toEqual(result);
+            expect(lamb.values(source)).toEqual(result);
         });
 
         it("should throw an exception if called without arguments", function () {
@@ -1071,6 +1087,14 @@ describe("lamb.object", function () {
             expect(lamb.tear("abc")).toEqual(r2);
             expect(lamb.tearOwn([1, 2, 3])).toEqual(r1);
             expect(lamb.tearOwn("abc")).toEqual(r2);
+        });
+
+        it("should keep `undefined` values in the result", function () {
+            var source = {a: null, b: void 0};
+            var result = [["a", "b"], [null, void 0]];
+
+            expect(lamb.tear(source)).toEqual(result);
+            expect(lamb.tearOwn(source)).toEqual(result);
         });
 
         it("should throw an exception if called without arguments", function () {
