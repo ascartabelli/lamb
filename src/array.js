@@ -23,8 +23,7 @@ function contains (value, fromIndex) {
 
 /**
  * Returns an array of items present only in the first of the given arrays.<br/>
- * Note that since version <code>0.13.0</code> this function uses the
- * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 4, 5];
@@ -346,8 +345,7 @@ function insertAt (index, element) {
 
 /**
  * Returns an array of every item present in all given arrays.<br/>
- * Note that since version <code>0.13.0</code> this function uses the
- * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 5, 4, 6];
@@ -736,8 +734,7 @@ var union = compose(uniques, flatMapWith(unary(slice)), list);
 /**
  * Returns an array comprised of the unique elements of the given array-like object.<br/>
  * Can work with lists of complex objects if supplied with an iteratee.<br/>
- * Note that since version <code>0.13.0</code> this function uses the
- * ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
  * When two values are considered equal, the first occurence will be the one included
  * in the result array.
  * @example <caption>With simple values:</caption>

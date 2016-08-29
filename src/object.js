@@ -146,7 +146,8 @@ function hasKey (key) {
 }
 
 /**
- * Builds a function expecting an object to check against the given key / value pair.
+ * Builds a predicate expecting an object to check against the given key / value pair.<br/>
+ * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var hasTheCorrectAnswer = _.hasKeyValue("answer", 42);
  *
@@ -161,7 +162,7 @@ function hasKey (key) {
  * @returns {Function}
  */
 var hasKeyValue = function (key, value) {
-    return compose(partial(is, value), getKey(key));
+    return compose(partial(isSVZ, value), getKey(key));
 };
 
 /**

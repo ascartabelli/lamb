@@ -219,6 +219,23 @@ describe("lamb.object", function () {
             expect(lamb.hasKeyValue("z", 2)(persons[0])).toBe(false);
         });
 
+        it("should return `true` for `undefined` values in existing keys", function () {
+            var obj = {"a": void 0};
+
+            expect(lamb.hasKeyValue("a", void 0)(obj)).toBe(true);
+            expect(lamb.hasKeyValue("a")(obj)).toBe(true);
+        });
+
+        it("should use the \"SameValueZero\" comparison", function () {
+            var obj = {a: NaN, b: 0, c: -0};
+
+            expect(lamb.hasKeyValue("a", NaN)(obj)).toBe(true);
+            expect(lamb.hasKeyValue("b", 0)(obj)).toBe(true);
+            expect(lamb.hasKeyValue("b", -0)(obj)).toBe(true);
+            expect(lamb.hasKeyValue("c", -0)(obj)).toBe(true);
+            expect(lamb.hasKeyValue("c", 0)(obj)).toBe(true);
+        });
+
         it("should accept integers as keys and accept array-like objects", function () {
             var o = {"1": "a", "2": "b"};
             var arr = [1, 2, 3, 4];
