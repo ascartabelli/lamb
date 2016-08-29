@@ -649,6 +649,11 @@ describe("lamb.object", function () {
                 expect(lamb.pickKeys(["foo", "bar"])(simpleObj)).toEqual({"foo": 1, "bar": 2});
             });
 
+            it("should include properties with `undefined` values in the result", function () {
+                expect(lamb.pick({a: null, b: void 0}, ["a", "b"])).toEqual({a: null, b: void 0});
+                expect(lamb.pickKeys(["a", "b"])({a: null, b: void 0})).toEqual({a: null, b: void 0});
+            });
+
             it("should accept arrays and array-like objects and integers as keys", function () {
                 var result = {
                     "0": {"name": "Jane", "surname": "Doe"},
@@ -718,6 +723,10 @@ describe("lamb.object", function () {
                 expect(lamb.pickIf(isNumber, fakeContext)(persons[0])).toEqual({"age": 12});
             });
 
+            it("should include properties with `undefined` values in the result", function () {
+                expect(lamb.pickIf(lamb.isNil)({a: null, b: void 0})).toEqual({a: null, b: void 0});
+            });
+
             it("should accept array-like objects", function () {
                 var isEven = function (n) { return n % 2 === 0; };
 
@@ -759,6 +768,11 @@ describe("lamb.object", function () {
             it("should include inherited properties", function () {
                 expect(lamb.skip(simpleObj, ["foo"])).toEqual({"bar": 2, "baz": 3});
                 expect(lamb.skipKeys(["foo"])(simpleObj)).toEqual({"bar": 2, "baz": 3});
+            });
+
+            it("should include properties with `undefined` values in the result", function () {
+                expect(lamb.skip({a: null, b: void 0}, ["c"])).toEqual({a: null, b: void 0});
+                expect(lamb.skipKeys(["c"])({a: null, b: void 0})).toEqual({a: null, b: void 0});
             });
 
             it("should return a copy of the source object if supplied with an empty list of keys", function () {
@@ -827,6 +841,10 @@ describe("lamb.object", function () {
 
             it("should accept a context object for the predicate", function () {
                 expect(lamb.skipIf(isNumber, fakeContext)(persons[0])).toEqual({"name": "Jane", "surname": "Doe", "city": "New York"});
+            });
+
+            it("should include properties with `undefined` values in the result", function () {
+                expect(lamb.skipIf(lamb.not(lamb.isNil))({a: null, b: void 0})).toEqual({a: null, b: void 0});
             });
 
             it("should accept array-like objects", function () {
