@@ -1,11 +1,20 @@
 var lamb = require("../../dist/lamb.js");
+var customMatchers = require("../custom_matchers.js");
 
 describe("lamb.accessors", function () {
-    describe("Array accessors", function () {
-        describe("getIndex / getAt / head / last", function () {
-            var arr = [1, 2, 3, 4];
-            var s = "abcd";
+    beforeEach(function() {
+        jasmine.addMatchers(customMatchers);
+    });
 
+    describe("Array accessors", function () {
+        var arr = [1, 2, 3, 4, 5];
+        var arrCopy = arr.slice();
+        var s = "abcde";
+        var sparseArr = Array(4);
+        sparseArr[2] = 3;
+        var sparseArrCopy = sparseArr.slice();
+
+        describe("getIndex / getAt / head / last", function () {
             it("should retrieve the element at the given index in an array-like object", function () {
                 var getThird = lamb.getAt(2);
 
@@ -15,15 +24,22 @@ describe("lamb.accessors", function () {
                 expect(getThird(s)).toBe("c");
                 expect(lamb.head(arr)).toBe(1);
                 expect(lamb.head(s)).toBe("a");
-                expect(lamb.last(arr)).toBe(4);
-                expect(lamb.last(s)).toBe("d");
+                expect(lamb.last(arr)).toBe(5);
+                expect(lamb.last(s)).toBe("e");
             });
 
             it("should allow negative indexes", function () {
-                expect(lamb.getIndex(arr, -2)).toBe(3);
-                expect(lamb.getIndex(s, -2)).toBe("c");
-                expect(lamb.getAt(-2)(arr)).toBe(3);
-                expect(lamb.getAt(-2)(s)).toBe("c");
+                expect(lamb.getIndex(arr, -2)).toBe(4);
+                expect(lamb.getIndex(s, -2)).toBe("d");
+                expect(lamb.getAt(-2)(arr)).toBe(4);
+                expect(lamb.getAt(-2)(s)).toBe("d");
+            });
+
+            it("should work with sparse arrays", function () {
+                expect(lamb.getIndex(sparseArr, 2)).toBe(3);
+                expect(lamb.getIndex(sparseArr, -2)).toBe(3);
+                expect(lamb.getAt(2)(sparseArr)).toBe(3);
+                expect(lamb.getAt(-2)(sparseArr)).toBe(3);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -65,22 +81,19 @@ describe("lamb.accessors", function () {
         });
 
         describe("setIndex / setAt", function () {
-            var arr = [1, 2, 3, 4, 5];
-            var arrCopy = [1, 2, 3, 4, 5];
-            var s = "hello";
-
             afterEach(function () {
                 expect(arr).toEqual(arrCopy);
+                expect(sparseArr).toEqual(sparseArrCopy);
             });
 
             it("should allow to set a value in a copy of the given array-like object", function () {
                 var r1 = [1, 2, 99, 4, 5];
-                var r2 = ["c", "e", "l", "l", "o"];
+                var r2 = ["z", "b", "c", "d", "e"];
 
                 expect(lamb.setIndex(arr, 2, 99)).toEqual(r1);
                 expect(lamb.setAt(2, 99)(arr)).toEqual(r1);
-                expect(lamb.setIndex(s, 0, "c")).toEqual(r2);
-                expect(lamb.setAt(0, "c")(s)).toEqual(r2);
+                expect(lamb.setIndex(s, 0, "z")).toEqual(r2);
+                expect(lamb.setAt(0, "z")(s)).toEqual(r2);
             });
 
             it("should allow negative indexes", function () {
@@ -91,33 +104,46 @@ describe("lamb.accessors", function () {
                 expect(newArr2).toEqual([99, 2, 3, 4, 5]);
             });
 
+            it("should work with sparse arrays", function () {
+                var r1 = [void 0, void 0, 99, void 0];
+                var r2 = [void 0, void 0, 3, 99];
+
+                expect(lamb.setIndex(sparseArr, 2, 99)).toHaveSameValuesOf(r1);
+                expect(lamb.setIndex(sparseArr, -2, 99)).toHaveSameValuesOf(r1);
+                expect(lamb.setIndex(sparseArr, -1, 99)).toHaveSameValuesOf(r2);
+                expect(lamb.setAt(2, 99)(sparseArr)).toHaveSameValuesOf(r1);
+                expect(lamb.setAt(-2, 99)(sparseArr)).toHaveSameValuesOf(r1);
+                expect(lamb.setAt(-1, 99)(sparseArr)).toHaveSameValuesOf(r2);
+            });
+
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
-                [
-                    lamb.setIndex(arr, NaN, 99),
-                    lamb.setIndex(arr, null, 99),
-                    lamb.setIndex(arr, void 0, 99),
-                    lamb.setIndex(arr, {}, 99),
-                    lamb.setIndex(arr, [], 99),
-                    lamb.setIndex(arr, [2], 99),
-                    lamb.setIndex(arr, "a", 99),
-                    lamb.setIndex(arr, "2", 99),
-                    lamb.setIndex(arr, "2.5", 99),
-                    lamb.setIndex(arr, 2.5, 99),
-                    lamb.setIndex(arr),
-                    lamb.setAt(NaN, 99)(arr),
-                    lamb.setAt(null, 99)(arr),
-                    lamb.setAt(void 0, 99)(arr),
-                    lamb.setAt({}, 99)(arr),
-                    lamb.setAt([], 99)(arr),
-                    lamb.setAt([2], 99)(arr),
-                    lamb.setAt("a", 99)(arr),
-                    lamb.setAt("2", 99)(arr),
-                    lamb.setAt("2.5", 99)(arr),
-                    lamb.setAt(2.5, 99)(arr),
-                    lamb.setAt()(arr)
-                ].forEach(function (value) {
+                var values = [NaN, null, void 0, {}, [], [2], "a", "2", "2.5", 2.5];
+                var results = values.reduce(function (result, value) {
+                    result.push(lamb.setIndex(arr, value, 99));
+                    result.push(lamb.setAt(value, 99)(arr));
+
+                    return result;
+                }, []);
+                var results2 = values.reduce(function (result, value) {
+                    result.push(lamb.setIndex(sparseArr, value, 99));
+                    result.push(lamb.setAt(value, 99)(sparseArr));
+
+                    return result;
+                }, []);
+
+                results.push(lamb.setIndex(arr));
+                results.push(lamb.setAt()(arr));
+                results2.push(lamb.setIndex(sparseArr));
+                results2.push(lamb.setAt()(sparseArr));
+
+                results.forEach(function (value) {
                     expect(value).toEqual(arr);
                     expect(value).not.toBe(arr);
+                });
+
+                results2.forEach(function (value) {
+                    expect(value).toEqual(sparseArr);
+                    expect(value).not.toBe(sparseArr);
                 });
             });
 
@@ -125,12 +151,18 @@ describe("lamb.accessors", function () {
                 var newArr = lamb.setIndex(arr, 5, 99);
                 var newArr2 = lamb.setAt(-6, 99)(arr);
                 var newS = lamb.setAt(10, 99)(s);
+                var newSparseArr = lamb.setIndex(sparseArr, 5, 99);
+                var newSparseArr2 = lamb.setAt(5, 99)(sparseArr);
 
                 expect(newArr).toEqual([1, 2, 3, 4, 5]);
                 expect(newArr2).toEqual([1, 2, 3, 4, 5]);
                 expect(newArr).not.toBe(arr);
                 expect(newArr2).not.toBe(arr);
-                expect(newS).toEqual(["h", "e", "l", "l", "o"]);
+                expect(newS).toEqual(["a", "b", "c", "d", "e"]);
+                expect(newSparseArr).toEqual(sparseArr);
+                expect(newSparseArr).not.toBe(sparseArr);
+                expect(newSparseArr2).toEqual(sparseArr);
+                expect(newSparseArr2).not.toBe(sparseArr);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -154,9 +186,6 @@ describe("lamb.accessors", function () {
         });
 
         describe("updateIndex / updateAt", function () {
-            var arr = [1, 2, 3, 4, 5];
-            var arrCopy = [1, 2, 3, 4, 5];
-            var s = "hello";
             var inc = function (n) { return n + 1; };
             var incSpy = jasmine.createSpy("inc").and.callFake(inc);
             var fn99 = lamb.always(99);
@@ -174,8 +203,8 @@ describe("lamb.accessors", function () {
                 expect(incSpy.calls.argsFor(1).length).toBe(1);
                 expect(incSpy.calls.argsFor(0)[0]).toBe(3);
                 expect(incSpy.calls.argsFor(1)[0]).toBe(3);
-                expect(lamb.updateIndex(s, 0, lamb.always("c"))).toEqual(["c", "e", "l", "l", "o"]);
-                expect(lamb.updateAt(0, lamb.always("c"))(s)).toEqual(["c", "e", "l", "l", "o"]);
+                expect(lamb.updateIndex(s, 0, lamb.always("z"))).toEqual(["z", "b", "c", "d", "e"]);
+                expect(lamb.updateAt(0, lamb.always("z"))(s)).toEqual(["z", "b", "c", "d", "e"]);
                 expect(lamb.updateAt(1, lamb.always(99))([1, void 0, 3])).toEqual([1, 99, 3]);
             });
 
@@ -187,31 +216,46 @@ describe("lamb.accessors", function () {
                 expect(newArr2).toEqual([99, 2, 3, 4, 5]);
             });
 
-            it("should return an array copy of the array-like if the index is not an integer", function () {
-                [
-                    lamb.updateIndex(arr, NaN, fn99),
-                    lamb.updateIndex(arr, null, fn99),
-                    lamb.updateIndex(arr, void 0, fn99),
-                    lamb.updateIndex(arr, {}, fn99),
-                    lamb.updateIndex(arr, [], fn99),
-                    lamb.updateIndex(arr, [2], fn99),
-                    lamb.updateIndex(arr, "a", fn99),
-                    lamb.updateIndex(arr, "2", fn99),
-                    lamb.updateIndex(arr, "2.5", fn99),
-                    lamb.updateIndex(arr, 2.5, fn99),
-                    lamb.updateAt(NaN, fn99)(arr),
-                    lamb.updateAt(null, fn99)(arr),
-                    lamb.updateAt(void 0, fn99)(arr),
-                    lamb.updateAt({}, fn99)(arr),
-                    lamb.updateAt([], fn99)(arr),
-                    lamb.updateAt([2], fn99)(arr),
-                    lamb.updateAt("a", fn99)(arr),
-                    lamb.updateAt("2", fn99)(arr),
-                    lamb.updateAt("2.5", fn99)(arr),
-                    lamb.updateAt(2.5, fn99)(arr)
-                ].forEach(function (value) {
+            it("should work with sparse arrays", function () {
+                var r1 = [void 0, void 0, 99, void 0];
+                var r2 = [void 0, void 0, 3, 99];
+
+                expect(lamb.updateIndex(sparseArr, 2, fn99)).toHaveSameValuesOf(r1);
+                expect(lamb.updateIndex(sparseArr, -2, fn99)).toHaveSameValuesOf(r1);
+                expect(lamb.updateIndex(sparseArr, -1, fn99)).toHaveSameValuesOf(r2);
+                expect(lamb.updateAt(2, fn99)(sparseArr)).toHaveSameValuesOf(r1);
+                expect(lamb.updateAt(-2, fn99)(sparseArr)).toHaveSameValuesOf(r1);
+                expect(lamb.updateAt(-1, fn99)(sparseArr)).toHaveSameValuesOf(r2);
+            });
+
+            it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
+                var values = [NaN, null, void 0, {}, [], [2], "a", "2", "2.5", 2.5];
+                var results = values.reduce(function (result, value) {
+                    result.push(lamb.updateIndex(arr, value, fn99));
+                    result.push(lamb.updateAt(value, fn99)(arr));
+
+                    return result;
+                }, []);
+                var results2 = values.reduce(function (result, value) {
+                    result.push(lamb.updateIndex(sparseArr, value, fn99));
+                    result.push(lamb.updateAt(value, fn99)(sparseArr));
+
+                    return result;
+                }, []);
+
+                results.push(lamb.updateIndex(arr));
+                results.push(lamb.updateAt()(arr));
+                results2.push(lamb.updateIndex(sparseArr));
+                results2.push(lamb.updateAt()(sparseArr));
+
+                results.forEach(function (value) {
                     expect(value).toEqual(arr);
                     expect(value).not.toBe(arr);
+                });
+
+                results2.forEach(function (value) {
+                    expect(value).toEqual(sparseArr);
+                    expect(value).not.toBe(sparseArr);
                 });
             });
 
@@ -219,18 +263,24 @@ describe("lamb.accessors", function () {
                 var newArr = lamb.updateIndex(arr, 5, fn99);
                 var newArr2 = lamb.updateAt(-6, fn99)(arr);
                 var newS = lamb.updateAt(10, fn99)(s);
+                var newSparseArr = lamb.updateIndex(sparseArr, 5, fn99);
+                var newSparseArr2 = lamb.updateAt(5, fn99)(sparseArr);
 
                 expect(newArr).toEqual([1, 2, 3, 4, 5]);
                 expect(newArr2).toEqual([1, 2, 3, 4, 5]);
                 expect(newArr).not.toBe(arr);
                 expect(newArr2).not.toBe(arr);
-                expect(newS).toEqual(["h", "e", "l", "l", "o"]);
+                expect(newS).toEqual(["a", "b", "c", "d", "e"]);
+                expect(newSparseArr).toEqual(sparseArr);
+                expect(newSparseArr).not.toBe(sparseArr);
+                expect(newSparseArr2).toEqual(sparseArr);
+                expect(newSparseArr2).not.toBe(sparseArr);
             });
 
             it("should check the existence of the destination index before trying to apply the received function to it", function () {
                 var toUpperCase = lamb.invoker("toUpperCase");
-                expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["h", "e", "l", "l", "o"]);
-                expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["h", "e", "l", "l", "o"]);
+                expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["a", "b", "c", "d", "e"]);
+                expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["a", "b", "c", "d", "e"]);
             });
 
             it("should throw an exception if the `updater` isn't a function or if is missing", function () {
