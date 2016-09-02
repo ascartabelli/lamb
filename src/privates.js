@@ -336,7 +336,8 @@ function _getPathInfo (obj, parts, walkNonEnumerables) {
 
         if (!(_isEnumerable(target, key) || key in Object(target) && walkNonEnumerables)) {
             keyAsNumber = Number(key);
-            key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) : void 0;
+            key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) :
+                Array.isArray(target) && keyAsNumber < target.length ? keyAsNumber : void 0;
         }
 
         if (isUndefined(key)) {

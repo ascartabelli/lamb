@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.40.0-alpha.5
+ * @version 0.40.0-alpha.6
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.40.0-alpha.5";
+    lamb._version = "0.40.0-alpha.6";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -514,7 +514,8 @@
 
             if (!(_isEnumerable(target, key) || key in Object(target) && walkNonEnumerables)) {
                 keyAsNumber = Number(key);
-                key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) : void 0;
+                key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) :
+                    Array.isArray(target) && keyAsNumber < target.length ? keyAsNumber : void 0;
             }
 
             if (isUndefined(key)) {

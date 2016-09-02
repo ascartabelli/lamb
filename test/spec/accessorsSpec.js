@@ -112,9 +112,11 @@ describe("lamb.accessors", function () {
                 expect(lamb.setIndex(sparseArr, 2, 99)).toEqual(r1);
                 expect(lamb.setIndex(sparseArr, -2, 99)).toEqual(r1);
                 expect(lamb.setIndex(sparseArr, -1, 99)).toEqual(r2);
+                expect(lamb.setIndex(sparseArr, 3, 99)).toEqual(r2);
                 expect(lamb.setAt(2, 99)(sparseArr)).toEqual(r1);
                 expect(lamb.setAt(-2, 99)(sparseArr)).toEqual(r1);
                 expect(lamb.setAt(-1, 99)(sparseArr)).toEqual(r2);
+                expect(lamb.setAt(3, 99)(sparseArr)).toEqual(r2);
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
@@ -224,9 +226,11 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateIndex(sparseArr, 2, fn99)).toEqual(r1);
                 expect(lamb.updateIndex(sparseArr, -2, fn99)).toEqual(r1);
                 expect(lamb.updateIndex(sparseArr, -1, fn99)).toEqual(r2);
+                expect(lamb.updateIndex(sparseArr, 3, fn99)).toEqual(r2);
                 expect(lamb.updateAt(2, fn99)(sparseArr)).toEqual(r1);
                 expect(lamb.updateAt(-2, fn99)(sparseArr)).toEqual(r1);
                 expect(lamb.updateAt(-1, fn99)(sparseArr)).toEqual(r2);
+                expect(lamb.updateAt(3, fn99)(sparseArr)).toEqual(r2);
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
@@ -911,10 +915,12 @@ describe("lamb.accessors", function () {
                     expect(lamb.setPathIn(obj, "b.d.1", 99)).toEqual(r1);
                     expect(lamb.setPathIn(obj, "b.d.-2", 99)).toEqual(r1);
                     expect(lamb.setPathIn(obj, "b.d.-1", 99)).toEqual(r2);
+                    expect(lamb.setPathIn(obj, "b.d.2", 99)).toEqual(r2);
                     expect(lamb.setPathIn(obj, "b.d.11", 99)).toEqual(obj);
                     expect(lamb.setPath("b.d.1", 99)(obj)).toEqual(r1);
                     expect(lamb.setPath("b.d.-2", 99)(obj)).toEqual(r1);
                     expect(lamb.setPath("b.d.-1", 99)(obj)).toEqual(r2);
+                    expect(lamb.setPath("b.d.2", 99)(obj)).toEqual(r2);
                     expect(lamb.setPath("b.d.11", 99)(obj)).toEqual(obj);
                 });
 
@@ -1102,10 +1108,12 @@ describe("lamb.accessors", function () {
                     expect(lamb.updatePathIn(obj, "b.d.1", fn99)).toEqual(r1);
                     expect(lamb.updatePathIn(obj, "b.d.-2", fn99)).toEqual(r1);
                     expect(lamb.updatePathIn(obj, "b.d.-1", fn99)).toEqual(r2);
+                    expect(lamb.updatePathIn(obj, "b.d.2", fn99)).toEqual(r2);
                     expect(lamb.updatePathIn(obj, "b.d.11", fn99)).toEqual(obj);
                     expect(lamb.updatePath("b.d.1", fn99)(obj)).toEqual(r1);
                     expect(lamb.updatePath("b.d.-2", fn99)(obj)).toEqual(r1);
                     expect(lamb.updatePath("b.d.-1", fn99)(obj)).toEqual(r2);
+                    expect(lamb.updatePath("b.d.2", fn99)(obj)).toEqual(r2);
                     expect(lamb.updatePath("b.d.11", fn99)(obj)).toEqual(obj);
                 });
 
