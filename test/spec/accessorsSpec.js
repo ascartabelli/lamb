@@ -1,9 +1,10 @@
 var lamb = require("../../dist/lamb.js");
-var customMatchers = require("../custom_matchers.js");
+var naiveSparseArrayEquality = require("../custom_equalities.js").naiveSparseArrayEquality;
+
 
 describe("lamb.accessors", function () {
     beforeEach(function() {
-        jasmine.addMatchers(customMatchers);
+        jasmine.addCustomEqualityTester(naiveSparseArrayEquality);
     });
 
     describe("Array accessors", function () {
@@ -108,12 +109,12 @@ describe("lamb.accessors", function () {
                 var r1 = [void 0, void 0, 99, void 0];
                 var r2 = [void 0, void 0, 3, 99];
 
-                expect(lamb.setIndex(sparseArr, 2, 99)).toHaveSameValuesOf(r1);
-                expect(lamb.setIndex(sparseArr, -2, 99)).toHaveSameValuesOf(r1);
-                expect(lamb.setIndex(sparseArr, -1, 99)).toHaveSameValuesOf(r2);
-                expect(lamb.setAt(2, 99)(sparseArr)).toHaveSameValuesOf(r1);
-                expect(lamb.setAt(-2, 99)(sparseArr)).toHaveSameValuesOf(r1);
-                expect(lamb.setAt(-1, 99)(sparseArr)).toHaveSameValuesOf(r2);
+                expect(lamb.setIndex(sparseArr, 2, 99)).toEqual(r1);
+                expect(lamb.setIndex(sparseArr, -2, 99)).toEqual(r1);
+                expect(lamb.setIndex(sparseArr, -1, 99)).toEqual(r2);
+                expect(lamb.setAt(2, 99)(sparseArr)).toEqual(r1);
+                expect(lamb.setAt(-2, 99)(sparseArr)).toEqual(r1);
+                expect(lamb.setAt(-1, 99)(sparseArr)).toEqual(r2);
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
@@ -220,12 +221,12 @@ describe("lamb.accessors", function () {
                 var r1 = [void 0, void 0, 99, void 0];
                 var r2 = [void 0, void 0, 3, 99];
 
-                expect(lamb.updateIndex(sparseArr, 2, fn99)).toHaveSameValuesOf(r1);
-                expect(lamb.updateIndex(sparseArr, -2, fn99)).toHaveSameValuesOf(r1);
-                expect(lamb.updateIndex(sparseArr, -1, fn99)).toHaveSameValuesOf(r2);
-                expect(lamb.updateAt(2, fn99)(sparseArr)).toHaveSameValuesOf(r1);
-                expect(lamb.updateAt(-2, fn99)(sparseArr)).toHaveSameValuesOf(r1);
-                expect(lamb.updateAt(-1, fn99)(sparseArr)).toHaveSameValuesOf(r2);
+                expect(lamb.updateIndex(sparseArr, 2, fn99)).toEqual(r1);
+                expect(lamb.updateIndex(sparseArr, -2, fn99)).toEqual(r1);
+                expect(lamb.updateIndex(sparseArr, -1, fn99)).toEqual(r2);
+                expect(lamb.updateAt(2, fn99)(sparseArr)).toEqual(r1);
+                expect(lamb.updateAt(-2, fn99)(sparseArr)).toEqual(r1);
+                expect(lamb.updateAt(-1, fn99)(sparseArr)).toEqual(r2);
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
@@ -352,6 +353,16 @@ describe("lamb.accessors", function () {
                 expect(lamb.getKey(2)(s)).toBe("c");
             });
 
+            it("should work with sparse arrays", function () {
+                var sparseArr = Array(3);
+                sparseArr[1] = 99;
+
+                expect(lamb.getIn(sparseArr, 1)).toBe(99);
+                expect(lamb.getIn(sparseArr, 2)).toBeUndefined();
+                expect(lamb.getKey(1)(sparseArr)).toBe(99);
+                expect(lamb.getKey(2)(sparseArr)).toBeUndefined();
+            });
+
             it("should convert other values for the `key` parameter to string", function () {
                 var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
                 var testObj = lamb.make(invalidKeysAsStrings, values);
@@ -391,6 +402,9 @@ describe("lamb.accessors", function () {
 
         describe("getPath / getPathIn", function () {
             var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+            obj.b.d = Array(3);
+            obj.b.d[1] = 99;
+
             Object.defineProperty(obj, "e", {value : 10});
             obj.f = Object.create({}, {g: {value : 20}});
 
@@ -422,6 +436,13 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "b.b.-1")).toBe(5);
                 expect(lamb.getPath("b.c.-3")(obj)).toBe("f");
                 expect(lamb.getPathIn(obj, "b.c.-3")).toBe("f");
+            });
+
+            it("should work with sparse arrays", function () {
+                expect(lamb.getPathIn(obj, "b.d.1")).toBe(99);
+                expect(lamb.getPathIn(obj, "b.d.-2")).toBe(99);
+                expect(lamb.getPath("b.d.1")(obj)).toBe(99);
+                expect(lamb.getPath("b.d.-2")(obj)).toBe(99);
             });
 
             it("should be able to retrieve values nested in arrays", function () {
@@ -522,6 +543,8 @@ describe("lamb.accessors", function () {
 
         describe("Property setters", function () {
             var arr = [1, 2, 3];
+            var sparseArr = Array(3);
+            sparseArr[1] = 99;
             var baseFoo = Object.create({a: arr}, {b: {value: 2, enumerable: true}, z: {value: 5}});
             var foo = Object.create(baseFoo, {
                 c: {value: 3, enumerable: true}
@@ -570,6 +593,19 @@ describe("lamb.accessors", function () {
                 it("should accept integers as keys", function () {
                     expect(lamb.setIn([1, 2], 1, 3)).toEqual({"0": 1, "1": 3});
                     expect(lamb.setKey(1, 3)([1, 2])).toEqual({"0": 1, "1": 3});
+                });
+
+                it("should work with sparse arrays", function () {
+                    var sparseArr = Array(3);
+                    sparseArr[1] = 5;
+                    var r1 = {"1": 99};
+                    var r2 = {"1": 5, "2": 99};
+
+                    expect(lamb.setIn(sparseArr, 1, 99)).toEqual(r1);
+                    expect(lamb.setIn(sparseArr, 2, 99)).toEqual(r2);
+                    expect(lamb.setKey(1, 99)(sparseArr)).toEqual(r1);
+                    expect(lamb.setKey(2, 99)(sparseArr)).toEqual(r2);
+                    expect(sparseArr).toEqual([void 0, 5, void 0]);
                 });
 
                 it("should convert other values for the `key` parameter to string", function () {
@@ -675,6 +711,20 @@ describe("lamb.accessors", function () {
                     expect(lamb.updateKey(1, inc)([1, 2])).toEqual({"0": 1, "1": 3});
                 });
 
+                it("should work with sparse arrays", function () {
+                    var sparseArr = Array(3);
+                    sparseArr[1] = 5;
+                    var fn99 = lamb.always(99);
+                    var r1 = {"1": 99};
+                    var r2 = {"1": 5};
+
+                    expect(lamb.updateIn(sparseArr, 1, fn99)).toEqual(r1);
+                    expect(lamb.updateIn(sparseArr, 2, fn99)).toEqual(r2);
+                    expect(lamb.updateKey(1, fn99)(sparseArr)).toEqual(r1);
+                    expect(lamb.updateKey(2, fn99)(sparseArr)).toEqual(r2);
+                    expect(sparseArr).toEqual([void 0, 5, void 0]);
+                });
+
                 it("should convert other values for the `key` parameter to string", function () {
                     var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
                     var testObj = lamb.make(invalidKeysAsStrings, values);
@@ -721,12 +771,16 @@ describe("lamb.accessors", function () {
 
         describe("Path setters", function () {
             var obj = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+            obj.b.d = Array(3);
+            obj.b.d[1] = 55;
 
             Object.defineProperty(obj.b, "w", {
                 value: {x: 22, y: {z: 33}}
             });
 
             var objCopy = JSON.parse(JSON.stringify(obj));
+            objCopy.b.d = Array(3);
+            objCopy.b.d[1] = 55;
 
             afterEach(function () {
                 expect(obj).toEqual(objCopy);
@@ -737,7 +791,7 @@ describe("lamb.accessors", function () {
                     var r = lamb.setPath("a", 99, ".")(obj);
 
                     expect(r).toEqual(
-                        {a: 99, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                        {a: 99, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}}
                     );
                     expect(r.b).toBe(obj.b);
                     expect(r["c.d"]).toBe(obj["c.d"]);
@@ -746,7 +800,7 @@ describe("lamb.accessors", function () {
                     var r1 = lamb.setPath("b.c", "bar", ".")(obj);
 
                     expect(r1).toEqual(
-                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "bar"}, "c.d" : {"e.f": 6}}
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "bar", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}}
                     );
                     expect(r1.b.a).toBe(obj.b.a);
                     expect(r1.b.b).toBe(obj.b.b);
@@ -758,7 +812,7 @@ describe("lamb.accessors", function () {
                     var r = lamb.setPath("b.a.g", 99)(obj);
 
                     expect(r).toEqual(
-                        {a: 2, b: {a: {g: 99, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                        {a: 2, b: {a: {g: 99, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}}
                     );
                     expect(r.b.b).toBe(obj.b.b);
                     expect(r["c.d"]).toBe(obj["c.d"]);
@@ -769,16 +823,16 @@ describe("lamb.accessors", function () {
                     var r = lamb.setPath("c.d->e.f", 99, "->")(obj);
 
                     expect(r).toEqual(
-                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 99}}
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 99}}
                     );
                     expect(r.b).toBe(obj.b);
                     expect(lamb.setPathIn(obj, "c.d->e.f", 99, "->")).toEqual(r);
                 });
 
                 it("should add non-existent properties to existing objects", function () {
-                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", z: 99}, "c.d" : {"e.f": 6}};
-                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: 99}};
-                    var r3 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0], z: 99}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}, z: {a: 99}};
+                    var r3 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}, z: {a: {b: 99}}}
 
                     expect(lamb.setPath("b.z", 99)(obj)).toEqual(r1);
                     expect(lamb.setPathIn(obj, "b.z", 99)).toEqual(r1);
@@ -795,8 +849,8 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should treat non-enumerable properties encountered in a path as non-existent properties", function () {
-                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {z: 99}}, "c.d" : {"e.f": 6}};
-                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", w: {y: {z: 99}}}, "c.d" : {"e.f": 6}};
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0], w: {z: 99}}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0], w: {y: {z: 99}}}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.setPathIn(obj, "b.w.z", 99)).toEqual(r1);
                     expect(lamb.setPath("b.w.z", 99)(obj)).toEqual(r1);
@@ -805,7 +859,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should replace indexes when an array is found and the key is a string containing an integer", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 99], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 99], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.setPath("b.b.1", 99)(obj)).toEqual(r);
                     expect(lamb.setPathIn(obj, "b.b.1", 99)).toEqual(r);
@@ -814,7 +868,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should allow using negative array indexes in path parts", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [99, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [99, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.setPath("b.b.-2", 99)(obj)).toEqual(r);
                     expect(lamb.setPathIn(obj, "b.b.-2", 99)).toEqual(r);
@@ -850,15 +904,29 @@ describe("lamb.accessors", function () {
                     expect(lamb.setPathIn(o, "data.-2.value", 99)).toEqual(r);
                 });
 
+                it("should work with sparse arrays", function () {
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 99, void 0]}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, 99]}, "c.d" : {"e.f": 6}};
+
+                    expect(lamb.setPathIn(obj, "b.d.1", 99)).toEqual(r1);
+                    expect(lamb.setPathIn(obj, "b.d.-2", 99)).toEqual(r1);
+                    expect(lamb.setPathIn(obj, "b.d.-1", 99)).toEqual(r2);
+                    expect(lamb.setPathIn(obj, "b.d.11", 99)).toEqual(obj);
+                    expect(lamb.setPath("b.d.1", 99)(obj)).toEqual(r1);
+                    expect(lamb.setPath("b.d.-2", 99)(obj)).toEqual(r1);
+                    expect(lamb.setPath("b.d.-1", 99)(obj)).toEqual(r2);
+                    expect(lamb.setPath("b.d.11", 99)(obj)).toEqual(obj);
+                });
+
                 it("should build an object with numbered keys when an array-like object is found", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}, d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.setPath("b.c.0", "m")(obj)).toEqual(r);
                     expect(lamb.setPathIn(obj, "b.c.0", "m")).toEqual(r);
                 });
 
                 it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.setPath("b.b.z", 99)(obj)).toEqual(r);
                     expect(lamb.setPathIn(obj, "b.b.z", 99)).toEqual(r);
@@ -940,7 +1008,7 @@ describe("lamb.accessors", function () {
                     var makeDoublesSpy = jasmine.createSpy("makeDoubles").and.callFake(makeDoubles);
                     var newObjA = lamb.updatePathIn(obj, "b.b", makeDoublesSpy, ".");
                     var newObjB = lamb.updatePath("b.b", makeDoublesSpy, ".")(obj);
-                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 10], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 10], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(newObjA).toEqual(r1);
                     expect(newObjB).toEqual(r1);
@@ -953,7 +1021,7 @@ describe("lamb.accessors", function () {
                     expect(newObjA.b.a).toBe(obj.b.a);
                     expect(newObjA["c.d"]).toBe(obj["c.d"]);
 
-                    var r2 = {a: 3, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 3, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.updatePathIn(obj, "a", inc, ".")).toEqual(r2);
                     expect(lamb.updatePath("a", inc, ".")(obj)).toEqual(r2);
@@ -963,7 +1031,7 @@ describe("lamb.accessors", function () {
                     var r = lamb.updatePath("b.a.g", double)(obj);
 
                     expect(r).toEqual(
-                        {a: 2, b: {a: {g: 20, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}}
+                        {a: 2, b: {a: {g: 20, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}}
                     );
                     expect(r.b.b).toBe(obj.b.b);
                     expect(r["c.d"]).toBe(obj["c.d"]);
@@ -974,7 +1042,7 @@ describe("lamb.accessors", function () {
                     var r = lamb.updatePath("c.d->e.f", double, "->")(obj);
 
                     expect(r).toEqual(
-                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 12}}
+                        {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 12}}
                     );
                     expect(r.b).toBe(obj.b);
                     expect(lamb.updatePathIn(obj, "c.d->e.f", double, "->")).toEqual(r);
@@ -991,7 +1059,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should replace indexes when an array is found and the key is a string containing an integer", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 10], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 10], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.updatePath("b.b.1", double)(obj)).toEqual(r);
                     expect(lamb.updatePathIn(obj, "b.b.1", double)).toEqual(r);
@@ -1000,7 +1068,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should allow using negative array indexes in path parts", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 5], c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.updatePath("b.b.-2", double)(obj)).toEqual(r);
                     expect(lamb.updatePathIn(obj, "b.b.-2", double)).toEqual(r);
@@ -1026,8 +1094,23 @@ describe("lamb.accessors", function () {
                     expect(lamb.updatePathIn(o, "data.-2.value", inc)).toEqual(r);
                 });
 
+                it("should work with sparse arrays", function () {
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 99, void 0]}, "c.d" : {"e.f": 6}};
+                    var r2 = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: "foo", d: [void 0, 55, 99]}, "c.d" : {"e.f": 6}};
+                    var fn99 = lamb.always(99);
+
+                    expect(lamb.updatePathIn(obj, "b.d.1", fn99)).toEqual(r1);
+                    expect(lamb.updatePathIn(obj, "b.d.-2", fn99)).toEqual(r1);
+                    expect(lamb.updatePathIn(obj, "b.d.-1", fn99)).toEqual(r2);
+                    expect(lamb.updatePathIn(obj, "b.d.11", fn99)).toEqual(obj);
+                    expect(lamb.updatePath("b.d.1", fn99)(obj)).toEqual(r1);
+                    expect(lamb.updatePath("b.d.-2", fn99)(obj)).toEqual(r1);
+                    expect(lamb.updatePath("b.d.-1", fn99)(obj)).toEqual(r2);
+                    expect(lamb.updatePath("b.d.11", fn99)(obj)).toEqual(obj);
+                });
+
                 it("should build an object with numbered keys when an array-like object is found", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [4, 5], c: {"0": "m", "1": "o", "2": "o"}, d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.updatePath("b.c.0", lamb.always("m"))(obj)).toEqual(r);
                     expect(lamb.updatePathIn(obj, "b.c.0", lamb.always("m"))).toEqual(r);
@@ -1035,7 +1118,7 @@ describe("lamb.accessors", function () {
 
                 it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
                     obj.b.b.z = 1;
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo"}, "c.d" : {"e.f": 6}};
+                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: {"0": 4, "1": 5, "z": 99}, c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
 
                     expect(lamb.updatePath("b.b.z", lamb.always(99))(obj)).toEqual(r);
                     expect(lamb.updatePathIn(obj, "b.b.z", lamb.always(99))).toEqual(r);
