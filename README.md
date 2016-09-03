@@ -42,16 +42,16 @@ or
 Doing so a `lamb` variable will be created in the global object.
 The source map for the minified file is in the same `dist` folder.
 
-Lamb it's also delivered on a CDN, courtesy of [npmcdn](https://npmcdn.com/):
+Lamb it's also delivered on a CDN, courtesy of [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://npmcdn.com/lamb/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb/dist/lamb.min.js"></script>
 ```
 
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://npmcdn.com/lamb@0.40.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.40.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
