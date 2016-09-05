@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.40.0
+ * @version 0.41.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.40.0";
+    lamb._version = "0.41.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -957,6 +957,29 @@
     });
 
     /**
+     * Builds a predicate to check if an array-like object contains the given value.<br/>
+     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
+     * See also {@link module:lamb.isIn|isIn} for an uncurried version.
+     * @example
+     * var containsNaN = _.contains(NaN, 0);
+     *
+     * containsNaN([0, 1, 2, 3, NaN]) // => true
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.isIn|isIn}
+     * @param {*} value
+     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+     * @returns {Function}
+     */
+    function contains (value, fromIndex) {
+        return function (arrayLike) {
+            return isIn(arrayLike, value, fromIndex);
+        };
+    }
+
+    /**
      * Checks if all the elements in an array-like object satisfy the given predicate.<br/>
      * The function will stop calling the predicate as soon as it returns a <em>falsy</em> value.<br/>
      * Note that an empty array-like will always produce a <code>true</code> result regardless of the
@@ -1082,6 +1105,84 @@
     var filterWith = _partialWithIteratee(filter);
 
     /**
+     * Searches for an element satisfying the predicate in the given array-like object and returns it if
+     * the search is successful. Returns <code>undefined</code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.find(persons, _.hasKeyValue("age", 40)) // => {"name": "John", "surname": "Doe", "age": 40}
+     * _.find(persons, _.hasKeyValue("age", 41)) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {*}
+     */
+    function find (arrayLike, predicate, predicateContext) {
+        var result;
+
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
+        for (var i = 0, len = arrayLike.length, element; i < len; i++) {
+            element = arrayLike[i];
+
+            if (predicate(element, i, arrayLike)) {
+                result = element;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Searches for an element satisfying the predicate in the given array-like object and returns its
+     * index if the search is successful. Returns <code>-1</code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.findIndex(persons, _.hasKeyValue("age", 40)) // => 1
+     * _.findIndex(persons, _.hasKeyValue("age", 41)) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Number}
+     */
+    function findIndex (arrayLike, predicate, predicateContext) {
+        var result = -1;
+
+        if (arguments.length === 3) {
+            predicate = predicate.bind(predicateContext);
+        }
+
+        for (var i = 0, len = arrayLike.length; i < len; i++) {
+            if (predicate(arrayLike[i], i, arrayLike)) {
+                result = i;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
      * Since version <code>0.34.0</code> this function is no longer a generic version of
      * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
@@ -1111,6 +1212,41 @@
         for (var i = 0, len = arrayLike.length >>> 0; i < len; i++) {
             iteratee(arrayLike[i], i, arrayLike);
         }
+    }
+
+    /**
+     * Checks if an array-like object contains the given value.<br/>
+     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
+     * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
+     * @example
+     * var numbers = [0, 1, 2, 3, NaN];
+     *
+     * _.isIn(numbers, 1) // => true
+     * _.isIn(numbers, 0) // => true
+     * _.isIn(numbers, -0) // => true
+     * _.isIn(numbers, NaN) // => true
+     * _.isIn(numbers, 2, 3) // => false
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.contains|contains}
+     * @param {ArrayLike} arrayLike
+     * @param {*} value
+     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
+     * @returns {Boolean}
+     */
+    function isIn (arrayLike, value, fromIndex) {
+        var result = false;
+
+        for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
+            if (isSVZ(value, arrayLike[i])) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -1331,11 +1467,15 @@
      */
     var some = _partialWithIteratee(someIn);
 
+    lamb.contains = contains;
     lamb.every = every;
     lamb.everyIn = everyIn;
     lamb.filter = filter;
     lamb.filterWith = filterWith;
+    lamb.find = find;
+    lamb.findIndex = findIndex;
     lamb.forEach = forEach;
+    lamb.isIn = isIn;
     lamb.map = map;
     lamb.mapWith = mapWith;
     lamb.reduce = reduce;
@@ -2647,29 +2787,6 @@
     lamb.updatePathIn = updatePathIn;
 
     /**
-     * Builds a predicate to check if an array-like object contains the given value.<br/>
-     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
-     * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
-     * See also {@link module:lamb.isIn|isIn} for an uncurried version.
-     * @example
-     * var containsNaN = _.contains(NaN, 0);
-     *
-     * containsNaN([0, 1, 2, 3, NaN]) // => true
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.isIn|isIn}
-     * @param {*} value
-     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
-     * @returns {Function}
-     */
-    function contains (value, fromIndex) {
-        return function (arrayLike) {
-            return isIn(arrayLike, value, fromIndex);
-        };
-    }
-
-    /**
      * Returns an array of items present only in the first of the given arrays.<br/>
      * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
@@ -2764,84 +2881,6 @@
         return function (arrayLike) {
             return slice(arrayLike, fn(arrayLike, predicate, predicateContext));
         };
-    }
-
-    /**
-     * Searches for an element satisfying the predicate in the given array-like object and returns it if
-     * the search is successful. Returns <code>undefined</code> otherwise.
-     * @example
-     * var persons = [
-     *     {"name": "Jane", "surname": "Doe", "age": 12},
-     *     {"name": "John", "surname": "Doe", "age": 40},
-     *     {"name": "Mario", "surname": "Rossi", "age": 18},
-     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
-     * ];
-     *
-     * _.find(persons, _.hasKeyValue("age", 40)) // => {"name": "John", "surname": "Doe", "age": 40}
-     * _.find(persons, _.hasKeyValue("age", 41)) // => undefined
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @param {ArrayLike} arrayLike
-     * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
-     * @returns {*}
-     */
-    function find (arrayLike, predicate, predicateContext) {
-        var result;
-
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
-
-        for (var i = 0, len = arrayLike.length, element; i < len; i++) {
-            element = arrayLike[i];
-
-            if (predicate(element, i, arrayLike)) {
-                result = element;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Searches for an element satisfying the predicate in the given array-like object and returns its
-     * index if the search is successful. Returns <code>-1</code> otherwise.
-     * @example
-     * var persons = [
-     *     {"name": "Jane", "surname": "Doe", "age": 12},
-     *     {"name": "John", "surname": "Doe", "age": 40},
-     *     {"name": "Mario", "surname": "Rossi", "age": 18},
-     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
-     * ];
-     *
-     * _.findIndex(persons, _.hasKeyValue("age", 40)) // => 1
-     * _.findIndex(persons, _.hasKeyValue("age", 41)) // => -1
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @param {ArrayLike} arrayLike
-     * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
-     * @returns {Number}
-     */
-    function findIndex (arrayLike, predicate, predicateContext) {
-        var result = -1;
-
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
-
-        for (var i = 0, len = arrayLike.length; i < len; i++) {
-            if (predicate(arrayLike[i], i, arrayLike)) {
-                result = i;
-                break;
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -3013,41 +3052,6 @@
         return filter(uniques(arguments[0]), function (item) {
             return everyIn(rest, contains(item));
         });
-    }
-
-    /**
-     * Checks if an array-like object contains the given value.<br/>
-     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
-     * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
-     * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
-     * @example
-     * var numbers = [0, 1, 2, 3, NaN];
-     *
-     * _.isIn(numbers, 1) // => true
-     * _.isIn(numbers, 0) // => true
-     * _.isIn(numbers, -0) // => true
-     * _.isIn(numbers, NaN) // => true
-     * _.isIn(numbers, 2, 3) // => false
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @see {@link module:lamb.contains|contains}
-     * @param {ArrayLike} arrayLike
-     * @param {*} value
-     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
-     * @returns {Boolean}
-     */
-    function isIn (arrayLike, value, fromIndex) {
-        var result = false;
-
-        for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
-            if (isSVZ(value, arrayLike[i])) {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -3474,13 +3478,10 @@
      */
     var zipWithIndex = mapWith(binary(list));
 
-    lamb.contains = contains;
     lamb.difference = difference;
     lamb.drop = drop;
     lamb.dropN = dropN;
     lamb.dropWhile = dropWhile;
-    lamb.find = find;
-    lamb.findIndex = findIndex;
     lamb.flatMap = flatMap;
     lamb.flatMapWith = flatMapWith;
     lamb.flatten = flatten;
@@ -3488,7 +3489,6 @@
     lamb.insert = insert;
     lamb.insertAt = insertAt;
     lamb.intersection = intersection;
-    lamb.isIn = isIn;
     lamb.list = list;
     lamb.partition = partition;
     lamb.partitionWith = partitionWith;
