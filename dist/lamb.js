@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.41.0-alpha.1
+ * @version 0.41.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.41.0-alpha.1";
+    lamb._version = "0.41.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1126,22 +1126,10 @@
      * @returns {*}
      */
     function find (arrayLike, predicate, predicateContext) {
-        var result;
+        var _findIndex = arguments.length === 3 ? findIndex : binary(findIndex);
+        var idx = _findIndex(arrayLike, predicate, predicateContext);
 
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
-
-        for (var i = 0, len = arrayLike.length, element; i < len; i++) {
-            element = arrayLike[i];
-
-            if (predicate(element, i, arrayLike)) {
-                result = element;
-                break;
-            }
-        }
-
-        return result;
+        return idx === -1 ? void 0 : arrayLike[idx];
     }
 
     /**

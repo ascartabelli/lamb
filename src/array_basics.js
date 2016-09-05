@@ -168,22 +168,10 @@ var filterWith = _partialWithIteratee(filter);
  * @returns {*}
  */
 function find (arrayLike, predicate, predicateContext) {
-    var result;
+    var _findIndex = arguments.length === 3 ? findIndex : binary(findIndex);
+    var idx = _findIndex(arrayLike, predicate, predicateContext);
 
-    if (arguments.length === 3) {
-        predicate = predicate.bind(predicateContext);
-    }
-
-    for (var i = 0, len = arrayLike.length, element; i < len; i++) {
-        element = arrayLike[i];
-
-        if (predicate(element, i, arrayLike)) {
-            result = element;
-            break;
-        }
-    }
-
-    return result;
+    return idx === -1 ? void 0 : arrayLike[idx];
 }
 
 /**
