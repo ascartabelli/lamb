@@ -234,7 +234,7 @@ describe("lamb.array_basics", function () {
         });
     });
 
-    describe("find / findIndex", function () {
+    describe("find / findWhere / findIndex / findIndexWhere", function () {
         var persons = [
             {"name": "Jane", "surname": "Doe", "age": 12},
             {"name": "John", "surname": "Doe", "age": 40},
@@ -252,41 +252,52 @@ describe("lamb.array_basics", function () {
         };
 
         var is40YO = lamb.hasKeyValue("age", 40);
+        var is41YO = lamb.hasKeyValue("age", 41);
 
         describe("find", function () {
             it("should find an element in an array-like object by using the given predicate", function () {
                 expect(lamb.find(persons, is40YO)).toEqual(persons[1]);
+                expect(lamb.findWhere(is40YO)(persons)).toEqual(persons[1]);
             });
 
             it("should return `undefined` if there is no element satisfying the predicate", function () {
-                expect(lamb.find(persons, lamb.hasKeyValue("age", 41))).toBeUndefined();
+                expect(lamb.find(persons, is41YO)).toBeUndefined();
+                expect(lamb.findWhere(is41YO)(persons)).toBeUndefined();
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
                 expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
                 expect(lamb.find("zxc", isVowel, fakeContext)).toBeUndefined();
+                expect(lamb.findWhere(isVowel, fakeContext)(testString)).toBe("e");
+                expect(lamb.findWhere(isVowel, fakeContext)("zxc")).toBeUndefined();
             });
 
-            it("should throw an exception if the predicate isn't a function", function () {
+            it("should throw an exception if the predicate isn't a function or is missing", function () {
                 ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
                     expect(function () { lamb.find(persons, value); }).toThrow();
+                    expect(function () { lamb.findWhere(value)(persons); }).toThrow();
                 });
 
                 expect(function () { lamb.find(persons); }).toThrow();
+                expect(function () { lamb.findWhere()(persons); }).toThrow();
             });
 
             it("should throw an exception if called without arguments", function () {
                 expect(lamb.find).toThrow();
+                expect(lamb.findWhere()).toThrow();
             });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.find(null, is40YO); }).toThrow();
                 expect(function () { lamb.find(void 0, is40YO); }).toThrow();
+                expect(function () { lamb.findWhere(is40YO)(null); }).toThrow();
+                expect(function () { lamb.findWhere(is40YO)(void 0); }).toThrow();
             });
 
-            it("should treat every other value as an empty array and return `undefined`", function () {
+            it("should treat every other value as an empty array", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
                     expect(lamb.find(value, is40YO)).toBeUndefined();
+                    expect(lamb.findWhere(is40YO)(value)).toBeUndefined();
                 });
             });
         });
@@ -294,37 +305,48 @@ describe("lamb.array_basics", function () {
         describe("findIndex", function () {
             it("should find the index of an element in an array-like object by using the given predicate", function () {
                 expect(lamb.findIndex(persons, is40YO)).toBe(1);
+                expect(lamb.findIndexWhere(is40YO)(persons)).toBe(1);
             });
 
             it("should return `-1` if there is no element satisfying the predicate", function () {
-                expect(lamb.findIndex(persons, lamb.hasKeyValue("age", 41))).toBe(-1);
+                expect(lamb.findIndex(persons, is41YO)).toBe(-1);
+                expect(lamb.findIndexWhere(is41YO)(persons)).toBe(-1);
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
                 expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
                 expect(lamb.findIndex("zxc", isVowel, fakeContext)).toBe(-1);
+                expect(lamb.findIndexWhere(isVowel, fakeContext)(testString)).toBe(1);
+                expect(lamb.findIndexWhere(isVowel, fakeContext)("zxc")).toBe(-1);
             });
 
-            it("should throw an exception if the predicate isn't a function", function () {
+            it("should throw an exception if the predicate isn't a function or is missing", function () {
                 ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
                     expect(function () { lamb.findIndex(persons, value); }).toThrow();
+                    expect(function () { lamb.findIndexWhere(value)(persons); }).toThrow();
                 });
 
                 expect(function () { lamb.findIndex(persons); }).toThrow();
+                expect(function () { lamb.findIndexWhere()(persons); }).toThrow();
             });
 
             it("should throw an exception if called without arguments", function () {
                 expect(lamb.findIndex).toThrow();
+                expect(lamb.findIndexWhere()).toThrow();
             });
 
             it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
                 expect(function () { lamb.findIndex(null, is40YO); }).toThrow();
                 expect(function () { lamb.findIndex(void 0, is40YO); }).toThrow();
+                expect(function () { lamb.findIndexWhere(is40YO)(null); }).toThrow();
+                expect(function () { lamb.findIndexWhere(is40YO)(void 0); }).toThrow();
+
             });
 
-            it("should treat every other value as an empty array and return `-1`", function () {
+            it("should treat every other value as an empty array", function () {
                 [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
                     expect(lamb.findIndex(value, is40YO)).toBe(-1);
+                    expect(lamb.findIndexWhere(is40YO)(value)).toBe(-1);
                 });
             });
         });

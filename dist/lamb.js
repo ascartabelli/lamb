@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.41.0-alpha.2
+ * @version 0.41.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.41.0-alpha.2";
+    lamb._version = "0.41.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1120,14 +1120,17 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.findWhere|findWhere}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
      * @returns {*}
      */
     function find (arrayLike, predicate, predicateContext) {
-        var _findIndex = arguments.length === 3 ? findIndex : binary(findIndex);
-        var idx = _findIndex(arrayLike, predicate, predicateContext);
+        var idx = arguments.length === 3 ?
+            findIndex(arrayLike, predicate, predicateContext) :
+            findIndex(arrayLike, predicate);
 
         return idx === -1 ? void 0 : arrayLike[idx];
     }
@@ -1148,6 +1151,8 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @param {Object} [predicateContext]
@@ -1169,6 +1174,48 @@
 
         return result;
     }
+
+    /**
+     * Builds a partial application of {@link module:lamb.findIndex|findIndex} expecting the array-like
+     * object to search.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var findEvenIdx = _.findIndexWhere(isEven);
+     *
+     * findEvenIdx([1, 3, 4, 5, 7]) // => 2
+     * findEvenIdx([1, 3, 5, 7]) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.findIndex|findIndex}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Function}
+     */
+    var findIndexWhere = _partialWithIteratee(findIndex);
+
+    /**
+     * Builds a partial application of {@link module:lamb.find|find} expecting the array-like object
+     * to search.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var findEven = _.findWhere(isEven);
+     *
+     * findEven([1, 3, 4, 5, 7]) // => 4
+     * findEven([1, 3, 5, 7]) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.find|find}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @param {ListIteratorCallback} predicate
+     * @param {Object} [predicateContext]
+     * @returns {Function}
+     */
+    var findWhere = _partialWithIteratee(find);
 
     /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
@@ -1462,6 +1509,8 @@
     lamb.filterWith = filterWith;
     lamb.find = find;
     lamb.findIndex = findIndex;
+    lamb.findIndexWhere = findIndexWhere;
+    lamb.findWhere = findWhere;
     lamb.forEach = forEach;
     lamb.isIn = isIn;
     lamb.map = map;
