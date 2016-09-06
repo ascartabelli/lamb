@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.41.0-alpha.3
+ * @version 0.41.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.41.0-alpha.3";
+    lamb._version = "0.41.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -503,20 +503,17 @@
      * @returns {Object}
      */
     function _getPathInfo (obj, parts, walkNonEnumerables) {
+        if (isNil(obj)) {
+            throw _makeTypeErrorFor(obj, "object");
+        }
+
         var target = obj;
         var i = -1;
         var len = parts.length;
         var key;
-        var keyAsNumber;
 
         while (++i < len) {
-            key = parts[i];
-
-            if (!(_isEnumerable(target, key) || key in Object(target) && walkNonEnumerables)) {
-                keyAsNumber = Number(key);
-                key = keyAsNumber < 0 ? _getNaturalIndex(target, keyAsNumber) :
-                    Array.isArray(target) && keyAsNumber < target.length ? keyAsNumber : void 0;
-            }
+            key = _getPathKey(target, parts[i], walkNonEnumerables);
 
             if (isUndefined(key)) {
                 break;
@@ -526,6 +523,30 @@
         }
 
         return i === len ? {isValid: true, target: target} : {isValid: false, target: void 0};
+    }
+
+    /**
+     * Helper to retrieve the correct key while evaluating a path.
+     * @private
+     * @param {Object} target
+     * @param {String} key
+     * @param {Boolean} includeNonEnumerables
+     * @returns {String|Number|Undefined}
+     */
+    function _getPathKey (target, key, includeNonEnumerables) {
+        if (includeNonEnumerables && key in Object(target) || _isEnumerable(target, key)) {
+            return key;
+        }
+
+        var keyAsNumber = Number(key);
+
+        if (keyAsNumber < 0) {
+            return _getNaturalIndex(target, keyAsNumber);
+        } else if (Array.isArray(target) && keyAsNumber < target.length) {
+            return keyAsNumber;
+        }
+
+        return void 0;
     }
 
     /**
@@ -870,11 +891,19 @@
      */
     function _setPathIn (obj, parts, value) {
         var key = parts[0];
-        var v = parts.length === 1 ? value : _setPathIn(
-            _getPathInfo(obj, [key], false).target,
-            slice(parts, 1),
-            value
-        );
+        var v;
+
+        if (parts.length === 1) {
+            v = value;
+        } else {
+            var targetKey = _getPathKey(obj, key, false);
+
+            v = _setPathIn(
+                isUndefined(targetKey) ? targetKey : obj[targetKey],
+                slice(parts, 1),
+                value
+            );
+        }
 
         return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(Object(obj), key, v);
     }
@@ -2375,12 +2404,7 @@
      * @returns {*}
      */
     function getPathIn (obj, path, separator) {
-        if (isNil(obj)) {
-            throw _makeTypeErrorFor(obj, "object");
-        }
-
-        var parts = _toPathParts(path, separator);
-        var pathInfo = _getPathInfo(obj, parts, true);
+        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
 
         return pathInfo.target;
     }
@@ -4766,16 +4790,16 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
+     * @see {@link module:lamb.hasPathValue|hasPathValue}
      * @param {String} key
      * @param {*} value
      * @returns {Function}
      */
-    var hasKeyValue = function (key, value) {
+    function hasKeyValue (key, value) {
         return function (obj) {
             return isSVZ(value, obj[key]);
         };
-    };
+    }
 
     /**
      * Verifies if an object has the specified property and that the property isn't inherited through
@@ -4823,6 +4847,48 @@
     function hasOwnKey (key) {
         return function (obj) {
             return hasOwn(obj, key);
+        };
+    }
+
+    /**
+     * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
+     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * @example
+     * var user = {
+     *     name: "John",
+     *     surname: "Doe",
+     *     personal: {
+     *         age: 25,
+     *         gender: "M"
+     *     },
+     *     scores: [
+     *         {id: 1, value: 10, passed: false},
+     *         {id: 2, value: 20, passed: false},
+     *         {id: 3, value: 30, passed: true}
+     *     ]
+     * };
+     *
+     * var isMale = _.hasPathValue("personal.gender", "M");
+     * var hasPassedFirstTest = _.hasPathValue("scores.0.passed", true);
+     * var hasPassedLastTest = _.hasPathValue("scores.-1.passed", true);
+     *
+     * isMale(user) // => true
+     * hasPassedFirstTest(user) // => false
+     * hasPassedLastTest(user) // => true
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.hasKeyValue|hasKeyValue}
+     * @param {String} path
+     * @param {*} value
+     * @param {String} [separator="."]
+     * @returns {Function}
+     */
+    function hasPathValue (path, value, separator) {
+        return function (obj) {
+            var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+
+            return pathInfo.isValid && isSVZ(pathInfo.target, value);
         };
     }
 
@@ -5451,6 +5517,7 @@
     lamb.hasKeyValue = hasKeyValue;
     lamb.hasOwn = hasOwn;
     lamb.hasOwnKey = hasOwnKey;
+    lamb.hasPathValue = hasPathValue;
     lamb.immutable = immutable;
     lamb.keys = keys;
     lamb.make = make;

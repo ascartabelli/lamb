@@ -421,7 +421,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "b.b")).toBe(obj.b.b);
             });
 
-            it("should be able to access non enumerable properties", function () {
+            it("should be able to access non-enumerable properties", function () {
                 expect(lamb.getPath("e")(obj)).toBe(10);
                 expect(lamb.getPathIn(obj, "e")).toBe(10);
                 expect(lamb.getPath("f.g")(obj)).toBe(20);
@@ -456,9 +456,9 @@ describe("lamb.accessors", function () {
                     {id: 3, value: 30}
                 ]};
 
-                expect(lamb.getPath("data.1.value")(o)).toBe(20)
+                expect(lamb.getPath("data.1.value")(o)).toBe(20);
                 expect(lamb.getPathIn(o, "data.1.value")).toBe(20);
-                expect(lamb.getPath("data.-1.value")(o)).toBe(30)
+                expect(lamb.getPath("data.-1.value")(o)).toBe(30);
                 expect(lamb.getPathIn(o, "data.-1.value")).toBe(30);
             });
 
@@ -483,7 +483,7 @@ describe("lamb.accessors", function () {
                 expect(lamb.getPathIn(obj, "c.d/e.f", "/")).toBe(6);
             });
 
-            it("should return undefined for a non-existent path in a valid source", function () {
+            it("should return `undefined` for a non-existent path in a valid source", function () {
                 expect(lamb.getPath("b.a.z")(obj)).toBeUndefined();
                 expect(lamb.getPathIn(obj, "b.a.z")).toBeUndefined();
                 expect(lamb.getPath("b.z.a")(obj)).toBeUndefined();

@@ -181,12 +181,7 @@ function getPath (path, separator) {
  * @returns {*}
  */
 function getPathIn (obj, path, separator) {
-    if (isNil(obj)) {
-        throw _makeTypeErrorFor(obj, "object");
-    }
-
-    var parts = _toPathParts(path, separator);
-    var pathInfo = _getPathInfo(obj, parts, true);
+    var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
 
     return pathInfo.target;
 }
