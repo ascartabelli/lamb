@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [unpkg](https://unpkg.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://unpkg.com/lamb@0.40.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.41.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
@@ -95,6 +95,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.41.0 - *2016/09/08***
+  - **Fully compatible with versions down to 0.40.x**
+  - Added `findWhere`, `findIndexWhere`, `hasPathValue`
+  - `find` now uses `findIndex` to perform the search to avoid duplicate code
+  - Minor performance gain when `aritize` needs to add `undefined` arguments
+
 - **v0.40.0 - *2016/09/02***
   - **API change**: `hasKeyValue` now uses the “SameValueZero" comparison
   - **Fixed**: `updatePath` and `updatePathIn` treated unassigned positive indexes in sparse arrays as non existent properties
@@ -125,7 +131,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Greatly improved performance of all curry (and curried) functions
   - Optimized `invoker` and `invokerOn`
   - Minor performance improvements in the usage of the arguments object
-
-- **v0.36.0 - *2016/08/04***
-  - **Fully compatible with versions down to 0.34.x**
-  - Added `asPartial`
