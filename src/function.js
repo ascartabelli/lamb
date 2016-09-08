@@ -63,8 +63,10 @@ function aritize (fn, arity) {
         var argsLen = args.length;
         var n = Math.floor(arity);
 
-        if (n > 0 && argsLen < n) {
-            args = args.concat(Array(n - argsLen));
+        if (n > 0) {
+            while (argsLen < n) {
+                args[argsLen++] = void 0;
+            }
         }
 
         return fn.apply(this, args);
