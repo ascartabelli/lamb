@@ -243,7 +243,7 @@ function insertAt (index, element) {
 }
 
 /**
- * Returns an array of every item present in all given arrays.<br/>
+ * Returns an array of every item that is included in all given arrays.<br>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];

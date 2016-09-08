@@ -97,7 +97,7 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
 
 - **v0.40.0 - *2016/09/02***
   - **API change**: `hasKeyValue` now uses the “SameValueZero" comparison
-  - **Fixed**: `updatePath` and `updatePathIn` treated unassigned positive indexes in sparse array as non existent properties
+  - **Fixed**: `updatePath` and `updatePathIn` treated unassigned positive indexes in sparse arrays as non existent properties
   - Updated tests for `hasKeyValue`
   - Updated tests for “pick” and “skip” functions
   - Updated tests for “pairs”, “tear” and “values” functions

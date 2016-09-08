@@ -33,8 +33,11 @@ describe("lamb.core", function () {
             expect(composed(2)).toBe(-16);
         });
 
-        it("should build a function returning `undefined` if no functions are passed", function () {
+        it("should behave like `identity` if no functions are passed", function () {
+            var obj = {};
+            expect(lamb.compose()(obj)).toBe(obj);
             expect(lamb.compose()()).toBeUndefined();
+            expect(lamb.compose()(2, 3, 4)).toBe(2);
         });
 
         it("should build a function throwing an exception if any parameter is not a function", function () {

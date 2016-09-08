@@ -693,10 +693,9 @@ var _safeKeys = compose(Object.keys, Object);
 function _setIndex (arrayLike, index, value, updater) {
     var result = slice(arrayLike);
     var idx = _getNaturalIndex(result, index);
-    var isUpdate = arguments.length === 4;
 
     if (!isUndefined(idx)) {
-        result[idx] = isUpdate ? updater(arrayLike[idx]) : value;
+        result[idx] = arguments.length === 4 ? updater(arrayLike[idx]) : value;
     }
 
     return result;
