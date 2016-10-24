@@ -31,9 +31,9 @@
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.41.0",
+  "version": "0.42.0-alpha.1",
   "devDependencies": {
-    "coveralls": "^2.11.12",
+    "coveralls": "^2.11.14",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^3.0.1",
@@ -41,13 +41,13 @@
     "gulp-header": "^1.8.8",
     "gulp-indent": "^1.0.1",
     "gulp-istanbul": "^1.1.1",
-    "gulp-jasmine": "^2.4.1",
+    "gulp-jasmine": "^2.4.2",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-sourcemaps": "^1.9.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "plato": "^1.7.0",
-    "sinon": "^1.17.5"
+    "sinon": "^1.17.6"
   },
   "dependencies": {}
 }
