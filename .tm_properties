@@ -1,0 +1,3 @@
+excludeInFolderSearch = "{$excludeInFolderSearch,coverage,dist,docs,docs_template,node_modules,plato_report}"
+excludeInFileChooser = "{$exclude,coverage,docs,docs_template,node_modules,plato_report}"
+include = "{$include,.eslintrc.json,.gitignore,.npmignore,.travis.yml}"
