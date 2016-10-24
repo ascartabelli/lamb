@@ -142,9 +142,13 @@ function anyOf () {
  */
 function condition (predicate, trueFn, falseFn) {
     return function () {
-        var applyArgsTo = applyArgs(arguments);
-
-        return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
+        if (predicate.apply(this, arguments)) {
+            return trueFn.apply(this, arguments);
+        } else if (falseFn) {
+            return falseFn.apply(this, arguments);
+        } else {
+            return void 0;
+        }
     };
 }
 

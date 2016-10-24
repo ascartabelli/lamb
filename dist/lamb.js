@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.42.0-alpha.4
+ * @version 0.42.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.42.0-alpha.4";
+    lamb._version = "0.42.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1698,9 +1698,13 @@
      */
     function condition (predicate, trueFn, falseFn) {
         return function () {
-            var applyArgsTo = applyArgs(arguments);
-
-            return applyArgsTo(predicate) ? applyArgsTo(trueFn) : falseFn ? applyArgsTo(falseFn) : void 0;
+            if (predicate.apply(this, arguments)) {
+                return trueFn.apply(this, arguments);
+            } else if (falseFn) {
+                return falseFn.apply(this, arguments);
+            } else {
+                return void 0;
+            }
         };
     }
 
