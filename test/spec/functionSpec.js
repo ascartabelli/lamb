@@ -94,7 +94,7 @@ describe("lamb.function", function () {
 
     describe("aritize", function () {
         var maxArgument = function () { return Math.max.apply(null, arguments); };
-        var maxArgumentSpy = jasmine.createSpy("maxArgument").and.callFake(maxArgument);;
+        var maxArgumentSpy = jasmine.createSpy("maxArgument").and.callFake(maxArgument);
 
         afterEach(function () {
             maxArgumentSpy.calls.reset();

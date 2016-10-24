@@ -115,7 +115,7 @@ function identity (value) {
 
 /**
  * Builds a partially applied function. The <code>lamb</code> object itself can be used
- * as a placeholder argument and it's useful to alias it as <code>_</code> or <code>__</code>.
+ * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
  * @example
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  * var parseInt10 = _.partial(parseInt, _, 10);
@@ -124,6 +124,9 @@ function identity (value) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.asPartial|asPartial}
+ * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+ * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @param {Function} fn
  * @param {...*} args
  * @returns {Function}

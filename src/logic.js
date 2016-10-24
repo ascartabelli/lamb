@@ -48,9 +48,9 @@ function adapter () {
 }
 
 /**
- * Builds a predicate that returns true if all the given predicates are satisfied.
- * The arguments passed to the resulting function are applied to every predicate
- * unless one of them returns false.
+ * Accepts a series of predicates and builds a new one that returns true if they are all satisfied
+ * by the same arguments. The functions in the series will be applied one at a time until a
+ * <code>false</code> value is produced, which is returned immediately.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var isPositive = function (n) { return n > 0; };
@@ -81,9 +81,9 @@ function allOf () {
 }
 
 /**
- * Builds a predicate that returns true if at least one of the given predicates is satisfied.
- * The arguments passed to the resulting function are applied to every predicate until one
- * of them returns true.
+ * Accepts a series of predicates and builds a new one that returns true if at least one of them is
+ * satisfied by the received arguments. The functions in the series will be applied one at a time
+ * until a <code>true</code> value is produced, which is returned immediately.
  * @example
  * var users = [
  *     {id: 1, name: "John", group: "guest"},
@@ -288,7 +288,7 @@ var isNot = not(is);
 /**
  * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
  * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
- * considered the same value too.<br/>
+ * considered the same value.<br/>
  * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
  * @example
  * var testObject = {};

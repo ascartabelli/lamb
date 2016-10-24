@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.42.0-alpha.1
+ * @version 0.42.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.42.0-alpha.1";
+    lamb._version = "0.42.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -136,7 +136,7 @@
 
     /**
      * Builds a partially applied function. The <code>lamb</code> object itself can be used
-     * as a placeholder argument and it's useful to alias it as <code>_</code> or <code>__</code>.
+     * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
      * @example
      * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
      * var parseInt10 = _.partial(parseInt, _, 10);
@@ -145,6 +145,9 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @param {Function} fn
      * @param {...*} args
      * @returns {Function}
@@ -1601,9 +1604,9 @@
     }
 
     /**
-     * Builds a predicate that returns true if all the given predicates are satisfied.
-     * The arguments passed to the resulting function are applied to every predicate
-     * unless one of them returns false.
+     * Accepts a series of predicates and builds a new one that returns true if they are all satisfied
+     * by the same arguments. The functions in the series will be applied one at a time until a
+     * <code>false</code> value is produced, which is returned immediately.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var isPositive = function (n) { return n > 0; };
@@ -1634,9 +1637,9 @@
     }
 
     /**
-     * Builds a predicate that returns true if at least one of the given predicates is satisfied.
-     * The arguments passed to the resulting function are applied to every predicate until one
-     * of them returns true.
+     * Accepts a series of predicates and builds a new one that returns true if at least one of them is
+     * satisfied by the received arguments. The functions in the series will be applied one at a time
+     * until a <code>true</code> value is produced, which is returned immediately.
      * @example
      * var users = [
      *     {id: 1, name: "John", group: "guest"},
@@ -1841,7 +1844,7 @@
     /**
      * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
      * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
-     * considered the same value too.<br/>
+     * considered the same value.<br/>
      * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
      * @example
      * var testObject = {};
@@ -5590,7 +5593,7 @@
      * Builds a new string by repeating the source string the desired amount of times.<br/>
      * Note that unlike the current ES6 proposal for
      * [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
-     * this function doesn't throw a RangeError if <code>count</code> is negative,
+     * this function doesn't throw a RangeError if <code>times</code> is negative,
      * but returns an empty string instead.
      * @example
      * _.repeat("Hello", -1) // => ""

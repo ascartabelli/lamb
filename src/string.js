@@ -46,7 +46,7 @@ function padRight (source, char, len) {
  * Builds a new string by repeating the source string the desired amount of times.<br/>
  * Note that unlike the current ES6 proposal for
  * [String.prototype.repeat]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat},
- * this function doesn't throw a RangeError if <code>count</code> is negative,
+ * this function doesn't throw a RangeError if <code>times</code> is negative,
  * but returns an empty string instead.
  * @example
  * _.repeat("Hello", -1) // => ""
