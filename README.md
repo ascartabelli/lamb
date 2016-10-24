@@ -54,7 +54,7 @@ The URL above will retrieve the latest version, but you can target a specific on
 <script src="https://unpkg.com/lamb@0.41.0/dist/lamb.min.js"></script>
 ```
 
-You can [try it right now](https://tonicdev.com/npm/lamb) in your browser, too.
+You can [try it right now](https://runkit.com/npm/lamb) in your browser, too.
 
 ## Semantic Versioning.
 
