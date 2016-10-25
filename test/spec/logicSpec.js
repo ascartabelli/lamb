@@ -6,7 +6,7 @@ describe("lamb.logic", function () {
     var isLessThanTen = function (n) { return n < 10; };
 
     // for checking "truthy" and "falsy" values returned by predicates
-    var hasEvens = lamb.partial(lamb.find, lamb, isEven);
+    var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
 
     function Foo (value) {
@@ -309,6 +309,81 @@ describe("lamb.logic", function () {
             });
 
             expect(lamb.not()).toThrow();
+        });
+    });
+
+    describe("unless / when", function () {
+        var increment = function (n) { return ++n; };
+        var incArray = lamb.mapWith(increment);
+        var a1 = [1, 3, 5];
+        var a2 = [1, 4, 5];
+
+        it("should build a function that conditionally applies its `fn` parameter to the received value depending on the evaluation of a predicate", function () {
+            expect(lamb.unless(isEven, increment)(5)).toBe(6);
+            expect(lamb.when(isEven, increment)(4)).toBe(5);
+        });
+
+        it("should build a function returning the received value when the desired condition is not met", function () {
+            expect(lamb.unless(isEven, increment)(6)).toBe(6);
+            expect(lamb.when(isEven, increment)(5)).toBe(5);
+        });
+
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
+            expect(lamb.unless(hasEvens, incArray)(a1)).toEqual([2, 4, 6]);
+            expect(lamb.unless(hasEvens, incArray)(a2)).toBe(a2);
+            expect(lamb.when(hasEvens, incArray)(a1)).toBe(a1);
+            expect(lamb.when(hasEvens, incArray)(a2)).toEqual([2, 5, 6]);
+        });
+
+        it("should build a unary function and ignore extra arguments", function () {
+            var incSpy = jasmine.createSpy().and.callFake(increment);
+            var isEvenSpy = jasmine.createSpy().and.callFake(isEven);
+            var incUnlessEven = lamb.unless(isEvenSpy, incSpy);
+            var incWhenEven = lamb.when(isEvenSpy, incSpy);
+
+            expect(incUnlessEven.length).toBe(1);
+            expect(incUnlessEven(5, 6, 7)).toBe(6);
+            expect(incUnlessEven(6, 7, 8)).toBe(6);
+
+            expect(incWhenEven.length).toBe(1);
+            expect(incWhenEven(4, 5)).toBe(5);
+            expect(incWhenEven(5, 6)).toBe(5);
+
+            expect(isEvenSpy.calls.count()).toBe(4);
+            expect(isEvenSpy.calls.argsFor(0)).toEqual([5]);
+            expect(isEvenSpy.calls.argsFor(1)).toEqual([6]);
+            expect(isEvenSpy.calls.argsFor(2)).toEqual([4]);
+            expect(isEvenSpy.calls.argsFor(3)).toEqual([5]);
+
+            expect(incSpy.calls.count()).toBe(2);
+            expect(incSpy.calls.argsFor(0)).toEqual([5]);
+            expect(incSpy.calls.argsFor(1)).toEqual([4]);
+        });
+
+        it("should build a function throwing an exception if the predicate isn't a function", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.unless(value, increment)(5); }).toThrow();
+                expect(function () { lamb.when(value, increment)(2); }).toThrow();
+            });
+        });
+
+        it("should not throw an exception if the transformer isn't a function and the conditions aren't met", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.unless(isEven, value)(2)).toBe(2);
+                expect(lamb.when(isEven, value)(5)).toBe(5);
+            });
+        });
+
+        it("should build a function throwing an exception if the transformer isn't a function and the conditions are met", function () {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.unless(isEven, value)(5); }).toThrow();
+                expect(function () { lamb.when(isEven, value)(2); }).toThrow();
+            });
+        });
+
+        it("should build a function throwing an exception if called without arguments", function () {
+            expect(lamb.unless()).toThrow();
+            expect(lamb.when()).toThrow();
         });
     });
 });

@@ -1304,7 +1304,8 @@ describe("lamb.object", function () {
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-                var hasEvens = lamb.partial(lamb.find, lamb, function (n) { return n % 2 === 0; });
+                var isEven = function (n) { return n % 2 === 0; };
+                var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
                 var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
                 var o = {a: [1, 3, 5, 6, 7], b: [1, 3, 5, 7], c: "a", d: "b"};
 

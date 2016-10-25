@@ -123,18 +123,27 @@ function anyOf () {
  * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function
  * will return <code>undefined</code>.<br/>
  * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>,
- * it's probably better to use {@link module:lamb.adapter|adapter} to build more complex behaviours.
+ * it's probably better to use {@link module:lamb.adapter|adapter} to build more complex behaviours.<br/>
+ * See also {@link module:lamb.unless|unless} and {@link module:lamb.when|when} as they are
+ * shortcuts to common use cases.
  * @example
  * var isEven = function (n) { return n % 2 === 0};
  * var halve = function (n) { return n / 2; };
- * var halveIfEven = _.condition(isEven, halve, _.identity);
+ * var double = function (n) { return n * 2; };
+ * var halveEvenAndDoubleOdd = _.condition(isEven, halve, double);
  *
- * halveIfEven(5) // => 5
- * halveIfEven(6) // => 3
+ * halveEvenAndDoubleOdd(5) // => 10
+ * halveEvenAndDoubleOdd(6) // => 3
+ *
+ * var halveIfNumber = _.condition(_.isType("Number"), halve);
+ *
+ * halveIfNumber(2) // => 1
+ * halveIfNumber("2") // => undefined
  *
  * @memberof module:lamb
  * @category Logic
- * @see {@link module:lamb.invoker|invoker}
+ * @see {@link module:lamb.unless|unless}
+ * @see {@link module:lamb.when|when}
  * @param {Function} predicate
  * @param {Function} trueFn
  * @param {Function} [falseFn]
@@ -336,6 +345,64 @@ function not (predicate) {
     };
 }
 
+/**
+ * Builds a unary function that will check its argument against the given predicate.
+ * If the predicate isn't satisfied, the provided <code>fn</code> function will be
+ * applied to the same value. The received argument is returned as it is otherwise.<br/>
+ * See {@link module:lamb.when|when} for the opposite behaviour.<br/>
+ * It's a shortcut for a common use case of {@link module:lamb.condition|condition},
+ * where its <code>trueFn</code> parameter is the [identity function]{@link module:lamb.identity}.
+ * @example
+ * var isEven = function (n) { return n % 2 === 0};
+ * var halve = function (n) { return n / 2; };
+ * var halveUnlessIsEven = _.unless(isEven, halve);
+ *
+ * halveUnlessIsEven(5) // => 2.5
+ * halveUnlessIsEven(6) // => 6
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.condition|condition}
+ * @see {@link module:lamb.when|when}
+ * @param {Function} predicate
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function unless (predicate, fn) {
+    return function (value) {
+        return predicate.call(this, value) ? value : fn.call(this, value);
+    };
+}
+
+/**
+ * Builds a unary function that will check its argument against the given predicate.
+ * If the predicate is satisfied, the provided <code>fn</code> function will be
+ * applied to the same value. The received argument is returned as it is otherwise.<br/>
+ * See {@link module:lamb.unless|unless} for the opposite behaviour.<br/>
+ * It's a shortcut for a common use case of {@link module:lamb.condition|condition},
+ * where its <code>falseFn</code> parameter is the [identity function]{@link module:lamb.identity}.
+ * @example
+ * var isEven = function (n) { return n % 2 === 0};
+ * var halve = function (n) { return n / 2; };
+ * var halveIfEven = _.when(isEven, halve);
+ *
+ * halveIfEven(5) // => 5
+ * halveIfEven(6) // => 3
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.condition|condition}
+ * @see {@link module:lamb.unless|unless}
+ * @param {Function} predicate
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function when (predicate, fn) {
+    return function (value) {
+        return predicate.call(this, value) ? fn.call(this, value) : value;
+    };
+}
+
 lamb.adapter = adapter;
 lamb.allOf = allOf;
 lamb.anyOf = anyOf;
@@ -348,3 +415,5 @@ lamb.isLTE = isLTE;
 lamb.isNot = isNot;
 lamb.isSVZ = isSVZ;
 lamb.not = not;
+lamb.unless = unless;
+lamb.when = when;
