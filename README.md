@@ -51,7 +51,7 @@ Lamb it's also delivered on a CDN, courtesy of [unpkg](https://unpkg.com/):
 The URL above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://unpkg.com/lamb@0.41.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.42.0/dist/lamb.min.js"></script>
 ```
 
 You can [try it right now](https://runkit.com/npm/lamb) in your browser, too.
@@ -95,6 +95,11 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.42.0 - *2016/10/25***
+  - **Fully compatible with versions down to 0.40.x**
+  - Added `unless` and `when`
+  - Improved performance of `condition`
+
 - **v0.41.0 - *2016/09/08***
   - **Fully compatible with versions down to 0.40.x**
   - Added `findWhere`, `findIndexWhere`, `hasPathValue`
@@ -125,9 +130,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Greatly improved performance of all grouping functions
   - Greatly improved performance of `transpose`, improved performance of `zip` as a consequence
   - Greatly improved performance of `getArgAt`
-
-- **v0.37.0 - *2016/08/10***
-  - **API change**: `sortedInsert` now returns an array copy of the given array-like if there is no element to insert, though still accepts `undefined` values if they are passed explicitly
-  - Greatly improved performance of all curry (and curried) functions
-  - Optimized `invoker` and `invokerOn`
-  - Minor performance improvements in the usage of the arguments object
