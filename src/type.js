@@ -93,7 +93,10 @@ function isUndefined (value) {
  * @returns {String}
  */
 function type (value) {
+    /* eslint-disable no-useless-escape */
     return _objectProto.toString.call(value).replace(/^\[\w+\s+|\]$/g, "");
+
+    /* eslint-enable no-useless-escape */
 }
 
 lamb.isNil = isNil;
