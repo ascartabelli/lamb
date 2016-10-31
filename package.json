@@ -4,6 +4,9 @@
     "name": "Andrea Scartabelli"
   },
   "description": "A lightweight, and docile, JavaScript library to help embracing functional programming.",
+  "files": [
+    "dist"
+  ],
   "homepage": "https://ascartabelli.github.io/lamb/",
   "keywords": [
     "functional programming",
@@ -31,7 +34,7 @@
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.43.0-alpha.1",
+  "version": "0.43.0-alpha.2",
   "devDependencies": {
     "coveralls": "^2.11.14",
     "gulp": "^3.9.1",
