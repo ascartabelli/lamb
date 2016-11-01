@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.43.0-alpha.3
+ * @version 0.43.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.43.0-alpha.3";
+    lamb._version = "0.43.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -861,6 +861,25 @@
     var _safeKeys = compose(Object.keys, Object);
 
     /**
+     * Sets, or creates, a property in a copy of the provided object to the desired value.
+     * @param {Object} source
+     * @param {String} key
+     * @param {*} value
+     * @returns {Object}
+     */
+    function _setIn (source, key, value) {
+        var result = {};
+
+        for (var prop in source) {
+            result[prop] = source[prop];
+        }
+
+        result[key] = value;
+
+        return result;
+    }
+
+    /**
      * Sets an index in an array-like object.<br/>
      * If provided with an updater function it will use it to update the current value,
      * otherwise sets the index to the specified value.
@@ -907,7 +926,7 @@
             );
         }
 
-        return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(Object(obj), key, v);
+        return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : _setIn(obj, key, v);
     }
 
     /**
@@ -2569,7 +2588,7 @@
      *
      * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
      * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
-     *
+     *x
      * // `user` still is {name: "John", surname: "Doe", age: 30}
      *
      * @memberof module:lamb
@@ -2582,7 +2601,11 @@
      * @returns {Object}
      */
     function setIn (source, key, value) {
-        return _merge(enumerables, source, make([key], [value]));
+        if (isNil(source)) {
+            throw _makeTypeErrorFor(source, "object");
+        }
+
+        return _setIn(source, key, value);
     }
 
     /**
@@ -2775,7 +2798,7 @@
      */
     function updateIn (source, key, updater) {
         return _isEnumerable(source, key) ?
-            setIn(source, key, updater(source[key])) :
+            _setIn(source, key, updater(source[key])) :
             _merge(enumerables, source);
     }
 

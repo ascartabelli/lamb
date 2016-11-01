@@ -268,7 +268,7 @@ function setAt (index, value) {
  *
  * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
  * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
- *
+ *x
  * // `user` still is {name: "John", surname: "Doe", age: 30}
  *
  * @memberof module:lamb
@@ -281,7 +281,11 @@ function setAt (index, value) {
  * @returns {Object}
  */
 function setIn (source, key, value) {
-    return _merge(enumerables, source, make([key], [value]));
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
+    }
+
+    return _setIn(source, key, value);
 }
 
 /**
@@ -474,7 +478,7 @@ function updateAt (index, updater) {
  */
 function updateIn (source, key, updater) {
     return _isEnumerable(source, key) ?
-        setIn(source, key, updater(source[key])) :
+        _setIn(source, key, updater(source[key])) :
         _merge(enumerables, source);
 }
 

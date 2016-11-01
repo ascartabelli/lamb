@@ -680,6 +680,25 @@ function _safeEnumerables (obj) {
 var _safeKeys = compose(Object.keys, Object);
 
 /**
+ * Sets, or creates, a property in a copy of the provided object to the desired value.
+ * @param {Object} source
+ * @param {String} key
+ * @param {*} value
+ * @returns {Object}
+ */
+function _setIn (source, key, value) {
+    var result = {};
+
+    for (var prop in source) {
+        result[prop] = source[prop];
+    }
+
+    result[key] = value;
+
+    return result;
+}
+
+/**
  * Sets an index in an array-like object.<br/>
  * If provided with an updater function it will use it to update the current value,
  * otherwise sets the index to the specified value.
@@ -726,7 +745,7 @@ function _setPathIn (obj, parts, value) {
         );
     }
 
-    return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : setIn(Object(obj), key, v);
+    return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : _setIn(obj, key, v);
 }
 
 /**
