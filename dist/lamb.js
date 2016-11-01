@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.43.0-alpha.4
+ * @version 0.43.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.43.0-alpha.4";
+    lamb._version = "0.43.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -843,13 +843,13 @@
      * @returns {String[]}
      */
     function _safeEnumerables (obj) {
-        var keys = [];
+        var result = [];
 
         for (var key in obj) {
-            keys.push(key);
+            result.push(key);
         }
 
-        return keys;
+        return result;
     }
 
     /**
@@ -991,7 +991,11 @@
      * @returns {Function}
      */
     var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
-        return (isNil(obj) ? Object.keys : getKeys)(obj);
+        if (isNil(obj)) {
+            throw _makeTypeErrorFor(obj, "object");
+        }
+
+        return getKeys(obj);
     });
 
     /**

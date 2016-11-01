@@ -662,13 +662,13 @@ function _partialWithIteratee (fn) {
  * @returns {String[]}
  */
 function _safeEnumerables (obj) {
-    var keys = [];
+    var result = [];
 
     for (var key in obj) {
-        keys.push(key);
+        result.push(key);
     }
 
-    return keys;
+    return result;
 }
 
 /**
@@ -810,7 +810,11 @@ function _toPathParts (path, separator) {
  * @returns {Function}
  */
 var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
-    return (isNil(obj) ? Object.keys : getKeys)(obj);
+    if (isNil(obj)) {
+        throw _makeTypeErrorFor(obj, "object");
+    }
+
+    return getKeys(obj);
 });
 
 /**
