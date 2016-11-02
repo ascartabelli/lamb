@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.43.0-alpha.6
+ * @version 0.43.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.43.0-alpha.6";
+    lamb._version = "0.43.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -4847,6 +4847,7 @@
      * @category Object
      * @see {@link module:lamb.hasKey|hasKey}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4874,6 +4875,7 @@
      * @category Object
      * @see {@link module:lamb.has|has}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {String} key
      * @returns {Function}
      */
@@ -4924,6 +4926,7 @@
      * @function
      * @see {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -4945,6 +4948,7 @@
      * @category Object
      * @see {@link module:lamb.hasOwn|hasOwn}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {String} key
      * @returns {Function}
      */
@@ -4956,7 +4960,8 @@
 
     /**
      * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
-     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+     * Note that the function will check even non-enumerable properties.
      * @example
      * var user = {
      *     name: "John",
@@ -5193,6 +5198,76 @@
      * @returns {Array<Array<String, *>>}
      */
     var pairs = _pairsFrom(enumerables);
+
+    /**
+     * Builds a partial application of {@link module:lamb.pathExistsIn|pathExistsIn} using the given
+     * path and the optional separator. The resulting function expects the object to check.<br/>
+     * Note that the function will check even non-enumerable properties.
+     * @example
+     * var user = {
+     *     name: "John",
+     *     surname: "Doe",
+     *     address: {
+     *         city: "New York"
+     *     },
+     *     scores: [10, 20, 15]
+     * };
+     *
+     * var hasCity = _.pathExists("address.city");
+     * var hasCountry = _.pathExists("address.country");
+     * var hasAtLeastThreeScores = _.pathExists("scores.2");
+     *
+     * hasCity(user) // => true
+     * hasCountry(user) // => false
+     * hasAtLeastThreeScores(user) // => true
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.pathExistsIn|pathExistsIn}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @param {String} path
+     * @param {String} [separator="."]
+     * @returns {Function}
+     */
+    function pathExists (path, separator) {
+        return function (obj) {
+            return pathExistsIn(obj, path, separator);
+        };
+    }
+
+    /**
+     * Checks if the provided path exists in the given object.<br/>
+     * Note that the function will check even non-enumerable properties.
+     * @example
+     * var user = {
+     *     name: "John",
+     *     surname: "Doe",
+     *     address: {
+     *         city: "New York"
+     *     },
+     *     scores: [10, 20, 15]
+     * };
+     *
+     * _.pathExistsIn(user, "address.city") // => true
+     * _.pathExistsIn(user, "address.country") // => false
+     * _.pathExistsIn(user, "scores.1") // => true
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.pathExists|pathExists}
+     * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
+     * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @param {Object} obj
+     * @param {String} path
+     * @param {String} [separator="."]
+     * @returns {Boolean}
+     */
+    function pathExistsIn (obj, path, separator) {
+        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+
+        return pathInfo.isValid;
+    }
 
     /**
      * Returns an object containing only the specified properties of the given object.<br/>
@@ -5630,6 +5705,8 @@
     lamb.ownPairs = ownPairs;
     lamb.ownValues = ownValues;
     lamb.pairs = pairs;
+    lamb.pathExists = pathExists;
+    lamb.pathExistsIn = pathExistsIn;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
     lamb.pickKeys = pickKeys;
