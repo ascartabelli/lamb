@@ -1,7 +1,3 @@
-var sinon = require("sinon");
-var stub = sinon.stub;
-var assert = sinon.assert;
-
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.function", function () {
@@ -555,21 +551,34 @@ describe("lamb.function", function () {
     });
 
     describe("debounce", function () {
+        var value;
+        var testFn;
+
+        beforeEach(function () {
+            jasmine.clock().install();
+            value = 0;
+            testFn = jasmine.createSpy("testFn").and.callFake(function (n) { value += n; });
+        });
+
+        afterEach(function () {
+            jasmine.clock().uninstall();
+        });
+
         it("should return a function that will execute the given function only if it stops being called for the specified timespan", function () {
-            var value = 0;
-            var testFn = sinon.spy(function (n) { value += n; });
             var debounced = lamb.debounce(testFn, 100);
-            var clock = sinon.useFakeTimers(Date.now());
+            jasmine.clock().mockDate(new Date());
 
             debounced(1);
             debounced(2);
             debounced(3);
-            assert.notCalled(testFn);
+
+            expect(testFn.calls.count()).toBe(0);
             expect(value).toBe(0);
-            clock.tick(101);
-            assert.calledOnce(testFn);
+
+            jasmine.clock().tick(101);
+
+            expect(testFn.calls.count()).toBe(1);
             expect(value).toBe(3);
-            clock.restore();
         });
     });
 
@@ -842,7 +851,16 @@ describe("lamb.function", function () {
     });
 
     describe("throttle", function () {
-        var foo = stub().returns(42);
+        var foo;
+
+        beforeEach(function () {
+            jasmine.clock().install();
+            foo = jasmine.createSpy("foo").and.returnValue(42);
+        });
+
+        afterEach(function () {
+            jasmine.clock().uninstall();
+        });
 
         it("should return a function that will invoke the passed function at most once in the given timespan", function () {
             var throttledFoo = lamb.throttle(foo, 100);
@@ -850,29 +868,27 @@ describe("lamb.function", function () {
             var r2 = throttledFoo();
             var r3 = throttledFoo();
 
-            assert.calledOnce(foo);
+            expect(foo.calls.count()).toBe(1);
             expect(r1 === 42).toBe(true);
             expect(r2 === 42).toBe(true);
             expect(r3 === 42).toBe(true);
 
-            foo.reset();
+            foo.calls.reset();
 
-            var clock = sinon.useFakeTimers(Date.now());
+            jasmine.clock().mockDate(new Date());
             throttledFoo = lamb.throttle(foo, 100);
 
             r1 = throttledFoo();
             r2 = throttledFoo();
 
-            clock.tick(101);
+            jasmine.clock().tick(101);
 
             r3 = throttledFoo();
 
-            assert.calledTwice(foo);
+            expect(foo.calls.count()).toBe(2);
             expect(r1 === 42).toBe(true);
             expect(r2 === 42).toBe(true);
             expect(r3 === 42).toBe(true);
-
-            clock.restore();
         });
     });
 
