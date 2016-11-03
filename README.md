@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.42.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.43.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.42.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.43.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -105,6 +105,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.43.0 - *2016/11/03***
+  - **Fully compatible with versions down to 0.40.x**
+  - Added `pathExists` and `pathExistsIn`
+  - Improved performance of `setIn`, `setKey`, `updateIn` and `updateKey`
+  - Improved performance of `setPath`, `setPathIn`, `updatePath` and `updatePathIn`
+
 - **v0.42.0 - *2016/10/25***
   - **Fully compatible with versions down to 0.40.x**
   - Added `unless` and `when`
@@ -133,10 +139,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Made `intersection` use `everyIn` instead of the native method
   - Updated doc comments, examples and tests for `uniques`
   - Minor performance improvement of `uniques`
-
-- **v0.38.0 - *2016/08/19***
-  - **Fully compatible with versions down to 0.37.x**
-  - Improved performance of `flatMap`, `flatMapWith`, `flatten` and `shallowFlatten`
-  - Greatly improved performance of all grouping functions
-  - Greatly improved performance of `transpose`, improved performance of `zip` as a consequence
-  - Greatly improved performance of `getArgAt`
