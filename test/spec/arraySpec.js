@@ -4,6 +4,56 @@ describe("lamb.array", function () {
     // for checking "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
 
+    describe("append / appendTo", function () {
+        var arr = ["a", "b", "c", "d", "e"];
+        var s = "abcde";
+        var r1 = ["a", "b", "c", "d", "e", "z"];
+        var r2 = ["a", "b", "c", "d", "e", ["z"]];
+        var r3 = ["a", "b", "c", "d", "e", void 0];
+
+        afterEach(function () {
+            expect(arr).toEqual(["a", "b", "c", "d", "e"]);
+        });
+
+        it("should append a value at the end of a copy of the given array", function () {
+            expect(lamb.appendTo(arr, "z")).toEqual(r1);
+            expect(lamb.append("z")(arr)).toEqual(r1);
+            expect(lamb.appendTo(arr, ["z"])).toEqual(r2);
+            expect(lamb.append(["z"])(arr)).toEqual(r2);
+        });
+
+        it("should accept array-like objects", function () {
+            expect(lamb.appendTo(s, "z")).toEqual(r1);
+            expect(lamb.append("z")(s)).toEqual(r1);
+            expect(lamb.appendTo(s, ["z"])).toEqual(r2);
+            expect(lamb.append(["z"])(s)).toEqual(r2);
+        });
+
+        it("should append an `undefined` value when the `value` parameter is missing", function () {
+            expect(lamb.appendTo(arr)).toEqual(r3);
+            expect(lamb.append()(arr)).toEqual(r3);
+        });
+
+        it("should throw an exception if called without the data argument", function () {
+            expect(lamb.appendTo).toThrow();
+            expect(lamb.append("z")).toThrow();
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.appendTo(null, "z"); }).toThrow();
+            expect(function () { lamb.appendTo(void 0, "z"); }).toThrow();
+            expect(function () { lamb.append("z")(null); }).toThrow();
+            expect(function () { lamb.append("z")(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.appendTo(value, "z")).toEqual(["z"]);
+                expect(lamb.append("z")(value)).toEqual(["z"]);
+            });
+        });
+    });
+
     describe("difference", function () {
         var a1 = [0, 1, 2, 3, 4, NaN];
         var a2 = [-0, 2, 3, 4, 5, NaN];

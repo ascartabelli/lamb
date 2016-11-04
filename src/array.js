@@ -1,4 +1,43 @@
 /**
+ * A curried version of {@link module:lamb.appendTo|appendTo} that uses the value to append
+ * to build a function expecting the array-like object to act upon.
+ * @example
+ * var arr = [1, 2, 3, 4];
+ *
+ * _.append(5)(arr) // => [1, 2, 3, 4, 5]
+ * _.append([5])(arr) // => [1, 2, 3, 4, [5]]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.appendTo|appendTo}
+ * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+ * @param {*} value
+ * @returns {Function}
+ */
+var append = _curry(appendTo, 2, true);
+
+/**
+ * Appends the given value at the end of a copy of the provided array-like object.
+ * @example
+ * var arr = [1, 2, 3, 4];
+ *
+ * _.appendTo(arr, 5) // => [1, 2, 3, 4, 5]
+ * _.appendTo(arr, [5]) // => [1, 2, 3, 4, [5]]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.append|append}
+ * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+ * @param {ArrayLike} arrayLike
+ * @param {*} value
+ * @returns {Array}
+ */
+function appendTo (arrayLike, value) {
+    return Array.isArray(arrayLike) ? arrayLike.concat([value]) : slice(arrayLike).concat([value]);
+}
+
+/**
  * Returns an array of items present only in the first of the given arrays.<br/>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
@@ -206,6 +245,7 @@ var init = partial(slice, _, 0, -1);
  * @category Array
  * @see {@link module:lamb.insertAt|insertAt}
  * @see {@link module:lamb.sortedInsert|sortedInsert}
+ * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
  * @param {ArrayLike} arrayLike
  * @param {Number} index
  * @param {*} element
@@ -234,6 +274,7 @@ function insert (arrayLike, index, element) {
  * @category Array
  * @see {@link module:lamb.insert|insert}
  * @see {@link module:lamb.sortedInsert|sortedInsert}
+ * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
  * @param {Number} index
  * @param {*} element
  * @returns {Function}
@@ -690,6 +731,8 @@ var zip = compose(transpose, list);
  */
 var zipWithIndex = mapWith(binary(list));
 
+lamb.append = append;
+lamb.appendTo = appendTo;
 lamb.difference = difference;
 lamb.drop = drop;
 lamb.dropN = dropN;
