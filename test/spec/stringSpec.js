@@ -75,16 +75,22 @@ describe("lamb.string", function () {
     describe("testWith", function () {
         it("should build a predicate accepting a string value to be tested against the pattern", function () {
             var hasNumbersOnly = lamb.testWith(/^\d+$/);
+            var hasOnlyLowerCaseLetters = lamb.testWith(new RegExp("^[a-z]+$"));
 
             expect(hasNumbersOnly("123a")).toBe(false);
             expect(hasNumbersOnly("123")).toBe(true);
-        });
-
-        it("should accept RegExp object instances other than literals", function () {
-            var hasOnlyLowerCaseLetters = lamb.testWith(new RegExp("^[a-z]+$"));
-
             expect(hasOnlyLowerCaseLetters("aBc")).toBe(false);
             expect(hasOnlyLowerCaseLetters("abc")).toBe(true);
+        });
+
+        it("should be safe to reuse the function even when the \"global\" flag is used in the pattern", function () {
+            var re = /^\d+$/g;
+            var hasNumbersOnly = lamb.testWith(re);
+
+            expect(hasNumbersOnly("123")).toBe(true);
+            expect(re.lastIndex).toBe(0);
+            expect(hasNumbersOnly("123")).toBe(true);
+            expect(re.lastIndex).toBe(0);
         });
     });
 });

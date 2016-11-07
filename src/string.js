@@ -83,7 +83,9 @@ function repeat (source, times) {
  * @returns {Function}
  */
 function testWith (pattern) {
-    return _reProto.test.bind(pattern);
+    return function (s) {
+        return s.search(pattern) !== -1;
+    };
 }
 
 lamb.padLeft = padLeft;

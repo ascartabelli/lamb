@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.44.0-alpha.2
+ * @version 0.44.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.44.0-alpha.2";
+    lamb._version = "0.44.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -26,7 +26,6 @@
     // some prototype shortcuts for internal use
     var _arrayProto = Array.prototype;
     var _objectProto = Object.prototype;
-    var _reProto = RegExp.prototype;
 
     /**
      * Builds a function that returns a constant value.
@@ -5850,7 +5849,9 @@
      * @returns {Function}
      */
     function testWith (pattern) {
-        return _reProto.test.bind(pattern);
+        return function (s) {
+            return s.search(pattern) !== -1;
+        };
     }
 
     lamb.padLeft = padLeft;

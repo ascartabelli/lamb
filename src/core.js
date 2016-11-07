@@ -5,7 +5,6 @@ var _ = lamb;
 // some prototype shortcuts for internal use
 var _arrayProto = Array.prototype;
 var _objectProto = Object.prototype;
-var _reProto = RegExp.prototype;
 
 /**
  * Builds a function that returns a constant value.
