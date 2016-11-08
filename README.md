@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.43.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.44.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.43.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.44.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -105,6 +105,14 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.44.0 - *2016/11/08***
+  - **API change**: `repeat` and `testWith` now throw an exception when the source string is `nil` and convert to string every other value
+  - **API change**: `repeat` now floors the value received as the `times` parameter instead of ceiling it
+  - **API change**: the `char` parameter of the padding functions isn't optional anymore and will be coerced to string
+  - **Fixed**: predicates built with `testWith` are now safe to reuse even when the global flag is used in the pattern
+  - Added `append` and `appendTo`
+  - Updated tests of all string functions
+
 - **v0.43.0 - *2016/11/03***
   - **Fully compatible with versions down to 0.40.x**
   - Added `pathExists` and `pathExistsIn`
@@ -131,11 +139,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Updated tests of array accessors
   - Updated tests of object and path accessors
   - Improved performance of `hasKeyValue`
-
-- **v0.39.0 - *2016/08/26***
-  - **Fully compatible with versions down to 0.37.x**
-  - Added `every`, `everyIn`, `some`, `someIn`
-  - Updated tests for functions using predicates
-  - Made `intersection` use `everyIn` instead of the native method
-  - Updated doc comments, examples and tests for `uniques`
-  - Minor performance improvement of `uniques`
