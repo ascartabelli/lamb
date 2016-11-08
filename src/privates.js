@@ -674,10 +674,21 @@ function _safeEnumerables (obj) {
 /**
  * A null-safe version of <code>Object.keys</code>.
  * @private
+ * @function
  * @param {Object} obj
  * @returns {String[]}
  */
 var _safeKeys = compose(Object.keys, Object);
+
+/**
+ * A generic version of <code>String.prototype.search</code>
+ * @private
+ * @function
+ * @param {String} s
+ * @param {RegExp} pattern
+ * @return {Number}
+ */
+var _search = generic(String.prototype.search);
 
 /**
  * Sets, or creates, a property in a copy of the provided object to the desired value.

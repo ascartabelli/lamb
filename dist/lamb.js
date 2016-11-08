@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.44.0-alpha.4
+ * @version 0.44.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.44.0-alpha.4";
+    lamb._version = "0.44.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -854,10 +854,21 @@
     /**
      * A null-safe version of <code>Object.keys</code>.
      * @private
+     * @function
      * @param {Object} obj
      * @returns {String[]}
      */
     var _safeKeys = compose(Object.keys, Object);
+
+    /**
+     * A generic version of <code>String.prototype.search</code>
+     * @private
+     * @function
+     * @param {String} s
+     * @param {RegExp} pattern
+     * @return {Number}
+     */
+    var _search = generic(String.prototype.search);
 
     /**
      * Sets, or creates, a property in a copy of the provided object to the desired value.
@@ -5854,7 +5865,7 @@
      */
     function testWith (pattern) {
         return function (s) {
-            return s.search(pattern) !== -1;
+            return _search(s, pattern) !== -1;
         };
     }
 

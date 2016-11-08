@@ -88,7 +88,7 @@ function repeat (source, times) {
  */
 function testWith (pattern) {
     return function (s) {
-        return s.search(pattern) !== -1;
+        return _search(s, pattern) !== -1;
     };
 }
 
