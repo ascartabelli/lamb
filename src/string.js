@@ -60,9 +60,13 @@ function padRight (source, char, len) {
  * @returns {String}
  */
 function repeat (source, times) {
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "string");
+    }
+
     var result = "";
 
-    for (var i = 0; i < times; i++) {
+    for (var i = 0, len = Math.floor(times); i < len; i++) {
         result += source;
     }
 

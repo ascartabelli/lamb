@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.44.0-alpha.3
+ * @version 0.44.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.44.0-alpha.3";
+    lamb._version = "0.44.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5826,9 +5826,13 @@
      * @returns {String}
      */
     function repeat (source, times) {
+        if (isNil(source)) {
+            throw _makeTypeErrorFor(source, "string");
+        }
+
         var result = "";
 
-        for (var i = 0; i < times; i++) {
+        for (var i = 0, len = Math.floor(times); i < len; i++) {
             result += source;
         }
 
