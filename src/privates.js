@@ -313,7 +313,7 @@ function _getPadding (source, char, len) {
         source = String(source);
     }
 
-    return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
+    return _repeat(String(char)[0] || "", Math.ceil(len - source.length));
 }
 
 /**
@@ -652,6 +652,23 @@ function _partialWithIteratee (fn) {
 
         return partial(f, _, iteratee, optionalArgument);
     };
+}
+
+/**
+ * A null-safe function to repeat the source string the desired amount of times.
+ * @private
+ * @param {String} source
+ * @param {Number} times
+ * @returns {String}
+ */
+function _repeat (source, times) {
+    var result = "";
+
+    for (var i = 0; i < times; i++) {
+        result += source;
+    }
+
+    return result;
 }
 
 /**

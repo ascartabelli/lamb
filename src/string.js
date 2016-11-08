@@ -6,13 +6,13 @@
  * _.padLeft("foo", "-", 5) // => "--foo"
  * _.padLeft("foo", "-", 3) // => "foo"
  * _.padLeft("foo", "ab", 7) // => "aaaafoo"
- * _.padLeft("foo", "", 5) // => "  foo"
+ * _.padLeft("foo", "", 5) // => "foo"
  * _.padLeft("", "-", 5) // => "-----"
  *
  * @memberof module:lamb
  * @category String
  * @param {String} source
- * @param {String} [char=" "] - The padding char. If a string is passed only the first char is used.
+ * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len
  * @returns {String}
  */
@@ -28,13 +28,13 @@ function padLeft (source, char, len) {
  * _.padRight("foo", "-", 5) // => "foo--"
  * _.padRight("foo", "-", 3) // => "foo"
  * _.padRight("foo", "ab", 7) // => "fooaaaa"
- * _.padRight("foo", "", 5) // => "foo  "
+ * _.padRight("foo", "", 5) // => "foo"
  * _.padRight("", "-", 5) // => "-----"
  *
  * @memberof module:lamb
  * @category String
  * @param {String} source
- * @param {String} [char=" "] - The padding char. If a string is passed only the first char is used.
+ * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len
  * @returns {String}
  */
@@ -64,13 +64,7 @@ function repeat (source, times) {
         throw _makeTypeErrorFor(source, "string");
     }
 
-    var result = "";
-
-    for (var i = 0, len = Math.floor(times); i < len; i++) {
-        result += source;
-    }
-
-    return result;
+    return _repeat(source, Math.floor(times));
 }
 
 /**

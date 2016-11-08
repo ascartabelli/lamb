@@ -31,13 +31,19 @@ describe("lamb.string", function () {
             expect(lamb.padRight(source, "ab", 7)).toBe("fooaaaa");
         });
 
-        it("should use a space as a default padding character", function () {
-            expect(lamb.padLeft(source, "", 5)).toBe("  foo");
-            expect(lamb.padRight(source, "", 5)).toBe("foo  ");
+        it("should not do any padding if the padding char is an empty string", function () {
+            expect(lamb.padLeft(source, "", 5)).toBe("foo");
+            expect(lamb.padRight(source, "", 5)).toBe("foo");
+        });
 
-            [null, void 0, [], /foo/, 1, function () {}, NaN, true, new Date(), {a: 2}].forEach(function (value) {
-                expect(lamb.padLeft(source, value, 5)).toBe("  foo");
-                expect(lamb.padRight(source, value, 5)).toBe("foo  ");
+        it("should convert to string values received as padding characters", function () {
+            var d = new Date();
+            var dChar = String(d)[0];
+            var values = [null, void 0, [7,8], /foo/, 1, function () {}, NaN, true, d, {a: 2}];
+            var resultsA = ["nnfoo", "uufoo", "77foo", "//foo", "11foo", "fffoo", "NNfoo", "ttfoo", dChar + dChar + "foo", "[[foo"]
+            values.forEach(function (value, idx) {
+                expect(lamb.padLeft(source, value, 5)).toBe(resultsA[idx]);
+                // expect(lamb.padRight(source, value, 5)).toBe("foo  ");
             });
         });
 

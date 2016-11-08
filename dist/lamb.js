@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.44.0-alpha.5
+ * @version 0.44.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.44.0-alpha.5";
+    lamb._version = "0.44.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -493,7 +493,7 @@
             source = String(source);
         }
 
-        return repeat(Object(char)[0] || " ", Math.ceil(len - source.length));
+        return _repeat(String(char)[0] || "", Math.ceil(len - source.length));
     }
 
     /**
@@ -832,6 +832,23 @@
 
             return partial(f, _, iteratee, optionalArgument);
         };
+    }
+
+    /**
+     * A null-safe function to repeat the source string the desired amount of times.
+     * @private
+     * @param {String} source
+     * @param {Number} times
+     * @returns {String}
+     */
+    function _repeat (source, times) {
+        var result = "";
+
+        for (var i = 0; i < times; i++) {
+            result += source;
+        }
+
+        return result;
     }
 
     /**
@@ -5783,13 +5800,13 @@
      * _.padLeft("foo", "-", 5) // => "--foo"
      * _.padLeft("foo", "-", 3) // => "foo"
      * _.padLeft("foo", "ab", 7) // => "aaaafoo"
-     * _.padLeft("foo", "", 5) // => "  foo"
+     * _.padLeft("foo", "", 5) // => "foo"
      * _.padLeft("", "-", 5) // => "-----"
      *
      * @memberof module:lamb
      * @category String
      * @param {String} source
-     * @param {String} [char=" "] - The padding char. If a string is passed only the first char is used.
+     * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len
      * @returns {String}
      */
@@ -5805,13 +5822,13 @@
      * _.padRight("foo", "-", 5) // => "foo--"
      * _.padRight("foo", "-", 3) // => "foo"
      * _.padRight("foo", "ab", 7) // => "fooaaaa"
-     * _.padRight("foo", "", 5) // => "foo  "
+     * _.padRight("foo", "", 5) // => "foo"
      * _.padRight("", "-", 5) // => "-----"
      *
      * @memberof module:lamb
      * @category String
      * @param {String} source
-     * @param {String} [char=" "] - The padding char. If a string is passed only the first char is used.
+     * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len
      * @returns {String}
      */
@@ -5841,13 +5858,7 @@
             throw _makeTypeErrorFor(source, "string");
         }
 
-        var result = "";
-
-        for (var i = 0, len = Math.floor(times); i < len; i++) {
-            result += source;
-        }
-
-        return result;
+        return _repeat(source, Math.floor(times));
     }
 
     /**
