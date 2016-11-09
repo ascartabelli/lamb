@@ -926,9 +926,9 @@ function validate (obj, checkers) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.validate|validate}
  * @see {@link module:lamb.checker|checker}
- * @function
  * @param {Function[]} checkers
  * @returns {Function}
  */

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.44.0
+ * @version 0.45.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.44.0";
+    lamb._version = "0.45.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -97,10 +97,10 @@
 
     /**
      * Creates generic functions out of methods.
-     * @memberof module:lamb
-     * @category Core
      * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
      * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+     * @memberof module:lamb
+     * @category Core
      * @function
      * @example
      * // Lamb's "slice" is actually implemented like this
@@ -359,8 +359,8 @@
      * @private
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
-     * @param {Boolean} isRightCurry
-     * @param {Boolean} isAutoCurry
+     * @param {Boolean} [isRightCurry=false]
+     * @param {Boolean} [isAutoCurry=false]
      * @returns {Function}
      */
     function _curry (fn, arity, isRightCurry, isAutoCurry) {
@@ -1505,6 +1505,24 @@
     var reduceWith = _partialWithIteratee(reduce);
 
     /**
+     * Reverses a copy of the given array-like object.
+     * @example
+     * var arr = [1, 2, 3];
+     *
+     * _.reverse(arr) // => [3, 2, 1];
+     *
+     * // `arr` still is [1, 2, 3]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @param {ArrayLike} arrayLike
+     * @returns {Array}
+     */
+    function reverse (arrayLike) {
+        return slice(arrayLike).reverse();
+    }
+
+    /**
      * Builds an array by extracting a portion of an array-like object.<br/>
      * It's a generic version of [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}.
      * @example
@@ -1600,6 +1618,7 @@
     lamb.reduceRight = reduceRight;
     lamb.reduceRightWith = reduceRightWith;
     lamb.reduceWith = reduceWith;
+    lamb.reverse = reverse;
     lamb.slice = slice;
     lamb.some = some;
     lamb.someIn = someIn;
@@ -3411,29 +3430,55 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @see {@link module:lamb.pluck|pluck}
      * @function
+     * @see {@link module:lamb.pluck|pluck}
      * @param {String} key
      * @returns {Function}
      */
     var pluckKey = compose(mapWith, getKey);
 
     /**
-     * Reverses a copy of the given array-like object.
+     * A curried version of {@link module:lamb.pullFrom|pullFrom} expecting
+     * a list of values to build a function waiting for an array-like object.<br/>
+     * The new function will create an array copy of the array-like without
+     * the specified values.<br/>
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
      * @example
-     * var arr = [1, 2, 3];
+     * var scores = [40, 20, 30, 10];
+     * var newScores = [30, 10];
+     * var pullNewScores = _.pull(newScores);
      *
-     * _.reverse(arr) // => [3, 2, 1];
-     *
-     * // `arr` still is [1, 2, 3]
+     * pullNewScores(scores) // => [40, 20]
      *
      * @memberof module:lamb
      * @category Array
-     * @param {ArrayLike} arrayLike
+     * @function
+     * @see {@link module:lamb.pullFrom|pullFrom}
+     * @param {ArrayLike} values
+     * @returns {Function}
+     */
+    var pull = _curry(pullFrom, 2, true);
+
+    /**
+     * Creates an array copy of the given array-like object without the
+     * specified values.<br/>
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.pullFrom(arr, [2, 5]) // => [1, 3, 4]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.pull|pull}
+     * @param {ArrayLike} array
+     * @param {ArrayLike} values
      * @returns {Array}
      */
-    function reverse (arrayLike) {
-        return slice(arrayLike).reverse();
+    function pullFrom (array, values) {
+        return filter(array, function (element) {
+            return !isIn(values, element);
+        });
     }
 
     /**
@@ -3727,7 +3772,8 @@
     lamb.partitionWith = partitionWith;
     lamb.pluck = pluck;
     lamb.pluckKey = pluckKey;
-    lamb.reverse = reverse;
+    lamb.pull = pull;
+    lamb.pullFrom = pullFrom;
     lamb.shallowFlatten = shallowFlatten;
     lamb.tail = tail;
     lamb.take = take;
@@ -5734,9 +5780,9 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.validate|validate}
      * @see {@link module:lamb.checker|checker}
-     * @function
      * @param {Function[]} checkers
      * @returns {Function}
      */

@@ -433,29 +433,55 @@ function pluck (arrayLike, key) {
  *
  * @memberof module:lamb
  * @category Array
- * @see {@link module:lamb.pluck|pluck}
  * @function
+ * @see {@link module:lamb.pluck|pluck}
  * @param {String} key
  * @returns {Function}
  */
 var pluckKey = compose(mapWith, getKey);
 
 /**
- * Reverses a copy of the given array-like object.
+ * A curried version of {@link module:lamb.pullFrom|pullFrom} expecting
+ * a list of values to build a function waiting for an array-like object.<br/>
+ * The new function will create an array copy of the array-like without
+ * the specified values.<br/>
+ * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
  * @example
- * var arr = [1, 2, 3];
+ * var scores = [40, 20, 30, 10];
+ * var newScores = [30, 10];
+ * var pullNewScores = _.pull(newScores);
  *
- * _.reverse(arr) // => [3, 2, 1];
- *
- * // `arr` still is [1, 2, 3]
+ * pullNewScores(scores) // => [40, 20]
  *
  * @memberof module:lamb
  * @category Array
- * @param {ArrayLike} arrayLike
+ * @function
+ * @see {@link module:lamb.pullFrom|pullFrom}
+ * @param {ArrayLike} values
+ * @returns {Function}
+ */
+var pull = _curry(pullFrom, 2, true);
+
+/**
+ * Creates an array copy of the given array-like object without the
+ * specified values.<br/>
+ * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.pullFrom(arr, [2, 5]) // => [1, 3, 4]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.pull|pull}
+ * @param {ArrayLike} array
+ * @param {ArrayLike} values
  * @returns {Array}
  */
-function reverse (arrayLike) {
-    return slice(arrayLike).reverse();
+function pullFrom (array, values) {
+    return filter(array, function (element) {
+        return !isIn(values, element);
+    });
 }
 
 /**
@@ -749,7 +775,8 @@ lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
-lamb.reverse = reverse;
+lamb.pull = pull;
+lamb.pullFrom = pullFrom;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;
 lamb.take = take;

@@ -179,8 +179,8 @@ function _currier (fn, arity, isRightCurry, isAutoCurry, argsHolder) {
  * @private
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
- * @param {Boolean} isRightCurry
- * @param {Boolean} isAutoCurry
+ * @param {Boolean} [isRightCurry=false]
+ * @param {Boolean} [isAutoCurry=false]
  * @returns {Function}
  */
 function _curry (fn, arity, isRightCurry, isAutoCurry) {

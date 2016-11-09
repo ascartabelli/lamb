@@ -466,6 +466,24 @@ var reduceRightWith = _partialWithIteratee(reduceRight);
 var reduceWith = _partialWithIteratee(reduce);
 
 /**
+ * Reverses a copy of the given array-like object.
+ * @example
+ * var arr = [1, 2, 3];
+ *
+ * _.reverse(arr) // => [3, 2, 1];
+ *
+ * // `arr` still is [1, 2, 3]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @param {ArrayLike} arrayLike
+ * @returns {Array}
+ */
+function reverse (arrayLike) {
+    return slice(arrayLike).reverse();
+}
+
+/**
  * Builds an array by extracting a portion of an array-like object.<br/>
  * It's a generic version of [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}.
  * @example
@@ -561,6 +579,7 @@ lamb.reduce = reduce;
 lamb.reduceRight = reduceRight;
 lamb.reduceRightWith = reduceRightWith;
 lamb.reduceWith = reduceWith;
+lamb.reverse = reverse;
 lamb.slice = slice;
 lamb.some = some;
 lamb.someIn = someIn;

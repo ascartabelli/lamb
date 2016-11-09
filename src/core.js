@@ -76,10 +76,10 @@ function compose () {
 
 /**
  * Creates generic functions out of methods.
- * @memberof module:lamb
- * @category Core
  * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
  * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
+ * @memberof module:lamb
+ * @category Core
  * @function
  * @example
  * // Lamb's "slice" is actually implemented like this

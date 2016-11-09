@@ -650,6 +650,32 @@ describe("lamb.array_basics", function () {
         });
     });
 
+    describe("reverse", function () {
+        it("should reverse a copy of an array-like object", function () {
+            var arr = [1, 2, 3, 4, 5];
+            var s = "hello";
+
+            expect(lamb.reverse(arr)).toEqual([5, 4, 3, 2, 1]);
+            expect(lamb.reverse(s)).toEqual(["o", "l", "l", "e", "h"]);
+            expect(arr).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should throw an exception if called without arguments", function () {
+            expect(lamb.reverse).toThrow();
+        });
+
+        it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
+            expect(function () { lamb.reverse(null); }).toThrow();
+            expect(function () { lamb.reverse(void 0); }).toThrow();
+        });
+
+        it("should treat every other value as an empty array", function () {
+            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                expect(lamb.reverse(value)).toEqual([]);
+            });
+        });
+    });
+
     describe("some / someIn", function () {
         var fakeContext = {};
         var a1 = [1, 3, 5, 6, 7, 8];
