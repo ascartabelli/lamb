@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.45.0-alpha.2
+ * @version 0.45.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.45.0-alpha.2";
+    lamb._version = "0.45.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5194,6 +5194,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.pathSatisfies|pathSatisfies}
      * @param {Function} predicate
      * @param {String} key
      * @returns {Function}
@@ -5411,6 +5412,43 @@
         var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
 
         return pathInfo.isValid;
+    }
+
+    /**
+     * Builds a predicate that verifies if a condition is satisfied for the given
+     * path in an object.<br/>
+     * Like the other "path functions" you can use integers in the path, even
+     * negative ones, to refer to array-like object indexes, but the priority will
+     * be given to existing object keys.
+     * @example
+     * var user = {
+     *     name: "John",
+     *     performance: {
+     *         scores: [1, 5, 10]
+     *     }
+     * };
+     *
+     * var isGreaterThan = _.curryRight(_.isGT);
+     * var gotAnHighScore = _.pathSatisfies(_.contains(10), "performance.scores");
+     * var hadAGoodStart = _.pathSatisfies(isGreaterThan(6), "performance.scores.0");
+     *
+     * gotAnHighScore(user) // => true
+     * hadAGoodStart(user) // => false
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.keySatisfies|keySatisfies}
+     * @param {Function} predicate
+     * @param {String} path
+     * @param {String} [separator="."]
+     * @returns {Function}
+     */
+    function pathSatisfies (predicate, path, separator) {
+        return function (obj) {
+            var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+
+            return predicate.call(this, pathInfo.target);
+        };
     }
 
     /**
@@ -5852,6 +5890,7 @@
     lamb.pairs = pairs;
     lamb.pathExists = pathExists;
     lamb.pathExistsIn = pathExistsIn;
+    lamb.pathSatisfies = pathSatisfies;
     lamb.pick = pick;
     lamb.pickIf = pickIf;
     lamb.pickKeys = pickKeys;
