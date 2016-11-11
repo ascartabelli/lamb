@@ -259,19 +259,19 @@ function _getInsertionIndex (array, element, comparer, start, end) {
 }
 
 /**
- * Checks if the given index, even negative, exists in the target object, if
- * it's an array-like, and transforms it to a natural number.
+ * Checks if the given index, even negative, is an integer within the target
+ * length. If so returns its natural number equivalent.<br/>
  * Returns <code>undefined<code> otherwise.
  * @private
  * @param {ArrayLike} target
- * @param {Number} index
+ * @param {Number} idx
  * @returns {Number|Undefined}
  */
-function _getNaturalIndex (target, index) {
+function _getNaturalIndex (target, idx) {
     var len = target.length;
 
-    if (_isInteger(index) && _isInteger(len)) {
-        return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+    if (_isInteger(idx) && _isInteger(len)) {
+        return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
     } else {
         return void 0;
     }
@@ -360,15 +360,10 @@ function _getPathKey (target, key, includeNonEnumerables) {
         return key;
     }
 
-    var keyAsNumber = Number(key);
+    var n = +key;
+    var len = target && target.length;
 
-    if (keyAsNumber < 0) {
-        return _getNaturalIndex(target, keyAsNumber);
-    } else if (Array.isArray(target) && keyAsNumber < target.length) {
-        return keyAsNumber;
-    }
-
-    return void 0;
+    return n < 0 && n >= -len ? n + len : n < len ? n : void 0;
 }
 
 /**
@@ -732,17 +727,17 @@ function _setIn (source, key, value) {
  * otherwise sets the index to the specified value.
  * @private
  * @param {ArrayLike} arrayLike
- * @param {Number} index
+ * @param {Number} idx
  * @param {*} [value]
  * @param {Function} [updater]
  * @returns {Array}
  */
-function _setIndex (arrayLike, index, value, updater) {
+function _setIndex (arrayLike, idx, value, updater) {
     var result = slice(arrayLike);
-    var idx = _getNaturalIndex(result, index);
+    var n = _getNaturalIndex(result, idx);
 
-    if (!isUndefined(idx)) {
-        result[idx] = arguments.length === 4 ? updater(arrayLike[idx]) : value;
+    if (!isUndefined(n)) {
+        result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
     }
 
     return result;

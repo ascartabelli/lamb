@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.45.0-alpha.3
+ * @version 0.45.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.45.0-alpha.3";
+    lamb._version = "0.45.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -439,19 +439,19 @@
     }
 
     /**
-     * Checks if the given index, even negative, exists in the target object, if
-     * it's an array-like, and transforms it to a natural number.
+     * Checks if the given index, even negative, is an integer within the target
+     * length. If so returns its natural number equivalent.<br/>
      * Returns <code>undefined<code> otherwise.
      * @private
      * @param {ArrayLike} target
-     * @param {Number} index
+     * @param {Number} idx
      * @returns {Number|Undefined}
      */
-    function _getNaturalIndex (target, index) {
+    function _getNaturalIndex (target, idx) {
         var len = target.length;
 
-        if (_isInteger(index) && _isInteger(len)) {
-            return clamp(index, -len, len - 1) === index ? index < 0 ? index + len : index : void 0;
+        if (_isInteger(idx) && _isInteger(len)) {
+            return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
         } else {
             return void 0;
         }
@@ -540,15 +540,10 @@
             return key;
         }
 
-        var keyAsNumber = Number(key);
+        var n = +key;
+        var len = target && target.length;
 
-        if (keyAsNumber < 0) {
-            return _getNaturalIndex(target, keyAsNumber);
-        } else if (Array.isArray(target) && keyAsNumber < target.length) {
-            return keyAsNumber;
-        }
-
-        return void 0;
+        return n < 0 && n >= -len ? n + len : n < len ? n : void 0;
     }
 
     /**
@@ -912,17 +907,17 @@
      * otherwise sets the index to the specified value.
      * @private
      * @param {ArrayLike} arrayLike
-     * @param {Number} index
+     * @param {Number} idx
      * @param {*} [value]
      * @param {Function} [updater]
      * @returns {Array}
      */
-    function _setIndex (arrayLike, index, value, updater) {
+    function _setIndex (arrayLike, idx, value, updater) {
         var result = slice(arrayLike);
-        var idx = _getNaturalIndex(result, index);
+        var n = _getNaturalIndex(result, idx);
 
-        if (!isUndefined(idx)) {
-            result[idx] = arguments.length === 4 ? updater(arrayLike[idx]) : value;
+        if (!isUndefined(n)) {
+            result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
         }
 
         return result;
