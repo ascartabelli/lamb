@@ -509,7 +509,10 @@ var updateIndex = partial(_setIndex, _, _, null, _);
 
 /**
  * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
- * <code>key</code> and <code>updater</code>, expecting the object to act upon.
+ * <code>key</code> and <code>updater</code>, expecting the object to act upon.<br/>
+ * This function is meant for updating existing enumerable properties, and for those it
+ * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
+ * <code>source</code> is returned otherwise.
  * @example
  * var user = {name: "John", visits: 2};
  * var increment = _.partial(_.add, 1);
@@ -530,7 +533,13 @@ function updateKey (key, updater) {
 }
 
 /**
- * Builds a partial application of {@link module:lamb.updateIn|updateIn} expecting the object to act upon.
+ * Builds a partial application of {@link module:lamb.updatePathIn|updatePathIn}
+ * expecting the object to act upon.<br/>
+ * This function is meant for updating existing enumerable properties, and for those it
+ * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
+ * <code>source</code> is returned otherwise.<br/>
+ * Like the other "path" functions, negative indexes can be used to access array elements, but
+ * the priority will be given to existing, and enumerable, object keys.
  * @example
  * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
  * var increment = _.partial(_.add, 1);
@@ -558,7 +567,7 @@ function updatePath (path, updater, separator) {
  * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
  * <code>source</code> is returned otherwise.<br/>
  * Like the other "path" functions, negative indexes can be used to access array elements, but
- * the priority will be given to existing, and enumerable, object keys.<br/>
+ * the priority will be given to existing, and enumerable, object keys.
  * @example
  * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
  * var inc = _.partial(_.add, 1);

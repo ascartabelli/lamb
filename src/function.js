@@ -527,7 +527,7 @@ function throttle (fn, timespan) {
  * @example
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  *
- * weights.map(_.unary(parseInt)) // => [2, 10, 1, 7]
+ * _.map(weights, _.unary(parseInt)) // => [2, 10, 1, 7]
  *
  * @memberof module:lamb
  * @category Function

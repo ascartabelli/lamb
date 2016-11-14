@@ -48,11 +48,10 @@ function always (value) {
  * sayHi("bOb") // => "Hi, bOb"
  * fixNameAndSayHi("bOb") // "Hi, Bob"
  *
- * var getName = _.getKey("name");
  * var users = [{name: "fred"}, {name: "bOb"}];
- * var sayHiToUser = _.compose(fixNameAndSayHi, getName);
+ * var sayHiToUser = _.compose(fixNameAndSayHi, _.getKey("name"));
  *
- * users.map(sayHiToUser) // ["Hi, Fred", "Hi, Bob"]
+ * _.map(users, sayHiToUser) // ["Hi, Fred", "Hi, Bob"]
  *
  * @memberof module:lamb
  * @category Function
@@ -116,10 +115,17 @@ function identity (value) {
  * Builds a partially applied function. The <code>lamb</code> object itself can be used
  * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
  * @example
- * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
- * var parseInt10 = _.partial(parseInt, _, 10);
+ * var users = [
+ *     {id: 1, name: "John", active: true, confirmedMail: true},
+ *     {id: 2, name: "Jane", active: true, confirmedMail: false},
+ *     {id: 3, name: "Mario", active: false, confirmedMail: false}
+ * ];
+ * var isKeyTrue = _.partial(_.hasKeyValue, _, true);
+ * var isActive = isKeyTrue("active");
+ * var hasConfirmedMail = isKeyTrue("confirmedMail");
  *
- * weights.map(parseInt10) // => [2, 10, 1, 7]
+ * _.map(users, isActive) // => [true, true, false]
+ * _.map(users, hasConfirmedMail) // => [true, false, false]
  *
  * @memberof module:lamb
  * @category Function

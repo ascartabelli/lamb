@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.45.0-alpha.6
+ * @version 0.45.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.45.0-alpha.6";
+    lamb._version = "0.45.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -69,11 +69,10 @@
      * sayHi("bOb") // => "Hi, bOb"
      * fixNameAndSayHi("bOb") // "Hi, Bob"
      *
-     * var getName = _.getKey("name");
      * var users = [{name: "fred"}, {name: "bOb"}];
-     * var sayHiToUser = _.compose(fixNameAndSayHi, getName);
+     * var sayHiToUser = _.compose(fixNameAndSayHi, _.getKey("name"));
      *
-     * users.map(sayHiToUser) // ["Hi, Fred", "Hi, Bob"]
+     * _.map(users, sayHiToUser) // ["Hi, Fred", "Hi, Bob"]
      *
      * @memberof module:lamb
      * @category Function
@@ -137,10 +136,17 @@
      * Builds a partially applied function. The <code>lamb</code> object itself can be used
      * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
      * @example
-     * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
-     * var parseInt10 = _.partial(parseInt, _, 10);
+     * var users = [
+     *     {id: 1, name: "John", active: true, confirmedMail: true},
+     *     {id: 2, name: "Jane", active: true, confirmedMail: false},
+     *     {id: 3, name: "Mario", active: false, confirmedMail: false}
+     * ];
+     * var isKeyTrue = _.partial(_.hasKeyValue, _, true);
+     * var isActive = isKeyTrue("active");
+     * var hasConfirmedMail = isKeyTrue("confirmedMail");
      *
-     * weights.map(parseInt10) // => [2, 10, 1, 7]
+     * _.map(users, isActive) // => [true, true, false]
+     * _.map(users, hasConfirmedMail) // => [true, false, false]
      *
      * @memberof module:lamb
      * @category Function
@@ -2888,7 +2894,10 @@
 
     /**
      * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
-     * <code>key</code> and <code>updater</code>, expecting the object to act upon.
+     * <code>key</code> and <code>updater</code>, expecting the object to act upon.<br/>
+     * This function is meant for updating existing enumerable properties, and for those it
+     * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
+     * <code>source</code> is returned otherwise.
      * @example
      * var user = {name: "John", visits: 2};
      * var increment = _.partial(_.add, 1);
@@ -2909,7 +2918,13 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.updateIn|updateIn} expecting the object to act upon.
+     * Builds a partial application of {@link module:lamb.updatePathIn|updatePathIn}
+     * expecting the object to act upon.<br/>
+     * This function is meant for updating existing enumerable properties, and for those it
+     * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
+     * <code>source</code> is returned otherwise.<br/>
+     * Like the other "path" functions, negative indexes can be used to access array elements, but
+     * the priority will be given to existing, and enumerable, object keys.
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
      * var increment = _.partial(_.add, 1);
@@ -2937,7 +2952,7 @@
      * will delegate the "set action" to {@link module:lamb.setPathIn|setPathIn}; a copy of the
      * <code>source</code> is returned otherwise.<br/>
      * Like the other "path" functions, negative indexes can be used to access array elements, but
-     * the priority will be given to existing, and enumerable, object keys.<br/>
+     * the priority will be given to existing, and enumerable, object keys.
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
      * var inc = _.partial(_.add, 1);
@@ -4794,7 +4809,7 @@
      * @example
      * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
      *
-     * weights.map(_.unary(parseInt)) // => [2, 10, 1, 7]
+     * _.map(weights, _.unary(parseInt)) // => [2, 10, 1, 7]
      *
      * @memberof module:lamb
      * @category Function
@@ -5609,7 +5624,7 @@
      *     "last_name": "surname"
      * });
      *
-     * persons.map(normalizeKeys) // =>
+     * _.map(persons, normalizeKeys) // =>
      * // [
      * //     {"name": "John", "surname": "Doe"},
      * //     {"name": "Mario", "surname": "Rossi"}
@@ -5629,9 +5644,11 @@
      * a function expecting the object whose keys we want to {@link module:lamb.rename|rename}.
      * @example
      * var person = {"NAME": "John", "SURNAME": "Doe"};
+     * var arrayToLower = _.mapWith(_.invoker("toLowerCase"));
      * var makeLowerKeysMap = function (source) {
      *     var sourceKeys = _.keys(source);
-     *     return _.make(sourceKeys, sourceKeys.map(_.invoker("toLowerCase")));
+     *
+     *     return _.make(sourceKeys, arrayToLower(sourceKeys));
      * };
      * var lowerKeysFor = _.renameWith(makeLowerKeysMap);
      *

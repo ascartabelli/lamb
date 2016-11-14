@@ -757,7 +757,7 @@ function rename (source, keysMap) {
  *     "last_name": "surname"
  * });
  *
- * persons.map(normalizeKeys) // =>
+ * _.map(persons, normalizeKeys) // =>
  * // [
  * //     {"name": "John", "surname": "Doe"},
  * //     {"name": "Mario", "surname": "Rossi"}
@@ -777,9 +777,11 @@ var renameKeys = _curry(rename, 2, true);
  * a function expecting the object whose keys we want to {@link module:lamb.rename|rename}.
  * @example
  * var person = {"NAME": "John", "SURNAME": "Doe"};
+ * var arrayToLower = _.mapWith(_.invoker("toLowerCase"));
  * var makeLowerKeysMap = function (source) {
  *     var sourceKeys = _.keys(source);
- *     return _.make(sourceKeys, sourceKeys.map(_.invoker("toLowerCase")));
+ *
+ *     return _.make(sourceKeys, arrayToLower(sourceKeys));
  * };
  * var lowerKeysFor = _.renameWith(makeLowerKeysMap);
  *
