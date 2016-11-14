@@ -328,6 +328,20 @@ function isIn (arrayLike, value, fromIndex) {
 }
 
 /**
+ * Generates an array with the values passed as arguments.<br/>
+ * Behaves like ES6's [Array.of]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of}.
+ * @example
+ * _.list(1, 2, 3) // => [1, 2, 3]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @param {...*} value
+ * @returns {Array}
+ */
+var list = _argsToArrayFrom(0);
+
+/**
  * Builds a new array by applying the iteratee function to each element of the
  * received array-like object.<br/>
  * Since version <code>0.34.0</code> this function is no longer a generic version of
@@ -575,6 +589,7 @@ lamb.findIndexWhere = findIndexWhere;
 lamb.findWhere = findWhere;
 lamb.forEach = forEach;
 lamb.isIn = isIn;
+lamb.list = list;
 lamb.map = map;
 lamb.mapWith = mapWith;
 lamb.reduce = reduce;

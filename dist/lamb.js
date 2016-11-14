@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.45.0-alpha.5
+ * @version 0.45.0-alpha.6
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.45.0-alpha.5";
+    lamb._version = "0.45.0-alpha.6";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1362,6 +1362,20 @@
     }
 
     /**
+     * Generates an array with the values passed as arguments.<br/>
+     * Behaves like ES6's [Array.of]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of}.
+     * @example
+     * _.list(1, 2, 3) // => [1, 2, 3]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @param {...*} value
+     * @returns {Array}
+     */
+    var list = _argsToArrayFrom(0);
+
+    /**
      * Builds a new array by applying the iteratee function to each element of the
      * received array-like object.<br/>
      * Since version <code>0.34.0</code> this function is no longer a generic version of
@@ -1609,6 +1623,7 @@
     lamb.findWhere = findWhere;
     lamb.forEach = forEach;
     lamb.isIn = isIn;
+    lamb.list = list;
     lamb.map = map;
     lamb.mapWith = mapWith;
     lamb.reduce = reduce;
@@ -3302,19 +3317,6 @@
     }
 
     /**
-     * Generates an array with the values passed as arguments.
-     * @example
-     * _.list(1, 2, 3) // => [1, 2, 3]
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @function
-     * @param {...*} value
-     * @returns {Array}
-     */
-    var list = _argsToArrayFrom(0);
-
-    /**
      * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,
      * the others with the remaining elements.
      * @example
@@ -3764,7 +3766,6 @@
     lamb.insert = insert;
     lamb.insertAt = insertAt;
     lamb.intersection = intersection;
-    lamb.list = list;
     lamb.partition = partition;
     lamb.partitionWith = partitionWith;
     lamb.pluck = pluck;

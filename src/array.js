@@ -308,19 +308,6 @@ function intersection () {
 }
 
 /**
- * Generates an array with the values passed as arguments.
- * @example
- * _.list(1, 2, 3) // => [1, 2, 3]
- *
- * @memberof module:lamb
- * @category Array
- * @function
- * @param {...*} value
- * @returns {Array}
- */
-var list = _argsToArrayFrom(0);
-
-/**
  * Splits an array-like object in two lists: the first with the elements satisfying the given predicate,
  * the others with the remaining elements.
  * @example
@@ -770,7 +757,6 @@ lamb.init = init;
 lamb.insert = insert;
 lamb.insertAt = insertAt;
 lamb.intersection = intersection;
-lamb.list = list;
 lamb.partition = partition;
 lamb.partitionWith = partitionWith;
 lamb.pluck = pluck;

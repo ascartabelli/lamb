@@ -512,18 +512,6 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("list", function () {
-        it("should return an empty array if no arguments are supplied", function () {
-            expect(lamb.list()).toEqual([]);
-        });
-
-        it("should build an array with the passed arguments", function () {
-            expect(lamb.list(123)).toEqual([123]);
-            expect(lamb.list(1, 2, 3)).toEqual([1, 2, 3]);
-            expect(lamb.list(null, void 0)).toEqual([null, void 0]);
-        });
-    });
-
     describe("partition / partitionWith", function () {
         it("should split an array in two lists; one with the elements satisfying the predicate, the other with the remaining elements", function () {
             var persons = [
