@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.44.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.45.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.44.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.45.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -105,6 +105,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.45.0 - *2016/11/14***
+  - **Fully compatible with versions down to 0.44.x**
+  - Added `pull` and `pullFrom`
+  - Added `keySatisfies` and `pathSatisfies`
+  - Updated examples and doc comments
+
 - **v0.44.0 - *2016/11/08***
   - **API change**: `repeat` and `testWith` now throw an exception when the source string is `nil` and convert to string every other value
   - **API change**: `repeat` now floors the value received as the `times` parameter instead of ceiling it
@@ -129,13 +135,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `findWhere`, `findIndexWhere`, `hasPathValue`
   - `find` now uses `findIndex` to perform the search to avoid duplicate code
   - Minor performance gain when `aritize` needs to add `undefined` arguments
-
-- **v0.40.0 - *2016/09/02***
-  - **API change**: `hasKeyValue` now uses the “SameValueZero" comparison
-  - **Fixed**: `updatePath` and `updatePathIn` treated unassigned positive indexes in sparse arrays as non existent properties
-  - Updated tests for `hasKeyValue`
-  - Updated tests for “pick” and “skip” functions
-  - Updated tests for “pairs”, “tear” and “values” functions
-  - Updated tests of array accessors
-  - Updated tests of object and path accessors
-  - Improved performance of `hasKeyValue`
