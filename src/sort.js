@@ -61,21 +61,17 @@
  */
 function sort (arrayLike) {
     var criteria = _makeCriteria(_argsTail.apply(null, arguments));
-    var data = [];
-    var result = [];
-    var len = arrayLike.length;
+    var len = arrayLike.length >>> 0;
+    var result = Array(len);
 
     for (var i = 0; i < len; i++) {
-        data.push({
-            value: arrayLike[i],
-            index: i
-        });
+        result[i] = {value: arrayLike[i], index: i};
     }
 
-    data.sort(_compareWith(criteria));
+    result.sort(_compareWith(criteria));
 
     for (i = 0; i < len; i++) {
-        result.push(data[i].value);
+        result[i] = result[i].value;
     }
 
     return result;

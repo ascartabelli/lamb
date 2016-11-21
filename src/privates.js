@@ -104,36 +104,28 @@ function _comparer (a, b) {
 }
 
 /**
- * Accepts a list of sorting criteria and builds a function that compares
- * two values with such criteria.
+ * Accepts a list of sorting criteria with at least one element
+ * and builds a function that compares two values with such criteria.
  * @private
  * @param {Sorter[]} criteria
  * @returns {Function}
  */
 function _compareWith (criteria) {
-    var len = criteria.length;
-
     return function (a, b) {
-        var result = 0;
-        var isDescSort;
-        var criterion;
+        var len = criteria.length;
+        var criterion = criteria[0];
+        var result = criterion.compare(a.value, b.value);
 
-        for (var i = 0; i < len; i++) {
+        for (var i = 1; result === 0 && i < len; i++) {
             criterion = criteria[i];
             result = criterion.compare(a.value, b.value);
-
-            if (result !== 0) {
-                isDescSort = criteria[i].isDescending;
-                break;
-            }
         }
 
         if (result === 0) {
-            isDescSort = criteria[len - 1].isDescending;
             result = a.index - b.index;
         }
 
-        return isDescSort ? -result : result;
+        return criterion.isDescending ? -result : result;
     };
 }
 
@@ -239,13 +231,10 @@ function _getInsertionIndex (array, element, comparer, start, end) {
     }
 
     var pivot = (start + end) >> 1;
-    var result = comparer({
-        value: element,
-        index: pivot
-    }, {
-        value: array[pivot],
-        index: pivot
-    });
+    var result = comparer(
+        {value: element, index: pivot},
+        {value: array[pivot], index: pivot}
+    );
 
     if (end - start <= 1) {
         return result < 0 ? pivot : pivot + 1;
@@ -550,7 +539,7 @@ function _makeCriteria (sorters) {
  * @returns {Sorter}
  */
 function _makeCriterion (criterion) {
-    return typeof Object(criterion).compare === "function" ? criterion : _sorter(criterion);
+    return criterion && typeof criterion.compare === "function" ? criterion : _sorter(criterion);
 }
 
 /**
@@ -781,15 +770,23 @@ function _setPathIn (obj, parts, value) {
  * @returns {Sorter}
  */
 function _sorter (reader, isDescending, comparer) {
+    if (typeof reader !== "function" || reader === identity) {
+        reader = null;
+    }
+
+    if (typeof comparer !== "function") {
+        comparer = _comparer;
+    }
+
     return {
         isDescending: isDescending === true,
         compare: function (a, b) {
-            if (typeof reader === "function" && reader !== identity) {
+            if (reader) {
                 a = reader(a);
                 b = reader(b);
             }
 
-            return (typeof comparer === "function" ? comparer : _comparer)(a, b);
+            return comparer(a, b);
         }
     };
 }

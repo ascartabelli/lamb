@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.45.0
+ * @version 0.46.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -18,7 +18,7 @@
      * @category Core
      * @type String
      */
-    lamb._version = "0.45.0";
+    lamb._version = "0.46.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -290,36 +290,28 @@
     }
 
     /**
-     * Accepts a list of sorting criteria and builds a function that compares
-     * two values with such criteria.
+     * Accepts a list of sorting criteria with at least one element
+     * and builds a function that compares two values with such criteria.
      * @private
      * @param {Sorter[]} criteria
      * @returns {Function}
      */
     function _compareWith (criteria) {
-        var len = criteria.length;
-
         return function (a, b) {
-            var result = 0;
-            var isDescSort;
-            var criterion;
+            var len = criteria.length;
+            var criterion = criteria[0];
+            var result = criterion.compare(a.value, b.value);
 
-            for (var i = 0; i < len; i++) {
+            for (var i = 1; result === 0 && i < len; i++) {
                 criterion = criteria[i];
                 result = criterion.compare(a.value, b.value);
-
-                if (result !== 0) {
-                    isDescSort = criteria[i].isDescending;
-                    break;
-                }
             }
 
             if (result === 0) {
-                isDescSort = criteria[len - 1].isDescending;
                 result = a.index - b.index;
             }
 
-            return isDescSort ? -result : result;
+            return criterion.isDescending ? -result : result;
         };
     }
 
@@ -425,13 +417,10 @@
         }
 
         var pivot = (start + end) >> 1;
-        var result = comparer({
-            value: element,
-            index: pivot
-        }, {
-            value: array[pivot],
-            index: pivot
-        });
+        var result = comparer(
+            {value: element, index: pivot},
+            {value: array[pivot], index: pivot}
+        );
 
         if (end - start <= 1) {
             return result < 0 ? pivot : pivot + 1;
@@ -736,7 +725,7 @@
      * @returns {Sorter}
      */
     function _makeCriterion (criterion) {
-        return typeof Object(criterion).compare === "function" ? criterion : _sorter(criterion);
+        return criterion && typeof criterion.compare === "function" ? criterion : _sorter(criterion);
     }
 
     /**
@@ -967,15 +956,23 @@
      * @returns {Sorter}
      */
     function _sorter (reader, isDescending, comparer) {
+        if (typeof reader !== "function" || reader === identity) {
+            reader = null;
+        }
+
+        if (typeof comparer !== "function") {
+            comparer = _comparer;
+        }
+
         return {
             isDescending: isDescending === true,
             compare: function (a, b) {
-                if (typeof reader === "function" && reader !== identity) {
+                if (reader) {
                     a = reader(a);
                     b = reader(b);
                 }
 
-                return (typeof comparer === "function" ? comparer : _comparer)(a, b);
+                return comparer(a, b);
             }
         };
     }
@@ -4119,21 +4116,17 @@
      */
     function sort (arrayLike) {
         var criteria = _makeCriteria(_argsTail.apply(null, arguments));
-        var data = [];
-        var result = [];
-        var len = arrayLike.length;
+        var len = arrayLike.length >>> 0;
+        var result = Array(len);
 
         for (var i = 0; i < len; i++) {
-            data.push({
-                value: arrayLike[i],
-                index: i
-            });
+            result[i] = {value: arrayLike[i], index: i};
         }
 
-        data.sort(_compareWith(criteria));
+        result.sort(_compareWith(criteria));
 
         for (i = 0; i < len; i++) {
-            result.push(data[i].value);
+            result[i] = result[i].value;
         }
 
         return result;
