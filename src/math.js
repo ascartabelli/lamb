@@ -82,6 +82,81 @@ function generate (start, len, iteratee, iterateeContext) {
 }
 
 /**
+ * Verifies whether the received value is a finite number.<br/>
+ * Behaves almost as a shim of ES6's [Number.isFinite]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite},
+ * but with a difference: it will return <code>true</code> even for Number object's instances.
+ * @example
+ * _.isFinite(5) // => true
+ * _.isFinite(new Number(5)) // => true
+ * _.isFinite(Infinity) // => false
+ * _.isFinite(-Infinity) // => false
+ * _.isFinite("5") // => false
+ * _.isFinite(NaN) // => false
+ * _.isFinite(null) // => false
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @alias isFinite
+ * @param {*} value
+ * @returns {Boolean}
+ */
+function isFinite_ (value) {
+    return type(value) === "Number" && isFinite(value);
+}
+
+/**
+ * Verifies whether the received value is a number and an integer.
+ * Behaves almost as a shim of ES6's [Number.isInteger]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger},
+ * but with a difference: it will return <code>true</code> even for Number object's instances.
+ * @example
+ * _.isInteger(5) // => true
+ * _.isInteger(new Number(5)) // => true
+ * _.isInteger(2.5) // => false
+ * _.isInteger(Infinity) // => false
+ * _.isInteger(-Infinity) // => false
+ * _.isInteger("5") // => false
+ * _.isInteger(NaN) // => false
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @see {@link module:lamb.isSafeInteger|isSafeInteger}
+ * @param {*} value
+ * @returns {Boolean}
+ */
+function isInteger (value) {
+    return type(value) === "Number" && value % 1 === 0;
+}
+
+/**
+ * Verifies whether the received value is a "safe integer", meaning that is a number and that
+ * can be exactly represented as an IEEE-754 double precision number.
+ * The safe integers consist of all integers from -(2<sup>53</sup> - 1) inclusive to
+ * 2<sup>53</sup> - 1 inclusive.<br/>
+ * Behaves almost as a shim of ES6's [Number.isSafeInteger]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger},
+ * but with a difference: it will return <code>true</code> even for Number object's instances.
+ * @example
+ * _.isSafeInteger(5) // => true
+ * _.isSafeInteger(new Number(5)) // => true
+ * _.isSafeInteger(Math.pow(2, 53) - 1) // => true
+ * _.isSafeInteger(Math.pow(2, 53)) // => false
+ * _.isSafeInteger(2e32) // => false
+ * _.isSafeInteger(2.5) // => false
+ * _.isSafeInteger(Infinity) // => false
+ * _.isSafeInteger(-Infinity) // => false
+ * _.isSafeInteger("5") // => false
+ * _.isSafeInteger(NaN) // => false
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @see {@link module:lamb.isInteger|isInteger}
+ * @param {*} value
+ * @returns {Boolean}
+ */
+function isSafeInteger (value) {
+    return isInteger(value) && Math.abs(value) <= 9007199254740991;
+}
+
+/**
  * Performs the modulo operation and should not be confused with the
  * {@link module:lamb.remainder|remainder}.
  * The function performs a floored division to calculate the result and not
@@ -209,6 +284,9 @@ lamb.add = add;
 lamb.clamp = clamp;
 lamb.divide = divide;
 lamb.generate = generate;
+lamb.isFinite = isFinite_;
+lamb.isInteger = isInteger;
+lamb.isSafeInteger = isSafeInteger;
 lamb.modulo = modulo;
 lamb.multiply = multiply;
 lamb.randomInt = randomInt;

@@ -257,9 +257,9 @@ function _getInsertionIndex (array, element, comparer, start, end) {
  * @returns {Number|Undefined}
  */
 function _getNaturalIndex (target, idx) {
-    var len = target.length;
+    var len = target.length >>> 0;
 
-    if (_isInteger(idx) && _isInteger(len)) {
+    if (isInteger(idx)) {
         return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
     } else {
         return void 0;
@@ -451,7 +451,7 @@ function _invoker (boundArgs, methodName, target) {
 function _isArrayIndex (target, key) {
     var n = Number(key);
 
-    return Array.isArray(target) && _isInteger(n) && !(n < 0 && _isEnumerable(target, key));
+    return Array.isArray(target) && n % 1 === 0 && !(n < 0 && _isEnumerable(target, key));
 }
 
 /**
@@ -463,16 +463,6 @@ function _isArrayIndex (target, key) {
  */
 function _isEnumerable (obj, key) {
     return key in Object(obj) && (_isOwnEnumerable(obj, key) || ~_safeEnumerables(obj).indexOf(key));
-}
-
-/**
- * Checks if the given value is an integer.
- * @private
- * @param {*} n
- * @returns {Boolean}
- */
-function _isInteger (n) {
-    return Math.floor(n) === n;
 }
 
 /**

@@ -69,9 +69,8 @@ var everyIn = _makeArrayChecker(true);
  * @example
  * var data = [2, 3, 5, 6, 8];
  * var isEven = function (n) { return n % 2 === 0; };
- * var isInteger = function (n) { return Math.floor(n) === n; };
  * var allEvens = _.every(isEven);
- * var allIntegers = _.every(isInteger);
+ * var allIntegers = _.every(_.isInteger);
  *
  * allEvens(data) // => false
  * allIntegers(data) // => true
@@ -560,7 +559,6 @@ var someIn = _makeArrayChecker(false);
  * @example
  * var data = [1, 3, 5, 6, 7, 8];
  * var isEven = function (n) { return n % 2 === 0; };
- * var isInteger = function (n) { return Math.floor(n) === n; };
  * var containsEvens = _.some(isEven);
  * var containsStrings = _.some(_.isType("String"));
  *

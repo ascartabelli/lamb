@@ -41,6 +41,68 @@ describe("lamb.math", function () {
         });
     });
 
+    describe("isFinite", function () {
+        it("should verify whether the received value is a finite number", function () {
+            expect(lamb.isFinite(0)).toBe(true);
+            expect(lamb.isFinite(-2e64)).toBe(true);
+            expect(lamb.isFinite(new Number(5))).toBe(true);
+            expect(lamb.isFinite(Infinity)).toBe(false);
+            expect(lamb.isFinite(-Infinity)).toBe(false);
+            expect(lamb.isFinite(NaN)).toBe(false);
+        });
+
+        it("should return `false` for any non-number value and when it's called without arguments", function () {
+            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+                expect(lamb.isFinite(value)).toBe(false);
+            });
+
+            expect(lamb.isFinite()).toBe(false);
+        });
+    });
+
+    describe("isInteger", function () {
+        it("should verify whether the received value is an integer", function () {
+            expect(lamb.isInteger(0)).toBe(true);
+            expect(lamb.isInteger(-2e64)).toBe(true);
+            expect(lamb.isInteger(new Number(5))).toBe(true);
+            expect(lamb.isInteger(2.4)).toBe(false);
+            expect(lamb.isInteger(Infinity)).toBe(false);
+            expect(lamb.isInteger(-Infinity)).toBe(false);
+            expect(lamb.isInteger(NaN)).toBe(false);
+        });
+
+        it("should return `false` for any non-number value and when it's called without arguments", function () {
+            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+                expect(lamb.isInteger(value)).toBe(false);
+            });
+
+            expect(lamb.isInteger()).toBe(false);
+        });
+    });
+
+    describe("isSafeInteger", function () {
+        it("shoud verify whether the received value is a \"safe integer\"", function () {
+            expect(lamb.isSafeInteger(0)).toBe(true);
+            expect(lamb.isSafeInteger(-2e10)).toBe(true);
+            expect(lamb.isSafeInteger(new Number(5))).toBe(true);
+            expect(lamb.isSafeInteger(Math.pow(2, 53) - 1)).toBe(true);
+            expect(lamb.isSafeInteger(2.4)).toBe(false);
+            expect(lamb.isSafeInteger(Math.pow(2, 53))).toBe(false);
+            expect(lamb.isSafeInteger(-2e64)).toBe(false);
+            expect(lamb.isSafeInteger(Infinity)).toBe(false);
+            expect(lamb.isSafeInteger(-Infinity)).toBe(false);
+            expect(lamb.isSafeInteger(NaN)).toBe(false);
+        });
+
+        it("should return `false` for any non-number value and when it's called without arguments", function () {
+            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+                expect(lamb.isSafeInteger(value)).toBe(false);
+            });
+
+            expect(lamb.isSafeInteger()).toBe(false);
+        });
+    });
+
     describe("modulo", function () {
         it("should calculate the modulo of two numbers", function () {
             expect(lamb.modulo(5, 3)).toBe(2);
