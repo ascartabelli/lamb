@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.45.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.46.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.45.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.46.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -105,6 +105,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.46.0 - *2016/12/07***
+  - **Fully compatible with versions down to 0.44.x**
+  - Added `isFinite`, `isInteger`, `isSafeInteger`
+  - Code clean-up and minor performance improvements in sorting functions
+  - First step in improving the documentation site
+
 - **v0.45.0 - *2016/11/14***
   - **Fully compatible with versions down to 0.44.x**
   - Added `pull` and `pullFrom`
@@ -129,9 +135,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **Fully compatible with versions down to 0.40.x**
   - Added `unless` and `when`
   - Improved performance of `condition`
-
-- **v0.41.0 - *2016/09/08***
-  - **Fully compatible with versions down to 0.40.x**
-  - Added `findWhere`, `findIndexWhere`, `hasPathValue`
-  - `find` now uses `findIndex` to perform the search to avoid duplicate code
-  - Minor performance gain when `aritize` needs to add `undefined` arguments
