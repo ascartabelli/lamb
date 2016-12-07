@@ -9,7 +9,7 @@
  * getFifthElement([]) // => undefined
  * getFifthElement("foo") // => undefined
  *
- * @example <caption>Using negative indexes</caption>
+ * @example <caption>Using negative indexes:</caption>
  * _.getAt(-2)([1, 2, 3]) // => 2
  * _.getAt(-3)("foo") // => "f"
  *
@@ -236,7 +236,7 @@ var last = getAt(-1);
  *
  * _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)
  *
- * @example <caption>Using negative indexes</caption>
+ * @example <caption>Using negative indexes:</caption>
  * _.setAt(-1, 99)(arr) // => [1, 2, 3, 4, 99]
  *
  * @memberof module:lamb
@@ -382,13 +382,13 @@ function setPath (path, value, separator) {
  *
  * _.setPathIn(user, "status.active", true) // => {id: 1, status: {active : true, scores: [2, 4, 6]}}
  *
- * @example <caption>Targeting arrays</caption>
+ * @example <caption>Targeting arrays:</caption>
  * _.setPathIn(user, "status.scores.0", 8) // => {id: 1, status: {active : false, scores: [8, 4, 6]}}
  *
  * // you can use negative indexes as well
  * _.setPathIn(user, "status.scores.-1", 8) // => {id: 1, status: {active : false, scores: [2, 4, 8]}}
  *
- * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+ * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
  * var user = {id: 1, scores: [
  *     {value: 2, year: "2000"},
  *     {value: 4, year: "2001"},
@@ -574,13 +574,13 @@ function updatePath (path, updater, separator) {
  *
  * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
  *
- * @example <caption>Targeting arrays</caption>
+ * @example <caption>Targeting arrays:</caption>
  * _.updatePathIn(user, "status.scores.0", inc) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
  *
  * // you can use negative indexes as well
  * _.updatePathIn(user, "status.scores.-1", inc) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
  *
- * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+ * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
  * var user = {id: 1, scores: [
  *     {value: 2, year: "2000"},
  *     {value: 4, year: "2001"},

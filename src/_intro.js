@@ -15,7 +15,6 @@
      * The current module version.
      * @memberof module:lamb
      * @private
-     * @category Core
      * @type String
      */
     lamb._version = "<%= pkg.version %>";

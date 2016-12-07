@@ -24,7 +24,7 @@ var _objectProto = Object.prototype;
  * alwaysFoo() === foo // => true
  *
  * @memberof module:lamb
- * @category Core
+ * @category Function
  * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
  * @param {*} value
  * @returns {Function}
@@ -78,7 +78,7 @@ function compose () {
  * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
  * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
  * @memberof module:lamb
- * @category Core
+ * @category Function
  * @function
  * @example
  * // Lamb's "slice" is actually implemented like this
@@ -102,7 +102,7 @@ var generic = Function.bind.bind(Function.call);
  * _.identity(foo) === foo // true
  *
  * @memberof module:lamb
- * @category Core
+ * @category Function
  * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
  * @param {*} value
  * @returns {*} The value passed as parameter.

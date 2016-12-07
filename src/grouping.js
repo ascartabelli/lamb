@@ -81,7 +81,7 @@ var countBy = _partialWithIteratee(count);
  * //     ]
  * // }
  *
- * @example <caption>Adding a custom value for missing keys</caption>
+ * @example <caption>Adding a custom value for missing keys:</caption>
  *
  * var getCityOrUnknown = _.adapter(getCity, _.always("Unknown"));
  *

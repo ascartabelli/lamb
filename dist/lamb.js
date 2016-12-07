@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.46.0-alpha.4
+ * @version 0.46.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -15,10 +15,9 @@
      * The current module version.
      * @memberof module:lamb
      * @private
-     * @category Core
      * @type String
      */
-    lamb._version = "0.46.0-alpha.4";
+    lamb._version = "0.46.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -45,7 +44,7 @@
      * alwaysFoo() === foo // => true
      *
      * @memberof module:lamb
-     * @category Core
+     * @category Function
      * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
      * @param {*} value
      * @returns {Function}
@@ -99,7 +98,7 @@
      * @author A very little change on a great idea by [Irakli Gozalishvili]{@link https://github.com/Gozala/}.
      * Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, though).
      * @memberof module:lamb
-     * @category Core
+     * @category Function
      * @function
      * @example
      * // Lamb's "slice" is actually implemented like this
@@ -123,7 +122,7 @@
      * _.identity(foo) === foo // true
      *
      * @memberof module:lamb
-     * @category Core
+     * @category Function
      * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
      * @param {*} value
      * @returns {*} The value passed as parameter.
@@ -1085,7 +1084,7 @@
      * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
+     * @param {Object} [predicateContext]
      * @returns {Boolean}
      */
     var everyIn = _makeArrayChecker(true);
@@ -1096,9 +1095,8 @@
      * @example
      * var data = [2, 3, 5, 6, 8];
      * var isEven = function (n) { return n % 2 === 0; };
-     * var isInteger = function (n) { return Math.floor(n) === n; };
      * var allEvens = _.every(isEven);
-     * var allIntegers = _.every(isInteger);
+     * var allIntegers = _.every(_.isInteger);
      *
      * allEvens(data) // => false
      * allIntegers(data) // => true
@@ -1109,7 +1107,7 @@
      * @see {@link module:lamb.everyIn|everyIn}
      * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
+     * @param {Object} [predicateContext]
      * @returns {Function}
      */
     var every = _partialWithIteratee(everyIn);
@@ -1293,7 +1291,7 @@
      * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
      * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
-     * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment</caption>
+     * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment:</caption>
      * var addClass = _.curry(function (className, element) {
      *     element.classList.add(className);
      * });
@@ -1576,7 +1574,7 @@
      * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
+     * @param {Object} [predicateContext]
      * @returns {Boolean}
      */
     var someIn = _makeArrayChecker(false);
@@ -1587,7 +1585,6 @@
      * @example
      * var data = [1, 3, 5, 6, 7, 8];
      * var isEven = function (n) { return n % 2 === 0; };
-     * var isInteger = function (n) { return Math.floor(n) === n; };
      * var containsEvens = _.some(isEven);
      * var containsStrings = _.some(_.isType("String"));
      *
@@ -1600,7 +1597,7 @@
      * @see {@link module:lamb.someIn|someIn}
      * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
+     * @param {Object} [predicateContext]
      * @returns {Function}
      */
     var some = _partialWithIteratee(someIn);
@@ -2459,7 +2456,7 @@
      * getFifthElement([]) // => undefined
      * getFifthElement("foo") // => undefined
      *
-     * @example <caption>Using negative indexes</caption>
+     * @example <caption>Using negative indexes:</caption>
      * _.getAt(-2)([1, 2, 3]) // => 2
      * _.getAt(-3)("foo") // => "f"
      *
@@ -2686,7 +2683,7 @@
      *
      * _.setAt(10, 99)(arr) // => [1, 2, 3, 4, 5] (not a reference to `arr`)
      *
-     * @example <caption>Using negative indexes</caption>
+     * @example <caption>Using negative indexes:</caption>
      * _.setAt(-1, 99)(arr) // => [1, 2, 3, 4, 99]
      *
      * @memberof module:lamb
@@ -2832,13 +2829,13 @@
      *
      * _.setPathIn(user, "status.active", true) // => {id: 1, status: {active : true, scores: [2, 4, 6]}}
      *
-     * @example <caption>Targeting arrays</caption>
+     * @example <caption>Targeting arrays:</caption>
      * _.setPathIn(user, "status.scores.0", 8) // => {id: 1, status: {active : false, scores: [8, 4, 6]}}
      *
      * // you can use negative indexes as well
      * _.setPathIn(user, "status.scores.-1", 8) // => {id: 1, status: {active : false, scores: [2, 4, 8]}}
      *
-     * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+     * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
      * var user = {id: 1, scores: [
      *     {value: 2, year: "2000"},
      *     {value: 4, year: "2001"},
@@ -3024,13 +3021,13 @@
      *
      * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
      *
-     * @example <caption>Targeting arrays</caption>
+     * @example <caption>Targeting arrays:</caption>
      * _.updatePathIn(user, "status.scores.0", inc) // => {id: 1, status: {scores: [3, 4, 6], visits: 0}}
      *
      * // you can use negative indexes as well
      * _.updatePathIn(user, "status.scores.-1", inc) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
      *
-     * @example <caption>Arrays can also be part of the path and not necessarily its target</caption>
+     * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
      * var user = {id: 1, scores: [
      *     {value: 2, year: "2000"},
      *     {value: 4, year: "2001"},
@@ -3226,7 +3223,7 @@
     /**
      * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
      * be concatenated, rather than pushed, to the final result.
-     * @example <caption>showing the difference with <code>map</code></caption>
+     * @example <caption>Showing the difference with <code>map</code>:</caption>
      * var words = ["foo", "bar"];
      * var toCharArray = function (s) { return s.split(""); };
      *
@@ -3282,7 +3279,7 @@
 
     /**
      * Flattens an array.
-     * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
+     * @example <caption>Showing the difference with <code>shallowFlatten</code>:</caption>
      * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
      *
      * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
@@ -3562,7 +3559,7 @@
 
     /**
      * Flattens the "first level" of an array.
-     * @example <caption>showing the difference with <code>flatten</code></caption>
+     * @example <caption>Showing the difference with <code>flatten</code>:</caption>
      * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
      *
      * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
@@ -3658,7 +3655,7 @@
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
+     * @param {Object} [predicateContext]
      * @returns {Function}
      */
     function takeWhile (predicate, predicateContext) {
@@ -3673,7 +3670,7 @@
      * Transposes a matrix. Can also be used to reverse a {@link module:lamb.zip|zip} operation.<br/>
      * Just like {@link module:lamb.zip|zip}, the received array-like objects will be truncated to the
      * shortest length.
-     * @example <caption>transposing a matrix</caption>
+     * @example <caption>Transposing a matrix:</caption>
      * _.transpose([
      *     [1, 2, 3],
      *     [4, 5, 6],
@@ -3685,7 +3682,7 @@
      * //     [3, 6, 9]
      * // ]
      *
-     * @example <caption>showing the relationship with <code>zip</code></caption>
+     * @example <caption>Showing the relationship with <code>zip</code>:</caption>
      * var zipped = _.zip(["a", "b", "c"], [1, 2, 3]); // => [["a", 1], ["b", 2], ["c", 3]]
      *
      * _.transpose(zipped) // => [["a", "b", "c"], [1, 2, 3]]
@@ -3946,7 +3943,7 @@
      * //     ]
      * // }
      *
-     * @example <caption>Adding a custom value for missing keys</caption>
+     * @example <caption>Adding a custom value for missing keys:</caption>
      *
      * var getCityOrUnknown = _.adapter(getCity, _.always("Unknown"));
      *
@@ -4202,12 +4199,12 @@
 
     /**
      * Inserts an element in a copy of a sorted array respecting the sort order.
-     * @example <caption>with simple values</caption>
+     * @example <caption>With simple values:</caption>
      * _.sortedInsert([], 1) // => [1]
      * _.sortedInsert([2, 4, 6], 5) // => [2, 4, 5, 6]
      * _.sortedInsert([4, 2, 1], 3, _.sorterDesc()) // => [4, 3, 2, 1]
      *
-     * @example <caption>with complex values</caption>
+     * @example <caption>With complex values:</caption>
      * var persons = [
      *     {"name": "jane", "surname": "doe"},
      *     {"name": "John", "surname": "Doe"},
@@ -4437,7 +4434,7 @@
      * f(4, _, 2)(3) // => 9
      * f(_, 3, _)(4, _)(2) // => 9
      *
-     * @example <caption>Exploiting optional parameters: </caption>
+     * @example <caption>Exploiting optional parameters:</caption>
      * var f = _.asPartial(function (a, b, c) {
      *     return a + b + (c || 0);
      * });
@@ -4616,7 +4613,7 @@
      * specified timespan.<br/>
      * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call
      * happens immediately.
-     * @example <caption>A common use case of <code>debounce</code> in a browser environment</caption>
+     * @example <caption>A common use case of <code>debounce</code> in a browser environment:</caption>
      * var updateLayout = function () {
      *     // some heavy DOM operations here
      * };
@@ -4649,7 +4646,7 @@
     }
 
     /**
-     * Returns a function that applies its arguments to the original function in reverse order.
+     * Returns a function that applies the original function with the arguments in reverse order.
      * @example
      * _.list(1, 2, 3) // => [1, 2, 3]
      * _.flip(_.list)(1, 2, 3) // => [3, 2, 1]
@@ -4710,13 +4707,13 @@
      * interoperability between the aforementioned functions: for a more standard behaviour see also
      * {@link module:lamb.generic|generic}.
      * See also {@link module:lamb.invokerOn|invokerOn}.
-     * @example <caption>Basic polymorphism with <code>invoker</code></caption>
+     * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
      * var polySlice = _.invoker("slice");
      *
      * polySlice([1, 2, 3, 4, 5], 1, 3) // => [2, 3]
      * polySlice("Hello world", 1, 3) // => "el"
      *
-     * @example <caption>With bound arguments</caption>
+     * @example <caption>With bound arguments:</caption>
      * var substrFrom2 = _.invoker("substr", 2);
      * substrFrom2("Hello world") // => "llo world"
      * substrFrom2("Hello world", 5) // => "llo w"
@@ -4976,7 +4973,7 @@
 
     /**
      * Creates an array with all the enumerable properties of the given object.
-     * @example <caption>Showing the difference with {@link module:lamb.keys|keys}</caption>
+     * @example <caption>Showing the difference with {@link module:lamb.keys|keys}:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3},
@@ -5100,7 +5097,7 @@
     /**
      * Verifies if an object has the specified property and that the property isn't inherited through
      * the prototype chain.<br/>
-     * @example <caption>Comparison with <code>has</code>.</caption>
+     * @example <caption>Comparison with <code>has</code>:</caption>
      * var user = {name: "john"};
      *
      * _.has(user, "name") // => true
@@ -5231,7 +5228,7 @@
      * of the standard.<br/>
      * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
      * object for any value but <code>null</code> and <code>undefined</code>.
-     * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>
+     * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3},
@@ -5334,7 +5331,7 @@
     /**
      * Same as {@link module:lamb.merge|merge}, but only the own properties of the
      * sources are taken into account.
-     * @example <caption>showing the difference with <code>merge</code>:</caption>
+     * @example <caption>Showing the difference with <code>merge</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3, enumerable: true}
@@ -5364,7 +5361,7 @@
      * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
      * taken into account.<br/>
      * See also {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
-     * @example <caption>showing the difference with <code>pairs</code></caption>
+     * @example <caption>Showing the difference with <code>pairs</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3, enumerable: true}
@@ -5384,7 +5381,7 @@
     /**
      * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
      * taken into account.<br/>
-     * @example <caption>showing the difference with <code>values</code></caption>
+     * @example <caption>Showing the difference with <code>values</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3, enumerable: true}
@@ -5838,7 +5835,7 @@
      * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
      * taken into account.<br/>
      * See also {@link module:lamb.make|make} for the reverse operation.
-     * @example <caption>showing the difference with <code>tear</code></caption>
+     * @example <caption>Showing the difference with <code>tear</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
      *     c: {value: 3, enumerable: true}

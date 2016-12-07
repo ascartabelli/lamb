@@ -94,7 +94,7 @@ function aritize (fn, arity) {
  * f(4, _, 2)(3) // => 9
  * f(_, 3, _)(4, _)(2) // => 9
  *
- * @example <caption>Exploiting optional parameters: </caption>
+ * @example <caption>Exploiting optional parameters:</caption>
  * var f = _.asPartial(function (a, b, c) {
  *     return a + b + (c || 0);
  * });
@@ -273,7 +273,7 @@ function curryRight (fn, arity) {
  * specified timespan.<br/>
  * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call
  * happens immediately.
- * @example <caption>A common use case of <code>debounce</code> in a browser environment</caption>
+ * @example <caption>A common use case of <code>debounce</code> in a browser environment:</caption>
  * var updateLayout = function () {
  *     // some heavy DOM operations here
  * };
@@ -306,7 +306,7 @@ function debounce (fn, timespan) {
 }
 
 /**
- * Returns a function that applies its arguments to the original function in reverse order.
+ * Returns a function that applies the original function with the arguments in reverse order.
  * @example
  * _.list(1, 2, 3) // => [1, 2, 3]
  * _.flip(_.list)(1, 2, 3) // => [3, 2, 1]
@@ -367,13 +367,13 @@ function getArgAt (idx) {
  * interoperability between the aforementioned functions: for a more standard behaviour see also
  * {@link module:lamb.generic|generic}.
  * See also {@link module:lamb.invokerOn|invokerOn}.
- * @example <caption>Basic polymorphism with <code>invoker</code></caption>
+ * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
  * var polySlice = _.invoker("slice");
  *
  * polySlice([1, 2, 3, 4, 5], 1, 3) // => [2, 3]
  * polySlice("Hello world", 1, 3) // => "el"
  *
- * @example <caption>With bound arguments</caption>
+ * @example <caption>With bound arguments:</caption>
  * var substrFrom2 = _.invoker("substr", 2);
  * substrFrom2("Hello world") // => "llo world"
  * substrFrom2("Hello world", 5) // => "llo w"

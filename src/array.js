@@ -137,7 +137,7 @@ function dropWhile (predicate, predicateContext) {
 /**
  * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
  * be concatenated, rather than pushed, to the final result.
- * @example <caption>showing the difference with <code>map</code></caption>
+ * @example <caption>Showing the difference with <code>map</code>:</caption>
  * var words = ["foo", "bar"];
  * var toCharArray = function (s) { return s.split(""); };
  *
@@ -193,7 +193,7 @@ var flatMapWith = _partialWithIteratee(flatMap);
 
 /**
  * Flattens an array.
- * @example <caption>showing the difference with <code>shallowFlatten</code></caption>
+ * @example <caption>Showing the difference with <code>shallowFlatten</code>:</caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
  * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
@@ -473,7 +473,7 @@ function pullFrom (array, values) {
 
 /**
  * Flattens the "first level" of an array.
- * @example <caption>showing the difference with <code>flatten</code></caption>
+ * @example <caption>Showing the difference with <code>flatten</code>:</caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
  * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
@@ -569,7 +569,7 @@ function takeN (n) {
  * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
+ * @param {Object} [predicateContext]
  * @returns {Function}
  */
 function takeWhile (predicate, predicateContext) {
@@ -584,7 +584,7 @@ function takeWhile (predicate, predicateContext) {
  * Transposes a matrix. Can also be used to reverse a {@link module:lamb.zip|zip} operation.<br/>
  * Just like {@link module:lamb.zip|zip}, the received array-like objects will be truncated to the
  * shortest length.
- * @example <caption>transposing a matrix</caption>
+ * @example <caption>Transposing a matrix:</caption>
  * _.transpose([
  *     [1, 2, 3],
  *     [4, 5, 6],
@@ -596,7 +596,7 @@ function takeWhile (predicate, predicateContext) {
  * //     [3, 6, 9]
  * // ]
  *
- * @example <caption>showing the relationship with <code>zip</code></caption>
+ * @example <caption>Showing the relationship with <code>zip</code>:</caption>
  * var zipped = _.zip(["a", "b", "c"], [1, 2, 3]); // => [["a", 1], ["b", 2], ["c", 3]]
  *
  * _.transpose(zipped) // => [["a", "b", "c"], [1, 2, 3]]

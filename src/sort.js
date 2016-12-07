@@ -79,12 +79,12 @@ function sort (arrayLike) {
 
 /**
  * Inserts an element in a copy of a sorted array respecting the sort order.
- * @example <caption>with simple values</caption>
+ * @example <caption>With simple values:</caption>
  * _.sortedInsert([], 1) // => [1]
  * _.sortedInsert([2, 4, 6], 5) // => [2, 4, 5, 6]
  * _.sortedInsert([4, 2, 1], 3, _.sorterDesc()) // => [4, 3, 2, 1]
  *
- * @example <caption>with complex values</caption>
+ * @example <caption>With complex values:</caption>
  * var persons = [
  *     {"name": "jane", "surname": "doe"},
  *     {"name": "John", "surname": "Doe"},

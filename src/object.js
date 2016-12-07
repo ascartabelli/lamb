@@ -48,7 +48,7 @@ function checker (predicate, message, keyPaths, pathSeparator) {
 
 /**
  * Creates an array with all the enumerable properties of the given object.
- * @example <caption>Showing the difference with {@link module:lamb.keys|keys}</caption>
+ * @example <caption>Showing the difference with {@link module:lamb.keys|keys}:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3},
@@ -172,7 +172,7 @@ function hasKeyValue (key, value) {
 /**
  * Verifies if an object has the specified property and that the property isn't inherited through
  * the prototype chain.<br/>
- * @example <caption>Comparison with <code>has</code>.</caption>
+ * @example <caption>Comparison with <code>has</code>:</caption>
  * var user = {name: "john"};
  *
  * _.has(user, "name") // => true
@@ -303,7 +303,7 @@ function immutable (obj) {
  * of the standard.<br/>
  * This function <em>shims</em> the ECMAScript 6 version, by forcing a conversion to
  * object for any value but <code>null</code> and <code>undefined</code>.
- * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}</caption>
+ * @example <caption>Showing the difference with {@link module:lamb.enumerables|enumerables}:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3},
@@ -406,7 +406,7 @@ var merge = partial(_merge, _safeEnumerables);
 /**
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the
  * sources are taken into account.
- * @example <caption>showing the difference with <code>merge</code>:</caption>
+ * @example <caption>Showing the difference with <code>merge</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
@@ -436,7 +436,7 @@ var mergeOwn = partial(_merge, _safeKeys);
  * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
  * taken into account.<br/>
  * See also {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
- * @example <caption>showing the difference with <code>pairs</code></caption>
+ * @example <caption>Showing the difference with <code>pairs</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
@@ -456,7 +456,7 @@ var ownPairs = _pairsFrom(keys);
 /**
  * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
  * taken into account.<br/>
- * @example <caption>showing the difference with <code>values</code></caption>
+ * @example <caption>Showing the difference with <code>values</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
@@ -910,7 +910,7 @@ var tear = _tearFrom(enumerables);
  * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
  * taken into account.<br/>
  * See also {@link module:lamb.make|make} for the reverse operation.
- * @example <caption>showing the difference with <code>tear</code></caption>
+ * @example <caption>Showing the difference with <code>tear</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}

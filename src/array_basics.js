@@ -58,7 +58,7 @@ function contains (value, fromIndex) {
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
+ * @param {Object} [predicateContext]
  * @returns {Boolean}
  */
 var everyIn = _makeArrayChecker(true);
@@ -81,7 +81,7 @@ var everyIn = _makeArrayChecker(true);
  * @see {@link module:lamb.everyIn|everyIn}
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
+ * @param {Object} [predicateContext]
  * @returns {Function}
  */
 var every = _partialWithIteratee(everyIn);
@@ -265,7 +265,7 @@ var findWhere = _partialWithIteratee(find);
  * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
  * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
- * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment</caption>
+ * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment:</caption>
  * var addClass = _.curry(function (className, element) {
  *     element.classList.add(className);
  * });
@@ -548,7 +548,7 @@ var slice = generic(_arrayProto.slice);
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
+ * @param {Object} [predicateContext]
  * @returns {Boolean}
  */
 var someIn = _makeArrayChecker(false);
@@ -571,7 +571,7 @@ var someIn = _makeArrayChecker(false);
  * @see {@link module:lamb.someIn|someIn}
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
+ * @param {Object} [predicateContext]
  * @returns {Function}
  */
 var some = _partialWithIteratee(someIn);

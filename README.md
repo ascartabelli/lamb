@@ -25,7 +25,7 @@ var _ = require("lamb");
 ```
 
 It's useful to alias it to have a shorter symbol, like `_`, as I did above and throughout the documentation: it's cleaner and the
-`lamb` object itself can be used as a placeholder argument in [partial application](https://ascartabelli.github.io/lamb/module-lamb.html#.partial).
+`lamb` object itself can be used as a placeholder argument in [partial application](https://ascartabelli.github.io/lamb/module-lamb.html#partial).
 
 In a browser, simply include the version you want from the `dist` folder:
 
