@@ -108,9 +108,12 @@ describe("lamb.function", function () {
             expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2]);
         });
 
-        it("should call the function without arguments if the arity is out of bounds", function () {
+        it("should call the function without arguments if the arity is zero or if it's out of bounds", function () {
             expect(lamb.aritize(maxArgumentSpy, -10)(0, 1, 2, 3)).toBe(-Infinity);
+            expect(lamb.aritize(maxArgumentSpy, 0)(0, 1, 2, 3)).toBe(-Infinity);
+            expect(maxArgumentSpy.calls.count()).toBe(2);
             expect(maxArgumentSpy.calls.argsFor(0).length).toBe(0);
+            expect(maxArgumentSpy.calls.argsFor(1).length).toBe(0);
         });
 
         it("should add `undefined` arguments if the desired arity is greater than the amount of received parameters", function () {
