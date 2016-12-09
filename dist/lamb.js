@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.46.0
+ * @version 0.47.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.46.0";
+    lamb._version = "0.47.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -429,25 +429,6 @@
             return pivot + 1;
         } else {
             return _getInsertionIndex(array, element, comparer, pivot, end);
-        }
-    }
-
-    /**
-     * Checks if the given index, even negative, is an integer within the target
-     * length. If so returns its natural number equivalent.<br/>
-     * Returns <code>undefined<code> otherwise.
-     * @private
-     * @param {ArrayLike} target
-     * @param {Number} idx
-     * @returns {Number|Undefined}
-     */
-    function _getNaturalIndex (target, idx) {
-        var len = target.length >>> 0;
-
-        if (isInteger(idx)) {
-            return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
-        } else {
-            return void 0;
         }
     }
 
@@ -898,7 +879,7 @@
      */
     function _setIndex (arrayLike, idx, value, updater) {
         var result = slice(arrayLike);
-        var n = _getNaturalIndex(result, idx);
+        var n = _toNaturalIndex(idx, result.length);
 
         if (!isUndefined(n)) {
             result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
@@ -984,6 +965,23 @@
             return result;
         }, [[], []]);
     });
+
+    /**
+     * Checks if the given index, even negative, is an integer within the provided
+     * length. If so returns its natural number equivalent.<br/>
+     * Returns <code>undefined<code> otherwise.
+     * @private
+     * @param {Number} idx
+     * @param {Number} len
+     * @returns {Number|Undefined}
+     */
+    function _toNaturalIndex (idx, len) {
+        if (isInteger(idx)) {
+            return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
+        }
+
+        return void 0;
+    }
 
     /**
      * Splits a sting path using the provided separator and returns an array
@@ -2516,7 +2514,7 @@
      * @returns {*}
      */
     function getIndex (arrayLike, index) {
-        var idx = _getNaturalIndex(arrayLike, index);
+        var idx = _toNaturalIndex(index, arrayLike.length >>> 0);
 
         return isUndefined(idx) ? idx : arrayLike[idx];
     }
@@ -4687,7 +4685,7 @@
      */
     function getArgAt (idx) {
         return function () {
-            return arguments[_getNaturalIndex({length: arguments.length}, idx)];
+            return arguments[_toNaturalIndex(idx, arguments.length)];
         };
     }
 

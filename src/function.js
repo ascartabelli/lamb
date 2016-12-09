@@ -347,7 +347,7 @@ function flip (fn) {
  */
 function getArgAt (idx) {
     return function () {
-        return arguments[_getNaturalIndex({length: arguments.length}, idx)];
+        return arguments[_toNaturalIndex(idx, arguments.length)];
     };
 }
 
