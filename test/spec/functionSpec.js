@@ -46,22 +46,21 @@ describe("lamb.function", function () {
         });
     });
 
-    describe("applyArgs", function () {
+    describe("applyTo", function () {
         it("should build a curried version of `apply` expecting the arguments as first parameter", function () {
-            var arr = [1, 2, 3, 4, 5, 6];
-            var isEven = function (n) { return n % 2 === 0;};
-            var applyArgsTo = lamb.applyArgs([arr, isEven]);
+            var args = [[1, 2, 3, 4, 5, 6], function (n) { return n % 2 === 0;}];
+            var applyArgsTo = lamb.applyTo(args);
 
             expect(applyArgsTo(lamb.filter)).toEqual([2, 4, 6]);
             expect(applyArgsTo(lamb.map)).toEqual([false, true, false, true, false, true]);
         });
 
         it("should accept an array-like object", function () {
-            expect(lamb.applyArgs("3412")(Math.max)).toBe(4);
+            expect(lamb.applyTo("3412")(Math.max)).toBe(4);
         });
 
         it("should not alter the function's context", function () {
-            var obj = {value: 4, baz: lamb.applyArgs([1, 2])};
+            var obj = {value: 4, baz: lamb.applyTo([1, 2])};
             expect(obj.baz(Foo.prototype.bar)).toBe(2.5);
         });
 
@@ -70,21 +69,21 @@ describe("lamb.function", function () {
             var values = [null, void 0, {}, /foo/, NaN, true, new Date()];
 
             for (var i = 0; i < values.length; i++) {
-                lamb.applyArgs(values[i])(fooSpy);
+                lamb.applyTo(values[i])(fooSpy);
                 expect(fooSpy.calls.argsFor(i).length).toBe(0);
             }
 
-            lamb.applyArgs()(fooSpy);
+            lamb.applyTo()(fooSpy);
             expect(fooSpy.calls.argsFor(i).length).toBe(0);
             expect(fooSpy.calls.count()).toBe(i + 1);
         });
 
         it("should throw an exception if `fn` isn't a function", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.applyArgs([])(value); }).toThrow();
+                expect(function () { lamb.applyTo([])(value); }).toThrow();
             });
 
-            expect(lamb.applyArgs([])).toThrow();
+            expect(lamb.applyTo([])).toThrow();
         });
     });
 

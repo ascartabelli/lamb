@@ -4430,17 +4430,17 @@
      * and builds a function waiting for the target of the application.
      * @example
      * var data = [3, 4];
-     * var applyDataTo = _.applyArgs(data);
+     * var applyToData = _.applyTo(data);
      *
-     * applyDataTo(_.add) // => 7
-     * applyDataTo(_.multiply) // => 12
+     * applyToData(_.add) // => 7
+     * applyToData(_.multiply) // => 12
      *
      * @memberof module:lamb
      * @category Function
      * @param {ArrayLike} args
      * @returns {Function}
      */
-    function applyArgs (args) {
+    function applyTo (args) {
         return function (fn) {
             return fn.apply(this, Object(args));
         };
@@ -4579,7 +4579,7 @@
         var functions = list.apply(null, arguments);
 
         return function () {
-            return map(functions, applyArgs(arguments));
+            return map(functions, applyTo(arguments));
         };
     }
 
@@ -4974,7 +4974,7 @@
     var wrap = binary(flip(partial));
 
     lamb.apply = apply;
-    lamb.applyArgs = applyArgs;
+    lamb.applyTo = applyTo;
     lamb.aritize = aritize;
     lamb.asPartial = asPartial;
     lamb.binary = binary;
