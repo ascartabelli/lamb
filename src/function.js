@@ -1,7 +1,7 @@
 /**
  * Applies the passed function to the given argument list.
  * @example
- * _.apply(_.add, [3, 4]) // => 7
+ * _.application(_.add, [3, 4]) // => 7
  *
  * @memberof module:lamb
  * @category Function
@@ -9,13 +9,13 @@
  * @param {ArrayLike} args
  * @returns {*}
  */
-function apply (fn, args) {
+function application (fn, args) {
     return fn.apply(this, Object(args));
 }
 
 /**
- * A curried version of {@link module:lamb.apply|apply}. Expects an array-like object to use as arguments
- * and builds a function waiting for the target of the application.
+ * A right-curried version of {@link module:lamb.application|application}. Expects an array-like
+ * object to use as arguments and builds a function waiting for the target of the application.
  * @example
  * var data = [3, 4];
  * var applyToData = _.applyTo(data);
@@ -432,7 +432,7 @@ function invokerOn (target) {
  * @returns {Function}
  */
 function mapArgs (fn, mapper) {
-    return compose(partial(apply, fn), mapWith(mapper), list);
+    return compose(partial(application, fn), mapWith(mapper), list);
 }
 
 /**
@@ -561,7 +561,7 @@ function unary (fn) {
  */
 var wrap = binary(flip(partial));
 
-lamb.apply = apply;
+lamb.application = application;
 lamb.applyTo = applyTo;
 lamb.aritize = aritize;
 lamb.asPartial = asPartial;

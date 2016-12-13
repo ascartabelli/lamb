@@ -11,18 +11,18 @@ describe("lamb.function", function () {
         }
     }
 
-    describe("apply", function () {
+    describe("application", function () {
         it("should apply the passed function to the given arguments", function () {
-            expect(lamb.apply(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
+            expect(lamb.application(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
         });
 
         it("should accept an array-like object as arguments for the function", function () {
-            expect(lamb.apply(Math.max, "3412")).toBe(4);
+            expect(lamb.application(Math.max, "3412")).toBe(4);
         });
 
         it("should not alter the function's context", function () {
-            var obj = {value: 4, apply: lamb.apply};
-            expect(obj.apply(Foo.prototype.bar, [1, 2])).toBe(2.5);
+            var obj = {value: 4, application: lamb.application};
+            expect(obj.application(Foo.prototype.bar, [1, 2])).toBe(2.5);
         });
 
         it("should treat non-array-like values for the `args` parameter as empty arrays", function () {
@@ -30,18 +30,18 @@ describe("lamb.function", function () {
             var values = [null, void 0, {}, /foo/, NaN, true, new Date()];
 
             for (var i = 0; i < values.length; i++) {
-                lamb.apply(fooSpy, values[i]);
+                lamb.application(fooSpy, values[i]);
                 expect(fooSpy.calls.argsFor(i).length).toBe(0);
             }
 
-            lamb.apply(fooSpy);
+            lamb.application(fooSpy);
             expect(fooSpy.calls.argsFor(i).length).toBe(0);
             expect(fooSpy.calls.count()).toBe(i + 1);
         });
 
         it("should throw an exception if `fn` isn't a function", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.apply(value, []); }).toThrow();
+                expect(function () { lamb.application(value, []); }).toThrow();
             });
         });
     });
