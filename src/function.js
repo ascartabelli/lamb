@@ -5,12 +5,33 @@
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.apply|apply}, {@link module:lamb.applyTo|applyTo}
  * @param {Function} fn
  * @param {ArrayLike} args
  * @returns {*}
  */
 function application (fn, args) {
     return fn.apply(this, Object(args));
+}
+
+/**
+ * A left-curried version of {@link module:lamb.application|application}. Expects the function
+ * to apply and builds a function waiting for the arguments array.
+ * @example
+ * var arrayMax = _.apply(Math.max);
+ *
+ * arrayMax([4, 5, 2, 6, 1]) // => 6
+ *
+ * @memberof module:lamb
+ * @category Function
+ * @see {@link module:lamb.application|application}, {@link module:lamb.applyTo|applyTo}
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function apply (fn) {
+    return function (args) {
+        return fn.apply(this, Object(args));
+    };
 }
 
 /**
@@ -25,6 +46,7 @@ function application (fn, args) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.application|application}, {@link module:lamb.apply|apply}
  * @param {ArrayLike} args
  * @returns {Function}
  */
@@ -432,7 +454,7 @@ function invokerOn (target) {
  * @returns {Function}
  */
 function mapArgs (fn, mapper) {
-    return compose(partial(application, fn), mapWith(mapper), list);
+    return compose(apply(fn), mapWith(mapper), list);
 }
 
 /**
@@ -540,28 +562,8 @@ function unary (fn) {
     };
 }
 
-/**
- * Wraps the function <code>fn</code> inside a <code>wrapper</code> function.<br/>
- * This allows to conditionally execute <code>fn</code>, to tamper with its arguments
- * or return value and to run code before and after its execution.<br/>
- * Being this nothing more than a "{@link module:lamb.flip|flipped}"
- * [partial application]{@link module:lamb.partial}, you can also easily build new
- * functions from existent ones.
- * @example
- * var arrayMax = _.wrap(Math.max, _.apply);
- *
- * arrayMax([4, 5, 2, 6, 1]) // => 6
- *
- * @memberof module:lamb
- * @category Function
- * @function
- * @param {Function} fn
- * @param {Function} wrapper
- * @returns {Function}
- */
-var wrap = binary(flip(partial));
-
 lamb.application = application;
+lamb.apply = apply;
 lamb.applyTo = applyTo;
 lamb.aritize = aritize;
 lamb.asPartial = asPartial;
@@ -581,4 +583,3 @@ lamb.pipe = pipe;
 lamb.tapArgs = tapArgs;
 lamb.throttle = throttle;
 lamb.unary = unary;
-lamb.wrap = wrap;

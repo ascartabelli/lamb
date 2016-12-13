@@ -11,56 +11,29 @@ describe("lamb.function", function () {
         }
     }
 
-    describe("application", function () {
-        it("should apply the passed function to the given arguments", function () {
+    describe("application / apply / applyTo", function () {
+        it("should apply the desired function to the given arguments", function () {
             expect(lamb.application(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
+            expect(lamb.apply(Math.max)([-1, 3, 2, 15, 7])).toBe(15);
+            expect(lamb.applyTo([-1, 3, 2, 15, 7])(Math.max)).toBe(15)
         });
 
         it("should accept an array-like object as arguments for the function", function () {
             expect(lamb.application(Math.max, "3412")).toBe(4);
-        });
-
-        it("should not alter the function's context", function () {
-            var obj = {value: 4, application: lamb.application};
-            expect(obj.application(Foo.prototype.bar, [1, 2])).toBe(2.5);
-        });
-
-        it("should treat non-array-like values for the `args` parameter as empty arrays", function () {
-            var fooSpy = jasmine.createSpy("fooSpy");
-            var values = [null, void 0, {}, /foo/, NaN, true, new Date()];
-
-            for (var i = 0; i < values.length; i++) {
-                lamb.application(fooSpy, values[i]);
-                expect(fooSpy.calls.argsFor(i).length).toBe(0);
-            }
-
-            lamb.application(fooSpy);
-            expect(fooSpy.calls.argsFor(i).length).toBe(0);
-            expect(fooSpy.calls.count()).toBe(i + 1);
-        });
-
-        it("should throw an exception if `fn` isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.application(value, []); }).toThrow();
-            });
-        });
-    });
-
-    describe("applyTo", function () {
-        it("should build a curried version of `apply` expecting the arguments as first parameter", function () {
-            var args = [[1, 2, 3, 4, 5, 6], function (n) { return n % 2 === 0;}];
-            var applyArgsTo = lamb.applyTo(args);
-
-            expect(applyArgsTo(lamb.filter)).toEqual([2, 4, 6]);
-            expect(applyArgsTo(lamb.map)).toEqual([false, true, false, true, false, true]);
-        });
-
-        it("should accept an array-like object", function () {
+            expect(lamb.apply(Math.max)("3412")).toBe(4);
             expect(lamb.applyTo("3412")(Math.max)).toBe(4);
         });
 
         it("should not alter the function's context", function () {
-            var obj = {value: 4, baz: lamb.applyTo([1, 2])};
+            var obj = {
+                value: 4,
+                application: lamb.application,
+                applyBar: lamb.apply(Foo.prototype.bar),
+                baz: lamb.applyTo([1, 2])
+            };
+
+            expect(obj.application(Foo.prototype.bar, [1, 2])).toBe(2.5);
+            expect(obj.applyBar([1, 2])).toBe(2.5);
             expect(obj.baz(Foo.prototype.bar)).toBe(2.5);
         });
 
@@ -68,22 +41,31 @@ describe("lamb.function", function () {
             var fooSpy = jasmine.createSpy("fooSpy");
             var values = [null, void 0, {}, /foo/, NaN, true, new Date()];
 
-            for (var i = 0; i < values.length; i++) {
+            for (var i = 0, ofs = 0; i < values.length; i++, ofs += 3) {
+                lamb.application(fooSpy, values[i]);
+                lamb.apply(fooSpy)(values[i]);
                 lamb.applyTo(values[i])(fooSpy);
-                expect(fooSpy.calls.argsFor(i).length).toBe(0);
+                expect(fooSpy.calls.argsFor(ofs).length).toBe(0);
+                expect(fooSpy.calls.argsFor(ofs + 1).length).toBe(0);
+                expect(fooSpy.calls.argsFor(ofs + 2).length).toBe(0);
             }
 
+            lamb.application(fooSpy);
+            lamb.apply(fooSpy)();
             lamb.applyTo()(fooSpy);
-            expect(fooSpy.calls.argsFor(i).length).toBe(0);
-            expect(fooSpy.calls.count()).toBe(i + 1);
+
+            expect(fooSpy.calls.argsFor(ofs).length).toBe(0);
+            expect(fooSpy.calls.argsFor(ofs + 1).length).toBe(0);
+            expect(fooSpy.calls.argsFor(ofs + 2).length).toBe(0);
+            expect(fooSpy.calls.count()).toBe(ofs + 3);
         });
 
         it("should throw an exception if `fn` isn't a function", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                expect(function () { lamb.application(value, []); }).toThrow();
+                expect(lamb.apply(value)).toThrow();
                 expect(function () { lamb.applyTo([])(value); }).toThrow();
             });
-
-            expect(lamb.applyTo([])).toThrow();
         });
     });
 
@@ -933,21 +915,6 @@ describe("lamb.function", function () {
             });
 
             expect(lamb.unary()).toThrow();
-        });
-    });
-
-    describe("wrap", function () {
-        var add = function (a, b) {return a + b;};
-        var square = function (n) {return n * n;};
-        var wrapper = function (fn, a, b) {
-            return fn(square(a), square(b));
-        };
-        var wrapperSpy = jasmine.createSpy().and.callFake(wrapper);
-        var addSquares = lamb.wrap(add, wrapperSpy);
-
-        it("should allow to wrap a function with another one", function () {
-            expect(addSquares(2, 3)).toBe(13);
-            expect(wrapperSpy.calls.argsFor(0)[0]).toBe(add);
         });
     });
 });
