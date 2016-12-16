@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.47.0-alpha.3
+ * @version 0.47.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.47.0-alpha.3";
+    lamb._version = "0.47.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2059,7 +2059,10 @@
     }
 
     /**
-     * "Clamps" a number within the given limits.
+     * "Clamps" a number within the given limits, both included.<br/>
+     * The function will convert to number all its parameters before starting any
+     * evaluation, and will return <code>NaN</code> if <code>min</code> is greater
+     * than <code>max</code>.
      * @example
      * _.clamp(-5, 0, 10) // => 0
      * _.clamp(5, 0, 10) // => 5
@@ -2067,16 +2070,51 @@
      * _.clamp(0, 0, 10) // => 0
      * _.clamp(10, 0, 10) // => 10
      * _.is(_.clamp(-0, 0, 10), -0) // => true
+     * _.clamp(10, 20, 15) // => NaN
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.clampWithin|clampWithin}
      * @param {Number} n
      * @param {Number} min
      * @param {Number} max
      * @returns {Number}
      */
     function clamp (n, min, max) {
-        return n < min ? min : n > max ? max : n;
+        n = +n;
+        min = +min;
+        max = +max;
+
+        if (min > max) {
+            return NaN;
+        } else {
+            return n < min ? min : n > max ? max : n;
+        }
+    }
+
+    /**
+     * A curried version of {@link module:lamb.clamp|clamp}, expecting a <code>min</code>
+     * and a <code>max</code> value, that builds a function waiting for the number to clamp.
+     * @example
+     * _.clampWithin(0, 10)(-5) // => 0
+     * _.clampWithin(0, 10)(5) // => 5
+     * _.clampWithin(0, 10)(15) // => 10
+     * _.clampWithin(0, 10)(0) // => 0
+     * _.clampWithin(0, 10)(10) // => 10
+     * _.is(_.clampWithin(0, 10)(-0), -0) // => true
+     * _.clampWithin(20, 15)(10) // => NaN
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link module:lamb.clamp|clamp}
+     * @param {Number} min
+     * @param {Number} max
+     * @returns {Function}
+     */
+    function clampWithin (min, max) {
+        return function (n) {
+            return clamp(n, min, max);
+        };
     }
 
     /**
@@ -2327,6 +2365,7 @@
 
     lamb.add = add;
     lamb.clamp = clamp;
+    lamb.clampWithin = clampWithin;
     lamb.divide = divide;
     lamb.generate = generate;
     lamb.isFinite = isFinite_;
