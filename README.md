@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.46.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.47.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.46.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.47.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +110,15 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.47.0 - *2016/12/16***
+  - **API change**: renamed `apply` to `application`
+  - **API change**: renamed `applyArgs` to `applyTo`
+  - **API change**: `clamp` now converts to number its arguments and returns `NaN` if `min` is greater than `max`
+  - **API change**: removed `wrap`
+  - Re-added `apply` as a left-curried version of `application`
+  - Added `clampWithin` and `isInstanceOf`
+  - Updated tests and doc comments
+
 - **v0.46.0 - *2016/12/07***
   - **Fully compatible with versions down to 0.44.x**
   - Added `isFinite`, `isInteger`, `isSafeInteger`
@@ -135,8 +144,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `pathExists` and `pathExistsIn`
   - Improved performance of `setIn`, `setKey`, `updateIn` and `updateKey`
   - Improved performance of `setPath`, `setPathIn`, `updatePath` and `updatePathIn`
-
-- **v0.42.0 - *2016/10/25***
-  - **Fully compatible with versions down to 0.40.x**
-  - Added `unless` and `when`
-  - Improved performance of `condition`
