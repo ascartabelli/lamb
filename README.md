@@ -83,6 +83,11 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 - ***Are your wheels rounder?***
   Not at all, but I do try my best to add better suspension; and you do realise that you're reading a guy talking to himself, don't you?
 
+- ***Why you say "to help embracing functional programming"? Is it for beginners?***
+  No, it's a utility library for everyone; beginners included, though.
+  Lamb embraces functional concepts and encourages users to take advantage of them, but without forcing anyone to change his style.
+  Experienced functional programmers will feel immediately at home, and beginners will discover that the library is able to adapt to them while their knowledge grows.
+
 - ***Why ECMAScript 5?***
   Because this is simply me tidying up some old code, and will hopefully be my goodbye to ES5 before fully diving into the world of transpilers.
 
@@ -100,7 +105,7 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
   Other than being eternally grateful, the least I can do is offer my services as a middleman and put you in touch if you need his craft.
 
 - ***Why "Lamb"?***
-  See the main header: because it's docile like a lamb.
+  See the main header: because it's docile like a lamb. Lamb adapts to you without needing you to adapt.
 
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).

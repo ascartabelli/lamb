@@ -99,6 +99,7 @@ function divide (a, b) {
  *
  * @memberof module:lamb
  * @category Math
+ * @see {@link module:lamb.range|range}
  * @param {*} start - The starting value
  * @param {Number} len - The desired length for the sequence
  * @param {ListIteratorCallback} iteratee
@@ -209,7 +210,8 @@ function isSafeInteger (value) {
  *
  * @memberof module:lamb
  * @category Math
- * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+ * @see {@link module:lamb.remainder|remainder}
+ * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -263,6 +265,7 @@ function randomInt (min, max) {
  *
  * @memberof module:lamb
  * @category Math
+ * @see {@link module:lamb.generate|generate}
  * @param {Number} start
  * @param {Number} limit
  * @param {Number} [step=1]
@@ -294,7 +297,8 @@ function range (start, limit, step) {
  *
  * @memberof module:lamb
  * @category Math
- * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+ * @see {@link module:lamb.modulo|modulo}
+ * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}

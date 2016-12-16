@@ -11,6 +11,7 @@
  *
  * @memberof module:lamb
  * @category String
+ * @see {@link module:lamb.padRight|padRight}
  * @param {String} source
  * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len
@@ -33,6 +34,7 @@ function padLeft (source, char, len) {
  *
  * @memberof module:lamb
  * @category String
+ * @see {@link module:lamb.padLeft|padLeft}
  * @param {String} source
  * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len

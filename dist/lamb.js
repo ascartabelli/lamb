@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.47.0-alpha.6
+ * @version 0.47.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.47.0-alpha.6";
+    lamb._version = "0.47.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -75,6 +75,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.pipe|pipe}
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -1379,6 +1380,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.mapWith|mapWith}
+     * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
@@ -1412,6 +1414,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.map|map}
+     * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {function}
@@ -1628,7 +1631,7 @@
      * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
      * Meant to work in sinergy with {@link module:lamb.condition|condition} and
      * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
-     * to mimic conditional logic and also to build polymorphic functions.
+     * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var filterString = _.compose(_.invoker("join", ""), _.filter);
@@ -1791,8 +1794,7 @@
      * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
      * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
      * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
-     * <code>NaN</code> is equal to itself.<br/>
-     * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
+     * <code>NaN</code> is equal to itself
      * @example
      * var testObject = {};
      *
@@ -1804,6 +1806,7 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.isSVZ|isSVZ} to perform a "SameValueZero" comparison
      * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
      * @param {*} a
@@ -1832,6 +1835,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.isGTE|isGTE}
+     * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -1853,6 +1858,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.isGT|isGT}
+     * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -1879,6 +1886,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.isLTE|isLTE}
+     * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -1900,6 +1909,8 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.isLT|isLT}
+     * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -1917,6 +1928,7 @@
      * @memberof module:lamb
      * @category Logic
      * @function
+     * @see {@link module:lamb.is|is}
      * @param {*} valueA
      * @param {*} valueB
      * @returns {Boolean}
@@ -1926,8 +1938,7 @@
     /**
      * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
      * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
-     * considered the same value.<br/>
-     * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
+     * considered the same value.
      * @example
      * var testObject = {};
      *
@@ -1939,6 +1950,7 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @see {@link module:lamb.is|is} to perform a "SameValue" comparison
      * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
      * @param {*} a
@@ -2144,6 +2156,7 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.range|range}
      * @param {*} start - The starting value
      * @param {Number} len - The desired length for the sequence
      * @param {ListIteratorCallback} iteratee
@@ -2254,7 +2267,8 @@
      *
      * @memberof module:lamb
      * @category Math
-     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @see {@link module:lamb.remainder|remainder}
+     * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2308,6 +2322,7 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.generate|generate}
      * @param {Number} start
      * @param {Number} limit
      * @param {Number} [step=1]
@@ -2339,7 +2354,8 @@
      *
      * @memberof module:lamb
      * @category Math
-     * @see {@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @see {@link module:lamb.modulo|modulo}
+     * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -3305,6 +3321,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.flatMapWith|flatMapWith}
+     * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
@@ -3343,6 +3360,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.flatMap|flatMap}
+     * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
      * @param {ListIteratorCallback} iteratee
      * @param {Object} [iterateeContext]
      * @returns {Function}
@@ -3761,6 +3779,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.zip|zip}
      * @param {ArrayLike<ArrayLike<*>>} arrayLike
      * @returns {Array<Array<*>>}
      */
@@ -3869,9 +3888,7 @@
 
     /**
      * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
-     * The received array-like objects will be truncated to the shortest length.<br/>
-     * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose}
-     * for the reverse operation.
+     * The received array-like objects will be truncated to the shortest length.
      * @example
      * _.zip(
      *     ["a", "b", "c"],
@@ -3884,6 +3901,8 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.transpose|transpose} for the reverse operation
+     * @see {@link module:lamb.zipWithIndex|zipWithIndex}
      * @param {...ArrayLike} arrayLike
      * @returns {Array<Array<*>>}
      */
@@ -3897,6 +3916,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.zip|zip}
      * @param {ArrayLike} arrayLike
      * @returns {Array<Array<*, Number>>}
      */
@@ -4411,7 +4431,7 @@
     lamb.sortWith = sortWith;
 
     /**
-     * Applies the passed function to the given argument list.
+     * Applies the given function to a list of arguments.
      * @example
      * _.application(_.add, [3, 4]) // => 7
      *
@@ -4471,9 +4491,7 @@
     /**
      * Builds a function that passes only the specified amount of arguments to the given function.<br/>
      * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
-     * pass a negative arity.<br/>
-     * See also {@link module:lamb.binary|binary} and {@link module:lamb.unary|unary} for common use
-     * cases shortcuts.
+     * pass a negative arity.
      * @example
      * function maxArgument () {
      *     return Math.max.apply(null, arguments);
@@ -4487,6 +4505,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.binary|binary}, {@link module:lamb.unary|unary} for common use cases shortcuts
      * @param {Function} fn
      * @param {Number} arity
      * @returns {Function}
@@ -4554,14 +4573,15 @@
     /**
      * Builds a function that passes only two arguments to the given function.<br/>
      * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
-     * exposed for convenience.<br/>
-     * See also {@link module:lamb.unary|unary}.
+     * exposed for convenience.
      * @example
      * _.list(1, 2, 3, 4, 5) // => [1, 2, 3, 4, 5]
      * _.binary(_.list)(1, 2, 3, 4, 5) // => [1, 2]
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.aritize|aritize}
+     * @see {@link module:lamb.unary|unary}
      * @param {Function} fn
      * @returns {Function}
      */
@@ -4720,6 +4740,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.throttle|throttle}
      * @param {Function} fn
      * @param {Number} timespan - Expressed in milliseconds
      * @returns {Function}
@@ -4800,7 +4821,6 @@
      * Returning <code>undefined</code> or checking for such value is meant to favor composition and
      * interoperability between the aforementioned functions: for a more standard behaviour see also
      * {@link module:lamb.generic|generic}.
-     * See also {@link module:lamb.invokerOn|invokerOn}.
      * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
      * var polySlice = _.invoker("slice");
      *
@@ -4814,6 +4834,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.invokerOn|invokerOn}
      * @param {String} methodName
      * @param {...*} [boundArg]
      * @returns {Function}
@@ -4861,6 +4882,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.tapArgs|tapArgs}
      * @param {Function} fn
      * @param {ListIteratorCallback} mapper
      * @returns {Function}
@@ -4870,8 +4892,7 @@
     }
 
     /**
-     * Creates a pipeline of functions, where each function consumes the result of the previous one.<br/>
-     * See also {@link module:lamb.compose|compose}.
+     * Creates a pipeline of functions, where each function consumes the result of the previous one.
      * @example
      * var square = _.partial(Math.pow, _, 2);
      * var getMaxAndSquare = _.pipe(Math.max, square);
@@ -4880,6 +4901,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.compose|compose}
      * @function
      * @param {...Function} fn
      * @returns {Function}
@@ -4899,6 +4921,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.mapArgs|mapArgs}
      * @param {Function} fn
      * @param {...?Function} [tapper]
      * @returns {Function}
@@ -4933,6 +4956,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.debounce|debounce}
      * @param {Function} fn
      * @param {Number} timespan - Expressed in milliseconds.
      * @returns {Function}
@@ -4956,8 +4980,7 @@
     /**
      * Builds a function that passes only one argument to the given function.<br/>
      * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
-     * exposed for convenience.<br/>
-     * See also {@link module:lamb.binary|binary}.
+     * exposed for convenience.
      * @example
      * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
      *
@@ -4965,6 +4988,8 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.aritize|aritize}
+     * @see {@link module:lamb.binary|binary}
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5067,7 +5092,7 @@
 
     /**
      * Builds an object from a list of key / value pairs like the one
-     * returned by [pairs]{@link module:lamb.pairs} or {@link module:lamb.ownPairs|ownPairs}.<br/>
+     * returned by {@link module:lamb.pairs|pairs} or {@link module:lamb.ownPairs|ownPairs}.<br/>
      * In case of duplicate keys the last key / value pair is used.
      * @example
      * _.fromPairs([["a", 1], ["b", 2], ["c", 3]]) // => {"a": 1, "b": 2, "c": 3}
@@ -5076,6 +5101,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.ownPairs|ownPairs}, {@link module:lamb.pairs|pairs}
      * @param {Array<Array<String, *>>} pairsList
      * @returns {Object}
      */
@@ -5352,9 +5378,7 @@
      * one as values.<br/>
      * If the list of keys is longer than the values one, the keys will be created with
      * <code>undefined</code> values.<br/>
-     * If more values than keys are supplied, the extra values will be ignored.<br/>
-     * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for
-     * the reverse operation.
+     * If more values than keys are supplied, the extra values will be ignored.
      * @example
      * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
      * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
@@ -5363,6 +5387,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.tear|tear}, {@link module:lamb.tearOwn|tearOwn} for the reverse operation
      * @param {String[]} names
      * @param {ArrayLike} values
      * @returns {Object}
@@ -5380,9 +5405,7 @@
 
     /**
      * Merges the enumerable properties of the provided sources into a new object.<br/>
-     * In case of key homonymy each source has precedence over the previous one.<br/>
-     * See also {@link module:lamb.mergeOwn|mergeOwn} for merging only own properties of
-     * the given sources.
+     * In case of key homonymy each source has precedence over the previous one.
      * @example
      * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
      *
@@ -5395,6 +5418,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.mergeOwn|mergeOwn} to merge own properties only
      * @function
      * @param {...Object} source
      * @returns {Object}
@@ -5424,6 +5448,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.merge|merge} to merge all enumerable properties
      * @function
      * @param {...Object} source
      * @returns {Object}
@@ -5445,6 +5470,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.pairs|pairs}
+     * @see {@link module:lamb.fromPairs|fromPairs}
      * @function
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
@@ -5465,6 +5492,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.values|values}
      * @function
      * @param {Object} obj
      * @returns {Array}
@@ -5480,6 +5508,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.ownPairs|ownPairs}
+     * @see {@link module:lamb.fromPairs|fromPairs}
      * @function
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
@@ -5890,15 +5920,15 @@
      * Tears an object apart by transforming it in an array of two lists: one containing
      * its enumerable keys, the other containing the corresponding values.<br/>
      * Although this "tearing apart" may sound as a rather violent process, the source
-     * object will be unharmed.<br/>
-     * See also {@link module:lamb.tearOwn|tearOwn} for picking only the own enumerable properties and
-     * {@link module:lamb.make|make} for the reverse operation.
+     * object will be unharmed.
      * @example
      * _.tear({a: 1, b: 2, c: 3}) // => [["a", "b", "c"], [1, 2, 3]]
      *
      * @memberof module:lamb
      * @category Object
      * @function
+     * @see {@link module:lamb.tearOwn|tearOwn}
+     * @see {@link module:lamb.make|make} for the reverse operation
      * @param {Object} obj
      * @returns {Array<Array<String>, Array<*>>}
      */
@@ -5906,8 +5936,7 @@
 
     /**
      * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
-     * taken into account.<br/>
-     * See also {@link module:lamb.make|make} for the reverse operation.
+     * taken into account.
      * @example <caption>Showing the difference with <code>tear</code>:</caption>
      * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
      * var foo = Object.create(baseFoo, {
@@ -5919,6 +5948,8 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.tear|tear}
+     * @see {@link module:lamb.make|make} for the reverse operation
      * @function
      * @param {Object} obj
      * @returns {Array<Array<String>, Array<*>>}
@@ -6000,7 +6031,7 @@
 
     /**
      * Generates an array with the values of the enumerable properties of the given object.<br/>
-     * See also {@link module:lamb.ownValues|ownValues} for picking only the own properties of the object.
+     * See also {@link module:lamb.ownValues|ownValues} to pick only from the own properties of the object.
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
      *
@@ -6008,6 +6039,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @see {@link module:lamb.ownValues|ownValues}
      * @function
      * @param {Object} obj
      * @returns {Array}
@@ -6063,6 +6095,7 @@
      *
      * @memberof module:lamb
      * @category String
+     * @see {@link module:lamb.padRight|padRight}
      * @param {String} source
      * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len
@@ -6085,6 +6118,7 @@
      *
      * @memberof module:lamb
      * @category String
+     * @see {@link module:lamb.padLeft|padLeft}
      * @param {String} source
      * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len

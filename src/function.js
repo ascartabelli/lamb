@@ -1,5 +1,5 @@
 /**
- * Applies the passed function to the given argument list.
+ * Applies the given function to a list of arguments.
  * @example
  * _.application(_.add, [3, 4]) // => 7
  *
@@ -59,9 +59,7 @@ function applyTo (args) {
 /**
  * Builds a function that passes only the specified amount of arguments to the given function.<br/>
  * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
- * pass a negative arity.<br/>
- * See also {@link module:lamb.binary|binary} and {@link module:lamb.unary|unary} for common use
- * cases shortcuts.
+ * pass a negative arity.
  * @example
  * function maxArgument () {
  *     return Math.max.apply(null, arguments);
@@ -75,6 +73,7 @@ function applyTo (args) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.binary|binary}, {@link module:lamb.unary|unary} for common use cases shortcuts
  * @param {Function} fn
  * @param {Number} arity
  * @returns {Function}
@@ -142,14 +141,15 @@ function asPartial (fn) {
 /**
  * Builds a function that passes only two arguments to the given function.<br/>
  * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
- * exposed for convenience.<br/>
- * See also {@link module:lamb.unary|unary}.
+ * exposed for convenience.
  * @example
  * _.list(1, 2, 3, 4, 5) // => [1, 2, 3, 4, 5]
  * _.binary(_.list)(1, 2, 3, 4, 5) // => [1, 2]
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.aritize|aritize}
+ * @see {@link module:lamb.unary|unary}
  * @param {Function} fn
  * @returns {Function}
  */
@@ -308,6 +308,7 @@ function curryRight (fn, arity) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.throttle|throttle}
  * @param {Function} fn
  * @param {Number} timespan - Expressed in milliseconds
  * @returns {Function}
@@ -388,7 +389,6 @@ function getArgAt (idx) {
  * Returning <code>undefined</code> or checking for such value is meant to favor composition and
  * interoperability between the aforementioned functions: for a more standard behaviour see also
  * {@link module:lamb.generic|generic}.
- * See also {@link module:lamb.invokerOn|invokerOn}.
  * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
  * var polySlice = _.invoker("slice");
  *
@@ -402,6 +402,7 @@ function getArgAt (idx) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.invokerOn|invokerOn}
  * @param {String} methodName
  * @param {...*} [boundArg]
  * @returns {Function}
@@ -449,6 +450,7 @@ function invokerOn (target) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.tapArgs|tapArgs}
  * @param {Function} fn
  * @param {ListIteratorCallback} mapper
  * @returns {Function}
@@ -458,8 +460,7 @@ function mapArgs (fn, mapper) {
 }
 
 /**
- * Creates a pipeline of functions, where each function consumes the result of the previous one.<br/>
- * See also {@link module:lamb.compose|compose}.
+ * Creates a pipeline of functions, where each function consumes the result of the previous one.
  * @example
  * var square = _.partial(Math.pow, _, 2);
  * var getMaxAndSquare = _.pipe(Math.max, square);
@@ -468,6 +469,7 @@ function mapArgs (fn, mapper) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.compose|compose}
  * @function
  * @param {...Function} fn
  * @returns {Function}
@@ -487,6 +489,7 @@ var pipe = flip(compose);
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.mapArgs|mapArgs}
  * @param {Function} fn
  * @param {...?Function} [tapper]
  * @returns {Function}
@@ -521,6 +524,7 @@ function tapArgs (fn) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.debounce|debounce}
  * @param {Function} fn
  * @param {Number} timespan - Expressed in milliseconds.
  * @returns {Function}
@@ -544,8 +548,7 @@ function throttle (fn, timespan) {
 /**
  * Builds a function that passes only one argument to the given function.<br/>
  * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
- * exposed for convenience.<br/>
- * See also {@link module:lamb.binary|binary}.
+ * exposed for convenience.
  * @example
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  *
@@ -553,6 +556,8 @@ function throttle (fn, timespan) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.aritize|aritize}
+ * @see {@link module:lamb.binary|binary}
  * @param {Function} fn
  * @returns {Function}
  */

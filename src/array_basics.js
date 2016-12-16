@@ -355,6 +355,7 @@ var list = _argsToArrayFrom(0);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.mapWith|mapWith}
+ * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
@@ -388,6 +389,7 @@ function map (arrayLike, iteratee, iterateeContext) {
  * @category Array
  * @function
  * @see {@link module:lamb.map|map}
+ * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {function}

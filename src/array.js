@@ -147,6 +147,7 @@ function dropWhile (predicate, predicateContext) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.flatMapWith|flatMapWith}
+ * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
  * @param {Array} array
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
@@ -185,6 +186,7 @@ function flatMap (array, iteratee, iterateeContext) {
  * @category Array
  * @function
  * @see {@link module:lamb.flatMap|flatMap}
+ * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
  * @param {ListIteratorCallback} iteratee
  * @param {Object} [iterateeContext]
  * @returns {Function}
@@ -603,6 +605,7 @@ function takeWhile (predicate, predicateContext) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.zip|zip}
  * @param {ArrayLike<ArrayLike<*>>} arrayLike
  * @returns {Array<Array<*>>}
  */
@@ -711,9 +714,7 @@ function uniques (arrayLike, iteratee, iterateeContext) {
 
 /**
  * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
- * The received array-like objects will be truncated to the shortest length.<br/>
- * See also {@link module:lamb.zipWithIndex|zipWithIndex} and {@link module:lamb.transpose|transpose}
- * for the reverse operation.
+ * The received array-like objects will be truncated to the shortest length.
  * @example
  * _.zip(
  *     ["a", "b", "c"],
@@ -726,6 +727,8 @@ function uniques (arrayLike, iteratee, iterateeContext) {
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.transpose|transpose} for the reverse operation
+ * @see {@link module:lamb.zipWithIndex|zipWithIndex}
  * @param {...ArrayLike} arrayLike
  * @returns {Array<Array<*>>}
  */
@@ -739,6 +742,7 @@ var zip = compose(transpose, list);
  * @memberof module:lamb
  * @category Array
  * @function
+ * @see {@link module:lamb.zip|zip}
  * @param {ArrayLike} arrayLike
  * @returns {Array<Array<*, Number>>}
  */

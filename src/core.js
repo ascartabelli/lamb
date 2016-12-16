@@ -55,6 +55,7 @@ function always (value) {
  *
  * @memberof module:lamb
  * @category Function
+ * @see {@link module:lamb.pipe|pipe}
  * @param {...Function} fn
  * @returns {Function}
  */

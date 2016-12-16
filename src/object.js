@@ -69,7 +69,7 @@ var enumerables = _unsafeKeyListFrom(_safeEnumerables);
 
 /**
  * Builds an object from a list of key / value pairs like the one
- * returned by [pairs]{@link module:lamb.pairs} or {@link module:lamb.ownPairs|ownPairs}.<br/>
+ * returned by {@link module:lamb.pairs|pairs} or {@link module:lamb.ownPairs|ownPairs}.<br/>
  * In case of duplicate keys the last key / value pair is used.
  * @example
  * _.fromPairs([["a", 1], ["b", 2], ["c", 3]]) // => {"a": 1, "b": 2, "c": 3}
@@ -78,6 +78,7 @@ var enumerables = _unsafeKeyListFrom(_safeEnumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.ownPairs|ownPairs}, {@link module:lamb.pairs|pairs}
  * @param {Array<Array<String, *>>} pairsList
  * @returns {Object}
  */
@@ -354,9 +355,7 @@ function keySatisfies (predicate, key) {
  * one as values.<br/>
  * If the list of keys is longer than the values one, the keys will be created with
  * <code>undefined</code> values.<br/>
- * If more values than keys are supplied, the extra values will be ignored.<br/>
- * See also {@link module:lamb.tear|tear} and {@link module:lamb.tearOwn|tearOwn} for
- * the reverse operation.
+ * If more values than keys are supplied, the extra values will be ignored.
  * @example
  * _.make(["a", "b", "c"], [1, 2, 3]) // => {a: 1, b: 2, c: 3}
  * _.make(["a", "b", "c"], [1, 2]) // => {a: 1, b: 2, c: undefined}
@@ -365,6 +364,7 @@ function keySatisfies (predicate, key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.tear|tear}, {@link module:lamb.tearOwn|tearOwn} for the reverse operation
  * @param {String[]} names
  * @param {ArrayLike} values
  * @returns {Object}
@@ -382,9 +382,7 @@ function make (names, values) {
 
 /**
  * Merges the enumerable properties of the provided sources into a new object.<br/>
- * In case of key homonymy each source has precedence over the previous one.<br/>
- * See also {@link module:lamb.mergeOwn|mergeOwn} for merging only own properties of
- * the given sources.
+ * In case of key homonymy each source has precedence over the previous one.
  * @example
  * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
  *
@@ -397,6 +395,7 @@ function make (names, values) {
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.mergeOwn|mergeOwn} to merge own properties only
  * @function
  * @param {...Object} source
  * @returns {Object}
@@ -426,6 +425,7 @@ var merge = partial(_merge, _safeEnumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.merge|merge} to merge all enumerable properties
  * @function
  * @param {...Object} source
  * @returns {Object}
@@ -447,6 +447,8 @@ var mergeOwn = partial(_merge, _safeKeys);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.pairs|pairs}
+ * @see {@link module:lamb.fromPairs|fromPairs}
  * @function
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
@@ -467,6 +469,7 @@ var ownPairs = _pairsFrom(keys);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.values|values}
  * @function
  * @param {Object} obj
  * @returns {Array}
@@ -482,6 +485,8 @@ var ownValues = _valuesFrom(keys);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.ownPairs|ownPairs}
+ * @see {@link module:lamb.fromPairs|fromPairs}
  * @function
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
@@ -892,15 +897,15 @@ var skipKeys = _curry(skip, 2, true);
  * Tears an object apart by transforming it in an array of two lists: one containing
  * its enumerable keys, the other containing the corresponding values.<br/>
  * Although this "tearing apart" may sound as a rather violent process, the source
- * object will be unharmed.<br/>
- * See also {@link module:lamb.tearOwn|tearOwn} for picking only the own enumerable properties and
- * {@link module:lamb.make|make} for the reverse operation.
+ * object will be unharmed.
  * @example
  * _.tear({a: 1, b: 2, c: 3}) // => [["a", "b", "c"], [1, 2, 3]]
  *
  * @memberof module:lamb
  * @category Object
  * @function
+ * @see {@link module:lamb.tearOwn|tearOwn}
+ * @see {@link module:lamb.make|make} for the reverse operation
  * @param {Object} obj
  * @returns {Array<Array<String>, Array<*>>}
  */
@@ -908,8 +913,7 @@ var tear = _tearFrom(enumerables);
 
 /**
  * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
- * taken into account.<br/>
- * See also {@link module:lamb.make|make} for the reverse operation.
+ * taken into account.
  * @example <caption>Showing the difference with <code>tear</code>:</caption>
  * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
  * var foo = Object.create(baseFoo, {
@@ -921,6 +925,8 @@ var tear = _tearFrom(enumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.tear|tear}
+ * @see {@link module:lamb.make|make} for the reverse operation
  * @function
  * @param {Object} obj
  * @returns {Array<Array<String>, Array<*>>}
@@ -1002,7 +1008,7 @@ var validateWith = _curry(validate, 2, true);
 
 /**
  * Generates an array with the values of the enumerable properties of the given object.<br/>
- * See also {@link module:lamb.ownValues|ownValues} for picking only the own properties of the object.
+ * See also {@link module:lamb.ownValues|ownValues} to pick only from the own properties of the object.
  * @example
  * var user = {name: "john", surname: "doe", age: 30};
  *
@@ -1010,6 +1016,7 @@ var validateWith = _curry(validate, 2, true);
  *
  * @memberof module:lamb
  * @category Object
+ * @see {@link module:lamb.ownValues|ownValues}
  * @function
  * @param {Object} obj
  * @returns {Array}

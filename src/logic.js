@@ -3,7 +3,7 @@
  * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
  * Meant to work in sinergy with {@link module:lamb.condition|condition} and
  * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
- * to mimic conditional logic and also to build polymorphic functions.
+ * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var filterString = _.compose(_.invoker("join", ""), _.filter);
@@ -166,8 +166,7 @@ function condition (predicate, trueFn, falseFn) {
  * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
  * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
  * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
- * <code>NaN</code> is equal to itself.<br/>
- * See also {@link module:lamb.isSVZ|isSVZ} which performs the check using the "SameValueZero" comparison.
+ * <code>NaN</code> is equal to itself
  * @example
  * var testObject = {};
  *
@@ -179,6 +178,7 @@ function condition (predicate, trueFn, falseFn) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.isSVZ|isSVZ} to perform a "SameValueZero" comparison
  * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
  * @param {*} a
@@ -207,6 +207,8 @@ function is (a, b) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.isGTE|isGTE}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -228,6 +230,8 @@ function isGT (a, b) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.isGT|isGT}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -254,6 +258,8 @@ function isGTE (a, b) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.isLTE|isLTE}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -275,6 +281,8 @@ function isLT (a, b) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.isLT|isLT}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -292,6 +300,7 @@ function isLTE (a, b) {
  * @memberof module:lamb
  * @category Logic
  * @function
+ * @see {@link module:lamb.is|is}
  * @param {*} valueA
  * @param {*} valueB
  * @returns {Boolean}
@@ -301,8 +310,7 @@ var isNot = not(is);
 /**
  * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
  * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
- * considered the same value.<br/>
- * See also {@link module:lamb.is|is} to perform a "SameValue" comparison.
+ * considered the same value.
  * @example
  * var testObject = {};
  *
@@ -314,6 +322,7 @@ var isNot = not(is);
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.is|is} to perform a "SameValue" comparison
  * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
  * @param {*} a
