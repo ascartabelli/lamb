@@ -212,6 +212,8 @@ describe("lamb.object", function () {
         var isDoe = lamb.hasKeyValue("surname", "Doe");
 
         it("should build a function that checks if an object holds the desired key / value pair", function () {
+            expect(lamb.hasKeyValue("a", 45)({a: 45})).toBe(true);
+            expect(lamb.hasKeyValue("a", [45])({a: 45})).toBe(false);
             expect(persons.map(isDoe)).toEqual([true, true, false]);
         });
 
@@ -285,20 +287,22 @@ describe("lamb.object", function () {
         var invalidKeysAsStrings = invalidKeys.map(String);
         var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
 
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
         Object.defineProperty(obj, "e", {value : 10});
         obj.f = Object.create({}, {g: {value : 20}});
 
-        it("should verify if the given path points to the desided value", function () {
+        it("should verify if the given path points to the desired value", function () {
             expect(lamb.hasPathValue("a", 2)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.a", 3)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.b", obj.b.b)(obj)).toBe(true);
+            expect(lamb.hasPathValue("b.e.a", 45)(obj)).toBe(true);
             expect(lamb.hasPathValue("a", "2")(obj)).toBe(false);
             expect(lamb.hasPathValue("b.a", -3)(obj)).toBe(false);
             expect(lamb.hasPathValue("b.b", [4, 5])(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.e.a", [45])(obj)).toBe(false);
         });
 
         it("should use the SameValueZero comparison", function () {
@@ -315,6 +319,13 @@ describe("lamb.object", function () {
         it("should be able to verify values in arrays and array-like objects", function () {
             expect(lamb.hasPathValue("b.b.0", 4)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.c.0", "f")(obj)).toBe(true);
+        });
+
+        it("should return `false` for a non-existent property in a valid source", function () {
+            expect(lamb.hasPathValue("b.a.z", 99)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.z.a", 99)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.b.10", 99)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.e.z", 99)(obj)).toBe(false);
         });
 
         it("should allow negative indexes in paths", function () {
@@ -855,7 +866,7 @@ describe("lamb.object", function () {
         var invalidKeysAsStrings = invalidKeys.map(String);
         var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
 
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
@@ -866,6 +877,7 @@ describe("lamb.object", function () {
             expect(lamb.pathExists("a")(obj)).toBe(true);
             expect(lamb.pathExists("b.a")(obj)).toBe(true);
             expect(lamb.pathExists("b.b")(obj)).toBe(true);
+            expect(lamb.pathExists("b.e.a")(obj)).toBe(true);
             expect(lamb.pathExists("z")(obj)).toBe(false);
             expect(lamb.pathExists("a.z")(obj)).toBe(false);
             expect(lamb.pathExists("b.a.z")(obj)).toBe(false);
@@ -873,6 +885,7 @@ describe("lamb.object", function () {
             expect(lamb.pathExistsIn(obj, "a")).toBe(true);
             expect(lamb.pathExistsIn(obj, "b.a")).toBe(true);
             expect(lamb.pathExistsIn(obj, "b.b")).toBe(true);
+            expect(lamb.pathExistsIn(obj, "b.e.a")).toBe(true);
             expect(lamb.pathExistsIn(obj, "z")).toBe(false);
             expect(lamb.pathExistsIn(obj, "a.z")).toBe(false);
             expect(lamb.pathExistsIn(obj, "b.a.z")).toBe(false);
@@ -1004,7 +1017,7 @@ describe("lamb.object", function () {
         var invalidKeysAsStrings = invalidKeys.map(String);
         var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
 
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo"}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 

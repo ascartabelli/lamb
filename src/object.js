@@ -324,7 +324,7 @@ function immutable (obj) {
 var keys = _unsafeKeyListFrom(_safeKeys);
 
 /**
- * Builds a predicate to check if the given key satisfies the desided condition
+ * Builds a predicate to check if the given key satisfies the desired condition
  * on an object.
  * @example
  * var users = [

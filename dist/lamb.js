@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.47.0
+ * @version 0.48.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.47.0";
+    lamb._version = "0.48.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5347,7 +5347,7 @@
     var keys = _unsafeKeyListFrom(_safeKeys);
 
     /**
-     * Builds a predicate to check if the given key satisfies the desided condition
+     * Builds a predicate to check if the given key satisfies the desired condition
      * on an object.
      * @example
      * var users = [
