@@ -496,25 +496,81 @@ var reduceWith = _partialWithIteratee(reduce);
  * @returns {Array}
  */
 function reverse (arrayLike) {
-    return slice(arrayLike).reverse();
+    return slice(arrayLike, 0, arrayLike.length).reverse();
 }
 
 /**
  * Builds an array by extracting a portion of an array-like object.<br/>
- * It's a generic version of [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}.
+ * Since version <code>0.48.0</code> this function is no longer a generic version of
+ * [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}
+ * to ensure that dense arrays are returned.<br/>
+ * Also note that, unlike the native method, the <code>start</code> and <code>end</code>
+ * parameters aren't optional and will be simply converted to integer.<br/>
+ * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+ * slice to the end of the array-like.
  * @example
- * _.slice(["foo", "bar", "baz"], 0, 2) // => ["foo", "bar"]
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.slice(arr, 0, 2) // => [1, 2]
+ * _.slice(arr, 2, -1) // => [3, 4]
+ * _.slice(arr, -3, 5) // => [3, 4, 5]
  *
  * @memberof module:lamb
  * @category Array
- * @function
+ * @see {@link module:lamb.sliceAt|sliceAt}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @param {ArrayLike} arrayLike - Any array like object.
- * @param {Number} [start=0] - Zero-based index at which to begin extraction.
- * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction.
- * Extracts up to but not including end.
+ * @param {Number} start - Index at which to begin extraction.
+ * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
  * @returns {Array}
  */
-var slice = generic(_arrayProto.slice);
+function slice (arrayLike, start, end) {
+    var len = _toArrayLength(arrayLike.length);
+    var begin = clamp(_toInteger(start), -len, len);
+    var upTo = clamp(_toInteger(end), -len, len);
+
+    if (begin < 0) {
+        begin += len;
+    }
+
+    if (upTo < 0) {
+        upTo += len;
+    }
+
+    var resultLen = Math.max(0, upTo - begin);
+    var result = Array(resultLen);
+
+    for (var i = 0; i < resultLen; i++) {
+        result[i] = arrayLike[begin + i];
+    }
+
+    return result;
+}
+
+/**
+ * Given the <code>start</code> and <code>end</code> bounds, builds a partial application
+ * of {@link module:lamb.slice|slice} expecting the array-like object to slice.<br/>
+ * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+ * slice to the end of the array-like.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ * var s = "hello";
+ * var dropFirstAndLast = _.sliceAt(1, -1);
+ *
+ * dropFirstAndLast(arr) // => [2, 3, 4]
+ * dropFirstAndLast(s) // => ["e", "l", "l"]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.slice|slice}
+ * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @param {Number} start - Index at which to begin extraction.
+ * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
+ * @returns {Function}
+ */
+function sliceAt (start, end) {
+    return partial(slice, _, start, end);
+}
 
 /**
  * Checks if at least one element in an array-like object satisfies the given predicate.<br/>
@@ -598,5 +654,6 @@ lamb.reduceRightWith = reduceRightWith;
 lamb.reduceWith = reduceWith;
 lamb.reverse = reverse;
 lamb.slice = slice;
+lamb.sliceAt = sliceAt;
 lamb.some = some;
 lamb.someIn = someIn;

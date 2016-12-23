@@ -660,7 +660,7 @@ var _safeKeys = compose(Object.keys, Object);
  * @param {RegExp} pattern
  * @return {Number}
  */
-var _search = generic(String.prototype.search);
+var _search = generic(_stringProto.search);
 
 /**
  * Sets, or creates, a property in a copy of the provided object to the desired value.
@@ -693,7 +693,7 @@ function _setIn (source, key, value) {
  * @returns {Array}
  */
 function _setIndex (arrayLike, idx, value, updater) {
-    var result = slice(arrayLike);
+    var result = slice(arrayLike, 0, arrayLike.length);
     var n = _toNaturalIndex(idx, result.length);
 
     if (!isUndefined(n)) {
@@ -714,16 +714,17 @@ function _setIndex (arrayLike, idx, value, updater) {
  */
 function _setPathIn (obj, parts, value) {
     var key = parts[0];
+    var partsLen = parts.length;
     var v;
 
-    if (parts.length === 1) {
+    if (partsLen === 1) {
         v = value;
     } else {
         var targetKey = _getPathKey(obj, key, false);
 
         v = _setPathIn(
             isUndefined(targetKey) ? targetKey : obj[targetKey],
-            slice(parts, 1),
+            slice(parts, 1, partsLen),
             value
         );
     }
@@ -780,6 +781,35 @@ var _tearFrom = _curry(function (getKeys, obj) {
         return result;
     }, [[], []]);
 });
+
+/**
+ * Converts a value to a valid array length, thus an integer within
+ * <code>0</code> and <code>2<sup>32</sup> - 1</code> (both included).
+ * @private
+ * @param {*} value
+ * @returns {Number}
+ */
+function _toArrayLength (value) {
+    return clamp(_toInteger(value), 0, 4294967295);
+}
+
+/**
+ * Converts a value to an integer.
+ * @private
+ * @param {*} value
+ * @returns {Number}
+ */
+function _toInteger (value) {
+    var n = +value;
+
+    if (isNaN(n)) {
+        return 0;
+    } else if (n === 0) {
+        return n;
+    } else {
+        return Math.floor(Math.abs(n)) * (n < 0 ? -1 : 1);
+    }
+}
 
 /**
  * Checks if the given index, even negative, is an integer within the provided

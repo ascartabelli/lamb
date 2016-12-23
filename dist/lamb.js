@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.48.0-alpha.1
+ * @version 0.48.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,14 +17,14 @@
      * @private
      * @type String
      */
-    lamb._version = "0.48.0-alpha.1";
+    lamb._version = "0.48.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
 
     // some prototype shortcuts for internal use
-    var _arrayProto = Array.prototype;
     var _objectProto = Object.prototype;
+    var _stringProto = String.prototype;
 
     /**
      * Builds a function that returns a constant value.
@@ -102,13 +102,14 @@
      * @category Function
      * @function
      * @example
-     * // Lamb's "slice" is actually implemented like this
-     * var slice = _.generic(Array.prototype.slice);
+     * var arr = [1, 2, 3, 4, 5];
+     * var s = "hello";
+     * var join = _.generic(Array.prototype.join);
      *
-     * slice(["foo", "bar", "baz"], 0, -1) // => ["foo", "bar"]
+     * join(arr, "-") // => "1-2-3-4-5"
      *
      * // the function will work with any array-like object
-     * slice("fooBAR", 0, 3) // => ["f", "o", "o"]
+     * join("s", "-") // => "h-e-l-l-o"
      *
      * @param {Function} method
      * @returns {Function}
@@ -846,7 +847,7 @@
      * @param {RegExp} pattern
      * @return {Number}
      */
-    var _search = generic(String.prototype.search);
+    var _search = generic(_stringProto.search);
 
     /**
      * Sets, or creates, a property in a copy of the provided object to the desired value.
@@ -879,7 +880,7 @@
      * @returns {Array}
      */
     function _setIndex (arrayLike, idx, value, updater) {
-        var result = slice(arrayLike);
+        var result = slice(arrayLike, 0, arrayLike.length);
         var n = _toNaturalIndex(idx, result.length);
 
         if (!isUndefined(n)) {
@@ -900,16 +901,17 @@
      */
     function _setPathIn (obj, parts, value) {
         var key = parts[0];
+        var partsLen = parts.length;
         var v;
 
-        if (parts.length === 1) {
+        if (partsLen === 1) {
             v = value;
         } else {
             var targetKey = _getPathKey(obj, key, false);
 
             v = _setPathIn(
                 isUndefined(targetKey) ? targetKey : obj[targetKey],
-                slice(parts, 1),
+                slice(parts, 1, partsLen),
                 value
             );
         }
@@ -966,6 +968,35 @@
             return result;
         }, [[], []]);
     });
+
+    /**
+     * Converts a value to a valid array length, thus an integer within
+     * <code>0</code> and <code>2<sup>32</sup> - 1</code> (both included).
+     * @private
+     * @param {*} value
+     * @returns {Number}
+     */
+    function _toArrayLength (value) {
+        return clamp(_toInteger(value), 0, 4294967295);
+    }
+
+    /**
+     * Converts a value to an integer.
+     * @private
+     * @param {*} value
+     * @returns {Number}
+     */
+    function _toInteger (value) {
+        var n = +value;
+
+        if (isNaN(n)) {
+            return 0;
+        } else if (n === 0) {
+            return n;
+        } else {
+            return Math.floor(Math.abs(n)) * (n < 0 ? -1 : 1);
+        }
+    }
 
     /**
      * Checks if the given index, even negative, is an integer within the provided
@@ -1521,25 +1552,81 @@
      * @returns {Array}
      */
     function reverse (arrayLike) {
-        return slice(arrayLike).reverse();
+        return slice(arrayLike, 0, arrayLike.length).reverse();
     }
 
     /**
      * Builds an array by extracting a portion of an array-like object.<br/>
-     * It's a generic version of [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}.
+     * Since version <code>0.48.0</code> this function is no longer a generic version of
+     * [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}
+     * to ensure that dense arrays are returned.<br/>
+     * Also note that, unlike the native method, the <code>start</code> and <code>end</code>
+     * parameters aren't optional and will be simply converted to integer.<br/>
+     * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+     * slice to the end of the array-like.
      * @example
-     * _.slice(["foo", "bar", "baz"], 0, 2) // => ["foo", "bar"]
+     * var arr = [1, 2, 3, 4, 5];
+     *
+     * _.slice(arr, 0, 2) // => [1, 2]
+     * _.slice(arr, 2, -1) // => [3, 4]
+     * _.slice(arr, -3, 5) // => [3, 4, 5]
      *
      * @memberof module:lamb
      * @category Array
-     * @function
+     * @see {@link module:lamb.sliceAt|sliceAt}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @param {ArrayLike} arrayLike - Any array like object.
-     * @param {Number} [start=0] - Zero-based index at which to begin extraction.
-     * @param {Number} [end=arrayLike.length] - Zero-based index at which to end extraction.
-     * Extracts up to but not including end.
+     * @param {Number} start - Index at which to begin extraction.
+     * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
      * @returns {Array}
      */
-    var slice = generic(_arrayProto.slice);
+    function slice (arrayLike, start, end) {
+        var len = _toArrayLength(arrayLike.length);
+        var begin = clamp(_toInteger(start), -len, len);
+        var upTo = clamp(_toInteger(end), -len, len);
+
+        if (begin < 0) {
+            begin += len;
+        }
+
+        if (upTo < 0) {
+            upTo += len;
+        }
+
+        var resultLen = Math.max(0, upTo - begin);
+        var result = Array(resultLen);
+
+        for (var i = 0; i < resultLen; i++) {
+            result[i] = arrayLike[begin + i];
+        }
+
+        return result;
+    }
+
+    /**
+     * Given the <code>start</code> and <code>end</code> bounds, builds a partial application
+     * of {@link module:lamb.slice|slice} expecting the array-like object to slice.<br/>
+     * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+     * slice to the end of the array-like.
+     * @example
+     * var arr = [1, 2, 3, 4, 5];
+     * var s = "hello";
+     * var dropFirstAndLast = _.sliceAt(1, -1);
+     *
+     * dropFirstAndLast(arr) // => [2, 3, 4]
+     * dropFirstAndLast(s) // => ["e", "l", "l"]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.slice|slice}
+     * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+     * @param {Number} start - Index at which to begin extraction.
+     * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
+     * @returns {Function}
+     */
+    function sliceAt (start, end) {
+        return partial(slice, _, start, end);
+    }
 
     /**
      * Checks if at least one element in an array-like object satisfies the given predicate.<br/>
@@ -1623,6 +1710,7 @@
     lamb.reduceWith = reduceWith;
     lamb.reverse = reverse;
     lamb.slice = slice;
+    lamb.sliceAt = sliceAt;
     lamb.some = some;
     lamb.someIn = someIn;
 
@@ -3147,7 +3235,7 @@
         if (pathInfo.isValid) {
             return _setPathIn(source, parts, updater(pathInfo.target));
         } else {
-            return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
+            return Array.isArray(source) ? slice(source, 0, source.length) : _merge(enumerables, source);
         }
     }
 
@@ -3208,7 +3296,7 @@
      * @returns {Array}
      */
     function appendTo (arrayLike, value) {
-        return Array.isArray(arrayLike) ? arrayLike.concat([value]) : slice(arrayLike).concat([value]);
+        return slice(arrayLike, 0, arrayLike.length).concat([value]);
     }
 
     /**
@@ -3229,7 +3317,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(map(_argsTail.apply(null, arguments), unary(slice)));
+        var rest = shallowFlatten(map(_argsTail.apply(null, arguments), dropN(0)));
         var isInRest = partial(isIn, rest, _, 0);
 
         return filter(array, not(isInRest));
@@ -3248,7 +3336,6 @@
      *
      * @memberof module:lamb
      * @category Array
-     * @function
      * @see {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -3256,7 +3343,9 @@
      * @param {Number} n
      * @returns {Array}
      */
-    var drop = binary(slice);
+    function drop (arrayLike, n) {
+        return slice(arrayLike, n, arrayLike.length);
+    }
 
     /**
      * A curried version of {@link module:lamb.drop|drop} that expects the number of elements
@@ -3277,7 +3366,7 @@
      */
     function dropN (n) {
         return function (arrayLike) {
-            return slice(arrayLike, n);
+            return slice(arrayLike, n, arrayLike.length);
         };
     }
 
@@ -3304,7 +3393,7 @@
         var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
 
         return function (arrayLike) {
-            return slice(arrayLike, fn(arrayLike, predicate, predicateContext));
+            return slice(arrayLike, fn(arrayLike, predicate, predicateContext), arrayLike.length);
         };
     }
 
@@ -3382,7 +3471,7 @@
      * @returns {Array}
      */
     function flatten (array) {
-        return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array);
+        return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array, 0, array.length);
     }
 
     /**
@@ -3428,7 +3517,7 @@
      * @returns {Array}
      */
     function insert (arrayLike, index, element) {
-        var result = slice(arrayLike);
+        var result = slice(arrayLike, 0, arrayLike.length);
 
         result.splice(index, 0, element);
 
@@ -3662,7 +3751,7 @@
      * @returns {Array}
      */
     function shallowFlatten (array) {
-        return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array);
+        return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array, 0, array.length);
     }
 
     /**
@@ -3680,7 +3769,7 @@
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
-    var tail = partial(slice, _, 1, void 0);
+    var tail = dropN(1);
 
     /**
      * Retrieves the first <code>n</code> elements from an array or array-like object.<br/>
@@ -3703,7 +3792,7 @@
      * @returns {Array}
      */
     function take (arrayLike, n) {
-        return slice(arrayLike, 0, +n);
+        return slice(arrayLike, 0, n);
     }
 
     /**
@@ -3725,7 +3814,7 @@
      */
     function takeN (n) {
         return function (arrayLike) {
-            return slice(arrayLike, 0, +n);
+            return slice(arrayLike, 0, n);
         };
     }
 
@@ -3824,7 +3913,7 @@
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
      */
-    var union = compose(uniques, flatMapWith(unary(slice)), list);
+    var union = compose(uniques, flatMapWith(dropN(0)), list);
 
     /**
      * Returns an array comprised of the unique elements of the given array-like object.<br/>
@@ -4335,7 +4424,7 @@
      * @returns {Array}
      */
     function sortedInsert (arrayLike, element) {
-        var result = slice(arrayLike);
+        var result = slice(arrayLike, 0, arrayLike.length);
 
         if (arguments.length === 1) {
             return result;
@@ -4512,7 +4601,7 @@
      */
     function aritize (fn, arity) {
         return function () {
-            var args = slice(list.apply(null, arguments), 0, arity);
+            var args = list.apply(null, arguments).slice(0, arity);
             var argsLen = args.length;
             var n = Math.floor(arity);
 

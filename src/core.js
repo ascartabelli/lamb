@@ -3,8 +3,8 @@
 var _ = lamb;
 
 // some prototype shortcuts for internal use
-var _arrayProto = Array.prototype;
 var _objectProto = Object.prototype;
+var _stringProto = String.prototype;
 
 /**
  * Builds a function that returns a constant value.
@@ -82,13 +82,14 @@ function compose () {
  * @category Function
  * @function
  * @example
- * // Lamb's "slice" is actually implemented like this
- * var slice = _.generic(Array.prototype.slice);
+ * var arr = [1, 2, 3, 4, 5];
+ * var s = "hello";
+ * var join = _.generic(Array.prototype.join);
  *
- * slice(["foo", "bar", "baz"], 0, -1) // => ["foo", "bar"]
+ * join(arr, "-") // => "1-2-3-4-5"
  *
  * // the function will work with any array-like object
- * slice("fooBAR", 0, 3) // => ["f", "o", "o"]
+ * join("s", "-") // => "h-e-l-l-o"
  *
  * @param {Function} method
  * @returns {Function}

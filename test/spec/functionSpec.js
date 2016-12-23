@@ -129,7 +129,7 @@ describe("lamb.function", function () {
 
         it("should not modify the function's context", function () {
             var fn = function () {
-                this.values = this.values.concat(lamb.slice(arguments));
+                this.values = this.values.concat(lamb.slice(arguments, 0, arguments.length));
             };
 
             var obj = {values: [1, 2, 3], addValues: lamb.aritize(fn, 2)};
@@ -265,7 +265,7 @@ describe("lamb.function", function () {
 
         it("should not modify the function's context", function () {
             var fn = function () {
-                this.values = this.values.concat(lamb.slice(arguments));
+                this.values = this.values.concat(lamb.slice(arguments, 0, arguments.length));
             };
 
             var obj = {values: [1, 2, 3], addValues: lamb.binary(fn)};

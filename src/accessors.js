@@ -612,7 +612,7 @@ function updatePathIn (source, path, updater, separator) {
     if (pathInfo.isValid) {
         return _setPathIn(source, parts, updater(pathInfo.target));
     } else {
-        return Array.isArray(source) ? slice(source) : _merge(enumerables, source);
+        return Array.isArray(source) ? slice(source, 0, source.length) : _merge(enumerables, source);
     }
 }
 

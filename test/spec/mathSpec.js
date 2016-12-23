@@ -57,6 +57,7 @@ describe("lamb.math", function () {
             expect(lamb.clampWithin(null, 2)(-1)).toBe(0);
             expect(lamb.clampWithin(-1, null)(5)).toBe(0);
 
+            // NaNs if converted to Number
             [void 0, [1, 2], {a: 2}, "2a", /foo/, NaN, function () {}].forEach(function (value) {
                 expect(lamb.clamp(value, 99, 100)).toEqual(NaN);
                 expect(lamb.clamp(99, value, 100)).toBe(99);

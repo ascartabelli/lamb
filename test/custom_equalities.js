@@ -4,12 +4,35 @@ function isSparseArray (array) {
     }).length !== array.length;
 }
 
-function naiveSparseArrayEquality (a, b) {
-    if (isSparseArray(a) && Array.isArray(b) || isSparseArray(b) && Array.isArray(a)) {
-        var aLen = a.length;
-        var bLen = b.length;
+function isSparseArrayCheckNeeded (a, b) {
+    return isSparseArray(a) && Array.isArray(b) || isSparseArray(b) && Array.isArray(a);
+}
 
-        if (aLen !== bLen) {
+function sparseArrayEquality (a, b) {
+    if (isSparseArrayCheckNeeded(a, b)) {
+        var aLen = a.length;
+
+        if (aLen !== b.length) {
+            return false;
+        }
+
+        for (var i = 0; i < aLen; i++) {
+            if (i in a ^ i in b) {
+                return false;
+            } else if (a[i] !== b[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+function naiveSparseArrayEquivalence (a, b) {
+    if (isSparseArrayCheckNeeded(a, b)) {
+        var aLen = a.length;
+
+        if (aLen !== b.length) {
             return false;
         }
 
@@ -24,5 +47,6 @@ function naiveSparseArrayEquality (a, b) {
 }
 
 module.exports = {
-    naiveSparseArrayEquality: naiveSparseArrayEquality
+    sparseArrayEquality: sparseArrayEquality,
+    naiveSparseArrayEquivalence: naiveSparseArrayEquivalence
 };

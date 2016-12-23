@@ -80,7 +80,7 @@ function applyTo (args) {
  */
 function aritize (fn, arity) {
     return function () {
-        var args = slice(list.apply(null, arguments), 0, arity);
+        var args = list.apply(null, arguments).slice(0, arity);
         var argsLen = args.length;
         var n = Math.floor(arity);
 

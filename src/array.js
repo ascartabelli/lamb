@@ -34,7 +34,7 @@ var append = _curry(appendTo, 2, true);
  * @returns {Array}
  */
 function appendTo (arrayLike, value) {
-    return Array.isArray(arrayLike) ? arrayLike.concat([value]) : slice(arrayLike).concat([value]);
+    return slice(arrayLike, 0, arrayLike.length).concat([value]);
 }
 
 /**
@@ -55,7 +55,7 @@ function appendTo (arrayLike, value) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = shallowFlatten(map(_argsTail.apply(null, arguments), unary(slice)));
+    var rest = shallowFlatten(map(_argsTail.apply(null, arguments), dropN(0)));
     var isInRest = partial(isIn, rest, _, 0);
 
     return filter(array, not(isInRest));
@@ -74,7 +74,6 @@ function difference (array) {
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.dropN|dropN}
  * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -82,7 +81,9 @@ function difference (array) {
  * @param {Number} n
  * @returns {Array}
  */
-var drop = binary(slice);
+function drop (arrayLike, n) {
+    return slice(arrayLike, n, arrayLike.length);
+}
 
 /**
  * A curried version of {@link module:lamb.drop|drop} that expects the number of elements
@@ -103,7 +104,7 @@ var drop = binary(slice);
  */
 function dropN (n) {
     return function (arrayLike) {
-        return slice(arrayLike, n);
+        return slice(arrayLike, n, arrayLike.length);
     };
 }
 
@@ -130,7 +131,7 @@ function dropWhile (predicate, predicateContext) {
     var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
 
     return function (arrayLike) {
-        return slice(arrayLike, fn(arrayLike, predicate, predicateContext));
+        return slice(arrayLike, fn(arrayLike, predicate, predicateContext), arrayLike.length);
     };
 }
 
@@ -208,7 +209,7 @@ var flatMapWith = _partialWithIteratee(flatMap);
  * @returns {Array}
  */
 function flatten (array) {
-    return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array);
+    return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array, 0, array.length);
 }
 
 /**
@@ -254,7 +255,7 @@ var init = partial(slice, _, 0, -1);
  * @returns {Array}
  */
 function insert (arrayLike, index, element) {
-    var result = slice(arrayLike);
+    var result = slice(arrayLike, 0, arrayLike.length);
 
     result.splice(index, 0, element);
 
@@ -488,7 +489,7 @@ function pullFrom (array, values) {
  * @returns {Array}
  */
 function shallowFlatten (array) {
-    return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array);
+    return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array, 0, array.length);
 }
 
 /**
@@ -506,7 +507,7 @@ function shallowFlatten (array) {
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
-var tail = partial(slice, _, 1, void 0);
+var tail = dropN(1);
 
 /**
  * Retrieves the first <code>n</code> elements from an array or array-like object.<br/>
@@ -529,7 +530,7 @@ var tail = partial(slice, _, 1, void 0);
  * @returns {Array}
  */
 function take (arrayLike, n) {
-    return slice(arrayLike, 0, +n);
+    return slice(arrayLike, 0, n);
 }
 
 /**
@@ -551,7 +552,7 @@ function take (arrayLike, n) {
  */
 function takeN (n) {
     return function (arrayLike) {
-        return slice(arrayLike, 0, +n);
+        return slice(arrayLike, 0, n);
     };
 }
 
@@ -650,7 +651,7 @@ function transpose (arrayLike) {
  * @param {...ArrayLike} arrayLike
  * @returns {Array}
  */
-var union = compose(uniques, flatMapWith(unary(slice)), list);
+var union = compose(uniques, flatMapWith(dropN(0)), list);
 
 /**
  * Returns an array comprised of the unique elements of the given array-like object.<br/>

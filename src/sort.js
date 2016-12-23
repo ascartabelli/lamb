@@ -123,7 +123,7 @@ function sort (arrayLike) {
  * @returns {Array}
  */
 function sortedInsert (arrayLike, element) {
-    var result = slice(arrayLike);
+    var result = slice(arrayLike, 0, arrayLike.length);
 
     if (arguments.length === 1) {
         return result;

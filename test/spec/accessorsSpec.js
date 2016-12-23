@@ -1,10 +1,10 @@
 var lamb = require("../../dist/lamb.js");
-var naiveSparseArrayEquality = require("../custom_equalities.js").naiveSparseArrayEquality;
+var naiveSparseArrayEquivalence = require("../custom_equalities.js").naiveSparseArrayEquivalence;
 
 
 describe("lamb.accessors", function () {
     beforeEach(function() {
-        jasmine.addCustomEqualityTester(naiveSparseArrayEquality);
+        jasmine.addCustomEqualityTester(naiveSparseArrayEquivalence);
     });
 
     describe("Array accessors", function () {
