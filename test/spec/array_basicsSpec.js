@@ -901,8 +901,6 @@ describe("lamb.array_basics", function () {
         });
 
         it("should try, as native `slice` does, to retrieve elements from objects with a `length` property, but it should always build dense arrays", function () {
-            var nativeSlice = lamb.generic(Array.prototype.slice);
-
             var objs = [
                 {length: 3, "0": 1, "1": 2, "2": 3},
                 {length: "2", "0": 1, "1": 2, "2": 3},
@@ -914,7 +912,6 @@ describe("lamb.array_basics", function () {
             objs.forEach(function (obj, idx) {
                 expect(lamb.slice(obj, 1, 3)).toEqual(results[idx]);
                 expect(lamb.sliceAt(1, 3)(obj)).toEqual(results[idx]);
-                expect(nativeSlice(obj, 1, 3)).toEqual(results[idx]);
             });
 
             var oSparse = {length: 2};
