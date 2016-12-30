@@ -55,7 +55,7 @@ function appendTo (arrayLike, value) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = shallowFlatten(map(_argsTail.apply(null, arguments), dropN(0)));
+    var rest = flatMap(_argsTail.apply(null, arguments), dropN(0));
     var isInRest = partial(isIn, rest, _, 0);
 
     return filter(array, not(isInRest));
@@ -96,17 +96,14 @@ function drop (arrayLike, n) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.drop|drop}
  * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
-function dropN (n) {
-    return function (arrayLike) {
-        return slice(arrayLike, n, arrayLike.length);
-    };
-}
+var dropN = _curry(drop, 2, true);
 
 /**
  * Builds a function that drops the first <code>n</code> elements satisfying a predicate
@@ -522,6 +519,7 @@ var tail = dropN(1);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.takeN|takeN}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -529,9 +527,7 @@ var tail = dropN(1);
  * @param {Number} n
  * @returns {Array}
  */
-function take (arrayLike, n) {
-    return slice(arrayLike, 0, n);
-}
+var take = partial(slice, _, 0, _);
 
 /**
  * A curried version of {@link module:lamb.take|take} that expects the number of elements
@@ -544,17 +540,14 @@ function take (arrayLike, n) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.take|take}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {Number} n
  * @returns {Function}
  */
-function takeN (n) {
-    return function (arrayLike) {
-        return slice(arrayLike, 0, n);
-    };
-}
+var takeN = _curry(take, 2, true);
 
 /**
  * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
@@ -611,22 +604,22 @@ function takeWhile (predicate, predicateContext) {
  * @returns {Array<Array<*>>}
  */
 function transpose (arrayLike) {
-    var result = [];
-    var len = arrayLike.length >>> 0;
+    var minLen = MAX_ARRAY_LENGTH;
+    var len = _toArrayLength(arrayLike.length);
 
     if (len === 0) {
-        return result;
+        return [];
     }
 
-    var minLen = arrayLike[0].length >>> 0;
-
-    for (var j = 1, elementLen; j < len && minLen > 0; j++) {
-        elementLen = arrayLike[j].length >>> 0;
+    for (var j = 0, elementLen; j < len && minLen > 0; j++) {
+        elementLen = _toArrayLength(arrayLike[j].length);
 
         if (elementLen < minLen) {
             minLen = elementLen;
         }
     }
+
+    var result = Array(minLen);
 
     for (var i = 0, el; i < minLen; i++) {
         el = result[i] = Array(len);

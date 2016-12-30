@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.48.0-alpha.5
+ * @version 0.48.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,14 +17,17 @@
      * @private
      * @type String
      */
-    lamb._version = "0.48.0-alpha.5";
+    lamb._version = "0.48.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
 
-    // some prototype shortcuts for internal use
+    // prototype shortcuts
     var _objectProto = Object.prototype;
     var _stringProto = String.prototype;
+
+    // constants
+    var MAX_ARRAY_LENGTH = 4294967295;
 
     /**
      * Builds a function that returns a constant value.
@@ -617,7 +620,7 @@
      * @returns {Boolean}
      */
     function _isArrayIndex (target, key) {
-        var n = Number(key);
+        var n = +key;
 
         return Array.isArray(target) && n % 1 === 0 && !(n < 0 && _isEnumerable(target, key));
     }
@@ -710,7 +713,7 @@
      */
     function _makeReducer (step) {
         return function (arrayLike, accumulator, initialValue) {
-            var len = arrayLike.length >>> 0;
+            var len = _toArrayLength(arrayLike.length);
             var idx = step === 1 ? 0 : len - 1;
             var nCalls;
             var result;
@@ -883,7 +886,7 @@
         var result = slice(arrayLike, 0, arrayLike.length);
         var n = _toNaturalIndex(idx, result.length);
 
-        if (!isUndefined(n)) {
+        if (!isNaN(n)) {
             result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
         }
 
@@ -977,7 +980,7 @@
      * @returns {Number}
      */
     function _toArrayLength (value) {
-        return clamp(_toInteger(value), 0, 4294967295);
+        return clamp(value, 0, MAX_ARRAY_LENGTH) >>> 0;
     }
 
     /**
@@ -991,7 +994,7 @@
 
         if (isNaN(n)) {
             return 0;
-        } else if (n === 0) {
+        } else if (n % 1 === 0) {
             return n;
         } else {
             return Math.floor(Math.abs(n)) * (n < 0 ? -1 : 1);
@@ -1005,14 +1008,14 @@
      * @private
      * @param {Number} idx
      * @param {Number} len
-     * @returns {Number|Undefined}
+     * @returns {Number}
      */
     function _toNaturalIndex (idx, len) {
         if (isInteger(idx)) {
-            return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
+            return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : NaN;
         }
 
-        return void 0;
+        return NaN;
     }
 
     /**
@@ -1342,7 +1345,7 @@
             iteratee = iteratee.bind(iterateeContext);
         }
 
-        for (var i = 0, len = arrayLike.length >>> 0; i < len; i++) {
+        for (var i = 0, len = _toArrayLength(arrayLike.length); i < len; i++) {
             iteratee(arrayLike[i], i, arrayLike);
         }
     }
@@ -1418,7 +1421,7 @@
      * @returns {Array}
      */
     function map (arrayLike, iteratee, iterateeContext) {
-        var len = arrayLike.length >>> 0;
+        var len = _toArrayLength(arrayLike.length);
         var result = Array(len);
 
         if (arguments.length === 3) {
@@ -1582,19 +1585,21 @@
      */
     function slice (arrayLike, start, end) {
         var len = _toArrayLength(arrayLike.length);
-        var begin = clamp(_toInteger(start), -len, len);
-        var upTo = clamp(_toInteger(end), -len, len);
+        var begin = _toInteger(start);
+        var upTo = _toInteger(end);
 
         if (begin < 0) {
-            begin += len;
+            begin = begin < -len ? 0 : begin + len;
         }
 
         if (upTo < 0) {
-            upTo += len;
+            upTo = upTo < -len ? 0 : upTo + len;
+        } else if (upTo > len) {
+            upTo = len;
         }
 
-        var resultLen = Math.max(0, upTo - begin);
-        var result = Array(resultLen);
+        var resultLen = upTo - begin;
+        var result = resultLen > 0 ? Array(resultLen) : [];
 
         for (var i = 0; i < resultLen; i++) {
             result[i] = arrayLike[begin + i];
@@ -2692,9 +2697,9 @@
      * @returns {*}
      */
     function getIndex (arrayLike, index) {
-        var idx = _toNaturalIndex(index, arrayLike.length >>> 0);
+        var idx = _toNaturalIndex(index, _toArrayLength(arrayLike.length));
 
-        return isUndefined(idx) ? idx : arrayLike[idx];
+        return isNaN(idx) ? void 0 : arrayLike[idx];
     }
 
     /**
@@ -3317,7 +3322,7 @@
      * @returns {Array}
      */
     function difference (array) {
-        var rest = shallowFlatten(map(_argsTail.apply(null, arguments), dropN(0)));
+        var rest = flatMap(_argsTail.apply(null, arguments), dropN(0));
         var isInRest = partial(isIn, rest, _, 0);
 
         return filter(array, not(isInRest));
@@ -3358,17 +3363,14 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.drop|drop}
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    function dropN (n) {
-        return function (arrayLike) {
-            return slice(arrayLike, n, arrayLike.length);
-        };
-    }
+    var dropN = _curry(drop, 2, true);
 
     /**
      * Builds a function that drops the first <code>n</code> elements satisfying a predicate
@@ -3784,6 +3786,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -3791,9 +3794,7 @@
      * @param {Number} n
      * @returns {Array}
      */
-    function take (arrayLike, n) {
-        return slice(arrayLike, 0, n);
-    }
+    var take = partial(slice, _, 0, _);
 
     /**
      * A curried version of {@link module:lamb.take|take} that expects the number of elements
@@ -3806,17 +3807,14 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.take|take}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
      * @param {Number} n
      * @returns {Function}
      */
-    function takeN (n) {
-        return function (arrayLike) {
-            return slice(arrayLike, 0, n);
-        };
-    }
+    var takeN = _curry(take, 2, true);
 
     /**
      * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
@@ -3873,22 +3871,22 @@
      * @returns {Array<Array<*>>}
      */
     function transpose (arrayLike) {
-        var result = [];
-        var len = arrayLike.length >>> 0;
+        var minLen = MAX_ARRAY_LENGTH;
+        var len = _toArrayLength(arrayLike.length);
 
         if (len === 0) {
-            return result;
+            return [];
         }
 
-        var minLen = arrayLike[0].length >>> 0;
-
-        for (var j = 1, elementLen; j < len && minLen > 0; j++) {
-            elementLen = arrayLike[j].length >>> 0;
+        for (var j = 0, elementLen; j < len && minLen > 0; j++) {
+            elementLen = _toArrayLength(arrayLike[j].length);
 
             if (elementLen < minLen) {
                 minLen = elementLen;
             }
         }
+
+        var result = Array(minLen);
 
         for (var i = 0, el; i < minLen; i++) {
             el = result[i] = Array(len);
@@ -4362,7 +4360,7 @@
      */
     function sort (arrayLike) {
         var criteria = _makeCriteria(_argsTail.apply(null, arguments));
-        var len = arrayLike.length >>> 0;
+        var len = _toArrayLength(arrayLike.length);
         var result = Array(len);
 
         for (var i = 0; i < len; i++) {

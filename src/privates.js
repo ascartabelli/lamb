@@ -430,7 +430,7 @@ function _invoker (boundArgs, methodName, target) {
  * @returns {Boolean}
  */
 function _isArrayIndex (target, key) {
-    var n = Number(key);
+    var n = +key;
 
     return Array.isArray(target) && n % 1 === 0 && !(n < 0 && _isEnumerable(target, key));
 }
@@ -523,7 +523,7 @@ function _makeCriterion (criterion) {
  */
 function _makeReducer (step) {
     return function (arrayLike, accumulator, initialValue) {
-        var len = arrayLike.length >>> 0;
+        var len = _toArrayLength(arrayLike.length);
         var idx = step === 1 ? 0 : len - 1;
         var nCalls;
         var result;
@@ -696,7 +696,7 @@ function _setIndex (arrayLike, idx, value, updater) {
     var result = slice(arrayLike, 0, arrayLike.length);
     var n = _toNaturalIndex(idx, result.length);
 
-    if (!isUndefined(n)) {
+    if (!isNaN(n)) {
         result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
     }
 
@@ -790,7 +790,7 @@ var _tearFrom = _curry(function (getKeys, obj) {
  * @returns {Number}
  */
 function _toArrayLength (value) {
-    return clamp(_toInteger(value), 0, 4294967295);
+    return clamp(value, 0, MAX_ARRAY_LENGTH) >>> 0;
 }
 
 /**
@@ -804,7 +804,7 @@ function _toInteger (value) {
 
     if (isNaN(n)) {
         return 0;
-    } else if (n === 0) {
+    } else if (n % 1 === 0) {
         return n;
     } else {
         return Math.floor(Math.abs(n)) * (n < 0 ? -1 : 1);
@@ -818,14 +818,14 @@ function _toInteger (value) {
  * @private
  * @param {Number} idx
  * @param {Number} len
- * @returns {Number|Undefined}
+ * @returns {Number}
  */
 function _toNaturalIndex (idx, len) {
     if (isInteger(idx)) {
-        return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : void 0;
+        return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : NaN;
     }
 
-    return void 0;
+    return NaN;
 }
 
 /**

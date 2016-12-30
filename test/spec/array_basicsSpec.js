@@ -889,7 +889,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should return an array with `undefined` values in place of unassigned or deleted indexes if a sparse array is received", function () {
-            var aSparse = [, 1, 2, , 4, , ,]; // length === 7 as aDense
+            var aSparse = [, 1, 2, , 4, , ,]; // length === 7, same as aDense
             var aDense = [void 0, 1, 2, void 0, 4, void 0, void 0];
             var r1 = lamb.slice(aSparse, 0, aSparse.length);
             var r2 = lamb.sliceAt(0, aSparse.length)(aSparse);
@@ -922,6 +922,18 @@ describe("lamb.array_basics", function () {
             expect(lamb.slice(oSparse, 0, oSparse.length)).not.toEqual(rSparse);
             expect(lamb.sliceAt(0, oSparse.length)(oSparse)).toEqual(rDense);
             expect(lamb.sliceAt(0, oSparse.length)(oSparse)).not.toEqual(rSparse);
+        });
+
+        it("should work with array-like lengths up to 2^32 - 1", function () {
+            var maxLen = Math.pow(2, 32) - 1;
+            var maxIndex = maxLen - 1;
+            var obj = {length: maxLen + 100};
+
+            obj[maxIndex] = 99;
+            obj[maxIndex + 1] = 88;
+
+            expect(lamb.slice(obj, -1, obj.length)).toEqual([99]);
+            expect(lamb.sliceAt(-1, obj.length)(obj)).toEqual([99]);
         });
 
         it("should throw an exception if it receives `null` or `undefined` instead of an array-like or if it's called without parameters", function () {

@@ -2,9 +2,12 @@
 // alias used as a placeholder argument for partial application
 var _ = lamb;
 
-// some prototype shortcuts for internal use
+// prototype shortcuts
 var _objectProto = Object.prototype;
 var _stringProto = String.prototype;
+
+// constants
+var MAX_ARRAY_LENGTH = 4294967295;
 
 /**
  * Builds a function that returns a constant value.

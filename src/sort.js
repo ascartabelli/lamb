@@ -61,7 +61,7 @@
  */
 function sort (arrayLike) {
     var criteria = _makeCriteria(_argsTail.apply(null, arguments));
-    var len = arrayLike.length >>> 0;
+    var len = _toArrayLength(arrayLike.length);
     var result = Array(len);
 
     for (var i = 0; i < len; i++) {

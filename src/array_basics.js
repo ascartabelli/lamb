@@ -286,7 +286,7 @@ function forEach (arrayLike, iteratee, iterateeContext) {
         iteratee = iteratee.bind(iterateeContext);
     }
 
-    for (var i = 0, len = arrayLike.length >>> 0; i < len; i++) {
+    for (var i = 0, len = _toArrayLength(arrayLike.length); i < len; i++) {
         iteratee(arrayLike[i], i, arrayLike);
     }
 }
@@ -362,7 +362,7 @@ var list = _argsToArrayFrom(0);
  * @returns {Array}
  */
 function map (arrayLike, iteratee, iterateeContext) {
-    var len = arrayLike.length >>> 0;
+    var len = _toArrayLength(arrayLike.length);
     var result = Array(len);
 
     if (arguments.length === 3) {
@@ -526,19 +526,21 @@ function reverse (arrayLike) {
  */
 function slice (arrayLike, start, end) {
     var len = _toArrayLength(arrayLike.length);
-    var begin = clamp(_toInteger(start), -len, len);
-    var upTo = clamp(_toInteger(end), -len, len);
+    var begin = _toInteger(start);
+    var upTo = _toInteger(end);
 
     if (begin < 0) {
-        begin += len;
+        begin = begin < -len ? 0 : begin + len;
     }
 
     if (upTo < 0) {
-        upTo += len;
+        upTo = upTo < -len ? 0 : upTo + len;
+    } else if (upTo > len) {
+        upTo = len;
     }
 
-    var resultLen = Math.max(0, upTo - begin);
-    var result = Array(resultLen);
+    var resultLen = upTo - begin;
+    var result = resultLen > 0 ? Array(resultLen) : [];
 
     for (var i = 0; i < resultLen; i++) {
         result[i] = arrayLike[begin + i];

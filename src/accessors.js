@@ -69,9 +69,9 @@ function getIn (obj, key) {
  * @returns {*}
  */
 function getIndex (arrayLike, index) {
-    var idx = _toNaturalIndex(index, arrayLike.length >>> 0);
+    var idx = _toNaturalIndex(index, _toArrayLength(arrayLike.length));
 
-    return isUndefined(idx) ? idx : arrayLike[idx];
+    return isNaN(idx) ? void 0 : arrayLike[idx];
 }
 
 /**
