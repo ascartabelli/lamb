@@ -496,7 +496,14 @@ var reduceWith = _partialWithIteratee(reduce);
  * @returns {Array}
  */
 function reverse (arrayLike) {
-    return slice(arrayLike, 0, arrayLike.length).reverse();
+    var len = _toArrayLength(arrayLike.length);
+    var result = Array(len);
+
+    for (var i = 0, ofs = len - 1; i < len; i++) {
+        result[i] = arrayLike[ofs - i];
+    }
+
+    return result;
 }
 
 /**

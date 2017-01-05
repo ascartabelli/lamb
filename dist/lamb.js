@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.48.0-alpha.8
+ * @version 0.48.0-alpha.9
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.48.0-alpha.8";
+    lamb._version = "0.48.0-alpha.9";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1555,7 +1555,14 @@
      * @returns {Array}
      */
     function reverse (arrayLike) {
-        return slice(arrayLike, 0, arrayLike.length).reverse();
+        var len = _toArrayLength(arrayLike.length);
+        var result = Array(len);
+
+        for (var i = 0, ofs = len - 1; i < len; i++) {
+            result[i] = arrayLike[ofs - i];
+        }
+
+        return result;
     }
 
     /**
