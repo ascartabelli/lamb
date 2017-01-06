@@ -59,6 +59,11 @@ describe("lamb.array_basics", function () {
             expect(lamb.isIn("foo", "f", 1)).toBe(false);
         });
 
+        it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+            expect(lamb.contains(void 0)([1, , 3])).toBe(true);
+            expect(lamb.isIn([1, , 3], void 0)).toBe(true);
+        });
+
         it("should throw an exception if called without the data argument or without arguments at all", function () {
             expect(lamb.isIn).toThrow();
             expect(lamb.contains(1)).toThrow();
@@ -209,6 +214,11 @@ describe("lamb.array_basics", function () {
             expect(lamb.filterWith(isVowel)("aiuola")).toEqual(["a", "i", "u", "o", "a"]);
         });
 
+        it("should always return dense arrays", function () {
+            expect(lamb.filter([1, , , 4, void 0, 5], lamb.isUndefined)).toEqual([void 0, void 0, void 0]);
+            expect(lamb.filterWith(lamb.isUndefined)([1, , , 4, void 0, 5])).toEqual([void 0, void 0, void 0]);
+        });
+
         it("should throw an exception if the predicate isn't a function or is missing", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
                 expect(function () { lamb.filter(arr, value); }).toThrow();
@@ -323,6 +333,11 @@ describe("lamb.array_basics", function () {
                 expect(lamb.findIndex("zxc", isVowel, fakeContext)).toBe(-1);
                 expect(lamb.findIndexWhere(isVowel, fakeContext)(testString)).toBe(1);
                 expect(lamb.findIndexWhere(isVowel, fakeContext)("zxc")).toBe(-1);
+            });
+
+            it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+                expect(lamb.findIndex([1, , 3], lamb.isUndefined)).toBe(1);
+                expect(lamb.findIndexWhere(lamb.isUndefined)([1, , 3])).toBe(1);
             });
 
             it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -452,15 +467,15 @@ describe("lamb.array_basics", function () {
         });
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
-            var sparseArr = Array(3);
-            sparseArr[1] = "foo";
+            var sparseArr = [, "foo", ,];
             var safeUpperCase = lamb.compose(lamb.invoker("toUpperCase"), String);
             var result = ["UNDEFINED", "FOO", "UNDEFINED"];
 
             expect(lamb.map(sparseArr, safeUpperCase)).toEqual(result);
+            expect(lamb.map(sparseArr, lamb.identity)).toEqual([void 0, "foo", void 0]);
             expect(lamb.mapWith(safeUpperCase)(sparseArr)).toEqual(result);
+            expect(lamb.mapWith(lamb.identity)(sparseArr)).toEqual([void 0, "foo", void 0]);
         });
-
 
         it("should throw an exception if the iteratee isn't a function or is missing", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
@@ -676,6 +691,10 @@ describe("lamb.array_basics", function () {
             expect(lamb.reverse(arr)).toEqual([5, 4, 3, 2, 1]);
             expect(lamb.reverse(s)).toEqual(["o", "l", "l", "e", "h"]);
             expect(arr).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it("should always return dense arrays", function () {
+            expect(lamb.reverse([1, , 3])).toEqual([3, void 0, 1]);
         });
 
         it("should throw an exception if called without arguments", function () {
@@ -903,11 +922,12 @@ describe("lamb.array_basics", function () {
         it("should try, as native `slice` does, to retrieve elements from objects with a `length` property, but it should always build dense arrays", function () {
             var objs = [
                 {length: 3, "0": 1, "1": 2, "2": 3},
+                {length: 3, "0": 1, "2": 3},
                 {length: "2", "0": 1, "1": 2, "2": 3},
                 {length: "-2", "0": 1, "1": 2, "2": 3}
             ];
 
-            var results = [ [2, 3], [2], [] ];
+            var results = [ [2, 3], [void 0, 3], [2], [] ];
 
             objs.forEach(function (obj, idx) {
                 expect(lamb.slice(obj, 1, 3)).toEqual(results[idx]);
