@@ -461,14 +461,14 @@ var pull = _curry(pullFrom, 2, true);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.pull|pull}
- * @param {ArrayLike} array
+ * @param {ArrayLike} arrayLike
  * @param {ArrayLike} values
  * @returns {Array}
  */
-function pullFrom (array, values) {
-    return filter(array, function (element) {
+function pullFrom (arrayLike, values) {
+    return values ? filter(arrayLike, function (element) {
         return !isIn(values, element);
-    });
+    }) : slice(arrayLike, 0, arrayLike.length);
 }
 
 /**

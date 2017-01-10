@@ -774,6 +774,20 @@ describe("lamb.array", function () {
             expect(lamb.pull("bar")(arr)).toEqual(result);
         });
 
+        it("should consider non-array-likes received as the list of values as an empty array", function () {
+            var arr = [1, 2, 3];
+
+            [{}, /foo/, 1, function () {}, NaN, true, new Date(), null, void 0].forEach(function (value) {
+                var r1 = lamb.pullFrom(arr, value);
+                var r2 = lamb.pull(value)(arr);
+
+                expect(r1).toEqual(arr);
+                expect(r1).not.toBe(arr);
+                expect(r2).toEqual(arr);
+                expect(r2).not.toBe(arr);
+            });
+        });
+
         it("should be able to remove non assigned indexes from sparse arrays", function () {
             expect(lamb.pullFrom([1, , 3, , 5], [void 0])).toEqual([1, 3, 5]);
             expect(lamb.pull([void 0])([1, , 3, , 5])).toEqual([1, 3, 5]);
@@ -789,10 +803,6 @@ describe("lamb.array", function () {
             expect(lamb.pullFrom([1, void 0, 3, void 0, 5], [1, , 1])).toEqual([3, 5]);
             expect(lamb.pull([1, , 1])([1, , 3, , 5])).toEqual([3, 5]);
             expect(lamb.pull([1, void 0, 1])([1, , 3, , 5])).toEqual([3, 5]);
-        });
-
-        it("should consider non-array-likes received as the list of values as an empty array", function () {
-
         });
 
         it("should throw an exception if called without arguments", function () {
