@@ -28,25 +28,6 @@ function sparseArrayEquality (a, b) {
     }
 }
 
-function naiveSparseArrayEquivalence (a, b) {
-    if (isSparseArrayCheckNeeded(a, b)) {
-        var aLen = a.length;
-
-        if (aLen !== b.length) {
-            return false;
-        }
-
-        for (var i = 0; i < aLen; i++) {
-            if (a[i] !== b[i]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-}
-
 module.exports = {
-    sparseArrayEquality: sparseArrayEquality,
-    naiveSparseArrayEquivalence: naiveSparseArrayEquivalence
+    sparseArrayEquality: sparseArrayEquality
 };

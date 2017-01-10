@@ -1,19 +1,23 @@
 var lamb = require("../../dist/lamb.js");
-var naiveSparseArrayEquivalence = require("../custom_equalities.js").naiveSparseArrayEquivalence;
-
+var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
 
 describe("lamb.accessors", function () {
-    beforeEach(function() {
-        jasmine.addCustomEqualityTester(naiveSparseArrayEquivalence);
-    });
-
     describe("Array accessors", function () {
         var arr = [1, 2, 3, 4, 5];
         var arrCopy = arr.slice();
         var s = "abcde";
-        var sparseArr = Array(4);
-        sparseArr[2] = 3;
+        var sparseArr = [, , 3, ,];
         var sparseArrCopy = sparseArr.slice();
+        var sparseArrAsDense = [void 0, void 0, 3, void 0];
+
+        beforeEach(function() {
+            jasmine.addCustomEqualityTester(sparseArrayEquality);
+        });
+
+        afterEach(function () {
+            expect(arr).toEqual(arrCopy);
+            expect(sparseArr).toEqual(sparseArrCopy);
+        });
 
         describe("getIndex / getAt / head / last", function () {
             it("should retrieve the element at the given index in an array-like object", function () {
@@ -41,6 +45,8 @@ describe("lamb.accessors", function () {
                 expect(lamb.getIndex(sparseArr, -2)).toBe(3);
                 expect(lamb.getAt(2)(sparseArr)).toBe(3);
                 expect(lamb.getAt(-2)(sparseArr)).toBe(3);
+                expect(lamb.head(sparseArr)).toBe(void 0);
+                expect(lamb.last(sparseArr)).toBe(void 0);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -82,11 +88,6 @@ describe("lamb.accessors", function () {
         });
 
         describe("setIndex / setAt", function () {
-            afterEach(function () {
-                expect(arr).toEqual(arrCopy);
-                expect(sparseArr).toEqual(sparseArrCopy);
-            });
-
             it("should allow to set a value in a copy of the given array-like object", function () {
                 var r1 = [1, 2, 99, 4, 5];
                 var r2 = ["z", "b", "c", "d", "e"];
@@ -105,7 +106,7 @@ describe("lamb.accessors", function () {
                 expect(newArr2).toEqual([99, 2, 3, 4, 5]);
             });
 
-            it("should work with sparse arrays", function () {
+            it("should always return dense arrays", function () {
                 var r1 = [void 0, void 0, 99, void 0];
                 var r2 = [void 0, void 0, 3, 99];
 
@@ -145,7 +146,7 @@ describe("lamb.accessors", function () {
                 });
 
                 results2.forEach(function (value) {
-                    expect(value).toEqual(sparseArr);
+                    expect(value).toEqual(sparseArrAsDense);
                     expect(value).not.toBe(sparseArr);
                 });
             });
@@ -162,9 +163,9 @@ describe("lamb.accessors", function () {
                 expect(newArr).not.toBe(arr);
                 expect(newArr2).not.toBe(arr);
                 expect(newS).toEqual(["a", "b", "c", "d", "e"]);
-                expect(newSparseArr).toEqual(sparseArr);
+                expect(newSparseArr).toEqual(sparseArrAsDense);
                 expect(newSparseArr).not.toBe(sparseArr);
-                expect(newSparseArr2).toEqual(sparseArr);
+                expect(newSparseArr2).toEqual(sparseArrAsDense);
                 expect(newSparseArr2).not.toBe(sparseArr);
             });
 
@@ -219,7 +220,7 @@ describe("lamb.accessors", function () {
                 expect(newArr2).toEqual([99, 2, 3, 4, 5]);
             });
 
-            it("should work with sparse arrays", function () {
+            it("should always return dense arrays", function () {
                 var r1 = [void 0, void 0, 99, void 0];
                 var r2 = [void 0, void 0, 3, 99];
 
@@ -259,7 +260,7 @@ describe("lamb.accessors", function () {
                 });
 
                 results2.forEach(function (value) {
-                    expect(value).toEqual(sparseArr);
+                    expect(value).toEqual(sparseArrAsDense);
                     expect(value).not.toBe(sparseArr);
                 });
             });
@@ -276,9 +277,9 @@ describe("lamb.accessors", function () {
                 expect(newArr).not.toBe(arr);
                 expect(newArr2).not.toBe(arr);
                 expect(newS).toEqual(["a", "b", "c", "d", "e"]);
-                expect(newSparseArr).toEqual(sparseArr);
+                expect(newSparseArr).toEqual(sparseArrAsDense);
                 expect(newSparseArr).not.toBe(sparseArr);
-                expect(newSparseArr2).toEqual(sparseArr);
+                expect(newSparseArr2).toEqual(sparseArrAsDense);
                 expect(newSparseArr2).not.toBe(sparseArr);
             });
 
