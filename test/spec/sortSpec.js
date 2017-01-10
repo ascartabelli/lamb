@@ -1,7 +1,12 @@
 var lamb = require("../../dist/lamb.js");
+var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
 
 describe("lamb.sort", function () {
     var descSorter = lamb.sorterDesc();
+
+    beforeEach(function() {
+        jasmine.addCustomEqualityTester(sparseArrayEquality);
+    });
 
     describe("sort / sortWith", function () {
         var persons = [
@@ -128,6 +133,14 @@ describe("lamb.sort", function () {
                 expect(lamb.sort("cadb", value)).toEqual(stringResult);
                 expect(lamb.sortWith(value)("cadb")).toEqual(stringResult);
             });
+        });
+
+        it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+            var arr = ["b", , "c", void 0, "a"];
+            var result = ["a", "b", "c", void 0, void 0];
+
+            expect(lamb.sort(arr, String)).toEqual(result);
+            expect(lamb.sortWith(String)(arr)).toEqual(result);
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
@@ -257,6 +270,13 @@ describe("lamb.sort", function () {
         it("should allow to insert `nil` values if the value is passed explicitly", function () {
             expect(lamb.sortedInsert([1, 2, 3], null)).toEqual([1, 2, 3, null]);
             expect(lamb.sortedInsert([1, 2, 3], void 0)).toEqual([1, 2, 3, void 0]);
+        });
+
+        it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+            var arr = ["a", "b", "c", , ,];
+            var result = ["a", "b", "c", void 0, void 0, "z"];
+
+            expect(lamb.sortedInsert(arr, "z", String)).toEqual(result);
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
