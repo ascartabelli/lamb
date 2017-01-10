@@ -142,7 +142,7 @@ describe("lamb.array", function () {
             expect(lamb.dropN(-10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);
         });
 
-        it("should return an empty array when `n` is greater or equal than the array-like length", function () {
+        it("should return an empty array when `n` is greater than or equal to the array-like length", function () {
             expect(lamb.drop([1, 2, 3, 4], 4)).toEqual([]);
             expect(lamb.drop([1, 2, 3, 4], 5)).toEqual([]);
             expect(lamb.dropN(10)([1, 2, 3, 4])).toEqual([]);
@@ -918,7 +918,7 @@ describe("lamb.array", function () {
             expect(lamb.takeN(-3)("abcd")).toEqual(["a"]);
         });
 
-        it("should return a copy of the source array when `n` is greater or equal than the array-like length", function () {
+        it("should return a copy of the source array when `n` is greater than or equal to the array-like length", function () {
             expect(lamb.take(["a", "b"], 3)).toEqual(["a", "b"]);
             expect(lamb.take([1, 2, 3, 4], 4)).toEqual([1, 2, 3, 4]);
             expect(lamb.takeN(10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);

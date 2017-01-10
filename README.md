@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.47.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.48.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.47.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.48.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +110,13 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.48.0 - *2017/01/10***
+  - **API change**: `slice` isn't a generic anymore to ensure that dense arrays are returned and has no optional parameters
+  - **Fixed**: `pull` and `pullFrom` now consider `nil`s received as the `values` parameter as empty arrays
+  - Added `sliceAt`
+  - All array functions always return dense arrays now
+  - Updated tests
+
 - **v0.47.0 - *2016/12/16***
   - **API change**: renamed `apply` to `application`
   - **API change**: renamed `applyArgs` to `applyTo`
@@ -138,9 +145,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **Fixed**: predicates built with `testWith` are now safe to reuse even when the global flag is used in the pattern
   - Added `append` and `appendTo`
   - Updated tests of all string functions
-
-- **v0.43.0 - *2016/11/03***
-  - **Fully compatible with versions down to 0.40.x**
-  - Added `pathExists` and `pathExistsIn`
-  - Improved performance of `setIn`, `setKey`, `updateIn` and `updateKey`
-  - Improved performance of `setPath`, `setPathIn`, `updatePath` and `updatePathIn`

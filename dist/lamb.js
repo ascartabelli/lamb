@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.48.0-alpha.14
+ * @version 0.48.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.48.0-alpha.14";
+    lamb._version = "0.48.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -752,7 +752,7 @@
     }
 
     /**
-     * Merges the received objects using the provided functions to retrieve their keys.
+     * Merges the received objects using the provided function to retrieve their keys.
      * @private
      * @param {Function} getKeys
      * @param {...Object} source
@@ -4583,7 +4583,7 @@
     }
 
     /**
-     * Builds a function that passes only the specified amount of arguments to the given function.<br/>
+     * Builds a new function that passes only the specified amount of arguments to the original one.<br/>
      * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
      * pass a negative arity.
      * @example

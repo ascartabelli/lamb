@@ -562,7 +562,7 @@ function _makeTypeErrorFor (value, desiredType) {
 }
 
 /**
- * Merges the received objects using the provided functions to retrieve their keys.
+ * Merges the received objects using the provided function to retrieve their keys.
  * @private
  * @param {Function} getKeys
  * @param {...Object} source

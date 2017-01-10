@@ -57,7 +57,7 @@ function applyTo (args) {
 }
 
 /**
- * Builds a function that passes only the specified amount of arguments to the given function.<br/>
+ * Builds a new function that passes only the specified amount of arguments to the original one.<br/>
  * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
  * pass a negative arity.
  * @example
