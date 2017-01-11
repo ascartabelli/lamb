@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.48.0
+ * @version 0.49.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.48.0";
+    lamb._version = "0.49.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -4606,14 +4606,11 @@
      */
     function aritize (fn, arity) {
         return function () {
-            var args = list.apply(null, arguments).slice(0, arity);
-            var argsLen = args.length;
-            var n = Math.floor(arity);
+            var n = _toInteger(arity);
+            var args = list.apply(null, arguments).slice(0, n);
 
-            if (n > 0) {
-                while (argsLen < n) {
-                    args[argsLen++] = void 0;
-                }
+            for (var i = args.length; i < n; i++) {
+                args[i] = void 0;
             }
 
             return fn.apply(this, args);

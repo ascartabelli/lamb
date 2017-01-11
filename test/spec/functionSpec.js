@@ -102,22 +102,16 @@ describe("lamb.function", function () {
             expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2, 3, void 0, void 0]);
         });
 
-        it("should use all received arguments if supplied with an `undefined` arity following the ECMA specifications of `slice`", function () {
-            // see http://www.ecma-international.org/ecma-262/6.0/#sec-array.prototype.slice
-
-            expect(lamb.aritize(maxArgumentSpy, void 0)(0, 1, 2, 3, 4, 5)).toBe(5);
-            expect(lamb.aritize(maxArgumentSpy)(0, 1, 2, 3, 4, 5)).toBe(5);
-            expect(maxArgumentSpy.calls.argsFor(0)).toEqual([0, 1, 2, 3, 4, 5]);
-            expect(maxArgumentSpy.calls.argsFor(1)).toEqual([0, 1, 2, 3, 4, 5]);
-        })
-
         it("should convert the arity to an integer following ECMA specifications", function () {
             // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
 
-            [{}, "foo", NaN, null, function () {}, ["a", "b"]].forEach(function (value, idx) {
+            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (value, idx) {
                 expect(lamb.aritize(maxArgumentSpy, value)(0, 1, 2, 3, 4, 5)).toBe(-Infinity);
                 expect(maxArgumentSpy.calls.argsFor(idx).length).toBe(0);
             });
+
+            expect(lamb.aritize(maxArgumentSpy)(0, 1, 2, 3, 4, 5)).toBe(-Infinity);
+            expect(maxArgumentSpy.calls.mostRecent().args.length).toBe(0);
 
             maxArgumentSpy.calls.reset();
 

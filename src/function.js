@@ -80,14 +80,11 @@ function applyTo (args) {
  */
 function aritize (fn, arity) {
     return function () {
-        var args = list.apply(null, arguments).slice(0, arity);
-        var argsLen = args.length;
-        var n = Math.floor(arity);
+        var n = _toInteger(arity);
+        var args = list.apply(null, arguments).slice(0, n);
 
-        if (n > 0) {
-            while (argsLen < n) {
-                args[argsLen++] = void 0;
-            }
+        for (var i = args.length; i < n; i++) {
+            args[i] = void 0;
         }
 
         return fn.apply(this, args);
