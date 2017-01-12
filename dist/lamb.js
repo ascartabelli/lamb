@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.1
+ * @version 0.49.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.1";
+    lamb._version = "0.49.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2903,7 +2903,7 @@
      *
      * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
      * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
-     *x
+     *
      * // `user` still is {name: "John", surname: "Doe", age: 30}
      *
      * @memberof module:lamb

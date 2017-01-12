@@ -268,7 +268,7 @@ function setAt (index, value) {
  *
  * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
  * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}
- *x
+ *
  * // `user` still is {name: "John", surname: "Doe", age: 30}
  *
  * @memberof module:lamb
