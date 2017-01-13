@@ -252,16 +252,11 @@ function _getInsertionIndex (array, element, comparer, start, end) {
  * @private
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} predicateContext
  * @returns {Number}
  */
-function _getNumConsecutiveHits (arrayLike, predicate, predicateContext) {
+function _getNumConsecutiveHits (arrayLike, predicate) {
     var idx = 0;
     var len = arrayLike.length;
-
-    if (arguments.length === 3) {
-        predicate = predicate.bind(predicateContext);
-    }
 
     while (idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
         idx++;
@@ -586,9 +581,7 @@ var _pairsFrom = _curry(function (getKeys, obj) {
  * Builds a partial application of a function expecting an iteratee and an
  * optional argument other than its main data parameter.<br/>
  * The optional argument is passed to the function only when is explicitly given
- * a value.<br/>
- * The optional argument is usually the iteratee context, but reduce functions
- * pass their initial value instead.
+ * a value.
  * @private
  * @param {Function} fn
  * @returns {Function}

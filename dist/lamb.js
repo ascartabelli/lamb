@@ -442,16 +442,11 @@
      * @private
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
-     * @param {Object} predicateContext
      * @returns {Number}
      */
-    function _getNumConsecutiveHits (arrayLike, predicate, predicateContext) {
+    function _getNumConsecutiveHits (arrayLike, predicate) {
         var idx = 0;
         var len = arrayLike.length;
-
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
 
         while (idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
             idx++;
@@ -776,9 +771,7 @@
      * Builds a partial application of a function expecting an iteratee and an
      * optional argument other than its main data parameter.<br/>
      * The optional argument is passed to the function only when is explicitly given
-     * a value.<br/>
-     * The optional argument is usually the iteratee context, but reduce functions
-     * pass their initial value instead.
+     * a value.
      * @private
      * @param {Function} fn
      * @returns {Function}
@@ -3356,14 +3349,11 @@
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    function dropWhile (predicate, predicateContext) {
-        var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
-
+    function dropWhile (predicate) {
         return function (arrayLike) {
-            return slice(arrayLike, fn(arrayLike, predicate, predicateContext), arrayLike.length);
+            return slice(arrayLike, _getNumConsecutiveHits(arrayLike, predicate), arrayLike.length);
         };
     }
 
@@ -3383,14 +3373,9 @@
      * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
-     * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    function flatMap (array, iteratee, iterateeContext) {
-        if (arguments.length === 3) {
-            iteratee = iteratee.bind(iterateeContext);
-        }
-
+    function flatMap (array, iteratee) {
         return reduce(array, function (result, el, idx, arr) {
             var v = iteratee(el, idx, arr);
 
@@ -3407,8 +3392,8 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.flatMap|flatMap} using the given iteratee
-     * and the optional context. The resulting function expects the array to act upon.
+     * A curried version of {@link module:lamb.flatMap|flatMap} that uses provided iteratee
+     * to build a function expecting the array to act upon.
      * @example
      * var toCharArray = function (s) { return s.split(""); };
      * var wordsToCharArray = _.flatMapWith(toCharArray);
@@ -3421,10 +3406,9 @@
      * @see {@link module:lamb.flatMap|flatMap}
      * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
      * @param {ListIteratorCallback} iteratee
-     * @param {Object} [iterateeContext]
      * @returns {Function}
      */
-    var flatMapWith = _partialWithIteratee(flatMap);
+    var flatMapWith = _curry(flatMap, 2, true);
 
     /**
      * Flattens an array.
@@ -3556,16 +3540,11 @@
      * @see {@link module:lamb.partitionWith|partitionWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Array<Array<*>, Array<*>>}
      */
-    function partition (arrayLike, predicate, predicateContext) {
+    function partition (arrayLike, predicate) {
         var result = [[], []];
         var len = arrayLike.length;
-
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
 
         for (var i = 0, el; i < len; i++) {
             el = arrayLike[i];
@@ -3576,9 +3555,8 @@
     }
 
     /**
-     * Builds a partial application of {@link module:lamb.partition|partition} using the given
-     * predicate and the optional context.
-     * The resulting function expects the array-like object to act upon.
+     * A curried version of {@link module:lamb.partition|partition} that uses the provided
+     * predicate to build a function expecting the array-like object to act upon.
      * @example
      * var users = [
      *     {"name": "Jane", "surname": "Doe", "active": false},
@@ -3603,10 +3581,9 @@
      * @function
      * @see {@link module:lamb.partition|partition}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    var partitionWith = _partialWithIteratee(partition);
+    var partitionWith = _curry(partition, 2, true);
 
     /**
      * "Plucks" the values of the specified key from a list of objects.
@@ -3800,14 +3777,11 @@
      * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @param {ListIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    function takeWhile (predicate, predicateContext) {
-        var fn = arguments.length === 2 ? _getNumConsecutiveHits : binary(_getNumConsecutiveHits);
-
+    function takeWhile (predicate) {
         return function (arrayLike) {
-            return slice(arrayLike, 0, fn(arrayLike, predicate, predicateContext));
+            return slice(arrayLike, 0, _getNumConsecutiveHits(arrayLike, predicate));
         };
     }
 
@@ -3910,14 +3884,11 @@
      * @category Array
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} [iteratee={@link module:lamb.identity|identity}]
-     * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    function uniques (arrayLike, iteratee, iterateeContext) {
+    function uniques (arrayLike, iteratee) {
         if (typeof iteratee !== "function") {
             iteratee = identity;
-        } else if (arguments.length === 3) {
-            iteratee = iteratee.bind(iterateeContext);
         }
 
         var result = [];

@@ -195,14 +195,12 @@ describe("lamb.array", function () {
     });
 
     describe("dropWhile", function () {
-        var fakeContext = {};
         var isEven = function (n, idx, list) {
             expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
 
             return n % 2 === 0;
         };
-        var dropWhileIsEven = lamb.dropWhile(isEven, fakeContext);
+        var dropWhileIsEven = lamb.dropWhile(isEven);
 
         it("should build a function that drops the first n elements satisfying a predicate from an array or array-like object", function () {
             expect(dropWhileIsEven([])).toEqual([]);
@@ -302,24 +300,6 @@ describe("lamb.array", function () {
 
             expect(lamb.flatMap(arr2, lamb.identity)).toEqual(result);
             expect(lamb.flatMapWith(lamb.identity)(arr2)).toEqual(result);
-        });
-
-        it("should accept a context object to be used in the mapping function", function () {
-            var fooObject = {
-                getAtIndexAndDouble : function (idx) {
-                    var v = this.values[idx];
-                    return [v, v * 2];
-                },
-                getValuesAndDoublesAtIndexes: function (indexes) {
-                    return lamb.flatMap(indexes, this.getAtIndexAndDouble, this);
-                },
-                values: [1, 2, 3, 4, 5]
-            };
-            var indexes = [0, 1, 2];
-            var result = [1, 2, 2, 4, 3, 6]
-
-            expect(fooObject.getValuesAndDoublesAtIndexes(indexes)).toEqual(result);
-            expect(lamb.flatMapWith(fooObject.getAtIndexAndDouble, fooObject)(indexes)).toEqual(result);
         });
 
         it("should work on array-like objects", function () {
@@ -612,19 +592,6 @@ describe("lamb.array", function () {
             expect(lamb.partitionWith(isGreaterThanTen)(arr2)).toEqual(res2);
             expect(lamb.partition(arr3, isGreaterThanTen)).toEqual(res3);
             expect(lamb.partitionWith(isGreaterThanTen)(arr3)).toEqual(res3);
-        });
-
-        it("should accept a context object for the predicate", function () {
-            var fakeContext = {};
-            var isEven = function (n) {
-                expect(this).toBe(fakeContext);
-                return n % 2 === 0;
-            };
-            var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            var result = [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]];
-
-            expect(lamb.partition(numbers, isEven, fakeContext)).toEqual(result);
-            expect(lamb.partitionWith(isEven, fakeContext)(numbers)).toEqual(result);
         });
 
         it("should work with array-like objects and treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
@@ -977,14 +944,12 @@ describe("lamb.array", function () {
     });
 
     describe("takeWhile", function () {
-        var fakeContext = {};
         var isEven = function (n, idx, list) {
             expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
 
             return n % 2 === 0;
         };
-        var takeWhileIsEven = lamb.takeWhile(isEven, fakeContext);
+        var takeWhileIsEven = lamb.takeWhile(isEven);
 
         it("should build a function that takes the first n elements satisfying a predicate from an array or array-like object", function () {
             expect(takeWhileIsEven([])).toEqual([]);
@@ -1118,13 +1083,7 @@ describe("lamb.array", function () {
         });
 
         it("should return the unique elements of an array of complex values when supplied with an iteratee", function () {
-            var fakeContext = {};
-            var iteratee = function (obj) {
-                expect(this).toBe(fakeContext);
-                return obj.id;
-            };
-
-            expect(lamb.uniques(data, iteratee, fakeContext)).toEqual(dataUniques);
+            expect(lamb.uniques(data, lamb.getKey("id"))).toEqual(dataUniques);
             expect(lamb.uniques("bArBaz", lamb.invoker("toUpperCase"))).toEqual(["b", "A", "r", "z"]);
         });
 
