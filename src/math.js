@@ -103,15 +103,10 @@ function divide (a, b) {
  * @param {*} start - The starting value
  * @param {Number} len - The desired length for the sequence
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Array}
  */
-function generate (start, len, iteratee, iterateeContext) {
+function generate (start, len, iteratee) {
     var result = [start];
-
-    if (arguments.length === 4) {
-        iteratee = iteratee.bind(iterateeContext);
-    }
 
     for (var i = 0, limit = len - 1; i < limit; i++) {
         result.push(iteratee(result[i], i, result));

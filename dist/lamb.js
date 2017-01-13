@@ -2214,15 +2214,10 @@
      * @param {*} start - The starting value
      * @param {Number} len - The desired length for the sequence
      * @param {ListIteratorCallback} iteratee
-     * @param {Object} [iterateeContext]
      * @returns {Array}
      */
-    function generate (start, len, iteratee, iterateeContext) {
+    function generate (start, len, iteratee) {
         var result = [start];
-
-        if (arguments.length === 4) {
-            iteratee = iteratee.bind(iterateeContext);
-        }
 
         for (var i = 0, limit = len - 1; i < limit; i++) {
             result.push(iteratee(result[i], i, result));
@@ -5685,14 +5680,9 @@
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
      * {@link module:lamb.skipIf|skipIf}
      * @param {ObjectIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    function pickIf (predicate, predicateContext) {
-        if (arguments.length === 2) {
-            predicate = predicate.bind(predicateContext);
-        }
-
+    function pickIf (predicate) {
         return function (source) {
             var result = {};
 
@@ -5890,10 +5880,9 @@
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
      * {@link module:lamb.pickIf|pickIf}
      * @param {ObjectIteratorCallback} predicate
-     * @param {Object} [predicateContext]
      * @returns {Function}
      */
-    var skipIf = tapArgs(pickIf, not);
+    var skipIf = compose(pickIf, not);
 
     /**
      * A curried version of {@link module:lamb.skip|skip}, expecting a blacklist of keys to build

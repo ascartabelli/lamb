@@ -1173,12 +1173,7 @@ describe("lamb.object", function () {
             {"name": "Paolo", "surname": "Bianchi"}
         ];
 
-        var fakeContext = {};
-        var isNumber = function (v) {
-            expect(this).toBe(fakeContext);
-            return typeof v === "number";
-        };
-
+        var isNumber = function (v) { return typeof v === "number"; };
         var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
 
         // for checking "truthy" and "falsy" values returned by predicates
@@ -1262,11 +1257,8 @@ describe("lamb.object", function () {
 
         describe("pickIf", function () {
             it("should pick object properties using a predicate", function () {
+                expect(lamb.pickIf(isNumber)(persons[0])).toEqual({"age": 12});
                 expect(persons.map(lamb.pickIf(isNameKey))).toEqual(names);
-            });
-
-            it("should accept a context object for the predicate", function () {
-                expect(lamb.pickIf(isNumber, fakeContext)(persons[0])).toEqual({"age": 12});
             });
 
             it("should include properties with `undefined` values in the result", function () {
@@ -1382,11 +1374,8 @@ describe("lamb.object", function () {
 
         describe("skipIf", function () {
             it("should skip object properties using a predicate", function () {
+                expect(lamb.skipIf(isNumber)(persons[0])).toEqual({"name": "Jane", "surname": "Doe", "city": "New York"});
                 expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
-            });
-
-            it("should accept a context object for the predicate", function () {
-                expect(lamb.skipIf(isNumber, fakeContext)(persons[0])).toEqual({"name": "Jane", "surname": "Doe", "city": "New York"});
             });
 
             it("should include properties with `undefined` values in the result", function () {
