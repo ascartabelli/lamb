@@ -86,28 +86,26 @@ describe("lamb.array_basics", function () {
     });
 
     describe("every / everyIn", function () {
-        var fakeContext = {};
         var a1 = [2, 4, 6, 8];
         var a2 = [1, 3, 5, 6, 7, 8];
         var isEven = function (n, idx, list) {
             expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
 
             return n % 2 === 0;
         };
 
         it("should check if every element of an array satisfies the given predicate", function () {
-            expect(lamb.everyIn(a1, isEven, fakeContext)).toBe(true);
-            expect(lamb.every(isEven, fakeContext)(a1)).toBe(true);
-            expect(lamb.everyIn(a2, isEven, fakeContext)).toBe(false);
-            expect(lamb.every(isEven, fakeContext)(a2)).toBe(false);
+            expect(lamb.everyIn(a1, isEven)).toBe(true);
+            expect(lamb.every(isEven)(a1)).toBe(true);
+            expect(lamb.everyIn(a2, isEven)).toBe(false);
+            expect(lamb.every(isEven)(a2)).toBe(false);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.everyIn("2468", isEven, fakeContext)).toBe(true);
-            expect(lamb.every(isEven, fakeContext)("2468")).toBe(true);
-            expect(lamb.everyIn("24678", isEven, fakeContext)).toBe(false);
-            expect(lamb.every(isEven, fakeContext)("24678")).toBe(false);
+            expect(lamb.everyIn("2468", isEven)).toBe(true);
+            expect(lamb.every(isEven)("2468")).toBe(true);
+            expect(lamb.everyIn("24678", isEven)).toBe(false);
+            expect(lamb.every(isEven)("24678")).toBe(false);
         });
 
         it("should always return true for empty array-likes because of vacuous truth", function () {
@@ -161,28 +159,27 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.everyIn(null, isEven, fakeContext); }).toThrow();
-            expect(function () { lamb.everyIn(void 0, isEven, fakeContext); }).toThrow();
+            expect(function () { lamb.everyIn(null, isEven); }).toThrow();
+            expect(function () { lamb.everyIn(void 0, isEven); }).toThrow();
             expect(function () { lamb.every(isEven)(null); }).toThrow();
             expect(function () { lamb.every(isEven)(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array and return `true`", function () {
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.everyIn(value, isEven, fakeContext)).toBe(true);
+                expect(lamb.everyIn(value, isEven)).toBe(true);
                 expect(lamb.every(isEven)(value)).toBe(true);
             });
         });
     });
 
     describe("filter / filterWith", function () {
-        var fakeContext = {};
         var isLowerCase = function (s, idx, list) {
             expect(list[idx]).toBe(s);
-            expect(this).toBe(fakeContext);
+
             return s.toLowerCase() === s;
         };
-        var getLowerCaseEls = lamb.filterWith(isLowerCase, fakeContext);
+        var getLowerCaseEls = lamb.filterWith(isLowerCase);
         var arr = ["Foo", "bar", "baZ"];
 
         afterEach(function () {
@@ -190,12 +187,12 @@ describe("lamb.array_basics", function () {
         });
 
         it("should filter an array by keeping the items satisfying the given predicate", function () {
-            expect(lamb.filter(arr, isLowerCase, fakeContext)).toEqual(["bar"]);
+            expect(lamb.filter(arr, isLowerCase)).toEqual(["bar"]);
             expect(getLowerCaseEls(arr)).toEqual(["bar"]);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.filter("fooBAR", isLowerCase, fakeContext)).toEqual(["f", "o", "o"]);
+            expect(lamb.filter("fooBAR", isLowerCase)).toEqual(["f", "o", "o"]);
             expect(getLowerCaseEls("fooBAR")).toEqual(["f", "o", "o"]);
         });
 
@@ -235,15 +232,15 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.filter(null, isLowerCase, fakeContext); }).toThrow();
-            expect(function () { lamb.filter(void 0, isLowerCase, fakeContext); }).toThrow();
+            expect(function () { lamb.filter(null, isLowerCase); }).toThrow();
+            expect(function () { lamb.filter(void 0, isLowerCase); }).toThrow();
             expect(function () { getLowerCaseEls(null); }).toThrow();
             expect(function () { getLowerCaseEls(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.filter(value, isLowerCase, fakeContext)).toEqual([]);
+                expect(lamb.filter(value, isLowerCase)).toEqual([]);
                 expect(getLowerCaseEls(value)).toEqual([]);
             });
         });
@@ -257,12 +254,11 @@ describe("lamb.array_basics", function () {
             {"name": "Paolo", "surname": "Bianchi", "age": 40}
         ];
 
-        var fakeContext = {};
         var testString = "Hello world";
 
         var isVowel = function (char, idx, s) {
-            expect(this).toBe(fakeContext);
             expect(s[idx]).toBe(char);
+
             return ~"AEIOUaeiou".indexOf(char);
         };
 
@@ -281,10 +277,10 @@ describe("lamb.array_basics", function () {
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-                expect(lamb.find(testString, isVowel, fakeContext)).toBe("e");
-                expect(lamb.find("zxc", isVowel, fakeContext)).toBeUndefined();
-                expect(lamb.findWhere(isVowel, fakeContext)(testString)).toBe("e");
-                expect(lamb.findWhere(isVowel, fakeContext)("zxc")).toBeUndefined();
+                expect(lamb.find(testString, isVowel)).toBe("e");
+                expect(lamb.find("zxc", isVowel)).toBeUndefined();
+                expect(lamb.findWhere(isVowel)(testString)).toBe("e");
+                expect(lamb.findWhere(isVowel)("zxc")).toBeUndefined();
             });
 
             it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -329,10 +325,10 @@ describe("lamb.array_basics", function () {
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-                expect(lamb.findIndex(testString, isVowel, fakeContext)).toBe(1);
-                expect(lamb.findIndex("zxc", isVowel, fakeContext)).toBe(-1);
-                expect(lamb.findIndexWhere(isVowel, fakeContext)(testString)).toBe(1);
-                expect(lamb.findIndexWhere(isVowel, fakeContext)("zxc")).toBe(-1);
+                expect(lamb.findIndex(testString, isVowel)).toBe(1);
+                expect(lamb.findIndex("zxc", isVowel)).toBe(-1);
+                expect(lamb.findIndexWhere(isVowel)(testString)).toBe(1);
+                expect(lamb.findIndexWhere(isVowel)("zxc")).toBe(-1);
             });
 
             it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
@@ -374,18 +370,16 @@ describe("lamb.array_basics", function () {
 
     describe("forEach", function () {
         var arr = [1, 2, 3, 4, 5];
-        var fakeContext = {};
         var fn = function (el, idx, list) {
             expect(list[idx]).toBe(el);
-            expect(this).toBe(fakeContext);
         };
 
         it("should execute the given function for every element of the provided array", function () {
-            expect(lamb.forEach(arr, fn, fakeContext)).toBeUndefined();
+            expect(lamb.forEach(arr, fn)).toBeUndefined();
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.forEach("foo bar", fn, fakeContext)).toBeUndefined();
+            expect(lamb.forEach("foo bar", fn)).toBeUndefined();
         });
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
@@ -414,15 +408,15 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.forEach(null, fn, fakeContext); }).toThrow();
-            expect(function () { lamb.forEach(void 0, fn, fakeContext); }).toThrow();
+            expect(function () { lamb.forEach(null, fn); }).toThrow();
+            expect(function () { lamb.forEach(void 0, fn); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             var fn = jasmine.createSpy("fn").and.callThrough();
 
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.forEach(value, fn, fakeContext)).toBeUndefined();
+                expect(lamb.forEach(value, fn)).toBeUndefined();
             });
 
             expect(fn.calls.count()).toBe(0);
@@ -443,13 +437,12 @@ describe("lamb.array_basics", function () {
     });
 
     describe("map / mapWith", function () {
-        var fakeContext = {};
         var double = function (n, idx, list) {
             expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
+
             return n * 2;
         };
-        var makeDoubles = lamb.mapWith(double, fakeContext);
+        var makeDoubles = lamb.mapWith(double);
         var numbers = [1, 2, 3, 4, 5];
 
         afterEach(function () {
@@ -457,12 +450,12 @@ describe("lamb.array_basics", function () {
         });
 
         it("should apply the provided function to the elements of the given array", function () {
-            expect(lamb.map(numbers, double, fakeContext)).toEqual([2, 4, 6, 8, 10]);
+            expect(lamb.map(numbers, double)).toEqual([2, 4, 6, 8, 10]);
             expect(makeDoubles(numbers)).toEqual([2, 4, 6, 8, 10]);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.map("12345", double, fakeContext)).toEqual([2, 4, 6, 8, 10]);
+            expect(lamb.map("12345", double)).toEqual([2, 4, 6, 8, 10]);
             expect(makeDoubles("12345")).toEqual([2, 4, 6, 8, 10]);
         });
 
@@ -975,12 +968,10 @@ describe("lamb.array_basics", function () {
     });
 
     describe("some / someIn", function () {
-        var fakeContext = {};
         var a1 = [1, 3, 5, 6, 7, 8];
         var a2 = [1, 3, 5, 7];
         var isEven = function (n, idx, list) {
             expect(list[idx]).toBe(n);
-            expect(this).toBe(fakeContext);
 
             return n % 2 === 0;
         };
@@ -988,17 +979,17 @@ describe("lamb.array_basics", function () {
         var isVowel = function (char) { return ~"aeiou".indexOf(char); };
 
         it("should check if at least one element of an array satisfies the given predicate", function () {
-            expect(lamb.someIn(a1, isEven, fakeContext)).toBe(true);
-            expect(lamb.some(isEven, fakeContext)(a1)).toBe(true);
-            expect(lamb.someIn(a2, isEven, fakeContext)).toBe(false);
-            expect(lamb.some(isEven, fakeContext)(a2)).toBe(false);
+            expect(lamb.someIn(a1, isEven)).toBe(true);
+            expect(lamb.some(isEven)(a1)).toBe(true);
+            expect(lamb.someIn(a2, isEven)).toBe(false);
+            expect(lamb.some(isEven)(a2)).toBe(false);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.someIn("134567", isEven, fakeContext)).toBe(true);
-            expect(lamb.some(isEven, fakeContext)("134567")).toBe(true);
-            expect(lamb.someIn("1357", isEven, fakeContext)).toBe(false);
-            expect(lamb.some(isEven, fakeContext)("1357")).toBe(false);
+            expect(lamb.someIn("134567", isEven)).toBe(true);
+            expect(lamb.some(isEven)("134567")).toBe(true);
+            expect(lamb.someIn("1357", isEven)).toBe(false);
+            expect(lamb.some(isEven)("1357")).toBe(false);
         });
 
         it("should always return false for empty array-likes", function () {
@@ -1051,15 +1042,15 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.someIn(null, isEven, fakeContext); }).toThrow();
-            expect(function () { lamb.someIn(void 0, isEven, fakeContext); }).toThrow();
+            expect(function () { lamb.someIn(null, isEven); }).toThrow();
+            expect(function () { lamb.someIn(void 0, isEven); }).toThrow();
             expect(function () { lamb.some(isEven)(null); }).toThrow();
             expect(function () { lamb.some(isEven)(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array and return `false`", function () {
             [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.someIn(value, isEven, fakeContext)).toBe(false);
+                expect(lamb.someIn(value, isEven)).toBe(false);
                 expect(lamb.some(isEven)(value)).toBe(false);
             });
         });

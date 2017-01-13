@@ -473,11 +473,7 @@ function _keyToPairIn (obj) {
  * @returns {Function}
  */
 function _makeArrayChecker (defaultResult) {
-    return function (arrayLike, predicate, predicateContext) {
-        if (arguments.length === 3) {
-            predicate = predicate.bind(predicateContext);
-        }
-
+    return function (arrayLike, predicate) {
         for (var i = 0, len = arrayLike.length; i < len; i++) {
             if (defaultResult ^ !!predicate(arrayLike[i], i, arrayLike)) {
                 return !defaultResult;

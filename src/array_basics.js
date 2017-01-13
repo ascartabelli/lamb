@@ -58,14 +58,13 @@ function contains (value, fromIndex) {
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Boolean}
  */
 var everyIn = _makeArrayChecker(true);
 
 /**
- * A curried version of {@link module:lamb.everyIn|everyIn} expecting a predicate and its optional
- * context to build a function waiting for the array-like to act upon.
+ * A curried version of {@link module:lamb.everyIn|everyIn} that expects a predicate
+ * to build a function waiting for the array-like to act upon.
  * @example
  * var data = [2, 3, 5, 6, 8];
  * var isEven = function (n) { return n % 2 === 0; };
@@ -81,10 +80,9 @@ var everyIn = _makeArrayChecker(true);
  * @see {@link module:lamb.everyIn|everyIn}
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Function}
  */
-var every = _partialWithIteratee(everyIn);
+var every = _curry(everyIn, 2, true);
 
 /**
  * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
@@ -106,16 +104,11 @@ var every = _partialWithIteratee(everyIn);
  * @see {@link module:lamb.filterWith|filterWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Array}
  */
-function filter (arrayLike, predicate, predicateContext) {
+function filter (arrayLike, predicate) {
     var len = arrayLike.length;
     var result = [];
-
-    if (arguments.length === 3) {
-        predicate = predicate.bind(predicateContext);
-    }
 
     for (var i = 0; i < len; i++) {
         predicate(arrayLike[i], i, arrayLike) && result.push(arrayLike[i]);
@@ -125,8 +118,8 @@ function filter (arrayLike, predicate, predicateContext) {
 }
 
 /**
- * Returns a partial application of {@link module:lamb.filter|filter} that uses the given predicate and
- * the optional context to build a function expecting the array-like object to act upon.
+ * A curried version of {@link module:lamb.filter|filter} that uses the given predicate
+ * to build a function expecting the array-like object to act upon.
  * @example
  * var isLowerCase = function (s) { return s.toLowerCase() === s; };
  * var getLowerCaseEntries = _.filterWith(isLowerCase);
@@ -141,10 +134,9 @@ function filter (arrayLike, predicate, predicateContext) {
  * @function
  * @see {@link module:lamb.filter|filter}
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Function}
  */
-var filterWith = _partialWithIteratee(filter);
+var filterWith = _curry(filter, 2, true);
 
 /**
  * Searches for an element satisfying the predicate in the given array-like object and returns it if
@@ -166,13 +158,10 @@ var filterWith = _partialWithIteratee(filter);
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {*}
  */
-function find (arrayLike, predicate, predicateContext) {
-    var idx = arguments.length === 3 ?
-        findIndex(arrayLike, predicate, predicateContext) :
-        findIndex(arrayLike, predicate);
+function find (arrayLike, predicate) {
+    var idx = findIndex(arrayLike, predicate);
 
     return idx === -1 ? void 0 : arrayLike[idx];
 }
@@ -197,15 +186,10 @@ function find (arrayLike, predicate, predicateContext) {
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Number}
  */
-function findIndex (arrayLike, predicate, predicateContext) {
+function findIndex (arrayLike, predicate) {
     var result = -1;
-
-    if (arguments.length === 3) {
-        predicate = predicate.bind(predicateContext);
-    }
 
     for (var i = 0, len = arrayLike.length; i < len; i++) {
         if (predicate(arrayLike[i], i, arrayLike)) {
@@ -218,8 +202,8 @@ function findIndex (arrayLike, predicate, predicateContext) {
 }
 
 /**
- * Builds a partial application of {@link module:lamb.findIndex|findIndex} expecting the array-like
- * object to search.
+ * A curried version of {@link module:lamb.findIndex|findIndex} that uses the given predicate
+ * to build a function expecting the array-like object to search.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var findEvenIdx = _.findIndexWhere(isEven);
@@ -233,13 +217,12 @@ function findIndex (arrayLike, predicate, predicateContext) {
  * @see {@link module:lamb.findIndex|findIndex}
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Function}
  */
-var findIndexWhere = _partialWithIteratee(findIndex);
+var findIndexWhere = _curry(findIndex, 2, true);
 
 /**
- * Builds a partial application of {@link module:lamb.find|find} expecting the array-like object
+ * A curried version of {@link module:lamb.find|find} expecting the array-like object
  * to search.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
@@ -254,10 +237,9 @@ var findIndexWhere = _partialWithIteratee(findIndex);
  * @see {@link module:lamb.find|find}
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Function}
  */
-var findWhere = _partialWithIteratee(find);
+var findWhere = _curry(find, 2, true);
 
 /**
  * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
@@ -278,14 +260,9 @@ var findWhere = _partialWithIteratee(find);
  * @category Array
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Undefined}
  */
-function forEach (arrayLike, iteratee, iterateeContext) {
-    if (arguments.length === 3) {
-        iteratee = iteratee.bind(iterateeContext);
-    }
-
+function forEach (arrayLike, iteratee) {
     for (var i = 0, len = _toArrayLength(arrayLike.length); i < len; i++) {
         iteratee(arrayLike[i], i, arrayLike);
     }
@@ -358,16 +335,11 @@ var list = _argsToArrayFrom(0);
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Array}
  */
-function map (arrayLike, iteratee, iterateeContext) {
+function map (arrayLike, iteratee) {
     var len = _toArrayLength(arrayLike.length);
     var result = Array(len);
-
-    if (arguments.length === 3) {
-        iteratee = iteratee.bind(iterateeContext);
-    }
 
     for (var i = 0; i < len; i++) {
         result[i] = iteratee(arrayLike[i], i, arrayLike);
@@ -377,8 +349,8 @@ function map (arrayLike, iteratee, iterateeContext) {
 }
 
 /**
- * Builds a partial application of {@link module:lamb.map|map} using the given iteratee and the
- * optional context. The resulting function expects the array-like object to act upon.
+ * A curried version of {@link module:lamb.map|map} that uses the provided iteratee to
+ * build a function expecting the array-like object to act upon.
  * @example
  * var square = function (n) { return n * n; };
  * var getSquares = _.mapWith(square);
@@ -391,10 +363,9 @@ function map (arrayLike, iteratee, iterateeContext) {
  * @see {@link module:lamb.map|map}
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {function}
  */
-var mapWith = _partialWithIteratee(map);
+var mapWith = _curry(map, 2, true);
 
 /**
  * Reduces (or folds) the values of an array-like object, starting from the first, to a new
@@ -615,14 +586,13 @@ function sliceAt (start, end) {
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Boolean}
  */
 var someIn = _makeArrayChecker(false);
 
 /**
- * A curried version of {@link module:lamb.someIn|someIn} expecting a predicate and its optional
- * context to build a function waiting for the array-like to act upon.
+ * A curried version of {@link module:lamb.someIn|someIn} that uses the given predicate to
+ * build a function waiting for the array-like to act upon.
  * @example
  * var data = [1, 3, 5, 6, 7, 8];
  * var isEven = function (n) { return n % 2 === 0; };
@@ -638,10 +608,9 @@ var someIn = _makeArrayChecker(false);
  * @see {@link module:lamb.someIn|someIn}
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
  * @param {ListIteratorCallback} predicate
- * @param {Object} [predicateContext]
  * @returns {Function}
  */
-var some = _partialWithIteratee(someIn);
+var some = _curry(someIn, 2, true);
 
 lamb.contains = contains;
 lamb.every = every;
