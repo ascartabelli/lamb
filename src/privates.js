@@ -343,11 +343,7 @@ function _getPathKey (target, key, includeNonEnumerables) {
  * @returns {Function}
  */
 function _groupWith (makeValue) {
-    return function (arrayLike, iteratee, iterateeContext) {
-        if (arguments.length === 3) {
-            iteratee = iteratee.bind(iterateeContext);
-        }
-
+    return function (arrayLike, iteratee) {
         var result = {};
         var len = arrayLike.length;
 

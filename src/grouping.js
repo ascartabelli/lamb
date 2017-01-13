@@ -20,7 +20,6 @@
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Object}
  */
 var count = _groupWith(function (a) {
@@ -28,8 +27,8 @@ var count = _groupWith(function (a) {
 });
 
 /**
- * Using the provided iteratee, and its optional context, builds a partial application of
- * {@link module:lamb.count|count} expecting the array-like object to act upon.
+ * A curried version of {@link module:lamb.count|count} that uses the provided iteratee to
+ * build a function expecting the array-like object to act upon.
  * @example
  * var persons = [
  *     {"name": "Jane", "city": "New York"},
@@ -49,10 +48,9 @@ var count = _groupWith(function (a) {
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-var countBy = _partialWithIteratee(count);
+var countBy = _curry(count, 2, true);
 
 /**
  * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
@@ -109,7 +107,6 @@ var countBy = _partialWithIteratee(count);
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Object}
  */
 var group = _groupWith(function (a, b) {
@@ -123,8 +120,8 @@ var group = _groupWith(function (a, b) {
 });
 
 /**
- * Using the provided iteratee, and its optional context, builds a partial application
- * of {@link module:lamb.group|group} expecting the array-like object to act upon.
+ * A curried version of {@link module:lamb.group|group} that uses the provided iteratee
+ * to build a function expecting the array-like object to act upon.
  * @example
  * var persons = [
  *     {"name": "Jane", "age": 12},
@@ -157,10 +154,9 @@ var group = _groupWith(function (a, b) {
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-var groupBy = _partialWithIteratee(group);
+var groupBy = _curry(group, 2, true);
 
 /**
  * Similar to {@link module:lamb.group|group}, but the generated lookup table will have
@@ -210,7 +206,6 @@ var groupBy = _partialWithIteratee(group);
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Object}
  */
 var index = _groupWith(function (a, b) {
@@ -218,8 +213,8 @@ var index = _groupWith(function (a, b) {
 });
 
 /**
- * Using the provided iteratee, and its optional context, builds a partial application
- * of {@link module:lamb.index|index} expecting the array-like object to act upon.
+ * A curried version of {@link module:lamb.index|index} that uses the provided iteratee
+ * to build a function expecting the array-like object to act upon.
  * @example
  * var users = [
  *     {id: 1, name: "John"},
@@ -244,10 +239,9 @@ var index = _groupWith(function (a, b) {
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @param {ListIteratorCallback} iteratee
- * @param {Object} [iterateeContext]
  * @returns {Function}
  */
-var indexBy = _partialWithIteratee(index);
+var indexBy = _curry(index, 2, true);
 
 lamb.count = count;
 lamb.countBy = countBy;
