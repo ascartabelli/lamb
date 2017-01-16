@@ -263,6 +263,7 @@ function insert (arrayLike, index, element) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.insert|insert}
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
@@ -270,9 +271,7 @@ function insert (arrayLike, index, element) {
  * @param {*} element
  * @returns {Function}
  */
-function insertAt (index, element) {
-    return partial(insert, _, index, element);
-}
+var insertAt = _makePartial3(insert);
 
 /**
  * Returns an array of every item that is included in all given arrays.<br>

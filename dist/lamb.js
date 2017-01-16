@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.3
+ * @version 0.49.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.3";
+    lamb._version = "0.49.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -691,6 +691,37 @@
     }
 
     /**
+     * Builds a partial application of a ternary function so that its first parameter
+     * is expected as the last one.<br/>
+     * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
+     * the absence of the <code>initialValue</code> transforms the "reduce" in a "fold".
+     * @private
+     * @param {Function} fn
+     * @param {Boolean} shouldAritize
+     * @returns {Function}
+     */
+    function _makePartial3 (fn, shouldAritize) {
+        return function (a, b) {
+            var f = shouldAritize && arguments.length !== 2 ? binary(fn) : fn;
+
+            return partial(f, _, a, b);
+        };
+    }
+
+    /**
+     * Builds a partial application of a quaternary function so that its first parameter
+     * is expected as the last one.
+     * @private
+     * @param {Function} fn
+     * @returns {Function}
+     */
+    function _makePartial4 (fn) {
+        return function (a, b, c) {
+            return partial(fn, _, a, b, c);
+        };
+    }
+
+    /**
      * Builds a reduce function. The <code>step</code> parameter must be <code>1</code>
      * to build  {@link module:lamb.reduce|reduce} and <code>-1</code> to build
      * {@link module:lamb.reduceRight|reduceRight}.
@@ -766,23 +797,6 @@
     var _pairsFrom = _curry(function (getKeys, obj) {
         return map(getKeys(obj), _keyToPairIn(obj));
     });
-
-    /**
-     * Builds a partial application of a function expecting an iteratee and an
-     * optional argument other than its main data parameter.<br/>
-     * The optional argument is passed to the function only when is explicitly given
-     * a value.
-     * @private
-     * @param {Function} fn
-     * @returns {Function}
-     */
-    function _partialWithIteratee (fn) {
-        return function (iteratee, optionalArgument) {
-            var f = arguments.length === 2 ? fn : binary(fn);
-
-            return partial(f, _, iteratee, optionalArgument);
-        };
-    }
 
     /**
      * A null-safe function to repeat the source string the desired amount of times.
@@ -1054,16 +1068,13 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.isIn|isIn}
      * @param {*} value
      * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
      * @returns {Function}
      */
-    function contains (value, fromIndex) {
-        return function (arrayLike) {
-            return isIn(arrayLike, value, fromIndex);
-        };
-    }
+    var contains = _makePartial3(isIn);
 
     /**
      * Checks if all the elements in an array-like object satisfy the given predicate.<br/>
@@ -1472,7 +1483,7 @@
      * @param {*} [initialValue]
      * @returns {Function}
      */
-    var reduceRightWith = _partialWithIteratee(reduceRight);
+    var reduceRightWith = _makePartial3(reduceRight, true);
 
     /**
      * A partial application of {@link module:lamb.reduce|reduce} that uses the
@@ -1494,7 +1505,7 @@
      * @param {*} [initialValue]
      * @returns {Function}
      */
-    var reduceWith = _partialWithIteratee(reduce);
+    var reduceWith = _makePartial3(reduce, true);
 
     /**
      * Reverses a copy of the given array-like object.
@@ -1586,15 +1597,14 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.slice|slice}
      * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
      * @param {Number} start - Index at which to begin extraction.
      * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
      * @returns {Function}
      */
-    function sliceAt (start, end) {
-        return partial(slice, _, start, end);
-    }
+    var sliceAt = _makePartial3(slice);
 
     /**
      * Checks if at least one element in an array-like object satisfies the given predicate.<br/>
@@ -2172,16 +2182,13 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @function
      * @see {@link module:lamb.clamp|clamp}
      * @param {Number} min
      * @param {Number} max
      * @returns {Function}
      */
-    function clampWithin (min, max) {
-        return function (n) {
-            return clamp(n, min, max);
-        };
-    }
+    var clampWithin = _makePartial3(clamp);
 
     /**
      * Divides two numbers.
@@ -2704,15 +2711,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.getPathIn|getPathIn}
      * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
      * @param {String} path
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    function getPath (path, separator) {
-        return partial(getPathIn, _, path, separator);
-    }
+    var getPath = _makePartial3(getPathIn);
 
     /**
      * Gets a nested property value from an object using the given path.<br/>
@@ -2825,16 +2831,13 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.setIndex|setIndex}
      * @param {Number} index
      * @param {*} value
      * @returns {Function}
      */
-    function setAt (index, value) {
-        return function (arrayLike) {
-            return _setIndex(arrayLike, index, value);
-        };
-    }
+    var setAt = _makePartial3(_setIndex);
 
     /**
      * Sets the specified key to the given value in a copy of the provided object.<br/>
@@ -2912,15 +2915,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.setIn|setIn}
      * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
      * @param {String} key
      * @param {*} value
      * @returns {Function}
      */
-    function setKey (key, value) {
-        return partial(setIn, _, key, value);
-    }
+    var setKey = _makePartial3(setIn);
 
     /**
      * Builds a partial application of {@link module:lamb.setPathIn|setPathIn} expecting the
@@ -2934,6 +2936,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.setPathIn|setPathIn}
      * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
      * @param {String} path
@@ -2941,9 +2944,7 @@
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    function setPath (path, value, separator) {
-        return partial(setPathIn, _, path, value, separator);
-    }
+    var setPath = _makePartial4(setPathIn);
 
     /**
      * Allows to change a nested value in a copy of the provided object.<br/>
@@ -3106,15 +3107,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.updateIn|updateIn}
      * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
      * @param {String} key
      * @param {Function} updater
      * @returns {Function}
      */
-    function updateKey (key, updater) {
-        return partial(updateIn, _, key, updater);
-    }
+    var updateKey = _makePartial3(updateIn);
 
     /**
      * Builds a partial application of {@link module:lamb.updatePathIn|updatePathIn}
@@ -3133,6 +3133,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.updatePathIn|updatePathIn}
      * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
      * @param {String} path
@@ -3140,9 +3141,7 @@
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    function updatePath (path, updater, separator) {
-        return partial(updatePathIn, _, path, updater, separator);
-    }
+    var updatePath = _makePartial4(updatePathIn, false);
 
     /**
      * Allows to change a nested value in a copy of the given object by applying the provided
@@ -3486,6 +3485,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.insert|insert}
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
@@ -3493,9 +3493,7 @@
      * @param {*} element
      * @returns {Function}
      */
-    function insertAt (index, element) {
-        return partial(insert, _, index, element);
-    }
+    var insertAt = _makePartial3(insert);
 
     /**
      * Returns an array of every item that is included in all given arrays.<br>
@@ -5552,6 +5550,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
@@ -5559,11 +5558,7 @@
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    function pathExists (path, separator) {
-        return function (obj) {
-            return pathExistsIn(obj, path, separator);
-        };
-    }
+    var pathExists = _makePartial3(pathExistsIn);
 
     /**
      * Checks if the provided path exists in the given object.<br/>

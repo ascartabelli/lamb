@@ -517,6 +517,7 @@ var pairs = _pairsFrom(enumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
@@ -524,11 +525,7 @@ var pairs = _pairsFrom(enumerables);
  * @param {String} [separator="."]
  * @returns {Function}
  */
-function pathExists (path, separator) {
-    return function (obj) {
-        return pathExistsIn(obj, path, separator);
-    };
-}
+var pathExists = _makePartial3(pathExistsIn);
 
 /**
  * Checks if the provided path exists in the given object.<br/>

@@ -501,6 +501,37 @@ function _makeCriterion (criterion) {
 }
 
 /**
+ * Builds a partial application of a ternary function so that its first parameter
+ * is expected as the last one.<br/>
+ * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
+ * the absence of the <code>initialValue</code> transforms the "reduce" in a "fold".
+ * @private
+ * @param {Function} fn
+ * @param {Boolean} shouldAritize
+ * @returns {Function}
+ */
+function _makePartial3 (fn, shouldAritize) {
+    return function (a, b) {
+        var f = shouldAritize && arguments.length !== 2 ? binary(fn) : fn;
+
+        return partial(f, _, a, b);
+    };
+}
+
+/**
+ * Builds a partial application of a quaternary function so that its first parameter
+ * is expected as the last one.
+ * @private
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function _makePartial4 (fn) {
+    return function (a, b, c) {
+        return partial(fn, _, a, b, c);
+    };
+}
+
+/**
  * Builds a reduce function. The <code>step</code> parameter must be <code>1</code>
  * to build  {@link module:lamb.reduce|reduce} and <code>-1</code> to build
  * {@link module:lamb.reduceRight|reduceRight}.
@@ -576,23 +607,6 @@ function _merge (getKeys) {
 var _pairsFrom = _curry(function (getKeys, obj) {
     return map(getKeys(obj), _keyToPairIn(obj));
 });
-
-/**
- * Builds a partial application of a function expecting an iteratee and an
- * optional argument other than its main data parameter.<br/>
- * The optional argument is passed to the function only when is explicitly given
- * a value.
- * @private
- * @param {Function} fn
- * @returns {Function}
- */
-function _partialWithIteratee (fn) {
-    return function (iteratee, optionalArgument) {
-        var f = arguments.length === 2 ? fn : binary(fn);
-
-        return partial(f, _, iteratee, optionalArgument);
-    };
-}
 
 /**
  * A null-safe function to repeat the source string the desired amount of times.

@@ -10,16 +10,13 @@
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.isIn|isIn}
  * @param {*} value
  * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
  * @returns {Function}
  */
-function contains (value, fromIndex) {
-    return function (arrayLike) {
-        return isIn(arrayLike, value, fromIndex);
-    };
-}
+var contains = _makePartial3(isIn);
 
 /**
  * Checks if all the elements in an array-like object satisfy the given predicate.<br/>
@@ -428,7 +425,7 @@ var reduceRight = _makeReducer(-1);
  * @param {*} [initialValue]
  * @returns {Function}
  */
-var reduceRightWith = _partialWithIteratee(reduceRight);
+var reduceRightWith = _makePartial3(reduceRight, true);
 
 /**
  * A partial application of {@link module:lamb.reduce|reduce} that uses the
@@ -450,7 +447,7 @@ var reduceRightWith = _partialWithIteratee(reduceRight);
  * @param {*} [initialValue]
  * @returns {Function}
  */
-var reduceWith = _partialWithIteratee(reduce);
+var reduceWith = _makePartial3(reduce, true);
 
 /**
  * Reverses a copy of the given array-like object.
@@ -542,15 +539,14 @@ function slice (arrayLike, start, end) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.slice|slice}
  * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
  * @param {Number} start - Index at which to begin extraction.
  * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
  * @returns {Function}
  */
-function sliceAt (start, end) {
-    return partial(slice, _, start, end);
-}
+var sliceAt = _makePartial3(slice);
 
 /**
  * Checks if at least one element in an array-like object satisfies the given predicate.<br/>

@@ -61,16 +61,13 @@ function clamp (n, min, max) {
  *
  * @memberof module:lamb
  * @category Math
+ * @function
  * @see {@link module:lamb.clamp|clamp}
  * @param {Number} min
  * @param {Number} max
  * @returns {Function}
  */
-function clampWithin (min, max) {
-    return function (n) {
-        return clamp(n, min, max);
-    };
-}
+var clampWithin = _makePartial3(clamp);
 
 /**
  * Divides two numbers.

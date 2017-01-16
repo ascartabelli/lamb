@@ -120,15 +120,14 @@ function getKey (key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.getPathIn|getPathIn}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {Function}
  */
-function getPath (path, separator) {
-    return partial(getPathIn, _, path, separator);
-}
+var getPath = _makePartial3(getPathIn);
 
 /**
  * Gets a nested property value from an object using the given path.<br/>
@@ -241,16 +240,13 @@ var last = getAt(-1);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.setIndex|setIndex}
  * @param {Number} index
  * @param {*} value
  * @returns {Function}
  */
-function setAt (index, value) {
-    return function (arrayLike) {
-        return _setIndex(arrayLike, index, value);
-    };
-}
+var setAt = _makePartial3(_setIndex);
 
 /**
  * Sets the specified key to the given value in a copy of the provided object.<br/>
@@ -328,15 +324,14 @@ var setIndex = aritize(_setIndex, 3);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.setIn|setIn}
  * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
  * @param {String} key
  * @param {*} value
  * @returns {Function}
  */
-function setKey (key, value) {
-    return partial(setIn, _, key, value);
-}
+var setKey = _makePartial3(setIn);
 
 /**
  * Builds a partial application of {@link module:lamb.setPathIn|setPathIn} expecting the
@@ -350,6 +345,7 @@ function setKey (key, value) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.setPathIn|setPathIn}
  * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
  * @param {String} path
@@ -357,9 +353,7 @@ function setKey (key, value) {
  * @param {String} [separator="."]
  * @returns {Function}
  */
-function setPath (path, value, separator) {
-    return partial(setPathIn, _, path, value, separator);
-}
+var setPath = _makePartial4(setPathIn);
 
 /**
  * Allows to change a nested value in a copy of the provided object.<br/>
@@ -522,15 +516,14 @@ var updateIndex = partial(_setIndex, _, _, null, _);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.updateIn|updateIn}
  * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
  * @param {String} key
  * @param {Function} updater
  * @returns {Function}
  */
-function updateKey (key, updater) {
-    return partial(updateIn, _, key, updater);
-}
+var updateKey = _makePartial3(updateIn);
 
 /**
  * Builds a partial application of {@link module:lamb.updatePathIn|updatePathIn}
@@ -549,6 +542,7 @@ function updateKey (key, updater) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.updatePathIn|updatePathIn}
  * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
  * @param {String} path
@@ -556,9 +550,7 @@ function updateKey (key, updater) {
  * @param {String} [separator="."]
  * @returns {Function}
  */
-function updatePath (path, updater, separator) {
-    return partial(updatePathIn, _, path, updater, separator);
-}
+var updatePath = _makePartial4(updatePathIn, false);
 
 /**
  * Allows to change a nested value in a copy of the given object by applying the provided
