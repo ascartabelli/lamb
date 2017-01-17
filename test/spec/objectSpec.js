@@ -17,6 +17,10 @@ describe("lamb.object", function () {
             expect(lamb.enumerables("abc")).toEqual(["0", "1", "2"]);
         });
 
+        it("should retrieve only defined keys in sparse arrays", function () {
+            expect(lamb.enumerables([, 5, 6, ,])).toEqual(["1", "2"]);
+        });
+
         it("should throw an exception if called without arguments", function () {
             expect(lamb.enumerables).toThrow();
         });
@@ -43,7 +47,10 @@ describe("lamb.object", function () {
         });
 
         it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
-            expect(lamb.fromPairs([[1], [void 0, 2], [null, 3]])).toEqual({"1": void 0, "undefined": 2, "null": 3});
+            var pairs = [[1], [void 0, 2], [null, 3], [, 4], ["z", ,]];
+            var result = {"1": void 0, "undefined": 2, "null": 3, "undefined": 4, "z": void 0};
+
+            expect(lamb.fromPairs(pairs)).toEqual(result);
         });
 
         it("should return an empty object if supplied with an empty array", function () {
@@ -101,6 +108,13 @@ describe("lamb.object", function () {
                 expect(lamb.hasKey(2)(o)).toBe(true);
                 expect(lamb.hasKey(2)(arr)).toBe(true);
                 expect(lamb.hasKey(2)(s)).toBe(true);
+            });
+
+            it("should consider only defined indexes in sparse arrays", function () {
+                var arr = [1, , 3];
+
+                expect(lamb.has(arr, 1)).toBe(false);
+                expect(lamb.hasKey(1)(arr)).toBe(false);
             });
 
             it("should convert other values for the `key` parameter to string", function () {
@@ -163,6 +177,13 @@ describe("lamb.object", function () {
                 expect(lamb.hasOwnKey(2)(o)).toBe(true);
                 expect(lamb.hasOwnKey(2)(arr)).toBe(true);
                 expect(lamb.hasOwnKey(2)(s)).toBe(true);
+            });
+
+            it("should consider only defined indexes in sparse arrays", function () {
+                var arr = [1, , 3];
+
+                expect(lamb.hasOwn(arr, 1)).toBe(false);
+                expect(lamb.hasOwnKey(1)(arr)).toBe(false);
             });
 
             it("should convert other values for the `key` parameter to string", function () {
@@ -246,6 +267,11 @@ describe("lamb.object", function () {
             expect(lamb.hasKeyValue(2, "b")(o)).toBe(true);
             expect(lamb.hasKeyValue(2, 3)(arr)).toBe(true);
             expect(lamb.hasKeyValue(2, "c")(s)).toBe(true);
+        });
+
+        it("should consider only defined indexes in sparse arrays", function () {
+            expect(lamb.hasKeyValue("1", void 0)([1, , 3])).toBe(false);
+            expect(lamb.hasKeyValue("-2", void 0)([1, , 3])).toBe(false);
         });
 
         it("should convert other values for the `key` parameter to string", function () {
@@ -338,6 +364,7 @@ describe("lamb.object", function () {
 
         it("should work with sparse arrays", function () {
             expect(lamb.hasPathValue("b.d.0", void 0)(obj)).toBe(true);
+            expect(lamb.hasPathValue("b.d.-3", void 0)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.d.1", 99)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.d.-2", 99)(obj)).toBe(true);
         });
@@ -510,6 +537,10 @@ describe("lamb.object", function () {
             expect(lamb.keys("abc")).toEqual(["0", "1", "2"]);
         });
 
+        it("should retrieve only defined keys in sparse arrays", function () {
+            expect(lamb.keys([, 5, 6, ,])).toEqual(["1", "2"]);
+        });
+
         it("should throw an exception if called without arguments", function () {
             expect(lamb.keys).toThrow();
         });
@@ -585,6 +616,11 @@ describe("lamb.object", function () {
             expect(lamb.keySatisfies(isValue("c"), 2)(s)).toBe(true);
         });
 
+        it("should pass an `undefined` value to the predicate for unassigned or deleted indexes in sparse arrays", function () {
+            expect(lamb.keySatisfies(lamb.isUndefined, "1")([1, , 3])).toBe(true);
+            expect(lamb.keySatisfies(lamb.isUndefined, "-2")([1, , 3])).toBe(true);
+        });
+
         it("should convert other values for the `key` parameter to string", function () {
             var d = new Date();
             var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
@@ -644,6 +680,11 @@ describe("lamb.object", function () {
 
         it("should convert non-string keys to strings", function () {
             expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({"null": 1, "undefined": 2, "2": 3});
+        });
+
+        it("should convert unassigned or deleted indexes in sparse arrays to `undefined` values", function () {
+            expect(lamb.make(["a", "b", "c"], [1, , 3])).toEqual({a: 1, b: void 0, c: 3});
+            expect(lamb.make(["a", , "c"], [1, 2, 3])).toEqual({a: 1, "undefined": 2, c: 3});
         });
 
         it("should accept array-like objects in both parameters", function () {
@@ -1090,10 +1131,11 @@ describe("lamb.object", function () {
             expect(lamb.pathSatisfies(isValue("f"), "b.c.-3")(obj)).toBe(true);
         });
 
-        it("should work with sparse arrays", function () {
+        it("should pass an `undefined` value to the predicate for unassigned or deleted indexes in sparse arrays", function () {
             expect(lamb.pathSatisfies(lamb.isUndefined, "b.d.0")(obj)).toBe(true);
-            expect(lamb.pathSatisfies(isValue(99), "b.d.1")(obj)).toBe(true);
-            expect(lamb.pathSatisfies(isValue(99), "b.d.-2")(obj)).toBe(true);
+            expect(lamb.pathSatisfies(lamb.isUndefined, "b.d.-3")(obj)).toBe(true);
+            expect(lamb.pathSatisfies(lamb.isUndefined, "1")([1, , 3])).toBe(true);
+            expect(lamb.pathSatisfies(lamb.isUndefined, "-2")([1, , 3])).toBe(true);
         });
 
         it("should be able to check objects nested in arrays", function () {
@@ -1222,6 +1264,16 @@ describe("lamb.object", function () {
                 expect(lamb.pickKeys([0, 2])("bar")).toEqual({"0": "b", "2": "r"});
             });
 
+            it("should see unassigned or deleted indexes in sparse arrays as non-existing keys", function () {
+                expect(lamb.pick([1, , 3], [0, 1])).toEqual({"0": 1});
+                expect(lamb.pickKeys([0, 1])([1, , 3])).toEqual({"0": 1});
+            });
+
+            it("should see unassigned or deleted indexes in sparse arrays received as the `whitelist` as `undefined` values", function () {
+                expect(lamb.pick({"undefined": 1, a: 2, b: 3}, ["a", ,])).toEqual({"undefined": 1, a: 2});
+                expect(lamb.pickKeys(["a", ,])({"undefined": 1, a: 2, b: 3})).toEqual({"undefined": 1, a: 2});
+            });
+
             it("should return an empty object if supplied with an empty list of keys", function () {
                 expect(lamb.pick(simpleObj, [])).toEqual({});
                 expect(lamb.pickKeys([])(simpleObj)).toEqual({});
@@ -1287,6 +1339,10 @@ describe("lamb.object", function () {
                 expect(lamb.pickIf(isEven)("1234")).toEqual({"1": "2", "3": "4"});
             });
 
+            it("should not consider unassigned or deleted indexes in sparse arrays", function () {
+                expect(lamb.pickIf(lamb.isUndefined)([1, , 3, void 0])).toEqual({"3": void 0});
+            });
+
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
                 expect(persons.map(lamb.pickIf(isNameKey2))).toEqual(names);
             });
@@ -1338,6 +1394,16 @@ describe("lamb.object", function () {
                 expect(lamb.skipKeys(["1", 3])(names)).toEqual(result);
                 expect(lamb.skip("bar", [0, 2])).toEqual({"1": "a"});
                 expect(lamb.skipKeys([0, 2])("bar")).toEqual({"1": "a"});
+            });
+
+            it("should see unassigned or deleted indexes in sparse arrays as non-existing keys", function () {
+                expect(lamb.skip([1, , 3], [2])).toEqual({"0": 1});
+                expect(lamb.skipKeys([2])([1, , 3])).toEqual({"0": 1});
+            });
+
+            it("should see unassigned or deleted indexes in sparse arrays received as the `blacklist` as `undefined` values", function () {
+                expect(lamb.skip({"undefined": 1, a: 2, b: 3}, ["a", ,])).toEqual({b: 3});
+                expect(lamb.skipKeys(["a", ,])({"undefined": 1, a: 2, b: 3})).toEqual({b: 3});
             });
 
             it("should return a copy of the source object if supplied with an empty list of keys", function () {
@@ -1414,6 +1480,10 @@ describe("lamb.object", function () {
 
                 expect(lamb.skipIf(isEven)([1, 2, 3, 4])).toEqual({"0": 1, "2": 3});
                 expect(lamb.skipIf(isEven)("1234")).toEqual({"0": "1", "2": "3"});
+            });
+
+            it("should not consider unassigned or deleted indexes in sparse arrays", function () {
+                expect(lamb.skipIf(lamb.not(lamb.isUndefined))([1, , 3, void 0])).toEqual({"3": void 0});
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
@@ -1560,6 +1630,16 @@ describe("lamb.object", function () {
             expect(lamb.renameWith(lamb.always(keysMap))(s)).toEqual(r2);
         });
 
+        it("should not consider unassigned or deleted indexes when the source is a sparse array", function () {
+            var arr = [1, , 3];
+            var keysMap = {"0": "a", "1": "b", "2": "c"};
+            var result = {a: 1, c: 3};
+
+            expect(lamb.rename(arr, keysMap)).toEqual(result);
+            expect(lamb.renameKeys(keysMap)(arr)).toEqual(result);
+            expect(lamb.renameWith(lamb.always(keysMap))(arr)).toEqual(result);
+        });
+
         it("should accept array-like objects as key maps", function () {
             var arr = [1, 2, 3];
             var s = "bar";
@@ -1573,6 +1653,16 @@ describe("lamb.object", function () {
             expect(lamb.renameKeys(s)(someObj)).toEqual(r2);
             expect(lamb.renameWith(lamb.always(arr))(someObj)).toEqual(r1);
             expect(lamb.renameWith(lamb.always(s))(someObj)).toEqual(r2);
+        });
+
+        it("should not consider unassigned or deleted indexes when a sparse array is supplied as a key map", function () {
+            var someObj = {"0": "a", "1": "b", "2": "c"};
+            var arrKeyMap = [1, , 3];
+            var result = {"1": "a", "3": "c"};
+
+            expect(lamb.rename(someObj, arrKeyMap)).toEqual(result);
+            expect(lamb.renameKeys(arrKeyMap)(someObj)).toEqual(result);
+            expect(lamb.renameWith(lamb.always(arrKeyMap))(someObj)).toEqual(result);
         });
 
         it("should return a copy of the source object for any other value passed as the keys' map", function () {

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.8
+ * @version 0.49.0-alpha.9
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.8";
+    lamb._version = "0.49.0-alpha.9";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2771,9 +2771,7 @@
      * @returns {*}
      */
     function getPathIn (obj, path, separator) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
-
-        return pathInfo.target;
+        return _getPathInfo(obj, _toPathParts(path, separator), true).target;
     }
 
     /**
@@ -5588,9 +5586,7 @@
      * @returns {Boolean}
      */
     function pathExistsIn (obj, path, separator) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
-
-        return pathInfo.isValid;
+        return _getPathInfo(obj, _toPathParts(path, separator), true).isValid;
     }
 
     /**

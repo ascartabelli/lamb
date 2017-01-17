@@ -180,9 +180,7 @@ var getPath = _makePartial3(getPathIn);
  * @returns {*}
  */
 function getPathIn (obj, path, separator) {
-    var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
-
-    return pathInfo.target;
+    return _getPathInfo(obj, _toPathParts(path, separator), true).target;
 }
 
 /**

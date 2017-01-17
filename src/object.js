@@ -555,9 +555,7 @@ var pathExists = _makePartial3(pathExistsIn);
  * @returns {Boolean}
  */
 function pathExistsIn (obj, path, separator) {
-    var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
-
-    return pathInfo.isValid;
+    return _getPathInfo(obj, _toPathParts(path, separator), true).isValid;
 }
 
 /**
