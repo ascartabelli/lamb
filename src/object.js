@@ -814,6 +814,7 @@ function renameWith (fn) {
  * @returns {Object}
  */
 function skip (source, blacklist) {
+    blacklist = map(blacklist, String);
     var result = {};
 
     forEach(enumerables(source), function (key) {

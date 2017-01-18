@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.4
+ * @version 0.49.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.4";
+    lamb._version = "0.49.0-alpha.5";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5847,6 +5847,7 @@
      * @returns {Object}
      */
     function skip (source, blacklist) {
+        blacklist = map(blacklist, String);
         var result = {};
 
         forEach(enumerables(source), function (key) {

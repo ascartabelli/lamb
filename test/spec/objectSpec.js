@@ -1313,6 +1313,18 @@ describe("lamb.object", function () {
                 expect(lamb.skipKeys(["c"])({a: null, b: void 0})).toEqual({a: null, b: void 0});
             });
 
+            it("should accept arrays and array-like objects and integers as keys", function () {
+                var result = {
+                    "0": {"name": "Jane", "surname": "Doe"},
+                    "2": {"name": "Mario", "surname": "Rossi"}
+                };
+
+                expect(lamb.skip(names, ["1", 3])).toEqual(result);
+                expect(lamb.skipKeys(["1", 3])(names)).toEqual(result);
+                expect(lamb.skip("bar", [0, 2])).toEqual({"1": "a"});
+                expect(lamb.skipKeys([0, 2])("bar")).toEqual({"1": "a"});
+            });
+
             it("should return a copy of the source object if supplied with an empty list of keys", function () {
                 var r1 = lamb.skip(simpleObj, []);
                 var r2 = lamb.skipKeys([])(simpleObj);
