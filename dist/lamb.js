@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.5
+ * @version 0.49.0-alpha.6
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.5";
+    lamb._version = "0.49.0-alpha.6";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5199,7 +5199,7 @@
      */
     function hasKeyValue (key, value) {
         return function (obj) {
-            return isSVZ(value, obj[key]);
+            return isUndefined(value) ? has(obj, key) : isSVZ(value, obj[key]);
         };
     }
 

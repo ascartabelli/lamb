@@ -218,7 +218,7 @@ describe("lamb.object", function () {
         });
 
         it("should return `false` for a non-existent property", function () {
-            expect(lamb.hasKeyValue("z", 2)(persons[0])).toBe(false);
+            expect(lamb.hasKeyValue("z", void 0)(persons[0])).toBe(false);
         });
 
         it("should return `true` for `undefined` values in existing keys", function () {
@@ -322,10 +322,10 @@ describe("lamb.object", function () {
         });
 
         it("should return `false` for a non-existent property in a valid source", function () {
-            expect(lamb.hasPathValue("b.a.z", 99)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.z.a", 99)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.b.10", 99)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.e.z", 99)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.a.z", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.z.a", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.b.10", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.e.z", void 0)(obj)).toBe(false);
         });
 
         it("should allow negative indexes in paths", function () {

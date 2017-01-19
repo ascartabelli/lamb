@@ -166,7 +166,7 @@ function hasKey (key) {
  */
 function hasKeyValue (key, value) {
     return function (obj) {
-        return isSVZ(value, obj[key]);
+        return isUndefined(value) ? has(obj, key) : isSVZ(value, obj[key]);
     };
 }
 
