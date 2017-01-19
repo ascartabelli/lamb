@@ -328,7 +328,7 @@ function _getPathKey (target, key, includeNonEnumerables) {
     var n = +key;
     var len = target && target.length;
 
-    return n < 0 && n >= -len ? n + len : n < len ? n : void 0;
+    return n >= -len && n < len ? n < 0 ? n + len : n : void 0;
 }
 
 /**

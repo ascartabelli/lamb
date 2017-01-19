@@ -321,16 +321,19 @@ describe("lamb.object", function () {
             expect(lamb.hasPathValue("b.c.0", "f")(obj)).toBe(true);
         });
 
-        it("should return `false` for a non-existent property in a valid source", function () {
-            expect(lamb.hasPathValue("b.a.z", void 0)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.z.a", void 0)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.b.10", void 0)(obj)).toBe(false);
-            expect(lamb.hasPathValue("b.e.z", void 0)(obj)).toBe(false);
-        });
-
         it("should allow negative indexes in paths", function () {
             expect(lamb.hasPathValue("b.b.-1", 5)(obj)).toBe(true);
             expect(lamb.hasPathValue("b.c.-3", "f")(obj)).toBe(true);
+        });
+
+        it("should return `false` for a non-existent property in a valid source", function () {
+            expect(lamb.hasPathValue("b.a.z", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.z.a", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.b.2", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.b.-3", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.c.3", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.c.-4", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.e.z", void 0)(obj)).toBe(false);
         });
 
         it("should work with sparse arrays", function () {
@@ -902,17 +905,25 @@ describe("lamb.object", function () {
         it("should be able to check arrays and array-like objects", function () {
             expect(lamb.pathExists("b.b.0")(obj)).toBe(true);
             expect(lamb.pathExists("b.c.0")(obj)).toBe(true);
+            expect(lamb.pathExists("b.b.2")(obj)).toBe(false);
+            expect(lamb.pathExists("b.c.3")(obj)).toBe(false);
 
             expect(lamb.pathExistsIn(obj, "b.b.0")).toBe(true);
             expect(lamb.pathExistsIn(obj, "b.c.0")).toBe(true);
+            expect(lamb.pathExistsIn(obj, "b.b.2")).toBe(false);
+            expect(lamb.pathExistsIn(obj, "b.c.3")).toBe(false);
         });
 
         it("should allow negative indexes in paths", function () {
             expect(lamb.pathExists("b.b.-1")(obj)).toBe(true);
             expect(lamb.pathExists("b.c.-3")(obj)).toBe(true);
+            expect(lamb.pathExists("b.b.-3")(obj)).toBe(false);
+            expect(lamb.pathExists("b.c.-4")(obj)).toBe(false);
 
             expect(lamb.pathExistsIn(obj, "b.b.-1")).toBe(true);
             expect(lamb.pathExistsIn(obj, "b.c.-3")).toBe(true);
+            expect(lamb.pathExistsIn(obj, "b.b.-3")).toBe(false);
+            expect(lamb.pathExistsIn(obj, "b.c.-4")).toBe(false);
         });
 
         it("should work with sparse arrays", function () {
@@ -934,9 +945,13 @@ describe("lamb.object", function () {
 
             expect(lamb.pathExists("data.1.value")(o)).toBe(true);
             expect(lamb.pathExists("data.-1.value")(o)).toBe(true);
+            expect(lamb.pathExists("data.3.value")(o)).toBe(false);
+            expect(lamb.pathExists("data.-4.value")(o)).toBe(false);
 
             expect(lamb.pathExistsIn(o, "data.1.value")).toBe(true);
             expect(lamb.pathExistsIn(o, "data.-1.value")).toBe(true);
+            expect(lamb.pathExistsIn(o, "data.3.value")).toBe(false);
+            expect(lamb.pathExistsIn(o, "data.-4.value")).toBe(false);
         });
 
         it("should give priority to object keys over array-like indexes when a negative index is encountered", function () {
