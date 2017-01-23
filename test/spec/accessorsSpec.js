@@ -1075,12 +1075,18 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should allow using negative array indexes in path parts", function () {
-                    var r = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
+                    var arr = [1, 2, 3];
+                    var r1 = {a: 2, b: {a: {g: 10, h: 11}, b: [8, 5], c: "foo", d: [void 0, 55, void 0]}, "c.d" : {"e.f": 6}};
+                    var r2 = [1, 4, 3];
 
-                    expect(lamb.updatePath("b.b.-2", double)(obj)).toEqual(r);
-                    expect(lamb.updatePathIn(obj, "b.b.-2", double)).toEqual(r);
-                    expect(lamb.updatePath("-2", double)([1, 2, 3])).toEqual([1, 4, 3]);
-                    expect(lamb.updatePathIn([1, 2, 3], "-2", double)).toEqual([1, 4, 3]);
+                    expect(lamb.updatePath("b.b.-2", double)(obj)).toEqual(r1);
+                    expect(lamb.updatePath("b.b.-3", double)(obj)).toEqual(obj);
+                    expect(lamb.updatePath("-2", double)(arr)).toEqual(r2);
+                    expect(lamb.updatePath("-4", double)(arr)).toEqual(arr);
+                    expect(lamb.updatePathIn(obj, "b.b.-2", double)).toEqual(r1);
+                    expect(lamb.updatePathIn(obj, "b.b.-3", double)).toEqual(obj);
+                    expect(lamb.updatePathIn(arr, "-2", double)).toEqual(r2);
+                    expect(lamb.updatePathIn(arr, "-4", double)).toEqual(arr);
                 });
 
                 it("should allow to change values nested in an array", function () {
