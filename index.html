@@ -14,8 +14,8 @@
     <meta name="application-name" content="Lamb" />
     <meta name="msapplication-config" content="images/icons/browserconfig.xml?v=1.0" />
     <meta name="theme-color" content="#57a3d5" />
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css?1484048390318" />
-    <link type="text/css" rel="stylesheet" href="styles/lamb-light.css?1484048390318" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css?1485249398618" />
+    <link type="text/css" rel="stylesheet" href="styles/lamb-light.css?1485249398618" />
 </head>
 
 <body>
@@ -61,7 +61,7 @@
 The source map for the minified file is in the same <code>dist</code> folder.</p>
 <p>Lamb it's also delivered on a CDN, courtesy of <a href="https://www.jsdelivr.com/">jsDelivr</a> and <a href="https://unpkg.com/">unpkg</a>:</p>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/lamb/latest/lamb.min.js&quot;>&lt;/script></code></pre><pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://unpkg.com/lamb/dist/lamb.min.js&quot;>&lt;/script></code></pre><p>The URLs above will retrieve the latest version, but you can target a specific one:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/lamb/0.48.0/lamb.min.js&quot;>&lt;/script></code></pre><pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://unpkg.com/lamb@0.48.0/dist/lamb.min.js&quot;>&lt;/script></code></pre><p>Please note that Lamb is served by jsDelivr since version 0.42.0.</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/lamb/0.49.0/lamb.min.js&quot;>&lt;/script></code></pre><pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://unpkg.com/lamb@0.49.0/dist/lamb.min.js&quot;>&lt;/script></code></pre><p>Please note that Lamb is served by jsDelivr since version 0.42.0.</p>
 <p>You can <a href="https://runkit.com/npm/lamb">try it right now</a> in your browser, too.</p>
 <h2>Semantic Versioning.</h2><p>Lamb uses <a href="http://semver.org/">semantic versioning</a> and please be aware that, as long as the major version is <code>0</code>, any
 bump in the minor version could involve a breaking change in the API.
@@ -103,6 +103,21 @@ See the main header: because it's docile like a lamb. Lamb adapts to you without
 </ul>
 <h2><a name="recent_changes"></a> Recent changes</h2><p>You can also check the <a href="https://ascartabelli.github.io/lamb/changelog.html">full changelog</a>.</p>
 <ul>
+<li><p><strong>v0.49.0 - <em>2017/01/24</em></strong></p>
+<ul>
+<li><strong>API change</strong>: removed optional context parameter in every function that was using it</li>
+<li><strong>API change</strong>: <code>aritize</code> now will simply convert its <code>arity</code> parameter to integer, instead of giving it a special meaning when is <code>undefined</code></li>
+<li><strong>Fixed</strong>: <code>skip</code> and <code>skipKeys</code> now convert to string every value in the <code>blacklist</code></li>
+<li><strong>Fixed</strong>: <code>hasKeyValue</code> now correctly returns <code>false</code> when searching for an <code>undefined</code> value in a non-existent property</li>
+<li><strong>Fixed</strong>: <code>pathExists</code>, <code>pathExistsIn</code> and <code>hasPathValue</code> will no longer see valid paths when a negative array index is out of bounds</li>
+<li>Minor performance improvements for <code>pick</code>, <code>pickIf</code>, <code>skip</code> and <code>skipIf</code></li>
+<li>Added tests with sparse arrays where needed and updated existing ones with misleading texts / specs</li>
+<li>Tidied up test code a bit by grouping some common variables</li>
+<li>Updated tests for <code>hasPathValue</code> and &quot;pick&quot; and &quot;skip&quot; functions</li>
+<li>Updated tests of <code>updatePath</code> to check negative array indexes that are out of bounds</li>
+<li>Updated dev dependencies</li>
+</ul>
+</li>
 <li><p><strong>v0.48.0 - <em>2017/01/10</em></strong></p>
 <ul>
 <li><strong>API change</strong>: <code>slice</code> isn't a generic anymore to ensure that dense arrays are returned and has no optional parameters</li>
@@ -139,16 +154,6 @@ See the main header: because it's docile like a lamb. Lamb adapts to you without
 <li>Updated examples and doc comments</li>
 </ul>
 </li>
-<li><p><strong>v0.44.0 - <em>2016/11/08</em></strong></p>
-<ul>
-<li><strong>API change</strong>: <code>repeat</code> and <code>testWith</code> now throw an exception when the source string is <code>nil</code> and convert to string every other value</li>
-<li><strong>API change</strong>: <code>repeat</code> now floors the value received as the <code>times</code> parameter instead of ceiling it</li>
-<li><strong>API change</strong>: the <code>char</code> parameter of the padding functions isn't optional anymore and will be coerced to string</li>
-<li><strong>Fixed</strong>: predicates built with <code>testWith</code> are now safe to reuse even when the global flag is used in the pattern</li>
-<li>Added <code>append</code> and <code>appendTo</code></li>
-<li>Updated tests of all string functions</li>
-</ul>
-</li>
 </ul></article>
     </section>
 
@@ -158,7 +163,7 @@ See the main header: because it's docile like a lamb. Lamb adapts to you without
 
 
     <footer>
-        Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 10 2017 12:39:50 GMT+0100 (CET)
+        Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:16:38 GMT+0100 (CET)
     </footer>
 </div>
 
@@ -180,8 +185,8 @@ See the main header: because it's docile like a lamb. Lamb adapts to you without
 <!--[if lt IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 <![endif]-->
-<script src="scripts/highlight.pack.js?1484048390318"></script>
-<script src="scripts/lamb.min.js?1484048390318"></script>
-<script src="scripts/main.js?1484048390318"></script>
+<script src="scripts/highlight.pack.js?1485249398618"></script>
+<script src="scripts/lamb.min.js?1485249398618"></script>
+<script src="scripts/main.js?1485249398618"></script>
 </body>
 </html>
