@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.49.0-alpha.13
+ * @version 0.49.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.49.0-alpha.13";
+    lamb._version = "0.49.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -6287,7 +6287,7 @@
  */
 
 /**
- * Represent a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert},
+ * Represents a sorting criteria used by {@link module:lamb.sortedInsert|sortedInsert},
  * {@link module:lamb.sort|sort} and {@link module:lamb.sortWith|sortWith}, and it's
  * usually built using {@link module:lamb.sorter|sorter} and {@link module:lamb.sorterDesc|sorterDesc}.
  * @typedef {Sorter} Sorter

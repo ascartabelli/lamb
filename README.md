@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.48.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.49.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.48.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.49.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +110,19 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.49.0 - *2017/01/24***
+  - **API change**: removed optional context parameter in every function that was using it
+  - **API change**: `aritize` now will simply convert its `arity` parameter to integer, instead of giving it a special meaning when is `undefined`
+  - **Fixed**: `skip` and `skipKeys` now convert to string every value in the `blacklist`
+  - **Fixed**: `hasKeyValue` now correctly returns `false` when searching for an `undefined` value in a non-existent property
+  - **Fixed**: `pathExists`, `pathExistsIn` and `hasPathValue` will no longer see valid paths when a negative array index is out of bounds
+  - Minor performance improvements for `pick`, `pickIf`, `skip` and `skipIf`
+  - Added tests with sparse arrays where needed and updated existing ones with misleading texts / specs
+  - Tidied up test code a bit by grouping some common variables
+  - Updated tests for `hasPathValue` and "pick" and "skip" functions
+  - Updated tests of `updatePath` to check negative array indexes that are out of bounds
+  - Updated dev dependencies
+
 - **v0.48.0 - *2017/01/10***
   - **API change**: `slice` isn't a generic anymore to ensure that dense arrays are returned and has no optional parameters
   - **Fixed**: `pull` and `pullFrom` now consider `nil`s received as the `values` parameter as empty arrays
@@ -137,11 +150,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `pull` and `pullFrom`
   - Added `keySatisfies` and `pathSatisfies`
   - Updated examples and doc comments
-
-- **v0.44.0 - *2016/11/08***
-  - **API change**: `repeat` and `testWith` now throw an exception when the source string is `nil` and convert to string every other value
-  - **API change**: `repeat` now floors the value received as the `times` parameter instead of ceiling it
-  - **API change**: the `char` parameter of the padding functions isn't optional anymore and will be coerced to string
-  - **Fixed**: predicates built with `testWith` are now safe to reuse even when the global flag is used in the pattern
-  - Added `append` and `appendTo`
-  - Updated tests of all string functions
