@@ -1226,6 +1226,12 @@ describe("lamb.object", function () {
         // for checking "truthy" and "falsy" values returned by predicates
         var isNameKey2 = function (value, key) { return ~key.indexOf("name"); };
 
+        var oddObject = {};
+
+        invalidKeysAsStrings.forEach(function (key, idx) {
+            oddObject[key] = idx;
+        });
+
         describe("pick / pickKeys", function () {
             it("should return an object having only the specified properties of the source object (if they exist)", function () {
                 expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({"foo" : 1, "baz" : 3});
@@ -1272,6 +1278,13 @@ describe("lamb.object", function () {
             it("should accept an array-like object as the `whitelist` parameter", function () {
                 expect(lamb.pick({a: 1, b: 2, c: 3}, "ac")).toEqual({a: 1, c: 3});
                 expect(lamb.pickKeys("ac")({a: 1, b: 2, c: 3})).toEqual({a: 1, c: 3});
+            });
+
+            it("should convert to string every value in the `whitelist` parameter", function () {
+                var testObj = lamb.merge({bar: "baz"}, oddObject);
+
+                expect(lamb.pick(testObj, invalidKeysAsStrings)).toEqual(oddObject);
+                expect(lamb.pickKeys(invalidKeysAsStrings)(testObj)).toEqual(oddObject);
             });
 
             it("should throw an exception if called without the main data argument", function () {
@@ -1409,6 +1422,13 @@ describe("lamb.object", function () {
             it("should accept an array-like object as the `blacklist` parameter", function () {
                 expect(lamb.skip({a: 1, b: 2, c: 3}, "ac")).toEqual({b: 2});
                 expect(lamb.skipKeys("ac")({a: 1, b: 2, c: 3})).toEqual({b: 2});
+            });
+
+            it("should convert to string every value in the `blacklist` parameter", function () {
+                var testObj = lamb.merge({bar: "baz"}, oddObject);
+
+                expect(lamb.skip(testObj, invalidKeysAsStrings)).toEqual({bar: "baz"});
+                expect(lamb.skipKeys(invalidKeysAsStrings)(testObj)).toEqual({bar: "baz"});
             });
 
             it("should throw an exception if called without the main data argument", function () {
