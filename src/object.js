@@ -615,11 +615,13 @@ function pathSatisfies (predicate, path, separator) {
 function pick (source, whitelist) {
     var result = {};
 
-    forEach(whitelist, function (key) {
+    for (var i = 0, len = whitelist.length, key; i < len; i++) {
+        key = whitelist[i];
+
         if (has(source, key)) {
             result[key] = source[key];
         }
-    });
+    }
 
     return result;
 }
@@ -644,13 +646,17 @@ function pick (source, whitelist) {
  */
 function pickIf (predicate) {
     return function (source) {
+        if (isNil(source)) {
+            throw _makeTypeErrorFor(source, "object");
+        }
+
         var result = {};
 
-        forEach(enumerables(source), function (key) {
+        for (var key in source) {
             if (predicate(source[key], key, source)) {
                 result[key] = source[key];
             }
-        });
+        }
 
         return result;
     };
@@ -812,14 +818,18 @@ function renameWith (fn) {
  * @returns {Object}
  */
 function skip (source, blacklist) {
-    blacklist = map(blacklist, String);
-    var result = {};
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
+    }
 
-    forEach(enumerables(source), function (key) {
-        if (!isIn(blacklist, key)) {
+    var result = {};
+    var props = make(blacklist, []);
+
+    for (var key in source) {
+        if (!(key in props)) {
             result[key] = source[key];
         }
-    });
+    }
 
     return result;
 }
