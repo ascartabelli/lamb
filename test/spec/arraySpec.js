@@ -4,6 +4,8 @@ var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality
 describe("lamb.array", function () {
     // for checking "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
+    var nonArrayLikes = wannabeEmptyArrays.concat(null, void 0);
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
@@ -57,7 +59,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.appendTo(value, "z")).toEqual(["z"]);
                 expect(lamb.append("z")(value)).toEqual(["z"]);
             });
@@ -104,18 +106,15 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value in the main parameter as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.difference(value, a4)).toEqual([]);
             });
         });
 
         it("should treat every non-array-like value in other parameters as an empty array", function () {
-            var d = new Date();
-            var values = [{}, /foo/, 1, function () {}, NaN, true, d];
-
-            values.forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.difference(a1, value, [4, 5], a4)).toEqual([0, 1, 2, 3, NaN]);
-                expect(lamb.difference(values, value)).toEqual(values);
+                expect(lamb.difference(wannabeEmptyArrays, value)).toEqual(wannabeEmptyArrays);
             });
         });
     });
@@ -187,7 +186,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.drop(value, 0)).toEqual([]);
                 expect(lamb.dropN(0)(value)).toEqual([]);
             });
@@ -241,7 +240,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(dropWhileIsEven(value)).toEqual([]);
             });
         });
@@ -338,7 +337,7 @@ describe("lamb.array", function () {
         });
 
         it("should return an empty array for every other value", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.flatMap(value, lamb.identity)).toEqual([]);
                 expect(lamb.flatMapWith(lamb.identity)(value)).toEqual([]);
             });
@@ -380,7 +379,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.flatten(value)).toEqual([]);
             });
         });
@@ -415,7 +414,7 @@ describe("lamb.array", function () {
         });
 
         it("should return an empty array for every other value", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.init(value)).toEqual([]);
             });
         });
@@ -498,7 +497,7 @@ describe("lamb.array", function () {
         });
 
         it("should consider every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date(), {}].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.insert(value, 3, 99)).toEqual([99]);
                 expect(lamb.insertAt(3, 99)(value)).toEqual([99]);
             });
@@ -546,7 +545,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat other values as empty arrays", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date(), {}].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.intersection([2, 3], value)).toEqual([]);
             });
         });
@@ -631,7 +630,7 @@ describe("lamb.array", function () {
 
 
         it("should treat every other value as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.partition(value, lamb.isType("Number"))).toEqual([[], []]);
                 expect(lamb.partitionWith(lamb.isType("Number"))(value)).toEqual([[], []]);
             });
@@ -693,7 +692,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.pluck(value, "foo")).toEqual([]);
                 expect(lamb.pluckKey("foo")(value)).toEqual([]);
             });
@@ -744,7 +743,7 @@ describe("lamb.array", function () {
         it("should consider non-array-likes received as the list of values as an empty array", function () {
             var arr = [1, 2, 3];
 
-            [{}, /foo/, 1, function () {}, NaN, true, new Date(), null, void 0].forEach(function (value) {
+            nonArrayLikes.forEach(function (value) {
                 var r1 = lamb.pullFrom(arr, value);
                 var r2 = lamb.pull(value)(arr);
 
@@ -785,7 +784,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.pullFrom(value, ["lastIndex", "getDay", "valueOf"])).toEqual([]);
                 expect(lamb.pull(["lastIndex", "getDay", "valueOf"])(value)).toEqual([]);
             });
@@ -827,7 +826,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.shallowFlatten(value)).toEqual([]);
             });
         });
@@ -863,7 +862,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.tail(value)).toEqual([]);
             });
         });
@@ -936,7 +935,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.take(value, 0)).toEqual([]);
                 expect(lamb.takeN(0)(value)).toEqual([]);
             });
@@ -990,7 +989,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(takeWhileIsEven(value)).toEqual([]);
             });
         });
@@ -1033,7 +1032,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.union(value, [3, 5])).toEqual([3, 5]);
                 expect(lamb.union([3, 5], value)).toEqual([3, 5]);
             });
@@ -1113,7 +1112,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.uniques(value)).toEqual([]);
             });
         });
@@ -1190,7 +1189,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.transpose(value)).toEqual([]);
                 expect(lamb.zip(value, [1, 2])).toEqual([]);
                 expect(lamb.zip([1, 2], value)).toEqual([]);
@@ -1227,7 +1226,7 @@ describe("lamb.array", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.zipWithIndex(value)).toEqual([]);
             });
         });

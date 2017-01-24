@@ -3,6 +3,7 @@ var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality
 
 describe("lamb.sort", function () {
     var descSorter = lamb.sorterDesc();
+    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
@@ -156,7 +157,7 @@ describe("lamb.sort", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.sort(value)).toEqual([]);
                 expect(lamb.sortWith()(value)).toEqual([]);
             });
@@ -289,7 +290,7 @@ describe("lamb.sort", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.sortedInsert(value, 99)).toEqual([99]);
             });
         });

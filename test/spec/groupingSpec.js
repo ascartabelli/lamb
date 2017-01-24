@@ -65,6 +65,8 @@ describe("lamb.grouping", function () {
         return person.age > 20 ? "over20" : "under20";
     };
 
+    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
+
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
@@ -115,7 +117,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should treat every other value as an empty array and return an empty object", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.countBy(lamb.identity)(value)).toEqual({});
                 expect(lamb.count(value, lamb.identity)).toEqual({});
             });
@@ -172,7 +174,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should treat every other value as an empty array and return an empty object", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.groupBy(lamb.identity)(value)).toEqual({});
                 expect(lamb.group(value, lamb.identity)).toEqual({});
             });
@@ -234,7 +236,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should treat every other value as an empty array and return an empty object", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.indexBy(lamb.identity)(value)).toEqual({});
                 expect(lamb.index(value, lamb.identity)).toEqual({});
             });

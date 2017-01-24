@@ -1,6 +1,11 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.object", function () {
+    var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
+    var invalidKeysAsStrings = invalidKeys.map(String);
+    var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
+    var wannabeEmptyArrays = wannabeEmptyObjects.concat({});
+
     describe("enumerables", function () {
         it("should build an array with all the enumerables keys of an object", function () {
             var baseFoo = Object.create({a: 1}, {b: {value: 2}});
@@ -31,7 +36,7 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values as empty objects", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.enumerables(value)).toEqual([]);
             });
         });
@@ -143,7 +148,7 @@ describe("lamb.object", function () {
             });
 
             it("should convert to object every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.has(v, "a")).toBe(false);
                     expect(lamb.hasKey("a")(v)).toBe(false);
                 });
@@ -212,7 +217,7 @@ describe("lamb.object", function () {
             });
 
             it("should return convert to object every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.hasOwn(v, "a")).toBe(false);
                     expect(lamb.hasOwnKey("a")(v)).toBe(false);
                 });
@@ -299,7 +304,7 @@ describe("lamb.object", function () {
         });
 
         it("should convert to object every other value", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+            wannabeEmptyObjects.forEach(function (v) {
                 expect(lamb.hasKeyValue("a", 2)(v)).toBe(false);
             });
 
@@ -308,11 +313,6 @@ describe("lamb.object", function () {
     });
 
     describe("hasPathValue", function () {
-        var d = new Date();
-        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
-        var invalidKeysAsStrings = invalidKeys.map(String);
-        var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-
         var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
@@ -551,7 +551,7 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values as empty objects", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.keys(value)).toEqual([]);
             });
         });
@@ -657,7 +657,7 @@ describe("lamb.object", function () {
         it("should convert to object every other value", function () {
             var isZero = lamb.partial(lamb.isSVZ, 0);
 
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+            wannabeEmptyObjects.forEach(function (v) {
                 expect(lamb.keySatisfies(isZero, "foo")(v)).toBe(false);
             });
 
@@ -703,13 +703,13 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values for the `keys` parameter as empty arrays and return an empty object", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+            wannabeEmptyArrays.forEach(function (v) {
                 expect(lamb.make(v, [])).toEqual({});
             });
         });
 
         it("should consider other values for the `values` parameter to be empty arrays", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+            wannabeEmptyArrays.forEach(function (v) {
                 expect(lamb.make(["foo", "bar"], v)).toEqual({"foo": void 0, "bar": void 0});
             });
         });
@@ -823,7 +823,7 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values as empty objects", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.ownPairs(value)).toEqual([]);
                 expect(lamb.pairs(value)).toEqual([]);
             });
@@ -885,7 +885,7 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values as empty objects", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.ownValues(value)).toEqual([]);
                 expect(lamb.values(value)).toEqual([]);
             });
@@ -905,11 +905,6 @@ describe("lamb.object", function () {
     });
 
     describe("pathExists / pathExistsIn", function () {
-        var d = new Date();
-        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
-        var invalidKeysAsStrings = invalidKeys.map(String);
-        var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-
         var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
@@ -1068,11 +1063,6 @@ describe("lamb.object", function () {
     });
 
     describe("pathSatisfies", function () {
-        var d = new Date();
-        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
-        var invalidKeysAsStrings = invalidKeys.map(String);
-        var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-
         var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
@@ -1312,7 +1302,7 @@ describe("lamb.object", function () {
             });
 
             it("should convert to object every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.pick(v, ["a"])).toEqual({});
                     expect(lamb.pickKeys(["a"])(v)).toEqual({});
                 });
@@ -1362,7 +1352,7 @@ describe("lamb.object", function () {
             });
 
             it("should convert to object every other value received as `source`", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.pickIf(isNumber)(v)).toEqual({});
                 });
             });
@@ -1455,7 +1445,7 @@ describe("lamb.object", function () {
             });
 
             it("should convert to object every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.skip(v, ["a"])).toEqual({});
                     expect(lamb.skipKeys(["a"])(v)).toEqual({});
                 });
@@ -1505,7 +1495,7 @@ describe("lamb.object", function () {
             });
 
             it("should convert to object every other value received as `source`", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyObjects.forEach(function (v) {
                     expect(lamb.skipIf(isNumber)(v)).toEqual({});
                 });
             });
@@ -1695,7 +1685,7 @@ describe("lamb.object", function () {
         });
 
         it("should return an empty object for any other value passed as the source object", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.rename(value, {"0": 9})).toEqual({});
                 expect(lamb.renameKeys({"0": 9})(value)).toEqual({});
                 expect(lamb.renameWith(lamb.always({"0": 9}))(value)).toEqual({});
@@ -1746,7 +1736,7 @@ describe("lamb.object", function () {
         });
 
         it("should consider other values as empty objects", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.tear(value)).toEqual([[], []]);
                 expect(lamb.tearOwn(value)).toEqual([[], []]);
             });

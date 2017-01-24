@@ -11,6 +11,10 @@ describe("lamb.function", function () {
         }
     }
 
+    var nonArrayLikes = [/foo/, 1, function () {}, NaN, true, new Date(), {}, null, void 0];
+    var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
+    var invalidMethodsAsStrings = invalidMethods.map(String);
+
     describe("application / apply / applyTo", function () {
         it("should apply the desired function to the given arguments", function () {
             expect(lamb.application(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
@@ -39,12 +43,11 @@ describe("lamb.function", function () {
 
         it("should treat non-array-like values for the `args` parameter as empty arrays", function () {
             var fooSpy = jasmine.createSpy("fooSpy");
-            var values = [null, void 0, {}, /foo/, NaN, true, new Date()];
 
-            for (var i = 0, ofs = 0; i < values.length; i++, ofs += 3) {
-                lamb.application(fooSpy, values[i]);
-                lamb.apply(fooSpy)(values[i]);
-                lamb.applyTo(values[i])(fooSpy);
+            for (var i = 0, ofs = 0; i < nonArrayLikes.length; i++, ofs += 3) {
+                lamb.application(fooSpy, nonArrayLikes[i]);
+                lamb.apply(fooSpy)(nonArrayLikes[i]);
+                lamb.applyTo(nonArrayLikes[i])(fooSpy);
                 expect(fooSpy.calls.argsFor(ofs).length).toBe(0);
                 expect(fooSpy.calls.argsFor(ofs + 1).length).toBe(0);
                 expect(fooSpy.calls.argsFor(ofs + 2).length).toBe(0);
@@ -636,9 +639,6 @@ describe("lamb.function", function () {
         });
 
         it("should convert to string every value received as a method name", function () {
-            var d = new Date();
-            var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
-            var invalidMethodsAsStrings = invalidMethods.map(String);
             var obj = {};
 
             invalidMethodsAsStrings.forEach(function (method, idx) {
@@ -705,9 +705,6 @@ describe("lamb.function", function () {
         });
 
         it("should convert to string every value received as a method name", function () {
-            var d = new Date();
-            var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
-            var invalidMethodsAsStrings = invalidMethods.map(String);
             var obj = {};
             var callOnObj = lamb.invokerOn(obj);
 

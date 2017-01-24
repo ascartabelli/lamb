@@ -13,6 +13,7 @@ describe("lamb.accessors", function () {
         var sparseArr = [, , 3, ,];
         var sparseArrCopy = sparseArr.slice();
         var sparseArrAsDense = [void 0, void 0, 3, void 0];
+        var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
         afterEach(function () {
             expect(arr).toEqual(arrCopy);
@@ -71,7 +72,7 @@ describe("lamb.accessors", function () {
                     expect(lamb.getAt(v)(arr)).toBeUndefined();
                 });
 
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyArrays.forEach(function (v) {
                     expect(lamb.getIndex(v, 2)).toBeUndefined();
                     expect(lamb.getAt(2)(v)).toBeUndefined();
                     expect(lamb.head(v)).toBeUndefined();
@@ -182,7 +183,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an empty array for every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyArrays.forEach(function (v) {
                     expect(lamb.setIndex(v, 2, 99)).toEqual([]);
                     expect(lamb.setAt(2, 99)(v)).toEqual([]);
                 });
@@ -312,7 +313,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an empty array for every other value", function () {
-                [/foo/, 1, function () {}, NaN, true, new Date()].forEach(function (v) {
+                wannabeEmptyArrays.forEach(function (v) {
                     expect(lamb.updateIndex(v, 2, fn99)).toEqual([]);
                     expect(lamb.updateAt(2, fn99)(v)).toEqual([]);
                 });
