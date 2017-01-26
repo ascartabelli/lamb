@@ -566,10 +566,9 @@ describe("lamb.object", function () {
         ];
 
         var isValue = lamb.curry(lamb.is);
-        var isGreaterThan = lamb.curryRight(lamb.isGT);
 
         it("should use a predicate and a property name to build a new predicate that will be applied on an object's key", function () {
-            var isAdult = lamb.keySatisfies(isGreaterThan(17), "age");
+            var isAdult = lamb.keySatisfies(lamb.isGTE(18), "age");
 
             expect(users.map(isAdult)).toEqual([false, true, true, false]);
         });

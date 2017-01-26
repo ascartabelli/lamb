@@ -577,7 +577,7 @@ describe("lamb.array", function () {
         });
 
         it("should return two lists even when the predicate is always satisfied or never satisfied", function () {
-            var isGreaterThanTen = function (n) { return n > 10; };
+            var isGreaterThanTen = lamb.isGT(10);
             var arr1 = [1, 2, 3, 4, 5];
             var arr2 = [11, 12, 13, 14, 15];
             var arr3 = [];

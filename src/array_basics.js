@@ -33,8 +33,7 @@ var contains = _makePartial3(isIn);
  *     {"name": "Mario", "age": 17, active: true},
  *     {"name": "Paolo", "age": 15, active: true}
  * ];
- * var isGreaterThan = _.curryRight(_.isGT);
- * var isAdult = _.keySatisfies(isGreaterThan(17), "age");
+ * var isAdult = _.keySatisfies(_.isGTE(18), "age");
  * var isActive = _.hasKeyValue("active", true);
  *
  * _.everyIn(persons, isAdult) // => false
@@ -561,8 +560,7 @@ var sliceAt = _makePartial3(slice);
  *     {"name": "Mario", "age": 17, active: false},
  *     {"name": "Paolo", "age": 15, active: false}
  * ];
- * var isGreaterThan = _.curryRight(_.isGT);
- * var isAdult = _.keySatisfies(isGreaterThan(17), "age");
+ * var isAdult = _.keySatisfies(_.isGTE(18), "age");
  * var isActive = _.hasKeyValue("active", true);
  *
  * _.someIn(persons, isAdult) // => true

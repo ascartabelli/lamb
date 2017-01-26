@@ -331,8 +331,7 @@ var keys = _unsafeKeyListFrom(_safeKeys);
  *     {name: "John", age: 25},
  *     {name: "Jane", age: 15},
  * ];
- * var isGreaterThan = _.curryRight(_.isGT);
- * var isAdult = _.keySatisfies(isGreaterThan(17), "age");
+ * var isAdult = _.keySatisfies(_.isGTE(18), "age");
  *
  * isAdult(users[0]) // => true
  * isAdult(users[1]) // => false
@@ -572,9 +571,8 @@ function pathExistsIn (obj, path, separator) {
  *     }
  * };
  *
- * var isGreaterThan = _.curryRight(_.isGT);
  * var gotAnHighScore = _.pathSatisfies(_.contains(10), "performance.scores");
- * var hadAGoodStart = _.pathSatisfies(isGreaterThan(6), "performance.scores.0");
+ * var hadAGoodStart = _.pathSatisfies(_.isGT(6), "performance.scores.0");
  *
  * gotAnHighScore(user) // => true
  * hadAGoodStart(user) // => false
@@ -937,11 +935,10 @@ var tearOwn = _tearFrom(keys);
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
- * var isGreaterThan = _.curryRight(_.isGT);
  * var userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
- *     _.checker(isGreaterThan(17), "Must be at least 18 years old", ["age"])
+ *     _.checker(_.isGTE(18), "Must be at least 18 years old", ["age"])
  * ];
  *
  * var user1 = {name: "john", surname: "doe", age: 30};
@@ -978,11 +975,10 @@ function validate (obj, checkers) {
  * {@link module:lamb.checker|checkers} and returning a function expecting the object to validate.
  * @example
  * var hasContent = function (s) { return s.trim().length > 0; };
- * var isGreaterThan = _.curryRight(_.isGT);
  * var userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
- *     _.checker(isGreaterThan(17), "Must be at least 18 years old", ["age"])
+ *     _.checker(_.isGTE(18), "Must be at least 18 years old", ["age"])
  * ];
  * var validateUser = _.validateWith(userCheckers);
  *

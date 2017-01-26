@@ -162,6 +162,62 @@ function condition (predicate, trueFn, falseFn) {
 }
 
 /**
+ * Verifies that the first given value is greater than the second.<br/>
+ * Wraps the native <code>&gt;</code> operator within a function.
+ * @example
+ * var pastDate = new Date(2010, 2, 12);
+ * var today = new Date();
+ *
+ * _.gt(today, pastDate) // => true
+ * _.gt(pastDate, today) // => false
+ * _.gt(3, 4) // => false
+ * _.gt(3, 3) // => false
+ * _.gt(3, 2) // => true
+ * _.gt(0, -0) // => false
+ * _.gt(-0, 0) // => false
+ * _.gt("a", "A") // => true
+ * _.gt("b", "a") // => true
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.gte|gte}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @param {Number|String|Date|Boolean} a
+ * @param {Number|String|Date|Boolean} b
+ * @returns {Boolean}
+ */
+function gt (a, b) {
+    return a > b;
+}
+
+/**
+ * Verifies that the first given value is greater than or equal to the second.
+ * Regarding equality, beware that this is simply a wrapper for the native
+ * <code>&gt;=</code> operator, so <code>-0 === 0</code>.
+ * @example
+ * _.gte(3, 4) // => false
+ * _.gte(3, 3) // => true
+ * _.gte(3, 2) // => true
+ * _.gte(0, -0) // => true
+ * _.gte(-0, 0) // => true
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.gt|gt}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @param {Number|String|Date|Boolean} a
+ * @param {Number|String|Date|Boolean} b
+ * @returns {Boolean}
+ */
+function gte (a, b) {
+    return a >= b;
+}
+
+/**
  * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
  * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
  * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
@@ -190,106 +246,98 @@ function is (a, b) {
 }
 
 /**
- * Verifies that the first given value is greater than the second.
+ * A right curried version of {@link module:lamb.gt|gt}.<br/>
+ * Accepts a value and builds a predicate that checks whether the value
+ * is greater than the one received by the predicate.
  * @example
- * var pastDate = new Date(2010, 2, 12);
- * var today = new Date();
+ * var isGreaterThan5 = _.isGT(5);
  *
- * _.isGT(today, pastDate) // => true
- * _.isGT(pastDate, today) // => false
- * _.isGT(3, 4) // => false
- * _.isGT(3, 3) // => false
- * _.isGT(3, 2) // => true
- * _.isGT(0, -0) // => false
- * _.isGT(-0, 0) // => false
- * _.isGT("a", "A") // => true
- * _.isGT("b", "a") // => true
+ * isGreaterThan5(3) // => false
+ * isGreaterThan5(5) // => false
+ * isGreaterThan5(7) // => true
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.isGTE|isGTE}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
- * @param {Number|String|Date|Boolean} a
- * @param {Number|String|Date|Boolean} b
- * @returns {Boolean}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @param {Number|String|Date|Boolean} value
+ * @returns {Function}
  */
-function isGT (a, b) {
-    return a > b;
-}
+var isGT = _curry(gt, 2, true);
 
 /**
- * Verifies that the first given value is greater than or equal to the second.
- * Regarding equality, beware that this is simply a wrapper for the native operator,
- * so <code>-0 === 0</code>.
+ * A right curried version of {@link module:lamb.gte|gte}.<br/>
+ * Accepts a value and builds a predicate that checks whether the value
+ * is greater than or equal to the one received by the predicate.
  * @example
- * _.isGTE(3, 4) // => false
- * _.isGTE(3, 3) // => true
- * _.isGTE(3, 2) // => true
- * _.isGTE(0, -0) // => true
- * _.isGTE(-0, 0) // => true
+ * var isPositiveOrZero = _.isGTE(0);
+ *
+ * isPositiveOrZero(-3) // => false
+ * isPositiveOrZero(-0) // => true
+ * isPositiveOrZero(0) // => true
+ * isPositiveOrZero(5) // => true
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.isGT|isGT}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
- * @param {Number|String|Date|Boolean} a
- * @param {Number|String|Date|Boolean} b
- * @returns {Boolean}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @param {Number|String|Date|Boolean} value
+ * @returns {Function}
  */
-function isGTE (a, b) {
-    return a >= b;
-}
+var isGTE = _curry(gte, 2, true);
 
 /**
- * Verifies that the first given value is less than the second.
+ * A right curried version of {@link module:lamb.lt|lt}.<br/>
+ * Accepts a value and builds a predicate that checks whether the value
+ * is less than the one received by the predicate.
  * @example
- * var pastDate = new Date(2010, 2, 12);
- * var today = new Date();
+ * var isLessThan5 = _.isLT(5);
  *
- * _.isLT(today, pastDate) // => false
- * _.isLT(pastDate, today) // => true
- * _.isLT(3, 4) // => true
- * _.isLT(3, 3) // => false
- * _.isLT(3, 2) // => false
- * _.isLT(0, -0) // => false
- * _.isLT(-0, 0) // => false
- * _.isLT("a", "A") // => false
- * _.isLT("a", "b") // => true
+ * isLessThan5(7) // => false
+ * isLessThan5(5) // => false
+ * isLessThan5(3) // => true
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.isLTE|isLTE}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
- * @param {Number|String|Date|Boolean} a
- * @param {Number|String|Date|Boolean} b
- * @returns {Boolean}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @param {Number|String|Date|Boolean} value
+ * @returns {Function}
  */
-function isLT (a, b) {
-    return a < b;
-}
+var isLT = _curry(lt, 2, true);
 
 /**
- * Verifies that the first given value is less than or equal to the second.
- * Regarding equality, beware that this is simply a wrapper for the native operator,
- * so <code>-0 === 0</code>.
+ * A right curried version of {@link module:lamb.lte|lte}.<br/>
+ * Accepts a value and builds a predicate that checks whether the value
+ * is less than or equal to the one received by the predicate.
  * @example
- * _.isLTE(3, 4) // => true
- * _.isLTE(3, 3) // => true
- * _.isLTE(3, 2) // => false
- * _.isLTE(0, -0) // => true
- * _.isLTE(-0, 0) // => true
+ * var isNegativeOrZero = _.isLTE(0);
+ *
+ * isNegativeOrZero(5) // => false
+ * isNegativeOrZero(-0) // => true
+ * isNegativeOrZero(0) // => true
+ * isNegativeOrZero(-3) // => true
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.isLT|isLT}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
- * @param {Number|String|Date|Boolean} a
- * @param {Number|String|Date|Boolean} b
- * @returns {Boolean}
+ * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @param {Number|String|Date|Boolean} value
+ * @returns {Function}
  */
-function isLTE (a, b) {
-    return a <= b;
-}
+var isLTE = _curry(lte, 2, true);
 
 /**
  * A simple negation of {@link module:lamb.is|is}, exposed for convenience.
@@ -332,6 +380,62 @@ var isNot = not(is);
 function isSVZ (a, b) {
     // eslint-disable-next-line no-self-compare
     return a !== a ? b !== b : a === b;
+}
+
+/**
+ * Verifies that the first given value is less than the second.<br/>
+ * Wraps the native <code>&lt;</code> operator within a function.
+ * @example
+ * var pastDate = new Date(2010, 2, 12);
+ * var today = new Date();
+ *
+ * _.lt(today, pastDate) // => false
+ * _.lt(pastDate, today) // => true
+ * _.lt(3, 4) // => true
+ * _.lt(3, 3) // => false
+ * _.lt(3, 2) // => false
+ * _.lt(0, -0) // => false
+ * _.lt(-0, 0) // => false
+ * _.lt("a", "A") // => false
+ * _.lt("a", "b") // => true
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.lte|lte}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @param {Number|String|Date|Boolean} a
+ * @param {Number|String|Date|Boolean} b
+ * @returns {Boolean}
+ */
+function lt (a, b) {
+    return a < b;
+}
+
+/**
+ * Verifies that the first given value is less than or equal to the second.
+ * Regarding equality, beware that this is simply a wrapper for the native
+ * <code>&lt;=</b> operator, so <code>-0 === 0</code>.
+ * @example
+ * _.lte(3, 4) // => true
+ * _.lte(3, 3) // => true
+ * _.lte(3, 2) // => false
+ * _.lte(0, -0) // => true
+ * _.lte(-0, 0) // => true
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @see {@link module:lamb.lt|lt}
+ * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @param {Number|String|Date|Boolean} a
+ * @param {Number|String|Date|Boolean} b
+ * @returns {Boolean}
+ */
+function lte (a, b) {
+    return a <= b;
 }
 
 /**
@@ -416,6 +520,8 @@ lamb.adapter = adapter;
 lamb.allOf = allOf;
 lamb.anyOf = anyOf;
 lamb.condition = condition;
+lamb.gt = gt;
+lamb.gte = gte;
 lamb.is = is;
 lamb.isGT = isGT;
 lamb.isGTE = isGTE;
@@ -423,6 +529,8 @@ lamb.isLT = isLT;
 lamb.isLTE = isLTE;
 lamb.isNot = isNot;
 lamb.isSVZ = isSVZ;
+lamb.lt = lt;
+lamb.lte = lte;
 lamb.not = not;
 lamb.unless = unless;
 lamb.when = when;
