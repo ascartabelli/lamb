@@ -164,8 +164,9 @@ function _currier (fn, arity, isRightCurry, isAutoCurry, argsHolder) {
 }
 
 /**
- * Prepares a function for currying by setting the proper arity for
- * the <code>_currier</code> function.
+ * Prepares a function for currying. If it's not auto-currying and the arity
+ * is 2 or 3 returns optimized functions, otherwise delegates the currying
+ * to the <code>_currier</code> function.<br/>
  * If the desumed arity isn't greater than one, it will return the received
  * function itself, instead.
  * @private
@@ -180,7 +181,47 @@ function _curry (fn, arity, isRightCurry, isAutoCurry) {
         arity = fn.length;
     }
 
-    return arity > 1 ? _currier(fn, arity, isRightCurry, isAutoCurry, []) : fn;
+    if (isAutoCurry && arity > 1 || arity > 3) {
+        return _currier(fn, arity, isRightCurry, isAutoCurry, []);
+    } else if (arity === 2) {
+        return _curry2(fn, isRightCurry);
+    } else if (arity === 3) {
+        return _curry3(fn, isRightCurry);
+    } else {
+        return fn;
+    }
+}
+
+/**
+ * Curries a function of arity 2.
+ * @private
+ * @param {Function} fn
+ * @param {Boolean} [isRightCurry=false]
+ * @returns {Function}
+ */
+function _curry2 (fn, isRightCurry) {
+    return function (a) {
+        return function (b) {
+            return isRightCurry ? fn.call(this, b, a) : fn.call(this, a, b);
+        };
+    };
+}
+
+/**
+ * Curries a function of arity 3.
+ * @private
+ * @param {Function} fn
+ * @param {Boolean} [isRightCurry=false]
+ * @returns {Function}
+ */
+function _curry3 (fn, isRightCurry) {
+    return function (a) {
+        return function (b) {
+            return function (c) {
+                return isRightCurry ? fn.call(this, c, b, a) : fn.call(this, a, b, c);
+            };
+        };
+    };
 }
 
 /**
@@ -451,14 +492,13 @@ var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
  * Accepts an object and build a function expecting a key to create a "pair" with the key
  * and its value.
  * @private
+ * @function
  * @param {Object} obj
  * @returns {Function}
  */
-function _keyToPairIn (obj) {
-    return function (key) {
-        return [key, obj[key]];
-    };
-}
+var _keyToPairIn = _curry2(function (obj, key) {
+    return [key, obj[key]];
+});
 
 /**
  * Helper to build the {@link module:lamb.everyIn|everyIn} or the
@@ -604,7 +644,7 @@ function _merge (getKeys) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _pairsFrom = _curry(function (getKeys, obj) {
+var _pairsFrom = _curry2(function (getKeys, obj) {
     return map(getKeys(obj), _keyToPairIn(obj));
 });
 
@@ -772,7 +812,7 @@ function _sorter (reader, isDescending, comparer) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _tearFrom = _curry(function (getKeys, obj) {
+var _tearFrom = _curry2(function (getKeys, obj) {
     return reduce(getKeys(obj), function (result, key) {
         result[0].push(key);
         result[1].push(obj[key]);
@@ -846,7 +886,7 @@ function _toPathParts (path, separator) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
+var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
     if (isNil(obj)) {
         throw _makeTypeErrorFor(obj, "object");
     }
@@ -862,6 +902,6 @@ var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _valuesFrom = _curry(function (getKeys, obj) {
+var _valuesFrom = _curry2(function (getKeys, obj) {
     return map(getKeys(obj), partial(getIn, obj));
 });

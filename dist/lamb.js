@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.2
+ * @version 0.50.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.2";
+    lamb._version = "0.50.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -354,8 +354,9 @@
     }
 
     /**
-     * Prepares a function for currying by setting the proper arity for
-     * the <code>_currier</code> function.
+     * Prepares a function for currying. If it's not auto-currying and the arity
+     * is 2 or 3 returns optimized functions, otherwise delegates the currying
+     * to the <code>_currier</code> function.<br/>
      * If the desumed arity isn't greater than one, it will return the received
      * function itself, instead.
      * @private
@@ -370,7 +371,47 @@
             arity = fn.length;
         }
 
-        return arity > 1 ? _currier(fn, arity, isRightCurry, isAutoCurry, []) : fn;
+        if (isAutoCurry && arity > 1 || arity > 3) {
+            return _currier(fn, arity, isRightCurry, isAutoCurry, []);
+        } else if (arity === 2) {
+            return _curry2(fn, isRightCurry);
+        } else if (arity === 3) {
+            return _curry3(fn, isRightCurry);
+        } else {
+            return fn;
+        }
+    }
+
+    /**
+     * Curries a function of arity 2.
+     * @private
+     * @param {Function} fn
+     * @param {Boolean} [isRightCurry=false]
+     * @returns {Function}
+     */
+    function _curry2 (fn, isRightCurry) {
+        return function (a) {
+            return function (b) {
+                return isRightCurry ? fn.call(this, b, a) : fn.call(this, a, b);
+            };
+        };
+    }
+
+    /**
+     * Curries a function of arity 3.
+     * @private
+     * @param {Function} fn
+     * @param {Boolean} [isRightCurry=false]
+     * @returns {Function}
+     */
+    function _curry3 (fn, isRightCurry) {
+        return function (a) {
+            return function (b) {
+                return function (c) {
+                    return isRightCurry ? fn.call(this, c, b, a) : fn.call(this, a, b, c);
+                };
+            };
+        };
     }
 
     /**
@@ -641,14 +682,13 @@
      * Accepts an object and build a function expecting a key to create a "pair" with the key
      * and its value.
      * @private
+     * @function
      * @param {Object} obj
      * @returns {Function}
      */
-    function _keyToPairIn (obj) {
-        return function (key) {
-            return [key, obj[key]];
-        };
-    }
+    var _keyToPairIn = _curry2(function (obj, key) {
+        return [key, obj[key]];
+    });
 
     /**
      * Helper to build the {@link module:lamb.everyIn|everyIn} or the
@@ -794,7 +834,7 @@
      * @param {Function} getKeys
      * @returns {Function}
      */
-    var _pairsFrom = _curry(function (getKeys, obj) {
+    var _pairsFrom = _curry2(function (getKeys, obj) {
         return map(getKeys(obj), _keyToPairIn(obj));
     });
 
@@ -962,7 +1002,7 @@
      * @param {Function} getKeys
      * @returns {Function}
      */
-    var _tearFrom = _curry(function (getKeys, obj) {
+    var _tearFrom = _curry2(function (getKeys, obj) {
         return reduce(getKeys(obj), function (result, key) {
             result[0].push(key);
             result[1].push(obj[key]);
@@ -1036,7 +1076,7 @@
      * @param {Function} getKeys
      * @returns {Function}
      */
-    var _unsafeKeyListFrom = _curry(function (getKeys, obj) {
+    var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
         if (isNil(obj)) {
             throw _makeTypeErrorFor(obj, "object");
         }
@@ -1052,7 +1092,7 @@
      * @param {Function} getKeys
      * @returns {Function}
      */
-    var _valuesFrom = _curry(function (getKeys, obj) {
+    var _valuesFrom = _curry2(function (getKeys, obj) {
         return map(getKeys(obj), partial(getIn, obj));
     });
 
@@ -1136,7 +1176,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var every = _curry(everyIn, 2, true);
+    var every = _curry2(everyIn, true);
 
     /**
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
@@ -1190,7 +1230,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var filterWith = _curry(filter, 2, true);
+    var filterWith = _curry2(filter, true);
 
     /**
      * Searches for an element satisfying the predicate in the given array-like object and returns it if
@@ -1273,7 +1313,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var findIndexWhere = _curry(findIndex, 2, true);
+    var findIndexWhere = _curry2(findIndex, true);
 
     /**
      * A curried version of {@link module:lamb.find|find} expecting the array-like object
@@ -1293,7 +1333,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var findWhere = _curry(find, 2, true);
+    var findWhere = _curry2(find, true);
 
     /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
@@ -1419,7 +1459,7 @@
      * @param {ListIteratorCallback} iteratee
      * @returns {function}
      */
-    var mapWith = _curry(map, 2, true);
+    var mapWith = _curry2(map, true);
 
     /**
      * Reduces (or folds) the values of an array-like object, starting from the first, to a new
@@ -1662,7 +1702,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var some = _curry(someIn, 2, true);
+    var some = _curry2(someIn, true);
 
     lamb.contains = contains;
     lamb.every = every;
@@ -2004,7 +2044,7 @@
      * @param {*} value
      * @returns {Function}
      */
-    var is = _curry(areSame, 2);
+    var is = _curry2(areSame);
 
     /**
      * A right curried version of {@link module:lamb.gt|gt}.<br/>
@@ -2027,7 +2067,7 @@
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
-    var isGT = _curry(gt, 2, true);
+    var isGT = _curry2(gt, true);
 
     /**
      * A right curried version of {@link module:lamb.gte|gte}.<br/>
@@ -2051,7 +2091,7 @@
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
-    var isGTE = _curry(gte, 2, true);
+    var isGTE = _curry2(gte, true);
 
     /**
      * A right curried version of {@link module:lamb.lt|lt}.<br/>
@@ -2074,7 +2114,7 @@
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
-    var isLT = _curry(lt, 2, true);
+    var isLT = _curry2(lt, true);
 
     /**
      * A right curried version of {@link module:lamb.lte|lte}.<br/>
@@ -2098,7 +2138,7 @@
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
-    var isLTE = _curry(lte, 2, true);
+    var isLTE = _curry2(lte, true);
 
     /**
      * A curried version of {@link module:lamb.areSVZ|areSVZ}.<br/>
@@ -2135,7 +2175,7 @@
      * @param {*} value
      * @returns {Function}
      */
-    var isSVZ = _curry(areSVZ, 2);
+    var isSVZ = _curry2(areSVZ);
 
     /**
      * Verifies that the first given value is less than the second.<br/>
@@ -2778,16 +2818,13 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.getIndex|getIndex}
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
      * @param {Number} index
      * @returns {Function}
      */
-    function getAt (index) {
-        return function (arrayLike) {
-            return getIndex(arrayLike, index);
-        };
-    }
+    var getAt = _curry2(getIndex, true);
 
     /**
      * Returns the value of the object property with the given key.
@@ -2851,16 +2888,13 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.getIn|getIn}
      * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
      * @param {String} key
      * @returns {Function}
      */
-    function getKey (key) {
-        return function (obj) {
-            return getIn(obj, key);
-        };
-    }
+    var getKey = _curry2(getIn, true);
 
     /**
      * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
@@ -3407,7 +3441,7 @@
      * @param {*} value
      * @returns {Function}
      */
-    var append = _curry(appendTo, 2, true);
+    var append = _curry2(appendTo, true);
 
     /**
      * Appends the given value at the end of a copy of the provided array-like object.
@@ -3495,7 +3529,7 @@
      * @param {Number} n
      * @returns {Function}
      */
-    var dropN = _curry(drop, 2, true);
+    var dropN = _curry2(drop, true);
 
     /**
      * Builds a function that drops the first <code>n</code> elements satisfying a predicate
@@ -3572,7 +3606,7 @@
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
-    var flatMapWith = _curry(flatMap, 2, true);
+    var flatMapWith = _curry2(flatMap, true);
 
     /**
      * Flattens an array.
@@ -3746,7 +3780,7 @@
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    var partitionWith = _curry(partition, 2, true);
+    var partitionWith = _curry2(partition, true);
 
     /**
      * "Plucks" the values of the specified key from a list of objects.
@@ -3822,7 +3856,7 @@
      * @param {ArrayLike} values
      * @returns {Function}
      */
-    var pull = _curry(pullFrom, 2, true);
+    var pull = _curry2(pullFrom, true);
 
     /**
      * Creates an array copy of the given array-like object without the
@@ -3922,7 +3956,7 @@
      * @param {Number} n
      * @returns {Function}
      */
-    var takeN = _curry(take, 2, true);
+    var takeN = _curry2(take, true);
 
     /**
      * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
@@ -4193,7 +4227,7 @@
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
-    var countBy = _curry(count, 2, true);
+    var countBy = _curry2(count, true);
 
     /**
      * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
@@ -4299,7 +4333,7 @@
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
-    var groupBy = _curry(group, 2, true);
+    var groupBy = _curry2(group, true);
 
     /**
      * Similar to {@link module:lamb.group|group}, but the generated lookup table will have
@@ -4384,7 +4418,7 @@
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
-    var indexBy = _curry(index, 2, true);
+    var indexBy = _curry2(index, true);
 
     lamb.count = count;
     lamb.countBy = countBy;
@@ -4639,15 +4673,12 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @function
      * @see {@link module:lamb.application|application}, {@link module:lamb.applyTo|applyTo}
      * @param {Function} fn
      * @returns {Function}
      */
-    function apply (fn) {
-        return function (args) {
-            return fn.apply(this, Object(args));
-        };
-    }
+    var apply = _curry2(application);
 
     /**
      * A right-curried version of {@link module:lamb.application|application}. Expects an array-like
@@ -4661,15 +4692,12 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @function
      * @see {@link module:lamb.application|application}, {@link module:lamb.apply|apply}
      * @param {ArrayLike} args
      * @returns {Function}
      */
-    function applyTo (args) {
-        return function (fn) {
-            return fn.apply(this, Object(args));
-        };
-    }
+    var applyTo = _curry2(application, true);
 
     /**
      * Builds a new function that passes only the specified amount of arguments to the original one.<br/>
@@ -5081,8 +5109,8 @@
      *
      * @memberof module:lamb
      * @category Function
-     * @see {@link module:lamb.compose|compose}
      * @function
+     * @see {@link module:lamb.compose|compose}
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -5339,17 +5367,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.has|has}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {String} key
      * @returns {Function}
      */
-    function hasKey (key) {
-        return function (obj) {
-            return has(obj, key);
-        };
-    }
+    var hasKey = _curry2(has, true);
 
     /**
      * Builds a predicate expecting an object to check against the given key / value pair.<br/>
@@ -5412,17 +5437,14 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.hasOwn|hasOwn}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
      * @param {String} key
      * @returns {Function}
      */
-    function hasOwnKey (key) {
-        return function (obj) {
-            return hasOwn(obj, key);
-        };
-    }
+    var hasOwnKey = _curry2(hasOwn, true);
 
     /**
      * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
@@ -5649,9 +5671,9 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.pairs|pairs}
      * @see {@link module:lamb.fromPairs|fromPairs}
-     * @function
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
@@ -5671,8 +5693,8 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.values|values}
      * @function
+     * @see {@link module:lamb.values|values}
      * @param {Object} obj
      * @returns {Array}
      */
@@ -5687,9 +5709,9 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.ownPairs|ownPairs}
      * @see {@link module:lamb.fromPairs|fromPairs}
-     * @function
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
@@ -5899,7 +5921,7 @@
      * @param {String[]} whitelist
      * @returns {Function}
      */
-    var pickKeys = _curry(pick, 2, true);
+    var pickKeys = _curry2(pick, true);
 
     /**
      * Creates a copy of the given object with its enumerable keys renamed as
@@ -5972,7 +5994,7 @@
      * @param {Object} keysMap
      * @returns {Function}
      */
-    var renameKeys = _curry(rename, 2, true);
+    var renameKeys = _curry2(rename, true);
 
     /**
      * Uses the provided function as a <code>keysMap</code> generator and returns
@@ -6092,7 +6114,7 @@
      * @param {String[]} blacklist
      * @returns {Function}
      */
-    var skipKeys = _curry(skip, 2, true);
+    var skipKeys = _curry2(skip, true);
 
     /**
      * Tears an object apart by transforming it in an array of two lists: one containing
@@ -6126,9 +6148,9 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @function
      * @see {@link module:lamb.tear|tear}
      * @see {@link module:lamb.make|make} for the reverse operation
-     * @function
      * @param {Object} obj
      * @returns {Array<Array<String>, Array<*>>}
      */
@@ -6203,7 +6225,7 @@
      * @param {Function[]} checkers
      * @returns {Function}
      */
-    var validateWith = _curry(validate, 2, true);
+    var validateWith = _curry2(validate, true);
 
     /**
      * Generates an array with the values of the enumerable properties of the given object.<br/>
@@ -6215,8 +6237,8 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.ownValues|ownValues}
      * @function
+     * @see {@link module:lamb.ownValues|ownValues}
      * @param {Object} obj
      * @returns {Array}
      */

@@ -136,17 +136,14 @@ function has (obj, key) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.has|has}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @param {String} key
  * @returns {Function}
  */
-function hasKey (key) {
-    return function (obj) {
-        return has(obj, key);
-    };
-}
+var hasKey = _curry2(has, true);
 
 /**
  * Builds a predicate expecting an object to check against the given key / value pair.<br/>
@@ -209,17 +206,14 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.hasOwn|hasOwn}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @param {String} key
  * @returns {Function}
  */
-function hasOwnKey (key) {
-    return function (obj) {
-        return hasOwn(obj, key);
-    };
-}
+var hasOwnKey = _curry2(hasOwn, true);
 
 /**
  * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
@@ -446,9 +440,9 @@ var mergeOwn = partial(_merge, _safeKeys);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.pairs|pairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
- * @function
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
  */
@@ -468,8 +462,8 @@ var ownPairs = _pairsFrom(keys);
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.values|values}
  * @function
+ * @see {@link module:lamb.values|values}
  * @param {Object} obj
  * @returns {Array}
  */
@@ -484,9 +478,9 @@ var ownValues = _valuesFrom(keys);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.ownPairs|ownPairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
- * @function
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
  */
@@ -696,7 +690,7 @@ function pickIf (predicate) {
  * @param {String[]} whitelist
  * @returns {Function}
  */
-var pickKeys = _curry(pick, 2, true);
+var pickKeys = _curry2(pick, true);
 
 /**
  * Creates a copy of the given object with its enumerable keys renamed as
@@ -769,7 +763,7 @@ function rename (source, keysMap) {
  * @param {Object} keysMap
  * @returns {Function}
  */
-var renameKeys = _curry(rename, 2, true);
+var renameKeys = _curry2(rename, true);
 
 /**
  * Uses the provided function as a <code>keysMap</code> generator and returns
@@ -889,7 +883,7 @@ var skipIf = compose(pickIf, not);
  * @param {String[]} blacklist
  * @returns {Function}
  */
-var skipKeys = _curry(skip, 2, true);
+var skipKeys = _curry2(skip, true);
 
 /**
  * Tears an object apart by transforming it in an array of two lists: one containing
@@ -923,9 +917,9 @@ var tear = _tearFrom(enumerables);
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.tear|tear}
  * @see {@link module:lamb.make|make} for the reverse operation
- * @function
  * @param {Object} obj
  * @returns {Array<Array<String>, Array<*>>}
  */
@@ -1000,7 +994,7 @@ function validate (obj, checkers) {
  * @param {Function[]} checkers
  * @returns {Function}
  */
-var validateWith = _curry(validate, 2, true);
+var validateWith = _curry2(validate, true);
 
 /**
  * Generates an array with the values of the enumerable properties of the given object.<br/>
@@ -1012,8 +1006,8 @@ var validateWith = _curry(validate, 2, true);
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.ownValues|ownValues}
  * @function
+ * @see {@link module:lamb.ownValues|ownValues}
  * @param {Object} obj
  * @returns {Array}
  */

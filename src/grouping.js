@@ -50,7 +50,7 @@ var count = _groupWith(function (a) {
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
-var countBy = _curry(count, 2, true);
+var countBy = _curry2(count, true);
 
 /**
  * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
@@ -156,7 +156,7 @@ var group = _groupWith(function (a, b) {
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
-var groupBy = _curry(group, 2, true);
+var groupBy = _curry2(group, true);
 
 /**
  * Similar to {@link module:lamb.group|group}, but the generated lookup table will have
@@ -241,7 +241,7 @@ var index = _groupWith(function (a, b) {
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
-var indexBy = _curry(index, 2, true);
+var indexBy = _curry2(index, true);
 
 lamb.count = count;
 lamb.countBy = countBy;

@@ -15,7 +15,7 @@
  * @param {*} value
  * @returns {Function}
  */
-var append = _curry(appendTo, 2, true);
+var append = _curry2(appendTo, true);
 
 /**
  * Appends the given value at the end of a copy of the provided array-like object.
@@ -103,7 +103,7 @@ function drop (arrayLike, n) {
  * @param {Number} n
  * @returns {Function}
  */
-var dropN = _curry(drop, 2, true);
+var dropN = _curry2(drop, true);
 
 /**
  * Builds a function that drops the first <code>n</code> elements satisfying a predicate
@@ -180,7 +180,7 @@ function flatMap (array, iteratee) {
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
-var flatMapWith = _curry(flatMap, 2, true);
+var flatMapWith = _curry2(flatMap, true);
 
 /**
  * Flattens an array.
@@ -354,7 +354,7 @@ function partition (arrayLike, predicate) {
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var partitionWith = _curry(partition, 2, true);
+var partitionWith = _curry2(partition, true);
 
 /**
  * "Plucks" the values of the specified key from a list of objects.
@@ -430,7 +430,7 @@ var pluckKey = compose(mapWith, getKey);
  * @param {ArrayLike} values
  * @returns {Function}
  */
-var pull = _curry(pullFrom, 2, true);
+var pull = _curry2(pullFrom, true);
 
 /**
  * Creates an array copy of the given array-like object without the
@@ -530,7 +530,7 @@ var take = partial(slice, _, 0, _);
  * @param {Number} n
  * @returns {Function}
  */
-var takeN = _curry(take, 2, true);
+var takeN = _curry2(take, true);
 
 /**
  * Builds a function that takes the first <code>n</code> elements satisfying a predicate from

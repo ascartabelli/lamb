@@ -15,16 +15,13 @@
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.getIndex|getIndex}
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
  * @param {Number} index
  * @returns {Function}
  */
-function getAt (index) {
-    return function (arrayLike) {
-        return getIndex(arrayLike, index);
-    };
-}
+var getAt = _curry2(getIndex, true);
 
 /**
  * Returns the value of the object property with the given key.
@@ -88,16 +85,13 @@ function getIndex (arrayLike, index) {
  *
  * @memberof module:lamb
  * @category Object
+ * @function
  * @see {@link module:lamb.getIn|getIn}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @param {String} key
  * @returns {Function}
  */
-function getKey (key) {
-    return function (obj) {
-        return getIn(obj, key);
-    };
-}
+var getKey = _curry2(getIn, true);
 
 /**
  * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given

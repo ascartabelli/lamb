@@ -24,15 +24,12 @@ function application (fn, args) {
  *
  * @memberof module:lamb
  * @category Function
+ * @function
  * @see {@link module:lamb.application|application}, {@link module:lamb.applyTo|applyTo}
  * @param {Function} fn
  * @returns {Function}
  */
-function apply (fn) {
-    return function (args) {
-        return fn.apply(this, Object(args));
-    };
-}
+var apply = _curry2(application);
 
 /**
  * A right-curried version of {@link module:lamb.application|application}. Expects an array-like
@@ -46,15 +43,12 @@ function apply (fn) {
  *
  * @memberof module:lamb
  * @category Function
+ * @function
  * @see {@link module:lamb.application|application}, {@link module:lamb.apply|apply}
  * @param {ArrayLike} args
  * @returns {Function}
  */
-function applyTo (args) {
-    return function (fn) {
-        return fn.apply(this, Object(args));
-    };
-}
+var applyTo = _curry2(application, true);
 
 /**
  * Builds a new function that passes only the specified amount of arguments to the original one.<br/>
@@ -466,8 +460,8 @@ function mapArgs (fn, mapper) {
  *
  * @memberof module:lamb
  * @category Function
- * @see {@link module:lamb.compose|compose}
  * @function
+ * @see {@link module:lamb.compose|compose}
  * @param {...Function} fn
  * @returns {Function}
  */

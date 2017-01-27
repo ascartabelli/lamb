@@ -78,7 +78,7 @@ var everyIn = _makeArrayChecker(true);
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var every = _curry(everyIn, 2, true);
+var every = _curry2(everyIn, true);
 
 /**
  * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
@@ -132,7 +132,7 @@ function filter (arrayLike, predicate) {
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var filterWith = _curry(filter, 2, true);
+var filterWith = _curry2(filter, true);
 
 /**
  * Searches for an element satisfying the predicate in the given array-like object and returns it if
@@ -215,7 +215,7 @@ function findIndex (arrayLike, predicate) {
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var findIndexWhere = _curry(findIndex, 2, true);
+var findIndexWhere = _curry2(findIndex, true);
 
 /**
  * A curried version of {@link module:lamb.find|find} expecting the array-like object
@@ -235,7 +235,7 @@ var findIndexWhere = _curry(findIndex, 2, true);
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var findWhere = _curry(find, 2, true);
+var findWhere = _curry2(find, true);
 
 /**
  * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
@@ -361,7 +361,7 @@ function map (arrayLike, iteratee) {
  * @param {ListIteratorCallback} iteratee
  * @returns {function}
  */
-var mapWith = _curry(map, 2, true);
+var mapWith = _curry2(map, true);
 
 /**
  * Reduces (or folds) the values of an array-like object, starting from the first, to a new
@@ -604,7 +604,7 @@ var someIn = _makeArrayChecker(false);
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-var some = _curry(someIn, 2, true);
+var some = _curry2(someIn, true);
 
 lamb.contains = contains;
 lamb.every = every;

@@ -314,7 +314,7 @@ function gte (a, b) {
  * @param {*} value
  * @returns {Function}
  */
-var is = _curry(areSame, 2);
+var is = _curry2(areSame);
 
 /**
  * A right curried version of {@link module:lamb.gt|gt}.<br/>
@@ -337,7 +337,7 @@ var is = _curry(areSame, 2);
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
-var isGT = _curry(gt, 2, true);
+var isGT = _curry2(gt, true);
 
 /**
  * A right curried version of {@link module:lamb.gte|gte}.<br/>
@@ -361,7 +361,7 @@ var isGT = _curry(gt, 2, true);
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
-var isGTE = _curry(gte, 2, true);
+var isGTE = _curry2(gte, true);
 
 /**
  * A right curried version of {@link module:lamb.lt|lt}.<br/>
@@ -384,7 +384,7 @@ var isGTE = _curry(gte, 2, true);
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
-var isLT = _curry(lt, 2, true);
+var isLT = _curry2(lt, true);
 
 /**
  * A right curried version of {@link module:lamb.lte|lte}.<br/>
@@ -408,7 +408,7 @@ var isLT = _curry(lt, 2, true);
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
-var isLTE = _curry(lte, 2, true);
+var isLTE = _curry2(lte, true);
 
 /**
  * A curried version of {@link module:lamb.areSVZ|areSVZ}.<br/>
@@ -445,7 +445,7 @@ var isLTE = _curry(lte, 2, true);
  * @param {*} value
  * @returns {Function}
  */
-var isSVZ = _curry(areSVZ, 2);
+var isSVZ = _curry2(areSVZ);
 
 /**
  * Verifies that the first given value is less than the second.<br/>
