@@ -2,7 +2,7 @@ var lamb = require("../../dist/lamb.js");
 var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
 
 describe("lamb.array", function () {
-    // for checking "truthy" and "falsy" values returned by predicates
+    // to check "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
     var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
     var nonArrayLikes = wannabeEmptyArrays.concat(null, void 0);

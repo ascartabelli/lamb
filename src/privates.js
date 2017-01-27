@@ -90,7 +90,7 @@ function _comparer (a, b) {
 
     /* eslint-disable no-self-compare */
 
-    if (!isSVZ(a, b)) {
+    if (!areSVZ(a, b)) {
         if (a > b || a !== a) {
             result = 1;
         } else if (a < b || b !== b) {

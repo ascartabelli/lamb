@@ -654,7 +654,7 @@ describe("lamb.object", function () {
         });
 
         it("should convert to object every other value", function () {
-            var isZero = lamb.partial(lamb.isSVZ, 0);
+            var isZero = lamb.isSVZ(0);
 
             wannabeEmptyObjects.forEach(function (v) {
                 expect(lamb.keySatisfies(isZero, "foo")(v)).toBe(false);
@@ -1222,7 +1222,7 @@ describe("lamb.object", function () {
         var isNumber = function (v) { return typeof v === "number"; };
         var isNameKey = function (value, key) { return key.indexOf("name") !== -1; };
 
-        // for checking "truthy" and "falsy" values returned by predicates
+        // to check "truthy" and "falsy" values returned by predicates
         var isNameKey2 = function (value, key) { return ~key.indexOf("name"); };
 
         var oddObject = {};
@@ -1793,7 +1793,7 @@ describe("lamb.object", function () {
         var ageCheck = lamb.checker(isAdult, "Must be at least 18 years old", ["age"]);
         var pwdCheck = lamb.checker(isValidPassword, "Passwords must have at least six characters", ["login.password"]);
         var userNameCheck = lamb.checker(isRequired, "The username is a required field", ["login/user.name"], "/");
-        var pwdConfirmCheck = lamb.checker(lamb.is, "Passwords don't match", ["login.password", "login.passwordConfirm"]);
+        var pwdConfirmCheck = lamb.checker(lamb.areSame, "Passwords don't match", ["login.password", "login.passwordConfirm"]);
 
         describe("checker", function () {
             it("should build a function to validate the given properties of an object", function () {

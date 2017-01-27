@@ -1,6 +1,6 @@
 /**
  * Builds a predicate to check if an array-like object contains the given value.<br/>
- * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+ * Please note that the equality test is made with {@link module:lamb.areSVZ|areSVZ}; so you can
  * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
  * See also {@link module:lamb.isIn|isIn} for an uncurried version.
  * @example
@@ -266,7 +266,7 @@ function forEach (arrayLike, iteratee) {
 
 /**
  * Checks if an array-like object contains the given value.<br/>
- * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+ * Please note that the equality test is made with {@link module:lamb.areSVZ|areSVZ}; so you can
  * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
  * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
  * @example
@@ -290,7 +290,7 @@ function isIn (arrayLike, value, fromIndex) {
     var result = false;
 
     for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
-        if (isSVZ(value, arrayLike[i])) {
+        if (areSVZ(value, arrayLike[i])) {
             result = true;
             break;
         }

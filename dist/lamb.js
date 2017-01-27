@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.1
+ * @version 0.50.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.1";
+    lamb._version = "0.50.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -280,7 +280,7 @@
 
         /* eslint-disable no-self-compare */
 
-        if (!isSVZ(a, b)) {
+        if (!areSVZ(a, b)) {
             if (a > b || a !== a) {
                 result = 1;
             } else if (a < b || b !== b) {
@@ -1058,7 +1058,7 @@
 
     /**
      * Builds a predicate to check if an array-like object contains the given value.<br/>
-     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * Please note that the equality test is made with {@link module:lamb.areSVZ|areSVZ}; so you can
      * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
      * See also {@link module:lamb.isIn|isIn} for an uncurried version.
      * @example
@@ -1324,7 +1324,7 @@
 
     /**
      * Checks if an array-like object contains the given value.<br/>
-     * Please note that the equality test is made with {@link module:lamb.isSVZ|isSVZ}; so you can
+     * Please note that the equality test is made with {@link module:lamb.areSVZ|areSVZ}; so you can
      * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
      * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
      * @example
@@ -1348,7 +1348,7 @@
         var result = false;
 
         for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
-            if (isSVZ(value, arrayLike[i])) {
+            if (areSVZ(value, arrayLike[i])) {
                 result = true;
                 break;
             }
@@ -1808,6 +1808,68 @@
     }
 
     /**
+     * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
+     * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
+     * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
+     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
+     * <code>NaN</code> is equal to itself.<br/>
+     * See also {@link module:lamb.is|is} for a curried version building a predicate and
+     * {@link module:lamb.areSVZ|areSVZ} and {@link module:lamb.isSVZ|isSVZ} to perform a "SameValueZero"
+     * comparison.
+     * @example
+     * var testObject = {};
+     *
+     * _.areSame({}, testObject) // => false
+     * _.areSame(testObject, testObject) // => true
+     * _.areSame("foo", "foo") // => true
+     * _.areSame(0, -0) // => false
+     * _.areSame(0 / 0, NaN) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see {@link module:lamb.is|is}
+     * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
+     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @param {*} a
+     * @param {*} b
+     * @returns {Boolean}
+     */
+    function areSame (a, b) {
+        return a === 0 && b === 0 ? 1 / a === 1 / b : areSVZ(a, b);
+    }
+
+    /**
+     * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
+     * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
+     * considered the same value.<br/>
+     * See also {@link module:lamb.isSVZ|isSVZ} for a curried version building a predicate and
+     * {@link module:lamb.areSame|areSame} and {@link module:lamb.is|is} to perform a "SameValue" comparison.
+     * @example
+     * var testObject = {};
+     *
+     * _.areSVZ({}, testObject) // => false
+     * _.areSVZ(testObject, testObject) // => true
+     * _.areSVZ("foo", "foo") // => true
+     * _.areSVZ(0, -0) // => true
+     * _.areSVZ(0 / 0, NaN) // => true
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @see {@link module:lamb.isSVZ|isSVZ}
+     * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
+     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @param {*} a
+     * @param {*} b
+     * @returns {Boolean}
+     */
+    function areSVZ (a, b) {
+        // eslint-disable-next-line no-self-compare
+        return a !== a ? b !== b : a === b;
+    }
+
+    /**
      * Builds a function that will apply the received arguments to <code>trueFn</code>,
      * if the predicate is satisfied with the same arguments, or to <code>falseFn</code> otherwise.<br/>
      * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function
@@ -1908,32 +1970,41 @@
     }
 
     /**
-     * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
-     * Note that this doesn't behave as the strict equality operator, but rather as a shim of ES6's
-     * [Object.is]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is}.
-     * Differences are that <code>0</code> and <code>-0</code> aren't the same value and, finally,
-     * <code>NaN</code> is equal to itself
+     * A curried version of {@link module:lamb.areSame|areSame}.<br/>
+     * Accepts a value and builds a predicate that checks whether the value
+     * and the one received by the predicate are the same using the "SameValue"
+     * comparison.<br/>
+     * See also {@link module:lamb.areSVZ|areSVZ} and {@link module:lamb.isSVZ|isSVZ}
+     * to perform a "SameValueZero" comparison.
      * @example
-     * var testObject = {};
+     * var john = {name: "John", surname: "Doe"};
+     * var isJohn = _.is(john);
+     * var isNegativeZero = _.is(-0);
+     * var isReallyNaN = _.is(NaN);
      *
-     * _.is({}, testObject) // => false
-     * _.is(testObject, testObject) // => true
-     * _.is("foo", "foo") // => true
-     * _.is(0, -0) // => false
-     * _.is(0 / 0, NaN) // => true
+     * isJohn(john) // => true
+     * isJohn({name: "John", surname: "Doe"}) // => false
+     *
+     * isNegativeZero(0) // => false
+     * isNegativeZero(-0) // => true
+     *
+     * isNaN(NaN) // => true
+     * isNaN("foo") // => true
+     *
+     * isReallyNaN(NaN) // => true
+     * isReallyNaN("foo") // => false
      *
      * @memberof module:lamb
      * @category Logic
-     * @see {@link module:lamb.isSVZ|isSVZ} to perform a "SameValueZero" comparison
+     * @function
+     * @see {@link module:lamb.areSame|areSame}
+     * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
      * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
-     * @param {*} a
-     * @param {*} b
-     * @returns {Boolean}
+     * @param {*} value
+     * @returns {Function}
      */
-    function is (a, b) {
-        return a === 0 && b === 0 ? 1 / a === 1 / b : isSVZ(a, b);
-    }
+    var is = _curry(areSame, 2);
 
     /**
      * A right curried version of {@link module:lamb.gt|gt}.<br/>
@@ -2030,47 +2101,41 @@
     var isLTE = _curry(lte, 2, true);
 
     /**
-     * A simple negation of {@link module:lamb.is|is}, exposed for convenience.
+     * A curried version of {@link module:lamb.areSVZ|areSVZ}.<br/>
+     * Accepts a value and builds a predicate that checks whether the value
+     * and the one received by the predicate are the same using the "SameValueZero"
+     * comparison.<br/>
+     * See also {@link module:lamb.areSame|areSame} and {@link module:lamb.is|is}
+     * to perform a "SameValue" comparison.
      * @example
-     * _.isNot("foo", "foo") // => false
-     * _.isNot(0, -0) // => true
+     * var john = {name: "John", surname: "Doe"};
+     * var isJohn = _.isSVZ(john);
+     * var isZero = _.isSVZ(0);
+     * var isReallyNaN = _.isSVZ(NaN);
+     *
+     * isJohn(john) // => true
+     * isJohn({name: "John", surname: "Doe"}) // => false
+     *
+     * isZero(0) // => true
+     * isZero(-0) // => true
+     *
+     * isNaN(NaN) // => true
+     * isNaN("foo") // => true
+     *
+     * isReallyNaN(NaN) // => true
+     * isReallyNaN("foo") // => false
      *
      * @memberof module:lamb
      * @category Logic
      * @function
-     * @see {@link module:lamb.is|is}
-     * @param {*} valueA
-     * @param {*} valueB
-     * @returns {Boolean}
-     */
-    var isNot = not(is);
-
-    /**
-     * Verifies that the two supplied values are the same value using the "SameValueZero" comparison.<br/>
-     * With this comparison <code>NaN</code> is equal to itself, but <code>0</code> and <code>-0</code> are
-     * considered the same value.
-     * @example
-     * var testObject = {};
-     *
-     * _.isSVZ({}, testObject) // => false
-     * _.isSVZ(testObject, testObject) // => true
-     * _.isSVZ("foo", "foo") // => true
-     * _.isSVZ(0, -0) // => true
-     * _.isSVZ(0 / 0, NaN) // => true
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @see {@link module:lamb.is|is} to perform a "SameValue" comparison
+     * @see {@link module:lamb.areSVZ|areSVZ}
+     * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
      * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
-     * @param {*} a
-     * @param {*} b
-     * @returns {Boolean}
+     * @param {*} value
+     * @returns {Function}
      */
-    function isSVZ (a, b) {
-        // eslint-disable-next-line no-self-compare
-        return a !== a ? b !== b : a === b;
-    }
+    var isSVZ = _curry(areSVZ, 2);
 
     /**
      * Verifies that the first given value is less than the second.<br/>
@@ -2209,6 +2274,8 @@
     lamb.adapter = adapter;
     lamb.allOf = allOf;
     lamb.anyOf = anyOf;
+    lamb.areSame = areSame;
+    lamb.areSVZ = areSVZ;
     lamb.condition = condition;
     lamb.gt = gt;
     lamb.gte = gte;
@@ -2217,7 +2284,6 @@
     lamb.isGTE = isGTE;
     lamb.isLT = isLT;
     lamb.isLTE = isLTE;
-    lamb.isNot = isNot;
     lamb.isSVZ = isSVZ;
     lamb.lt = lt;
     lamb.lte = lte;
@@ -3365,7 +3431,7 @@
 
     /**
      * Returns an array of items present only in the first of the given arrays.<br/>
-     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 4, 5];
@@ -3601,7 +3667,7 @@
 
     /**
      * Returns an array of every item that is included in all given arrays.<br>
-     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
      * var a2 = [2, 5, 4, 6];
@@ -3741,7 +3807,7 @@
      * a list of values to build a function waiting for an array-like object.<br/>
      * The new function will create an array copy of the array-like without
      * the specified values.<br/>
-     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var scores = [40, 20, 30, 10];
      * var newScores = [30, 10];
@@ -3761,7 +3827,7 @@
     /**
      * Creates an array copy of the given array-like object without the
      * specified values.<br/>
-     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var arr = [1, 2, 3, 4, 5];
      *
@@ -3955,7 +4021,7 @@
     /**
      * Returns an array comprised of the unique elements of the given array-like object.<br/>
      * Can work with lists of complex objects if supplied with an iteratee.<br/>
-     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
      * When two values are considered equal, the first occurence will be the one included
      * in the result array.
      * @example <caption>With simple values:</caption>
@@ -5287,7 +5353,7 @@
 
     /**
      * Builds a predicate expecting an object to check against the given key / value pair.<br/>
-     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var hasTheCorrectAnswer = _.hasKeyValue("answer", 42);
      *
@@ -5303,7 +5369,7 @@
      */
     function hasKeyValue (key, value) {
         return function (obj) {
-            return isUndefined(value) ? has(obj, key) : isSVZ(value, obj[key]);
+            return isUndefined(value) ? has(obj, key) : areSVZ(value, obj[key]);
         };
     }
 
@@ -5360,7 +5426,7 @@
 
     /**
      * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
-     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+     * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
      * Note that the function will check even non-enumerable properties.
      * @example
      * var user = {
@@ -5397,7 +5463,7 @@
         return function (obj) {
             var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
 
-            return pathInfo.isValid && isSVZ(pathInfo.target, value);
+            return pathInfo.isValid && areSVZ(pathInfo.target, value);
         };
     }
 

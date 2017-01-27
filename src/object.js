@@ -150,7 +150,7 @@ function hasKey (key) {
 
 /**
  * Builds a predicate expecting an object to check against the given key / value pair.<br/>
- * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var hasTheCorrectAnswer = _.hasKeyValue("answer", 42);
  *
@@ -166,7 +166,7 @@ function hasKey (key) {
  */
 function hasKeyValue (key, value) {
     return function (obj) {
-        return isUndefined(value) ? has(obj, key) : isSVZ(value, obj[key]);
+        return isUndefined(value) ? has(obj, key) : areSVZ(value, obj[key]);
     };
 }
 
@@ -223,7 +223,7 @@ function hasOwnKey (key) {
 
 /**
  * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
- * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+ * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
  * var user = {
@@ -260,7 +260,7 @@ function hasPathValue (path, value, separator) {
     return function (obj) {
         var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
 
-        return pathInfo.isValid && isSVZ(pathInfo.target, value);
+        return pathInfo.isValid && areSVZ(pathInfo.target, value);
     };
 }
 

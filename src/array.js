@@ -39,7 +39,7 @@ function appendTo (arrayLike, value) {
 
 /**
  * Returns an array of items present only in the first of the given arrays.<br/>
- * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 4, 5];
@@ -275,7 +275,7 @@ var insertAt = _makePartial3(insert);
 
 /**
  * Returns an array of every item that is included in all given arrays.<br>
- * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
  * var a2 = [2, 5, 4, 6];
@@ -415,7 +415,7 @@ var pluckKey = compose(mapWith, getKey);
  * a list of values to build a function waiting for an array-like object.<br/>
  * The new function will create an array copy of the array-like without
  * the specified values.<br/>
- * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var scores = [40, 20, 30, 10];
  * var newScores = [30, 10];
@@ -435,7 +435,7 @@ var pull = _curry(pullFrom, 2, true);
 /**
  * Creates an array copy of the given array-like object without the
  * specified values.<br/>
- * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.
+ * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var arr = [1, 2, 3, 4, 5];
  *
@@ -629,7 +629,7 @@ var union = compose(uniques, flatMapWith(dropN(0)), list);
 /**
  * Returns an array comprised of the unique elements of the given array-like object.<br/>
  * Can work with lists of complex objects if supplied with an iteratee.<br/>
- * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.isSVZ|isSVZ}.<br/>
+ * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
  * When two values are considered equal, the first occurence will be the one included
  * in the result array.
  * @example <caption>With simple values:</caption>

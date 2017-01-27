@@ -5,7 +5,7 @@ describe("lamb.logic", function () {
     var isGreaterThanTwo = lamb.isGT(2);
     var isLessThanTen = lamb.isLT(10);
 
-    // for checking "truthy" and "falsy" values returned by predicates
+    // to check "truthy" and "falsy" values returned by predicates
     var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
 
@@ -150,6 +150,46 @@ describe("lamb.logic", function () {
         });
     });
 
+    describe("areSame / is", function () {
+        it("should verify the equality of two values", function () {
+            var o = {foo: "bar"};
+
+            expect(lamb.areSame(o, o)).toBe(true);
+            expect(lamb.areSame(o, {foo: "bar"})).toBe(false);
+            expect(lamb.areSame(42, 42)).toBe(true);
+            expect(lamb.areSame([], [])).toBe(false);
+            expect(lamb.areSame(0, -0)).toBe(false);
+            expect(lamb.areSame(NaN, NaN)).toBe(true);
+
+            expect(lamb.is(o)(o)).toBe(true);
+            expect(lamb.is(o)({foo: "bar"})).toBe(false);
+            expect(lamb.is(42)(42)).toBe(true);
+            expect(lamb.is([])([])).toBe(false);
+            expect(lamb.is(0)(-0)).toBe(false);
+            expect(lamb.is(NaN)(NaN)).toBe(true);
+        });
+    });
+
+    describe("areSVZ / isSVZ", function () {
+        it("should verify the equality of two values using the \"SameValueZero\" comparison", function () {
+            var o = {foo: "bar"};
+
+            expect(lamb.areSVZ(o, o)).toBe(true);
+            expect(lamb.areSVZ(o, {foo: "bar"})).toBe(false);
+            expect(lamb.areSVZ(42, 42)).toBe(true);
+            expect(lamb.areSVZ([], [])).toBe(false);
+            expect(lamb.areSVZ(0, -0)).toBe(true);
+            expect(lamb.areSVZ(NaN, NaN)).toBe(true);
+
+            expect(lamb.isSVZ(o)(o)).toBe(true);
+            expect(lamb.isSVZ(o)({foo: "bar"})).toBe(false);
+            expect(lamb.isSVZ(42)(42)).toBe(true);
+            expect(lamb.isSVZ([])([])).toBe(false);
+            expect(lamb.isSVZ(0)(-0)).toBe(true);
+            expect(lamb.isSVZ(NaN)(NaN)).toBe(true);
+        });
+    });
+
     describe("condition", function () {
         var halve = lamb.partial(lamb.multiply, .5);
         var isGreaterThan5 = lamb.isGT(5);
@@ -193,19 +233,6 @@ describe("lamb.logic", function () {
 
         it("should build a function throwing an exception if called without arguments", function () {
             expect(lamb.condition()).toThrow();
-        });
-    });
-
-    describe("is", function () {
-        it("should verify the equality of two values", function () {
-            var o = {foo: "bar"};
-
-            expect(lamb.is(o, o)).toBe(true);
-            expect(lamb.is(o, {foo: "bar"})).toBe(false);
-            expect(lamb.is(42, 42)).toBe(true);
-            expect(lamb.is([], [])).toBe(false);
-            expect(lamb.is(0, -0)).toBe(false);
-            expect(lamb.is(NaN, NaN)).toBe(true);
         });
     });
 
@@ -296,32 +323,6 @@ describe("lamb.logic", function () {
                 expect(lamb.isLTE("A")("a")).toBe(false);
                 expect(lamb.isLTE("a")("")).toBe(true);
             });
-        });
-    });
-
-    describe("isNot", function () {
-        it("should verify that two values are different from each other", function () {
-            var o = {foo: "bar"};
-
-            expect(lamb.isNot(o, o)).toBe(false);
-            expect(lamb.isNot(o, {foo: "bar"})).toBe(true);
-            expect(lamb.isNot(42, 42)).toBe(false);
-            expect(lamb.isNot([], [])).toBe(true);
-            expect(lamb.isNot(0, -0)).toBe(true);
-            expect(lamb.isNot(NaN, NaN)).toBe(false);
-        });
-    });
-
-    describe("isSVZ", function () {
-        it("should verify the equality of two values using the \"SameValueZero\" comparison", function () {
-            var o = {foo: "bar"};
-
-            expect(lamb.isSVZ(o, o)).toBe(true);
-            expect(lamb.isSVZ(o, {foo: "bar"})).toBe(false);
-            expect(lamb.isSVZ(42, 42)).toBe(true);
-            expect(lamb.isSVZ([], [])).toBe(false);
-            expect(lamb.isSVZ(0, -0)).toBe(true);
-            expect(lamb.isSVZ(NaN, NaN)).toBe(true);
         });
     });
 
