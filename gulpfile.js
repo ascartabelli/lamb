@@ -26,6 +26,7 @@ var scripts = [
     "./src/sort.js",
     "./src/function.js",
     "./src/object.js",
+    "./src/object_checking.js",
     "./src/string.js"
 ];
 
