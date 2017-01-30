@@ -192,13 +192,12 @@ var flatMapWith = _curry2(flatMap, true);
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.shallowFlatten|shallowFlatten}
  * @param {Array} array
  * @returns {Array}
  */
-function flatten (array) {
-    return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array, 0, array.length);
-}
+var flatten = _makeArrayFlattener(true);
 
 /**
  * Returns a copy of the given array-like object without the last element.
@@ -464,13 +463,12 @@ function pullFrom (arrayLike, values) {
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.flatten|flatten}
  * @param {Array} array
  * @returns {Array}
  */
-function shallowFlatten (array) {
-    return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array, 0, array.length);
-}
+var shallowFlatten = _makeArrayFlattener(false);
 
 /**
  * Returns a copy of the given array-like object without the first element.

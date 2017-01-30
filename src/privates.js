@@ -520,6 +520,18 @@ function _makeArrayChecker (defaultResult) {
 }
 
 /**
+ * Helper to build the {@link module:lamb.flatten|flatten} and
+ * {@link module:lamb.shallowFlatten|shallowFlatten} functions.
+ * @private
+ * @function
+ * @param {Boolean} isDeep
+ * @returns {Function}
+ */
+var _makeArrayFlattener = _curry2(function (isDeep, array) {
+    return Array.isArray(array) ? _flatten(array, isDeep, [], 0) : slice(array, 0, array.length);
+});
+
+/**
  * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
  * a single default sorting criterion if the sorter list is empty.
  * @private

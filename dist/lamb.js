@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.3
+ * @version 0.50.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.3";
+    lamb._version = "0.50.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -708,6 +708,18 @@
             return defaultResult;
         };
     }
+
+    /**
+     * Helper to build the {@link module:lamb.flatten|flatten} and
+     * {@link module:lamb.shallowFlatten|shallowFlatten} functions.
+     * @private
+     * @function
+     * @param {Boolean} isDeep
+     * @returns {Function}
+     */
+    var _makeArrayFlattener = _curry2(function (isDeep, array) {
+        return Array.isArray(array) ? _flatten(array, isDeep, [], 0) : slice(array, 0, array.length);
+    });
 
     /**
      * Builds a list of sorting criteria from a list of sorter functions. Returns a list containing
@@ -3618,13 +3630,12 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.shallowFlatten|shallowFlatten}
      * @param {Array} array
      * @returns {Array}
      */
-    function flatten (array) {
-        return Array.isArray(array) ? _flatten(array, true, [], 0) : slice(array, 0, array.length);
-    }
+    var flatten = _makeArrayFlattener(true);
 
     /**
      * Returns a copy of the given array-like object without the last element.
@@ -3890,13 +3901,12 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.flatten|flatten}
      * @param {Array} array
      * @returns {Array}
      */
-    function shallowFlatten (array) {
-        return Array.isArray(array) ? _flatten(array, false, [], 0) : slice(array, 0, array.length);
-    }
+    var shallowFlatten = _makeArrayFlattener(false);
 
     /**
      * Returns a copy of the given array-like object without the first element.
