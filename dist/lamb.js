@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.6
+ * @version 0.50.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.6";
+    lamb._version = "0.50.0-alpha.7";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -2223,7 +2223,7 @@
     /**
      * Verifies that the first given value is less than or equal to the second.
      * Regarding equality, beware that this is simply a wrapper for the native
-     * <code>&lt;=</b> operator, so <code>-0 === 0</code>.
+     * <code>&lt;=</code> operator, so <code>-0 === 0</code>.
      * @example
      * _.lte(3, 4) // => true
      * _.lte(3, 3) // => true

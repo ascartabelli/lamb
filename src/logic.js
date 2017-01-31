@@ -481,7 +481,7 @@ function lt (a, b) {
 /**
  * Verifies that the first given value is less than or equal to the second.
  * Regarding equality, beware that this is simply a wrapper for the native
- * <code>&lt;=</b> operator, so <code>-0 === 0</code>.
+ * <code>&lt;=</code> operator, so <code>-0 === 0</code>.
  * @example
  * _.lte(3, 4) // => true
  * _.lte(3, 3) // => true
