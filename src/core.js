@@ -66,14 +66,14 @@ function compose () {
     var functions = arguments;
 
     return function () {
-        var args = arguments;
-        var len = functions.length;
+        var len = functions.length - 1;
+        var result = functions[len].apply(this, arguments);
 
-        while (len--) {
-            args = [functions[len].apply(this, args)];
+        for (var i = len - 1; i > -1; i--) {
+            result = functions[i].call(this, result);
         }
 
-        return args[0];
+        return result;
     };
 }
 
