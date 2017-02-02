@@ -70,6 +70,11 @@ describe("lamb.object", function () {
             expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
         });
 
+        it("should throw an exception if any of the pairs is `nil`", function () {
+            expect(function () { lamb.fromPairs([["a", 1], null, ["c", 3]]); }).toThrow();
+            expect(function () { lamb.fromPairs([["a", 1], void 0, ["c", 3]]); }).toThrow();
+        });
+
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.fromPairs).toThrow();
         });
