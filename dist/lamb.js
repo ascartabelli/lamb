@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.8
+ * @version 0.50.0-alpha.9
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.8";
+    lamb._version = "0.50.0-alpha.9";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1481,7 +1481,7 @@
      * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
-     * _.reduce([1, 2, 3, 4], _.add) // => 10
+     * _.reduce([1, 2, 3, 4], _.sum) // => 10
      *
      * @memberof module:lamb
      * @category Array
@@ -1521,7 +1521,7 @@
      * @example
      * var arr = [1, 2, 3, 4, 5];
      *
-     * _.reduceRightWith(_.add)(arr) // => 15
+     * _.reduceRightWith(_.sum)(arr) // => 15
      * _.reduceRightWith(_.subtract)(arr) // => -5
      * _.reduceRightWith(_.subtract, 0)(arr) // => -15
      *
@@ -1543,7 +1543,7 @@
      * @example
      * var arr = [1, 2, 3, 4, 5];
      *
-     * _.reduceWith(_.add)(arr) // => 15
+     * _.reduceWith(_.sum)(arr) // => 15
      * _.reduceWith(_.subtract)(arr) // => -13
      * _.reduceWith(_.subtract, 0)(arr) // => -15
      *
@@ -2344,19 +2344,21 @@
     lamb.when = when;
 
     /**
-     * Adds two numbers.
+     * A curried version of {@link module:lamb.sum|sum}.
      * @example
-     * _.add(4, 5) // => 9
+     * var add5 = _.add(5);
+     *
+     * _.add5(4) // => 9
+     * _.add5(-2) // => 3
      *
      * @memberof module:lamb
      * @category Math
+     * @function
+     * @see {@link module:lamb.sum|sum}
      * @param {Number} a
-     * @param {Number} b
-     * @returns {Number}
+     * @returns {Function}
      */
-    function add (a, b) {
-        return a + b;
-    }
+    var add = _curry2(sum);
 
     /**
      * "Clamps" a number within the given limits, both included.<br/>
@@ -2415,12 +2417,31 @@
     var clampWithin = _makePartial3(clamp);
 
     /**
+     * A curried version of {@link module:lamb.subtract|subtract} that expects the
+     * subtrahend to build a function waiting for the minuend.
+     * @example
+     * var deduct5 = _.deduct(5);
+     *
+     * deduct5(12) // => 7
+     * deduct5(3) // => -2
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @function
+     * @see {@link module:lamb.subtract|subtract}
+     * @param {Number} a
+     * @returns {Function}
+     */
+    var deduct = _curry2(subtract, true);
+
+    /**
      * Divides two numbers.
      * @example
      * _.divide(5, 2) // => 2.5
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.divideBy|divideBy}
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2428,6 +2449,24 @@
     function divide (a, b) {
         return a / b;
     }
+
+    /**
+     * A curried version of {@link module:lamb.divide|divide} that expects a divisor to
+     * build a function waiting for the dividend.
+     * @example
+     * var halve = divideBy(2);
+     *
+     * halve(10) // => 5
+     * halve(5) // => 2.5
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @function
+     * @see {@link module:lamb.divide|divide}
+     * @param {Number} a
+     * @returns {Function}
+     */
+    var divideBy = _curry2(divide, true);
 
     /**
      * Generates a sequence of values of the desired length with the provided iteratee.
@@ -2564,6 +2603,7 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.multiplyBy|multiplyBy}
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2571,6 +2611,22 @@
     function multiply (a, b) {
         return a * b;
     }
+
+    /**
+     * A curried version of {@link module:lamb.multiply|multiply}.
+     * @example
+     * var double = _.multiplyBy(2);
+     *
+     * double(5) // => 10
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @function
+     * @see {@link module:lamb.multiply|multiply}
+     * @param {Number} a
+     * @returns {Function}
+     */
+    var multiplyBy = _curry2(multiply);
 
     /**
      * Generates a random integer between two given integers, both included.
@@ -2619,7 +2675,7 @@
 
         var len = Math.max(Math.ceil((limit - start) / step), 0);
 
-        return generate(start, len, partial(add, step));
+        return generate(start, len, add(step));
     }
 
     /**
@@ -2651,6 +2707,7 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @see {@link module:lamb.deduct|deduct}
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2659,20 +2716,40 @@
         return a - b;
     }
 
+    /**
+     * Sums two numbers.
+     * @example
+     * _.sum(4, 5) // => 9
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link module:lamb.add|add}
+     * @param {Number} a
+     * @param {Number} b
+     * @returns {Number}
+     */
+    function sum (a, b) {
+        return a + b;
+    }
+
     lamb.add = add;
     lamb.clamp = clamp;
     lamb.clampWithin = clampWithin;
+    lamb.deduct = deduct;
     lamb.divide = divide;
+    lamb.divideBy = divideBy;
     lamb.generate = generate;
     lamb.isFinite = isFinite_;
     lamb.isInteger = isInteger;
     lamb.isSafeInteger = isSafeInteger;
     lamb.modulo = modulo;
     lamb.multiply = multiply;
+    lamb.multiplyBy = multiplyBy;
     lamb.randomInt = randomInt;
     lamb.range = range;
     lamb.remainder = remainder;
     lamb.subtract = subtract;
+    lamb.sum = sum;
 
     /**
      * Accepts a constructor and builds a predicate expecting an object,
@@ -3264,9 +3341,8 @@
      *
      * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
      * var user = Object.create({name: "John"}, {visits: {value: 2}});
-     * var increment = _.partial(_.add, 1);
      *
-     * _.updateIn(user, "visits", increment) // => {name: "John", visits: 2}
+     * _.updateIn(user, "visits", _.add(1)) // => {name: "John", visits: 2}
      *
      * @memberof module:lamb
      * @category Object
@@ -3316,8 +3392,7 @@
      * <code>source</code> is returned otherwise.
      * @example
      * var user = {name: "John", visits: 2};
-     * var increment = _.partial(_.add, 1);
-     * var incrementVisits = _.updateKey("visits", increment);
+     * var incrementVisits = _.updateKey("visits", _.add(1));
      *
      * incrementVisits(user) // => {name: "John", visits: 3}
      *
@@ -3342,8 +3417,7 @@
      * the priority will be given to existing, and enumerable, object keys.
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
-     * var increment = _.partial(_.add, 1);
-     * var incrementScores = _.updatePath("status.scores", _.mapWith(increment))
+     * var incrementScores = _.updatePath("status.scores", _.mapWith(_.add(1)))
      *
      * incrementScores(user) // => {id: 1, status: {scores: [3, 5, 7], visits: 0}}
      *
@@ -3369,7 +3443,7 @@
      * the priority will be given to existing, and enumerable, object keys.
      * @example
      * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
-     * var inc = _.partial(_.add, 1);
+     * var inc = _.add(1);
      *
      * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
      *
@@ -4660,7 +4734,7 @@
     /**
      * Applies the given function to a list of arguments.
      * @example
-     * _.application(_.add, [3, 4]) // => 7
+     * _.application(_.sum, [3, 4]) // => 7
      *
      * @memberof module:lamb
      * @category Function
@@ -4697,7 +4771,7 @@
      * var data = [3, 4];
      * var applyToData = _.applyTo(data);
      *
-     * applyToData(_.add) // => 7
+     * applyToData(_.sum) // => 7
      * applyToData(_.multiply) // => 12
      *
      * @memberof module:lamb
@@ -4850,11 +4924,11 @@
      * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
      * for right currying.
      * @example
-     * var multiplyBy = _.curry(_.multiply);
-     * var multiplyBy10 = multiplyBy(10);
+     * var makeWithKeys = _.curry(_.make);
+     * var makePerson = makeWithKeys(["name", "surname"]);
      *
-     * multiplyBy10(5) // => 50
-     * multiplyBy10(2) // => 20
+     * makePerson(["John", "Doe"]) // => {name: "John", surname: "Doe"};
+     * makePerson(["Mario", "Rossi"]) // => {name: "Mario", surname: "Rossi"};
      *
      * @memberof module:lamb
      * @category Function
@@ -4922,10 +4996,11 @@
     /**
      * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
      * @example
-     * var divideBy = _.curryRight(_.divide);
-     * var halve = divideBy(2);
-     * halve(3) // => 1.5
-     * halve(3, 7) // => 1.5
+     * var makeWithValues = _.curryRight(_.make);
+     * var makeJohnDoe = makeWithValues(["John", "Doe"]);
+     *
+     * makeJohnDoe(["name", "surname"]) // => {name: "John", surname: "Doe"};
+     * makeJohnDoe(["firstName", "lastName"]) // => {firstName: "John", lastName: "Doe"};
      *
      * @memberof module:lamb
      * @category Function
@@ -5088,13 +5163,13 @@
      * Builds a function that allows to map over the received arguments before applying them
      * to the original one.
      * @example
-     * var sumArray = _.reduceWith(_.add);
-     * var sum = _.compose(sumArray, _.list);
+     * var sumArray = _.reduceWith(_.sum);
+     * var sumArgs = _.compose(sumArray, _.list);
      *
-     * sum(1, 2, 3, 4, 5) // => 15
+     * sumArgs(1, 2, 3, 4, 5) // => 15
      *
      * var square = _.partial(Math.pow, _, 2);
-     * var sumSquares = _.mapArgs(sum, square);
+     * var sumSquares = _.mapArgs(sumArgs, square);
      *
      * sumSquares(1, 2, 3, 4, 5) // => 55
      *
@@ -5133,7 +5208,7 @@
      * @example
      * var someObject = {count: 5};
      * var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
-     * var getDataAmount = _.tapArgs(_.add, _.getKey("count"), _.getKey("length"));
+     * var getDataAmount = _.tapArgs(_.sum, _.getKey("count"), _.getKey("length"));
      *
      * getDataAmount(someObject, someArrayData); // => 15
      *

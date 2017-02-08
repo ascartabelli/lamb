@@ -542,7 +542,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
-            var addSpy = jasmine.createSpy("add").and.callFake(lamb.add);
+            var addSpy = jasmine.createSpy("sum").and.callFake(lamb.sum);
             var sparseArr = Array(3);
             sparseArr[1] = 3;
 
@@ -563,7 +563,7 @@ describe("lamb.array_basics", function () {
 
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.reduceRight).toThrow();
-            expect(lamb.reduceRightWith(lamb.add, 0)).toThrow();
+            expect(lamb.reduceRightWith(lamb.sum, 0)).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
@@ -631,7 +631,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
-            var addSpy = jasmine.createSpy("add").and.callFake(lamb.add);
+            var addSpy = jasmine.createSpy("sum").and.callFake(lamb.sum);
             var sparseArr = Array(3);
             sparseArr[1] = 3;
 
@@ -652,7 +652,7 @@ describe("lamb.array_basics", function () {
 
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.reduce).toThrow();
-            expect(lamb.reduceWith(lamb.add, 0)).toThrow();
+            expect(lamb.reduceWith(lamb.sum, 0)).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {

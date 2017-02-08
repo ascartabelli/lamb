@@ -1,17 +1,19 @@
 /**
- * Adds two numbers.
+ * A curried version of {@link module:lamb.sum|sum}.
  * @example
- * _.add(4, 5) // => 9
+ * var add5 = _.add(5);
+ *
+ * _.add5(4) // => 9
+ * _.add5(-2) // => 3
  *
  * @memberof module:lamb
  * @category Math
+ * @function
+ * @see {@link module:lamb.sum|sum}
  * @param {Number} a
- * @param {Number} b
- * @returns {Number}
+ * @returns {Function}
  */
-function add (a, b) {
-    return a + b;
-}
+var add = _curry2(sum);
 
 /**
  * "Clamps" a number within the given limits, both included.<br/>
@@ -70,12 +72,31 @@ function clamp (n, min, max) {
 var clampWithin = _makePartial3(clamp);
 
 /**
+ * A curried version of {@link module:lamb.subtract|subtract} that expects the
+ * subtrahend to build a function waiting for the minuend.
+ * @example
+ * var deduct5 = _.deduct(5);
+ *
+ * deduct5(12) // => 7
+ * deduct5(3) // => -2
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @function
+ * @see {@link module:lamb.subtract|subtract}
+ * @param {Number} a
+ * @returns {Function}
+ */
+var deduct = _curry2(subtract, true);
+
+/**
  * Divides two numbers.
  * @example
  * _.divide(5, 2) // => 2.5
  *
  * @memberof module:lamb
  * @category Math
+ * @see {@link module:lamb.divideBy|divideBy}
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -83,6 +104,24 @@ var clampWithin = _makePartial3(clamp);
 function divide (a, b) {
     return a / b;
 }
+
+/**
+ * A curried version of {@link module:lamb.divide|divide} that expects a divisor to
+ * build a function waiting for the dividend.
+ * @example
+ * var halve = divideBy(2);
+ *
+ * halve(10) // => 5
+ * halve(5) // => 2.5
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @function
+ * @see {@link module:lamb.divide|divide}
+ * @param {Number} a
+ * @returns {Function}
+ */
+var divideBy = _curry2(divide, true);
 
 /**
  * Generates a sequence of values of the desired length with the provided iteratee.
@@ -219,6 +258,7 @@ function modulo (a, b) {
  *
  * @memberof module:lamb
  * @category Math
+ * @see {@link module:lamb.multiplyBy|multiplyBy}
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -226,6 +266,22 @@ function modulo (a, b) {
 function multiply (a, b) {
     return a * b;
 }
+
+/**
+ * A curried version of {@link module:lamb.multiply|multiply}.
+ * @example
+ * var double = _.multiplyBy(2);
+ *
+ * double(5) // => 10
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @function
+ * @see {@link module:lamb.multiply|multiply}
+ * @param {Number} a
+ * @returns {Function}
+ */
+var multiplyBy = _curry2(multiply);
 
 /**
  * Generates a random integer between two given integers, both included.
@@ -274,7 +330,7 @@ function range (start, limit, step) {
 
     var len = Math.max(Math.ceil((limit - start) / step), 0);
 
-    return generate(start, len, partial(add, step));
+    return generate(start, len, add(step));
 }
 
 /**
@@ -306,6 +362,7 @@ function remainder (a, b) {
  *
  * @memberof module:lamb
  * @category Math
+ * @see {@link module:lamb.deduct|deduct}
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -314,17 +371,37 @@ function subtract (a, b) {
     return a - b;
 }
 
+/**
+ * Sums two numbers.
+ * @example
+ * _.sum(4, 5) // => 9
+ *
+ * @memberof module:lamb
+ * @category Math
+ * @see {@link module:lamb.add|add}
+ * @param {Number} a
+ * @param {Number} b
+ * @returns {Number}
+ */
+function sum (a, b) {
+    return a + b;
+}
+
 lamb.add = add;
 lamb.clamp = clamp;
 lamb.clampWithin = clampWithin;
+lamb.deduct = deduct;
 lamb.divide = divide;
+lamb.divideBy = divideBy;
 lamb.generate = generate;
 lamb.isFinite = isFinite_;
 lamb.isInteger = isInteger;
 lamb.isSafeInteger = isSafeInteger;
 lamb.modulo = modulo;
 lamb.multiply = multiply;
+lamb.multiplyBy = multiplyBy;
 lamb.randomInt = randomInt;
 lamb.range = range;
 lamb.remainder = remainder;
 lamb.subtract = subtract;
+lamb.sum = sum;

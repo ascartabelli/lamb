@@ -1,7 +1,7 @@
 /**
  * Applies the given function to a list of arguments.
  * @example
- * _.application(_.add, [3, 4]) // => 7
+ * _.application(_.sum, [3, 4]) // => 7
  *
  * @memberof module:lamb
  * @category Function
@@ -38,7 +38,7 @@ var apply = _curry2(application);
  * var data = [3, 4];
  * var applyToData = _.applyTo(data);
  *
- * applyToData(_.add) // => 7
+ * applyToData(_.sum) // => 7
  * applyToData(_.multiply) // => 12
  *
  * @memberof module:lamb
@@ -191,11 +191,11 @@ function collect () {
  * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
  * for right currying.
  * @example
- * var multiplyBy = _.curry(_.multiply);
- * var multiplyBy10 = multiplyBy(10);
+ * var makeWithKeys = _.curry(_.make);
+ * var makePerson = makeWithKeys(["name", "surname"]);
  *
- * multiplyBy10(5) // => 50
- * multiplyBy10(2) // => 20
+ * makePerson(["John", "Doe"]) // => {name: "John", surname: "Doe"};
+ * makePerson(["Mario", "Rossi"]) // => {name: "Mario", surname: "Rossi"};
  *
  * @memberof module:lamb
  * @category Function
@@ -263,10 +263,11 @@ function curryableRight (fn, arity) {
 /**
  * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
  * @example
- * var divideBy = _.curryRight(_.divide);
- * var halve = divideBy(2);
- * halve(3) // => 1.5
- * halve(3, 7) // => 1.5
+ * var makeWithValues = _.curryRight(_.make);
+ * var makeJohnDoe = makeWithValues(["John", "Doe"]);
+ *
+ * makeJohnDoe(["name", "surname"]) // => {name: "John", surname: "Doe"};
+ * makeJohnDoe(["firstName", "lastName"]) // => {firstName: "John", lastName: "Doe"};
  *
  * @memberof module:lamb
  * @category Function
@@ -429,13 +430,13 @@ function invokerOn (target) {
  * Builds a function that allows to map over the received arguments before applying them
  * to the original one.
  * @example
- * var sumArray = _.reduceWith(_.add);
- * var sum = _.compose(sumArray, _.list);
+ * var sumArray = _.reduceWith(_.sum);
+ * var sumArgs = _.compose(sumArray, _.list);
  *
- * sum(1, 2, 3, 4, 5) // => 15
+ * sumArgs(1, 2, 3, 4, 5) // => 15
  *
  * var square = _.partial(Math.pow, _, 2);
- * var sumSquares = _.mapArgs(sum, square);
+ * var sumSquares = _.mapArgs(sumArgs, square);
  *
  * sumSquares(1, 2, 3, 4, 5) // => 55
  *
@@ -474,7 +475,7 @@ var pipe = flip(compose);
  * @example
  * var someObject = {count: 5};
  * var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
- * var getDataAmount = _.tapArgs(_.add, _.getKey("count"), _.getKey("length"));
+ * var getDataAmount = _.tapArgs(_.sum, _.getKey("count"), _.getKey("length"));
  *
  * getDataAmount(someObject, someArrayData); // => 15
  *

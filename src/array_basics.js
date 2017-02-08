@@ -371,7 +371,7 @@ var mapWith = _curry2(map, true);
  * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
- * _.reduce([1, 2, 3, 4], _.add) // => 10
+ * _.reduce([1, 2, 3, 4], _.sum) // => 10
  *
  * @memberof module:lamb
  * @category Array
@@ -411,7 +411,7 @@ var reduceRight = _makeReducer(-1);
  * @example
  * var arr = [1, 2, 3, 4, 5];
  *
- * _.reduceRightWith(_.add)(arr) // => 15
+ * _.reduceRightWith(_.sum)(arr) // => 15
  * _.reduceRightWith(_.subtract)(arr) // => -5
  * _.reduceRightWith(_.subtract, 0)(arr) // => -15
  *
@@ -433,7 +433,7 @@ var reduceRightWith = _makePartial3(reduceRight, true);
  * @example
  * var arr = [1, 2, 3, 4, 5];
  *
- * _.reduceWith(_.add)(arr) // => 15
+ * _.reduceWith(_.sum)(arr) // => 15
  * _.reduceWith(_.subtract)(arr) // => -13
  * _.reduceWith(_.subtract, 0)(arr) // => -15
  *

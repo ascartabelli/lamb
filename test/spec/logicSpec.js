@@ -191,7 +191,7 @@ describe("lamb.logic", function () {
     });
 
     describe("condition", function () {
-        var halve = lamb.partial(lamb.multiply, .5);
+        var halve = lamb.divideBy(2);
         var isGreaterThan5 = lamb.isGT(5);
         var halveIfGreaterThan5 = lamb.condition(isGreaterThan5, halve, lamb.identity);
 

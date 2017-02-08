@@ -2,9 +2,10 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.math", function () {
-    describe("add", function () {
+    describe("add / sum", function () {
         it("should add two numbers", function () {
-            expect(lamb.add(2, -3)).toBe(-1);
+            expect(lamb.sum(2, -3)).toBe(-1);
+            expect(lamb.add(2)(-3)).toBe(-1);
         });
     });
 
@@ -82,10 +83,14 @@ describe("lamb.math", function () {
         });
     });
 
-    describe("divide", function () {
+    describe("divide / divideBy", function () {
         it("should divide two numbers", function () {
+            var divideBy3 = lamb.divideBy(3);
+
             expect(lamb.divide(15, 3)).toBe(5);
             expect(lamb.divide(15, 0)).toBe(Infinity);
+            expect(divideBy3(15)).toBe(5);
+            expect(divideBy3(16)).toBe(5.333333333333333);
         });
     });
 
@@ -169,9 +174,10 @@ describe("lamb.math", function () {
         });
     });
 
-    describe("multiply", function () {
+    describe("multiply / multiplyBy", function () {
         it("should multiply two numbers", function () {
             expect(lamb.multiply(5, -3)).toBe(-15);
+            expect(lamb.multiplyBy(5)(-3)).toBe(-15);
         });
     });
 
@@ -223,9 +229,10 @@ describe("lamb.math", function () {
         });
     });
 
-    describe("subtract", function () {
+    describe("subtract / deduct", function () {
         it("should subtract two numbers", function () {
             expect(lamb.subtract(5, 7)).toBe(-2);
+            expect(lamb.deduct(7)(5)).toBe(-2);
         });
     });
 });

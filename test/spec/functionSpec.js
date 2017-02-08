@@ -738,7 +738,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function that allows to map over the received arguments before applying them to the original one", function () {
-            expect(lamb.mapArgs(lamb.add, double)(5, 3)).toBe(16);
+            expect(lamb.mapArgs(lamb.sum, double)(5, 3)).toBe(16);
             expect(double.calls.count()).toBe(2);
             expect(double.calls.argsFor(0)).toEqual([5, 0, [5, 3]]);
             expect(double.calls.argsFor(1)).toEqual([3, 1, [5, 3]]);
@@ -746,10 +746,10 @@ describe("lamb.function", function () {
 
         it("should build a function throwing an exception if the mapper isn't a function or is missing", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.mapArgs(lamb.add, value)(1, 2); }).toThrow();
+                expect(function () { lamb.mapArgs(lamb.sum, value)(1, 2); }).toThrow();
             });
 
-            expect(function () { lamb.mapArgs(lamb.add)(1, 2); }).toThrow();
+            expect(function () { lamb.mapArgs(lamb.sum)(1, 2); }).toThrow();
         });
 
         it("should build a function throwing an exception if `fn` isn't a function", function () {
@@ -804,7 +804,7 @@ describe("lamb.function", function () {
     describe("tapArgs", function () {
         var someObject = {count: 5};
         var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
-        var add = jasmine.createSpy("add").and.callFake(lamb.add);
+        var add = jasmine.createSpy("sum").and.callFake(lamb.sum);
 
         afterEach(function () {
             add.calls.reset();
@@ -825,8 +825,8 @@ describe("lamb.function", function () {
 
         it("should build a function throwing an exception if a tapper isn't a function", function () {
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(function () { lamb.tapArgs(lamb.add, value, lamb.always(99))(1, 2); }).toThrow();
-                expect(function () { lamb.tapArgs(lamb.add, lamb.always(99), value)(1, 2); }).toThrow();
+                expect(function () { lamb.tapArgs(lamb.sum, value, lamb.always(99))(1, 2); }).toThrow();
+                expect(function () { lamb.tapArgs(lamb.sum, lamb.always(99), value)(1, 2); }).toThrow();
             });
         });
 
@@ -834,7 +834,7 @@ describe("lamb.function", function () {
             var inc = function (n) { return ++n; };
 
             ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.tapArgs(lamb.add, value, lamb.always(99))()).toEqual(NaN);
+                expect(lamb.tapArgs(lamb.sum, value, lamb.always(99))()).toEqual(NaN);
                 expect(lamb.tapArgs(inc, inc, value)(25)).toBe(27);
             });
         });

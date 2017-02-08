@@ -449,9 +449,8 @@ function updateAt (index, updater) {
  *
  * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
  * var user = Object.create({name: "John"}, {visits: {value: 2}});
- * var increment = _.partial(_.add, 1);
  *
- * _.updateIn(user, "visits", increment) // => {name: "John", visits: 2}
+ * _.updateIn(user, "visits", _.add(1)) // => {name: "John", visits: 2}
  *
  * @memberof module:lamb
  * @category Object
@@ -501,8 +500,7 @@ var updateIndex = partial(_setIndex, _, _, null, _);
  * <code>source</code> is returned otherwise.
  * @example
  * var user = {name: "John", visits: 2};
- * var increment = _.partial(_.add, 1);
- * var incrementVisits = _.updateKey("visits", increment);
+ * var incrementVisits = _.updateKey("visits", _.add(1));
  *
  * incrementVisits(user) // => {name: "John", visits: 3}
  *
@@ -527,8 +525,7 @@ var updateKey = _makePartial3(updateIn);
  * the priority will be given to existing, and enumerable, object keys.
  * @example
  * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
- * var increment = _.partial(_.add, 1);
- * var incrementScores = _.updatePath("status.scores", _.mapWith(increment))
+ * var incrementScores = _.updatePath("status.scores", _.mapWith(_.add(1)))
  *
  * incrementScores(user) // => {id: 1, status: {scores: [3, 5, 7], visits: 0}}
  *
@@ -554,7 +551,7 @@ var updatePath = _makePartial4(updatePathIn, false);
  * the priority will be given to existing, and enumerable, object keys.
  * @example
  * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
- * var inc = _.partial(_.add, 1);
+ * var inc = _.add(1);
  *
  * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
  *
