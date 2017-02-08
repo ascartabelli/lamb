@@ -14,7 +14,7 @@ var parseCSSValue = function (cssProperty) {
 var parseHeight = parseCSSValue("height");
 var parsePaddingTop = parseCSSValue("paddingTop");
 var parseClientHeight = _.compose(
-    _.reduceWith(_.add),
+    _.reduceWith(_.sum),
     _.collect(parseHeight, parsePaddingTop, parseCSSValue("paddingBottom"))
 );
 
