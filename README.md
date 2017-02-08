@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.49.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.50.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.49.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.50.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +110,18 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.50.0 - *2017/02/08***
+  - **API change**: renamed `is` to `areSame` and `isSVZ` to `areSVZ`. The old names are now used for curried version of those functions
+  - **API change**: removed `isNot`
+  - **API change**: renamed `isGT`, `isGTE`, `isLT` and `isLTE` to `gt`, `gte`, `lt`, `lte`. The old names are now used for right curried versions of these functions.
+  - **API change**: `compose` and `pipe` now build a function throwing an exception if they are called without arguments
+  - **API change**: renamed `add` to `sum`. `add` is now used as a curried version of `sum`.
+  - Added `deduct` as a right curried version of `subtract`
+  - Added `multiplyBy` as a curried version of `multiply`
+  - Added `divideBy` as a right curried version of `divide`
+  - Added optimized currying for functions with arity 2 and 3
+  - Performance improvement for `compose` and `pipe`
+
 - **v0.49.0 - *2017/01/24***
   - **API change**: removed optional context parameter in every function that was using it
   - **API change**: `aritize` now will simply convert its `arity` parameter to integer, instead of giving it a special meaning when is `undefined`
@@ -144,9 +156,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `isFinite`, `isInteger`, `isSafeInteger`
   - Code clean-up and minor performance improvements in sorting functions
   - First step in improving the documentation site
-
-- **v0.45.0 - *2016/11/14***
-  - **Fully compatible with versions down to 0.44.x**
-  - Added `pull` and `pullFrom`
-  - Added `keySatisfies` and `pathSatisfies`
-  - Updated examples and doc comments

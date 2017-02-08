@@ -418,7 +418,7 @@ function _immutable (obj, seen) {
 }
 
 /**
- * If a method with the given name exists on the target, applies it with the provided
+ * If a method with the given name exists on the target, applies it to the provided
  * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
  * The arguments for the method are built by concatenating the array of bound arguments,
  * optionally received by {@link module:lamb.invoker|invoker}, with the final set of, also
@@ -556,7 +556,7 @@ function _makeCriterion (criterion) {
  * Builds a partial application of a ternary function so that its first parameter
  * is expected as the last one.<br/>
  * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
- * the absence of the <code>initialValue</code> transforms the "reduce" in a "fold".
+ * the absence of the <code>initialValue</code> transforms the "reduce" into a "fold".
  * @private
  * @param {Function} fn
  * @param {Boolean} shouldAritize
@@ -649,8 +649,8 @@ function _merge (getKeys) {
 }
 
 /**
- * Using the provided function to retrieve the keys of an object, builds
- * a function expecting an object to create a list of key / value pairs.
+ * Using the provided function to retrieve the keys, builds a new function
+ * expecting an object to create a list of key / value pairs.
  * @private
  * @function
  * @param {Function} getKeys

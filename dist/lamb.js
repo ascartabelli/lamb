@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0-alpha.10
+ * @version 0.50.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0-alpha.10";
+    lamb._version = "0.50.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -608,7 +608,7 @@
     }
 
     /**
-     * If a method with the given name exists on the target, applies it with the provided
+     * If a method with the given name exists on the target, applies it to the provided
      * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
      * The arguments for the method are built by concatenating the array of bound arguments,
      * optionally received by {@link module:lamb.invoker|invoker}, with the final set of, also
@@ -746,7 +746,7 @@
      * Builds a partial application of a ternary function so that its first parameter
      * is expected as the last one.<br/>
      * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
-     * the absence of the <code>initialValue</code> transforms the "reduce" in a "fold".
+     * the absence of the <code>initialValue</code> transforms the "reduce" into a "fold".
      * @private
      * @param {Function} fn
      * @param {Boolean} shouldAritize
@@ -839,8 +839,8 @@
     }
 
     /**
-     * Using the provided function to retrieve the keys of an object, builds
-     * a function expecting an object to create a list of key / value pairs.
+     * Using the provided function to retrieve the keys, builds a new function
+     * expecting an object to create a list of key / value pairs.
      * @private
      * @function
      * @param {Function} getKeys
