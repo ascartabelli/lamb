@@ -8,6 +8,7 @@ describe("lamb.logic", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
 
     function Foo (value) {
         this.value = value;
@@ -55,7 +56,7 @@ describe("lamb.logic", function () {
         });
 
         it("should not throw an exception if some parameter isn't a function if a previous function returned a non-undefined value", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.adapter(isEven, value)(2)).toBe(true);
             });
         });
@@ -63,7 +64,7 @@ describe("lamb.logic", function () {
         it("should build a function returning an exception if a parameter isn't a function and no previous function returned a non-unefined value", function () {
             var fn = function (v) { return isEven(v) ? true : void 0; };
 
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.adapter(value, fn)(2); }).toThrow();
                 expect(function () { lamb.adapter(fn, value)(3); }).toThrow();
             });
@@ -94,13 +95,13 @@ describe("lamb.logic", function () {
         });
 
         it("should return `true` for any value if not supplied with predicates because of vacuous truth", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date(), function () {}].forEach(function (value) {
                 expect(lamb.allOf()(value)).toBe(true);
             });
         });
 
         it("should build a function returning an exception if any given predicate isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.allOf(value, isEven)(2); }).toThrow();
                 expect(function () { lamb.allOf(isEven, value)(2); }).toThrow();
             });
@@ -131,19 +132,19 @@ describe("lamb.logic", function () {
         });
 
         it("should return `false` for any value if not supplied with predicates", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date(), function () {}].forEach(function (value) {
                 expect(lamb.anyOf()(value)).toBe(false);
             });
         });
 
         it("should not throw an exception if some predicate isn't a function if a previous predicate satisfies the condition", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.anyOf(isEven, value)(2)).toBe(true);
             });
         });
 
         it("should build a function returning an exception if a predicate isn't a function and the condition isn't satisfied yet", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.anyOf(value, isEven)(2); }).toThrow();
                 expect(function () { lamb.anyOf(isEven, value)(3); }).toThrow();
             });
@@ -218,13 +219,13 @@ describe("lamb.logic", function () {
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.condition(value, lamb.always(99))).toThrow();
             });
         });
 
         it("should build a function throwing an exception if `trueFn` isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.condition(lamb.always(true), value, lamb.always(99))).toThrow();
             });
 
@@ -339,7 +340,7 @@ describe("lamb.logic", function () {
         });
 
         it("should build a function returning an exception if the given predicate is missing or isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.not(value)).toThrow();
             });
 
@@ -396,21 +397,21 @@ describe("lamb.logic", function () {
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.unless(value, increment)(5); }).toThrow();
                 expect(function () { lamb.when(value, increment)(2); }).toThrow();
             });
         });
 
         it("should not throw an exception if the transformer isn't a function and the conditions aren't met", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.unless(isEven, value)(2)).toBe(2);
                 expect(lamb.when(isEven, value)(5)).toBe(5);
             });
         });
 
         it("should build a function throwing an exception if the transformer isn't a function and the conditions are met", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.unless(isEven, value)(5); }).toThrow();
                 expect(function () { lamb.when(isEven, value)(2); }).toThrow();
             });

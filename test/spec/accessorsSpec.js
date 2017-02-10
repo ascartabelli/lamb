@@ -2,6 +2,8 @@ var lamb = require("../../dist/lamb.js");
 var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
 
 describe("lamb.accessors", function () {
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
+
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
@@ -291,7 +293,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should throw an exception if the `updater` isn't a function or if is missing", function () {
-                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(function () { lamb.updateIndex(arr, 0, value); }).toThrow();
                     expect(function () { lamb.updateAt(0, value)(arr); }).toThrow();
                 });
@@ -322,8 +324,7 @@ describe("lamb.accessors", function () {
     });
 
     describe("Object accessors", function () {
-        var d = new Date();
-        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, d];
+        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date()];
         var invalidKeysAsStrings = invalidKeys.map(String);
         var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
 
@@ -740,7 +741,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should throw an exception if the `updater` isn't a function or if is missing", function () {
-                    [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    nonFunctions.forEach(function (value) {
                         expect(function () { lamb.updateIn({a: 2}, "a", value); }).toThrow();
                         expect(function () { lamb.updateKey("a", value)({a: 2}); }).toThrow();
                     });
@@ -1239,7 +1240,7 @@ describe("lamb.accessors", function () {
                 });
 
                 it("should throw an exception if the `updater` isn't a function or if is missing", function () {
-                    [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                    nonFunctions.forEach(function (value) {
                         expect(function () { lamb.updatePathIn({a: 2}, "a", value); }).toThrow();
                         expect(function () { lamb.updatePath("a", value)({a: 2}); }).toThrow();
                     });

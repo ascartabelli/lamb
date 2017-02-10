@@ -3,6 +3,7 @@ var lamb = require("../../dist/lamb.js");
 describe("lamb.object", function () {
     var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
     var invalidKeysAsStrings = invalidKeys.map(String);
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
     var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
     var wannabeEmptyArrays = wannabeEmptyObjects.concat({});
 
@@ -612,7 +613,7 @@ describe("lamb.object", function () {
             });
 
             it("should throw an exception if the predicate isn't a function or if is missing", function () {
-                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(function () { lamb.pickIf(value)({a: 2}); }).toThrow();
                 });
 
@@ -762,7 +763,7 @@ describe("lamb.object", function () {
             });
 
             it("should throw an exception if the predicate isn't a function or if is missing", function () {
-                [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(function () { lamb.skipIf(value)({a: 2}); }).toThrow();
                 });
 
@@ -816,7 +817,7 @@ describe("lamb.object", function () {
             });
 
             it("should build a function throwing an exception if `fn` isn't a function or is missing", function () {
-                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(lamb.renameWith(value)).toThrow();
                 });
 

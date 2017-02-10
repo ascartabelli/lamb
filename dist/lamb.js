@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.50.0
+ * @version 0.51.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.50.0";
+    lamb._version = "0.51.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -4134,18 +4134,38 @@
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
      */
-    var union = compose(uniques, flatMapWith(dropN(0)), list);
+    var union = compose(uniquesBy(identity), flatMapWith(dropN(0)), list);
 
     /**
      * Returns an array comprised of the unique elements of the given array-like object.<br/>
-     * Can work with lists of complex objects if supplied with an iteratee.<br/>
-     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
+     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}
+     * to test the equality of values.<br/>
      * When two values are considered equal, the first occurence will be the one included
-     * in the result array.
-     * @example <caption>With simple values:</caption>
+     * in the result array.<br/>
+     * See also {@link module:lamb.uniquesBy|uniquesBy} if you need to transform your values before
+     * the comparison or if you have to extract them from complex ones.
+     * @example
      * _.uniques([-0, 1, 2, 0, 2, 3, 4, 3, 5, 1]) // => [-0, 1, 2, 3, 4, 5]
      *
-     * @example <caption>With complex values:</caption>
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.uniquesBy|uniquesBy}
+     * @param {ArrayLike} arrayLike
+     * @returns {Array}
+     */
+    var uniques = uniquesBy(identity);
+
+    /**
+     * Using the provided iteratee, builds a function that will return an array comprised of the
+     * unique elements of an array-like object. The values being compared are the ones returned by
+     * the iteratee.<br/>
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
+     * When two values are considered equal, the first occurence will be the one included
+     * in the result array.<br/>
+     * See also {@link module:lamb.uniques|uniques} if you don't need to transform your values before the
+     * comparison.
+     * @example
      * var data  = [
      *     {id: "1", name: "John"},
      *     {id: "4", name: "Jane"},
@@ -4153,44 +4173,38 @@
      *     {id: "1", name: "Mario"},
      *     {id: "5", name: "Paolo"},
      * ];
+     * var uniquesById = _.uniquesBy(_.getKey("id"));
      *
-     * _.uniques(data, _.getKey("id")) // =>
-     * // [
-     * //     {id: "1", name: "John"},
-     * //     {id: "4", name: "Jane"},
-     * //     {id: "5", name: "Joe"}
-     * // ]
+     * uniquesById(data) // => [{id: "1", name: "John"}, {id: "4", name: "Jane"}, {id: "5", name: "Joe"}]
      *
      * @memberof module:lamb
      * @category Array
-     * @param {ArrayLike} arrayLike
-     * @param {ListIteratorCallback} [iteratee={@link module:lamb.identity|identity}]
-     * @returns {Array}
+     * @see {@link module:lamb.uniques|uniques}
+     * @param {ListIteratorCallback} iteratee
+     * @returns {Function}
      */
-    function uniques (arrayLike, iteratee) {
-        if (typeof iteratee !== "function") {
-            iteratee = identity;
-        }
+    function uniquesBy (iteratee) {
+        return function (arrayLike) {
+            var result = [];
+            var len = arrayLike.length;
 
-        var result = [];
-        var len = arrayLike.length;
+            for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
+                value = iteratee(arrayLike[i], i, arrayLike);
 
-        for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
-            value = iteratee(arrayLike[i], i, arrayLike);
-
-            // eslint-disable-next-line no-self-compare
-            if (value === value) {
-                if (seen.indexOf(value) === -1) {
-                    seen[seen.length] = value;
+                // eslint-disable-next-line no-self-compare
+                if (value === value) {
+                    if (seen.indexOf(value) === -1) {
+                        seen[seen.length] = value;
+                        result[result.length] = arrayLike[i];
+                    }
+                } else if (!hasNaN) {
+                    hasNaN = true;
                     result[result.length] = arrayLike[i];
                 }
-            } else if (!hasNaN) {
-                hasNaN = true;
-                result[result.length] = arrayLike[i];
             }
-        }
 
-        return result;
+            return result;
+        };
     }
 
     /**
@@ -4256,6 +4270,7 @@
     lamb.transpose = transpose;
     lamb.union = union;
     lamb.uniques = uniques;
+    lamb.uniquesBy = uniquesBy;
     lamb.zip = zip;
     lamb.zipWithIndex = zipWithIndex;
 

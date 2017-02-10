@@ -4,6 +4,7 @@ var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality
 describe("lamb.array_basics", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
     var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     beforeEach(function() {
@@ -145,7 +146,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.everyIn(arr, value); }).toThrow();
                 expect(function () { lamb.every(value)(arr); }).toThrow();
             });
@@ -218,7 +219,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.filter(arr, value); }).toThrow();
                 expect(function () { lamb.filterWith(value)(arr); }).toThrow();
             });
@@ -285,7 +286,7 @@ describe("lamb.array_basics", function () {
             });
 
             it("should throw an exception if the predicate isn't a function or is missing", function () {
-                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(function () { lamb.find(persons, value); }).toThrow();
                     expect(function () { lamb.findWhere(value)(persons); }).toThrow();
                 });
@@ -338,7 +339,7 @@ describe("lamb.array_basics", function () {
             });
 
             it("should throw an exception if the predicate isn't a function or is missing", function () {
-                ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+                nonFunctions.forEach(function (value) {
                     expect(function () { lamb.findIndex(persons, value); }).toThrow();
                     expect(function () { lamb.findIndexWhere(value)(persons); }).toThrow();
                 });
@@ -397,7 +398,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.forEach(arr, value); }).toThrow();
             });
 
@@ -472,7 +473,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if the iteratee isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.mapWith(value)(numbers); }).toThrow();
             });
 
@@ -552,7 +553,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.reduceRight(arr, value, 0); }).toThrow();
                 expect(function () { lamb.reduceRightWith(value, 0)(arr); }).toThrow();
             });
@@ -641,7 +642,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.reduce(arr, value, 0); }).toThrow();
                 expect(function () { lamb.reduceWith(value, 0)(arr); }).toThrow();
             });
@@ -1028,7 +1029,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.someIn(arr, value); }).toThrow();
                 expect(function () { lamb.some(value)(arr); }).toThrow();
             });

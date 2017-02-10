@@ -12,6 +12,7 @@ describe("lamb.function", function () {
     }
 
     var nonArrayLikes = [/foo/, 1, function () {}, NaN, true, new Date(), {}, null, void 0];
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
     var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
     var invalidMethodsAsStrings = invalidMethods.map(String);
 
@@ -64,7 +65,7 @@ describe("lamb.function", function () {
         });
 
         it("should throw an exception if `fn` isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.application(value, []); }).toThrow();
                 expect(lamb.apply(value)).toThrow();
                 expect(function () { lamb.applyTo([])(value); }).toThrow();
@@ -136,7 +137,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.aritize(value, 0)).toThrow();
             });
 
@@ -272,7 +273,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.binary(value)).toThrow();
             });
 
@@ -302,7 +303,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function returning an exception if it receives a value that isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.collect(lamb.always(99), value)(1, 2, 3); }).toThrow();
                 expect(function () { lamb.collect(value, lamb.always(99))(1, 2, 3); }).toThrow();
             });
@@ -745,7 +746,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if the mapper isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.mapArgs(lamb.sum, value)(1, 2); }).toThrow();
             });
 
@@ -753,7 +754,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if `fn` isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.mapArgs(value, double)).toThrow();
             });
         });
@@ -824,7 +825,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if a tapper isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.tapArgs(lamb.sum, value, lamb.always(99))(1, 2); }).toThrow();
                 expect(function () { lamb.tapArgs(lamb.sum, lamb.always(99), value)(1, 2); }).toThrow();
             });
@@ -833,14 +834,14 @@ describe("lamb.function", function () {
         it("should build a function that doesn't throw an exception if a tapper isn't a function but is not called", function () {
             var inc = function (n) { return ++n; };
 
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.tapArgs(lamb.sum, value, lamb.always(99))()).toEqual(NaN);
                 expect(lamb.tapArgs(inc, inc, value)(25)).toBe(27);
             });
         });
 
         it("should build a function throwing an exception if `fn` isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.tapArgs(value, lamb.always(99))).toThrow();
             });
 
@@ -924,7 +925,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.unary(value)).toThrow();
             });
 

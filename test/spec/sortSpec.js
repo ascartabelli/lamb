@@ -3,6 +3,7 @@ var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality
 
 describe("lamb.sort", function () {
     var descSorter = lamb.sorterDesc();
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
     var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     beforeEach(function() {
@@ -128,7 +129,7 @@ describe("lamb.sort", function () {
             var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
             var stringResult = ["a", "b", "c", "d"];
 
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.sort(numbers, value)).toEqual(numbersResult);
                 expect(lamb.sortWith(value)(numbers)).toEqual(numbersResult);
                 expect(lamb.sort("cadb", value)).toEqual(stringResult);
@@ -258,7 +259,7 @@ describe("lamb.sort", function () {
         });
 
         it("should use a default ascending sorter if any of the received criteria isn't a function or a Sorter", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.sortedInsert([1, 2, 3], 2.5, value)).toEqual([1, 2, 2.5, 3]);
             });
         });
@@ -347,7 +348,7 @@ describe("lamb.sort", function () {
         });
 
         it("should build a default sorting criterion if the comparer isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 var sorterAsc = lamb.sorter(lamb.identity, value);
                 var sorterDesc = lamb.sorterDesc(lamb.identity, value);
 

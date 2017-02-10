@@ -1,6 +1,8 @@
 var lamb = require("../../dist/lamb.js");
 
 describe("lamb.type", function () {
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
+    
     describe("isInstanceOf", function () {
         it("should build a predicate to check if an object is an instance of the given constructor", function () {
             function SomeObjA () {}
@@ -30,7 +32,7 @@ describe("lamb.type", function () {
         });
 
         it("should build a predicate throwing an exception if the constructor isn't a function or is missing", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.isInstanceOf(value)).toThrow();
             });
 

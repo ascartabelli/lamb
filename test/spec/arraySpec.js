@@ -6,6 +6,7 @@ describe("lamb.array", function () {
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
     var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
     var nonArrayLikes = wannabeEmptyArrays.concat(null, void 0);
+    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
@@ -216,7 +217,7 @@ describe("lamb.array", function () {
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.dropWhile(value)([1, 2]); }).toThrow();
             });
 
@@ -612,7 +613,7 @@ describe("lamb.array", function () {
         });
 
         it("should throw an exception when the predicate isn't a function or is missing", function () {
-            [null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.partition([1, 2], value); }).toThrow();
                 expect(function () { lamb.partitionWith(value)([1, 2]); }).toThrow();
             });
@@ -965,7 +966,7 @@ describe("lamb.array", function () {
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.takeWhile(value)([1, 2]); }).toThrow();
             });
 
@@ -1039,7 +1040,7 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("uniques", function () {
+    describe("uniques / uniquesBy", function () {
         var data = [
             {"id": "1", "name": "foo"},
             {"id": "1", "name": "foo"},
@@ -1055,10 +1056,33 @@ describe("lamb.array", function () {
             {"id": "3", "name": "baz"}
         ];
 
-        it("should return the unique elements of an array of simple values", function () {
-            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, 5, 2, 1, 1])).toEqual([0, 2, 3, 4, 5, 1]);
-            expect(lamb.uniques(["foo", "bar", "bar", "baz"])).toEqual(["foo", "bar", "baz"]);
-            expect(lamb.uniques(Array(3))).toEqual([void 0]);
+        var uniquesByIdentity = lamb.uniquesBy(lamb.identity);
+
+        describe("uniques", function () {
+            it("should return the unique elements of an array of simple values", function () {
+                expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, 5, 2, 1, 1])).toEqual([0, 2, 3, 4, 5, 1]);
+                expect(lamb.uniques(["foo", "bar", "bar", "baz"])).toEqual(["foo", "bar", "baz"]);
+                expect(lamb.uniques(Array(3))).toEqual([void 0]);
+            });
+
+            it("should throw an exception if called without arguments", function () {
+                expect(lamb.uniques).toThrow();
+            });
+        });
+
+        describe("uniquesBy", function () {
+            it("should use the provided iteratee to extract the values to compare", function () {
+                expect(lamb.uniquesBy(lamb.getKey("id"))(data)).toEqual(dataUniques);
+                expect(lamb.uniquesBy(lamb.invoker("toUpperCase"))(["b", "A", "r", "B", "a", "z"])).toEqual(["b", "A", "r", "z"]);
+            });
+
+            it("should build a function throwing an exception if the itereatee isn't a function or if is missing", function () {
+                nonFunctions.forEach(function (value) {
+                    expect(function () { lamb.uniquesBy(value)([1, 2, 3]); }).toThrow();
+                });
+
+                expect(function () { lamb.uniquesBy()([1, 2, 3]); }).toThrow();
+            });
         });
 
         it("should use the SameValueZero comparison", function () {
@@ -1078,19 +1102,18 @@ describe("lamb.array", function () {
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.uniques("hello world")).toEqual(["h", "e", "l", "o", " ", "w", "r", "d"]);
-        });
+            var s = "hello world";
+            var r = ["h", "e", "l", "o", " ", "w", "r", "d"];
 
-        it("should return the unique elements of an array of complex values when supplied with an iteratee", function () {
-            expect(lamb.uniques(data, lamb.getKey("id"))).toEqual(dataUniques);
-            expect(lamb.uniques("bArBaz", lamb.invoker("toUpperCase"))).toEqual(["b", "A", "r", "z"]);
+            expect(lamb.uniques(s)).toEqual(r);
+            expect(uniquesByIdentity(s)).toEqual(r);
         });
 
         it("should prefer the first encountered value if two values are considered equal", function () {
             expect(Object.is(0, lamb.uniques([0, -0])[0])).toBe(true);
             expect(lamb.uniques([2, -0, 3, 3, 0, 1])).toEqual([2, -0, 3, 1]);
 
-            var r = lamb.uniques(data, lamb.getKey("id"));
+            var r = lamb.uniquesBy(lamb.getKey("id"))(data);
 
             expect(r).toEqual(dataUniques);
             expect(r[0]).toBe(data[0]);
@@ -1098,22 +1121,27 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.uniques([1, , 1, 3])).toEqual([1, void 0, 3]);
-            expect(lamb.uniques([1, , 1, void 0, 3])).toEqual([1, void 0, 3]);
-        });
+            var a1 = [1, , 1, 3];
+            var a2 = [1, , 1, void 0, 3];
+            var r = [1, void 0, 3];
 
-        it("should throw an exception if called without arguments", function () {
-            expect(lamb.uniques).toThrow();
+            expect(lamb.uniques(a1)).toEqual(r);
+            expect(lamb.uniques(a2)).toEqual(r);
+            expect(uniquesByIdentity(a1)).toEqual(r);
+            expect(uniquesByIdentity(a2)).toEqual(r);
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
             expect(function () { lamb.uniques(null); }).toThrow();
             expect(function () { lamb.uniques(void 0); }).toThrow();
+            expect(function () { uniquesByIdentity(null); }).toThrow();
+            expect(function () { uniquesByIdentity(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.uniques(value)).toEqual([]);
+                expect(uniquesByIdentity(value)).toEqual([]);
             });
         });
     });
