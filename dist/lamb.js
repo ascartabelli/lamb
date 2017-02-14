@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.51.0-alpha.2
+ * @version 0.51.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.51.0-alpha.2";
+    lamb._version = "0.51.0-alpha.3";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1114,7 +1114,7 @@
      * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
      * See also {@link module:lamb.isIn|isIn} for an uncurried version.
      * @example
-     * var containsNaN = _.contains(NaN, 0);
+     * var containsNaN = _.contains(NaN);
      *
      * containsNaN([0, 1, 2, 3, NaN]) // => true
      *
@@ -1123,10 +1123,9 @@
      * @function
      * @see {@link module:lamb.isIn|isIn}
      * @param {*} value
-     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
      * @returns {Function}
      */
-    var contains = _makePartial3(isIn);
+    var contains = _curry2(isIn, true);
 
     /**
      * Checks if all the elements in an array-like object satisfy the given predicate.<br/>
@@ -1386,20 +1385,19 @@
      * _.isIn(numbers, 0) // => true
      * _.isIn(numbers, -0) // => true
      * _.isIn(numbers, NaN) // => true
-     * _.isIn(numbers, 2, 3) // => false
+     * _.isIn(numbers, 5) // => false
      *
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.contains|contains}
      * @param {ArrayLike} arrayLike
      * @param {*} value
-     * @param {Number} [fromIndex=0] The position at which to begin searching for the given value.
      * @returns {Boolean}
      */
-    function isIn (arrayLike, value, fromIndex) {
+    function isIn (arrayLike, value) {
         var result = false;
 
-        for (var i = fromIndex >>> 0, len = arrayLike.length; i < len; i++) {
+        for (var i = 0, len = arrayLike.length; i < len; i++) {
             if (areSVZ(value, arrayLike[i])) {
                 result = true;
                 break;

@@ -30,35 +30,9 @@ describe("lamb.array_basics", function () {
             expect(lamb.contains()([1, 3, void 0])).toBe(true);
         });
 
-        it("should be able to start checking from a specific index", function () {
-            expect(lamb.contains("foo", 0)(testArray)).toBe(true);
-            expect(lamb.isIn(testArray, "foo", 0)).toBe(true);
-            expect(lamb.contains(12, 2)(testArray)).toBe(true);
-            expect(lamb.isIn(testArray, 12, 2)).toBe(true);
-            expect(lamb.contains("foo", 1)(testArray)).toBe(false);
-            expect(lamb.isIn(testArray, "foo", 1)).toBe(false);
-        });
-
-        it("should convert to integer the value received as `fromIndex`", function () {
-            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
-                expect(lamb.contains("foo", value)(testArray)).toBe(true);
-                expect(lamb.isIn(testArray, "foo", value)).toBe(true);
-            });
-
-            [[1], 1.5, new Date(), true, "2"].forEach(function (value) {
-                expect(lamb.contains("foo", value)(testArray)).toBe(false);
-                expect(lamb.isIn(testArray, "foo", value)).toBe(false);
-            });
-
-            expect(lamb.contains("foo")(testArray)).toBe(true);
-            expect(lamb.isIn(testArray, "foo")).toBe(true);
-        });
-
         it("should work with array-like objects", function () {
             expect(lamb.contains("f")("foo")).toBe(true);
             expect(lamb.isIn("foo", "f")).toBe(true);
-            expect(lamb.contains("f", 1)("foo")).toBe(false);
-            expect(lamb.isIn("foo", "f", 1)).toBe(false);
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
