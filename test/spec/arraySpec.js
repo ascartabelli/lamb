@@ -996,33 +996,73 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("union", function () {
+    describe("union / unionBy", function () {
+        var arrs = [
+            [1, 2, 3],
+            [4, 5, 1],
+            [5],
+            [6, 7, 3, 1],
+            [2, 8, 3],
+            [9, 0],
+            [2, [2, 3]],
+            [3, [2, 3]]
+        ];
+        var r1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, [2, 3], [2, 3]];
+        var r2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, [2, 3]];
+
+        var data = [
+            [{"id": "1", "name": "foo"}],
+            [{"id": "1", "name": "Foo"}, {"id": "2", "name": "bar"}, {"id": "3", "name": "baz"}],
+            [{"id": "2", "name": "Bar"}, {"id": "1", "name": "FOO"}]
+        ];
+
+        var dataUnionById = [
+            {"id": "1", "name": "foo"},
+            {"id": "2", "name": "bar"},
+            {"id": "3", "name": "baz"}
+        ];
+
+        var unionByIdentity = lamb.unionBy(lamb.identity);
+        var unionAsStrings = lamb.unionBy(String);
+        var unionById = lamb.unionBy(lamb.getKey("id"));
+
+        describe("unionBy", function () {
+            it("should build a function throwing an exception if the `iteratee` is not a function or if is missing", function () {
+                nonFunctions.forEach(function (value) {
+                    expect(function () { lamb.unionBy(value)([1, 2, 3]); }).toThrow();
+                });
+
+                expect(function () { lamb.unionBy()([1, 2, 3]); }).toThrow();
+            });
+        });
+
         it("should return a list of every unique element present in the given arrays", function () {
             expect(lamb.union([])).toEqual([]);
             expect(lamb.union([1, 2], [2, 3])).toEqual([1, 2, 3]);
-            expect(lamb.union(
-                [1, 2, 3],
-                [4, 5, 1],
-                [5],
-                [6, 7, 3, 1],
-                [2, 8, 3],
-                [9, 0],
-                [2, [2, 3]],
-                [3, [2, 3]]
-            )).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, [2, 3], [2, 3]]);
+            expect(lamb.union.apply(null, arrs)).toEqual(r1);
+
+            expect(unionAsStrings([])).toEqual([]);
+            expect(unionAsStrings([1, 2], [2, 3])).toEqual([1, 2, 3]);
+            expect(unionAsStrings.apply(null, arrs)).toEqual(r2);
+            expect(unionById.apply(null, data)).toEqual(dataUnionById);
         });
 
         it("should work with array-like objects", function () {
             expect(lamb.union("abc", "bcd", "cde")).toEqual(["a", "b", "c", "d", "e"]);
+            expect(unionByIdentity("abc", "bcd", "cde")).toEqual(["a", "b", "c", "d", "e"]);
         });
 
-        it("should return an empty array if no arguments are supplied", function () {
+        it("should return an empty array if it doesn't receive any array-like object", function () {
             expect(lamb.union()).toEqual([]);
+            expect(unionAsStrings()).toEqual([]);
         });
 
         it("should always return dense arrays", function () {
             expect(lamb.union([1, , 3], [3, 5], [6, 7])).toEqual([1, void 0, 3, 5, 6, 7]);
             expect(lamb.union([1, , 3], [3, 5], [void 0, 7])).toEqual([1, void 0, 3, 5, 7]);
+
+            expect(unionAsStrings([1, , 3], [3, 5], [6, 7])).toEqual([1, void 0, 3, 5, 6, 7]);
+            expect(unionAsStrings([1, , 3], [3, 5], [void 0, 7])).toEqual([1, void 0, 3, 5, 7]);
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
@@ -1030,6 +1070,11 @@ describe("lamb.array", function () {
             expect(function () { lamb.union(void 0); }).toThrow();
             expect(function () { lamb.union([1, 2], null); }).toThrow();
             expect(function () { lamb.union([1, 2], void 0); }).toThrow();
+
+            expect(function () { unionAsStrings(null); }).toThrow();
+            expect(function () { unionAsStrings(void 0); }).toThrow();
+            expect(function () { unionAsStrings([1, 2], null); }).toThrow();
+            expect(function () { unionAsStrings([1, 2], void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
@@ -1043,11 +1088,11 @@ describe("lamb.array", function () {
     describe("uniques / uniquesBy", function () {
         var data = [
             {"id": "1", "name": "foo"},
-            {"id": "1", "name": "foo"},
+            {"id": "1", "name": "Foo"},
             {"id": "2", "name": "bar"},
             {"id": "3", "name": "baz"},
-            {"id": "2", "name": "bar"},
-            {"id": "1", "name": "foo"}
+            {"id": "2", "name": "Bar"},
+            {"id": "1", "name": "FOO"}
         ];
 
         var dataUniques = [

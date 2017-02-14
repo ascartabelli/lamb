@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.51.0-alpha.1
+ * @version 0.51.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.51.0-alpha.1";
+    lamb._version = "0.51.0-alpha.2";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -4123,7 +4123,13 @@
     }
 
     /**
-     * Returns a list of every unique element present in the given array-like objects.
+     * Returns a list of every unique element present in the given array-like objects.<br/>
+     * Uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}
+     * to test the equality of values.<br/>
+     * When two values are considered equal, the first occurence will be the one included
+     * in the result array.<br/>
+     * See also {@link module:lamb.unionBy|unionBy} if you need to transform the values before
+     * the comparison or if you have to extract them from complex ones.
      * @example
      * _.union([1, 2, 3, 2], [3, 4], [1, 5]) // => [1, 2, 3, 4, 5]
      * _.union("abc", "bcd", "cde") // => ["a", "b", "c", "d", "e"]
@@ -4131,10 +4137,34 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @see {@link module:lamb.unionBy|unionBy}
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
      */
-    var union = compose(uniquesBy(identity), flatMapWith(dropN(0)), list);
+    var union = unionBy(identity);
+
+    /**
+     * Using the provided iteratee, builds a function that will return an array of the unique elements
+     * in the provided array-like objects.<br/>
+     * Uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}
+     * to test the equality of values.<br/>
+     * When two values are considered equal, the first occurence will be the one included
+     * in the result array.<br/>
+     * See also {@link module:lamb.union|union} if you don't need to transform the values.
+     * @example
+     * var unionByFloor = _.unionBy(Math.floor);
+     *
+     * unionByFloor([2.8, 3.2, 1.5], [3.5, 1.2, 4]) // => [2.8, 3.2, 1.5, 4]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.union|union}
+     * @param {ListIteratorCallback} iteratee
+     * @returns {Function}
+     */
+    function unionBy (iteratee) {
+        return compose(uniquesBy(iteratee), flatMapWith(dropN(0)), list);
+    }
 
     /**
      * Returns an array comprised of the unique elements of the given array-like object.<br/>
@@ -4269,6 +4299,7 @@
     lamb.takeWhile = takeWhile;
     lamb.transpose = transpose;
     lamb.union = union;
+    lamb.unionBy = unionBy;
     lamb.uniques = uniques;
     lamb.uniquesBy = uniquesBy;
     lamb.zip = zip;
