@@ -506,7 +506,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should work with array-like objects", function () {
-            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
+            var fn = lamb.tapArgs(lamb.subtract, [lamb.identity, Number]);
 
             expect(lamb.reduceRight(s, fn)).toBe(-5);
             expect(lamb.reduceRight(s, fn, 0)).toBe(-15);
@@ -595,7 +595,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should work with array-like objects", function () {
-            var fn = lamb.tapArgs(lamb.subtract, lamb.identity, Number);
+            var fn = lamb.tapArgs(lamb.subtract, [lamb.identity, Number]);
 
             expect(lamb.reduce(s, fn)).toBe(-13);
             expect(lamb.reduce(s, fn, 0)).toBe(-15);

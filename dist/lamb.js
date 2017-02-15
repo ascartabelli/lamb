@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.51.0-alpha.3
+ * @version 0.51.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.51.0-alpha.3";
+    lamb._version = "0.51.0-alpha.4";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5252,7 +5252,7 @@
      * @example
      * var someObject = {count: 5};
      * var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
-     * var getDataAmount = _.tapArgs(_.sum, _.getKey("count"), _.getKey("length"));
+     * var getDataAmount = _.tapArgs(_.sum, [_.getKey("count"), _.getKey("length")]);
      *
      * getDataAmount(someObject, someArrayData); // => 15
      *
@@ -5260,12 +5260,10 @@
      * @category Function
      * @see {@link module:lamb.mapArgs|mapArgs}
      * @param {Function} fn
-     * @param {...?Function} [tapper]
+     * @param {Function[]} tappers
      * @returns {Function}
      */
-    function tapArgs (fn) {
-        var tappers = _argsTail.apply(null, arguments);
-
+    function tapArgs (fn, tappers) {
         return function () {
             var len = arguments.length;
             var tappersLen = tappers.length;

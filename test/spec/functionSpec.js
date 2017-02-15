@@ -15,6 +15,7 @@ describe("lamb.function", function () {
     var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
     var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
     var invalidMethodsAsStrings = invalidMethods.map(String);
+    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     describe("application / apply / applyTo", function () {
         it("should apply the desired function to the given arguments", function () {
@@ -805,29 +806,29 @@ describe("lamb.function", function () {
     describe("tapArgs", function () {
         var someObject = {count: 5};
         var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
-        var add = jasmine.createSpy("sum").and.callFake(lamb.sum);
+        var sum = jasmine.createSpy("sum").and.callFake(lamb.sum);
 
         afterEach(function () {
-            add.calls.reset();
+            sum.calls.reset();
         });
 
         it("should build a function that allows to tap into the arguments of the original one", function () {
-            var getDataAmount = lamb.tapArgs(add, lamb.getKey("count"), lamb.getKey("length"));
+            var getDataAmount = lamb.tapArgs(sum, [lamb.getKey("count"), lamb.getKey("length")]);
             expect(getDataAmount(someObject, someArrayData)).toBe(15);
-            expect(add.calls.count()).toBe(1);
-            expect(add.calls.argsFor(0)).toEqual([someObject.count, someArrayData.length]);
+            expect(sum.calls.count()).toBe(1);
+            expect(sum.calls.argsFor(0)).toEqual([someObject.count, someArrayData.length]);
         });
 
         it("should use arguments as they are when tappers are missing", function () {
-            expect(lamb.tapArgs(add, lamb.getKey("count"))(someObject, -10)).toBe(-5);
-            expect(add.calls.count()).toBe(1);
-            expect(add.calls.argsFor(0)).toEqual([someObject.count, -10]);
+            expect(lamb.tapArgs(sum, [lamb.getKey("count")])(someObject, -10)).toBe(-5);
+            expect(sum.calls.count()).toBe(1);
+            expect(sum.calls.argsFor(0)).toEqual([someObject.count, -10]);
         });
 
         it("should build a function throwing an exception if a tapper isn't a function", function () {
             nonFunctions.forEach(function (value) {
-                expect(function () { lamb.tapArgs(lamb.sum, value, lamb.always(99))(1, 2); }).toThrow();
-                expect(function () { lamb.tapArgs(lamb.sum, lamb.always(99), value)(1, 2); }).toThrow();
+                expect(function () { lamb.tapArgs(lamb.sum, [value, lamb.always(99)])(1, 2); }).toThrow();
+                expect(function () { lamb.tapArgs(lamb.sum, [lamb.always(99), value])(1, 2); }).toThrow();
             });
         });
 
@@ -835,14 +836,26 @@ describe("lamb.function", function () {
             var inc = function (n) { return ++n; };
 
             nonFunctions.forEach(function (value) {
-                expect(lamb.tapArgs(lamb.sum, value, lamb.always(99))()).toEqual(NaN);
-                expect(lamb.tapArgs(inc, inc, value)(25)).toBe(27);
+                expect(lamb.tapArgs(lamb.sum, [value, lamb.always(99)])()).toEqual(NaN);
+                expect(lamb.tapArgs(inc, [inc, value])(25)).toBe(27);
+            });
+        });
+
+        it("should build a function throwing an exception if a `nil` value is passed as the tappers array", function () {
+            expect(function () { lamb.tapArgs(sum, null)(2, 3); }).toThrow();
+            expect(function () { lamb.tapArgs(sum, void 0)(2, 3); }).toThrow();
+        });
+
+        it("should consider other values as empty arrays", function () {
+            wannabeEmptyArrays.forEach(function (value, idx) {
+                expect(lamb.tapArgs(sum, value)(2, 3)).toBe(5);
+                expect(sum.calls.argsFor(idx)).toEqual([2, 3]);
             });
         });
 
         it("should build a function throwing an exception if `fn` isn't a function or is missing", function () {
             nonFunctions.forEach(function (value) {
-                expect(lamb.tapArgs(value, lamb.always(99))).toThrow();
+                expect(lamb.tapArgs(value, [lamb.always(99)])).toThrow();
             });
 
             expect(lamb.tapArgs()).toThrow();

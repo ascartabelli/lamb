@@ -475,7 +475,7 @@ var pipe = flip(compose);
  * @example
  * var someObject = {count: 5};
  * var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
- * var getDataAmount = _.tapArgs(_.sum, _.getKey("count"), _.getKey("length"));
+ * var getDataAmount = _.tapArgs(_.sum, [_.getKey("count"), _.getKey("length")]);
  *
  * getDataAmount(someObject, someArrayData); // => 15
  *
@@ -483,12 +483,10 @@ var pipe = flip(compose);
  * @category Function
  * @see {@link module:lamb.mapArgs|mapArgs}
  * @param {Function} fn
- * @param {...?Function} [tapper]
+ * @param {Function[]} tappers
  * @returns {Function}
  */
-function tapArgs (fn) {
-    var tappers = _argsTail.apply(null, arguments);
-
+function tapArgs (fn, tappers) {
     return function () {
         var len = arguments.length;
         var tappersLen = tappers.length;
