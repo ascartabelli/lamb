@@ -120,76 +120,76 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("drop / dropN", function () {
+    describe("drop / dropFrom", function () {
         it("should drop the first `n` elements of an array or array-like object", function () {
-            expect(lamb.drop(["a", "b"], 1)).toEqual(["b"]);
-            expect(lamb.dropN(3)([1, 2, 3, 4])).toEqual([4]);
+            expect(lamb.dropFrom(["a", "b"], 1)).toEqual(["b"]);
+            expect(lamb.drop(3)([1, 2, 3, 4])).toEqual([4]);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.drop("abcd", 2)).toEqual(["c", "d"]);
-            expect(lamb.dropN(2)("abcd")).toEqual(["c", "d"]);
+            expect(lamb.dropFrom("abcd", 2)).toEqual(["c", "d"]);
+            expect(lamb.drop(2)("abcd")).toEqual(["c", "d"]);
         });
 
         it("should accept a negative `n`", function () {
-            expect(lamb.drop([1, 2, 3, 4], -1)).toEqual([4]);
-            expect(lamb.dropN(-3)("abcd")).toEqual(["b", "c", "d"]);
+            expect(lamb.dropFrom([1, 2, 3, 4], -1)).toEqual([4]);
+            expect(lamb.drop(-3)("abcd")).toEqual(["b", "c", "d"]);
         });
 
         it("should return a copy of the source array when `n` is 0 or less or equal than the additive inverse of the array-like length", function () {
-            expect(lamb.drop(["a", "b"], 0)).toEqual(["a", "b"]);
-            expect(lamb.drop([1, 2, 3, 4], -4)).toEqual([1, 2, 3, 4]);
-            expect(lamb.dropN(-10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);
+            expect(lamb.dropFrom(["a", "b"], 0)).toEqual(["a", "b"]);
+            expect(lamb.dropFrom([1, 2, 3, 4], -4)).toEqual([1, 2, 3, 4]);
+            expect(lamb.drop(-10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);
         });
 
         it("should return an empty array when `n` is greater than or equal to the array-like length", function () {
-            expect(lamb.drop([1, 2, 3, 4], 4)).toEqual([]);
-            expect(lamb.drop([1, 2, 3, 4], 5)).toEqual([]);
-            expect(lamb.dropN(10)([1, 2, 3, 4])).toEqual([]);
+            expect(lamb.dropFrom([1, 2, 3, 4], 4)).toEqual([]);
+            expect(lamb.dropFrom([1, 2, 3, 4], 5)).toEqual([]);
+            expect(lamb.drop(10)([1, 2, 3, 4])).toEqual([]);
         });
 
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
             ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
-                expect(lamb.dropN(value)(arr)).toEqual(arr);
-                expect(lamb.drop(arr, value)).toEqual(arr);
+                expect(lamb.drop(value)(arr)).toEqual(arr);
+                expect(lamb.dropFrom(arr, value)).toEqual(arr);
             });
 
             [[1], 1.5, true, "1"].forEach(function (value) {
-                expect(lamb.dropN(value)(arr)).toEqual([2, 3, 4 , 5]);
-                expect(lamb.drop(arr, value)).toEqual([2, 3, 4 , 5]);
+                expect(lamb.drop(value)(arr)).toEqual([2, 3, 4 , 5]);
+                expect(lamb.dropFrom(arr, value)).toEqual([2, 3, 4 , 5]);
             });
 
-            expect(lamb.dropN(new Date())(arr)).toEqual([]);
-            expect(lamb.drop(arr, new Date())).toEqual([]);
+            expect(lamb.drop(new Date())(arr)).toEqual([]);
+            expect(lamb.dropFrom(arr, new Date())).toEqual([]);
 
-            expect(lamb.dropN()(arr)).toEqual(arr);
-            expect(lamb.drop(arr)).toEqual(arr);
+            expect(lamb.drop()(arr)).toEqual(arr);
+            expect(lamb.dropFrom(arr)).toEqual(arr);
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.drop([1, , 3], 1)).toEqual([void 0, 3]);
-            expect(lamb.dropN(1)([1, , 3])).toEqual([void 0, 3]);
+            expect(lamb.dropFrom([1, , 3], 1)).toEqual([void 0, 3]);
+            expect(lamb.drop(1)([1, , 3])).toEqual([void 0, 3]);
         });
 
         it("should throw an exception if called without the data argument or without arguments at all", function () {
-            expect(lamb.drop).toThrow();
-            expect(lamb.dropN(1)).toThrow();
-            expect(lamb.dropN()).toThrow();
+            expect(lamb.dropFrom).toThrow();
+            expect(lamb.drop(1)).toThrow();
+            expect(lamb.drop()).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () { lamb.drop(null, 0); }).toThrow();
-            expect(function () { lamb.drop(void 0, 0); }).toThrow();
-            expect(function () { lamb.dropN(0)(null); }).toThrow();
-            expect(function () { lamb.dropN(0)(void 0); }).toThrow();
+            expect(function () { lamb.dropFrom(null, 0); }).toThrow();
+            expect(function () { lamb.dropFrom(void 0, 0); }).toThrow();
+            expect(function () { lamb.drop(0)(null); }).toThrow();
+            expect(function () { lamb.drop(0)(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             wannabeEmptyArrays.forEach(function (value) {
-                expect(lamb.drop(value, 0)).toEqual([]);
-                expect(lamb.dropN(0)(value)).toEqual([]);
+                expect(lamb.dropFrom(value, 0)).toEqual([]);
+                expect(lamb.drop(0)(value)).toEqual([]);
             });
         });
     });
@@ -869,76 +869,76 @@ describe("lamb.array", function () {
         });
     });
 
-    describe("take / takeN", function () {
+    describe("take / takeFrom", function () {
         it("should retrieve the first `n` elements of an array or array-like object", function () {
-            expect(lamb.take(["a", "b"], 1)).toEqual(["a"]);
-            expect(lamb.takeN(3)([1, 2, 3, 4])).toEqual([1, 2, 3]);
+            expect(lamb.takeFrom(["a", "b"], 1)).toEqual(["a"]);
+            expect(lamb.take(3)([1, 2, 3, 4])).toEqual([1, 2, 3]);
         });
 
         it("should work with array-like objects", function () {
-            expect(lamb.take("abcd", 2)).toEqual(["a", "b"]);
-            expect(lamb.takeN(2)("abcd")).toEqual(["a", "b"]);
+            expect(lamb.takeFrom("abcd", 2)).toEqual(["a", "b"]);
+            expect(lamb.take(2)("abcd")).toEqual(["a", "b"]);
         });
 
         it("should accept a negative `n`", function () {
-            expect(lamb.take([1, 2, 3, 4], -1)).toEqual([1, 2, 3]);
-            expect(lamb.takeN(-3)("abcd")).toEqual(["a"]);
+            expect(lamb.takeFrom([1, 2, 3, 4], -1)).toEqual([1, 2, 3]);
+            expect(lamb.take(-3)("abcd")).toEqual(["a"]);
         });
 
         it("should return a copy of the source array when `n` is greater than or equal to the array-like length", function () {
-            expect(lamb.take(["a", "b"], 3)).toEqual(["a", "b"]);
-            expect(lamb.take([1, 2, 3, 4], 4)).toEqual([1, 2, 3, 4]);
-            expect(lamb.takeN(10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);
+            expect(lamb.takeFrom(["a", "b"], 3)).toEqual(["a", "b"]);
+            expect(lamb.takeFrom([1, 2, 3, 4], 4)).toEqual([1, 2, 3, 4]);
+            expect(lamb.take(10)([1, 2, 3, 4])).toEqual([1, 2, 3, 4]);
         });
 
         it("should return an empty array when `n` is 0 or less or equal than the additive inverse of the array-like length", function () {
-            expect(lamb.take([1, 2, 3, 4], 0)).toEqual([]);
-            expect(lamb.takeN(-4)([1, 2, 3, 4])).toEqual([]);
-            expect(lamb.takeN(-10)([1, 2, 3, 4])).toEqual([]);
+            expect(lamb.takeFrom([1, 2, 3, 4], 0)).toEqual([]);
+            expect(lamb.take(-4)([1, 2, 3, 4])).toEqual([]);
+            expect(lamb.take(-10)([1, 2, 3, 4])).toEqual([]);
         });
 
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
             ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
-                expect(lamb.takeN(value)(arr)).toEqual([]);
-                expect(lamb.take(arr, value)).toEqual([]);
+                expect(lamb.take(value)(arr)).toEqual([]);
+                expect(lamb.takeFrom(arr, value)).toEqual([]);
             });
 
             [[1], 1.5, true, "1"].forEach(function (value) {
-                expect(lamb.takeN(value)(arr)).toEqual([1]);
-                expect(lamb.take(arr, value)).toEqual([1]);
+                expect(lamb.take(value)(arr)).toEqual([1]);
+                expect(lamb.takeFrom(arr, value)).toEqual([1]);
             });
 
-            expect(lamb.takeN(new Date())(arr)).toEqual(arr);
-            expect(lamb.take(arr, new Date())).toEqual(arr);
+            expect(lamb.take(new Date())(arr)).toEqual(arr);
+            expect(lamb.takeFrom(arr, new Date())).toEqual(arr);
 
-            expect(lamb.takeN()(arr)).toEqual([]);
-            expect(lamb.take(arr)).toEqual([]);
+            expect(lamb.take()(arr)).toEqual([]);
+            expect(lamb.takeFrom(arr)).toEqual([]);
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.take([1, , 3], 2)).toEqual([1, void 0]);
-            expect(lamb.takeN(2)([1, , 3])).toEqual([1, void 0]);
+            expect(lamb.takeFrom([1, , 3], 2)).toEqual([1, void 0]);
+            expect(lamb.take(2)([1, , 3])).toEqual([1, void 0]);
         });
 
         it("should throw an exception if called without the data argument or without arguments at all", function () {
-            expect(lamb.take).toThrow();
-            expect(lamb.takeN(1)).toThrow();
-            expect(lamb.takeN()).toThrow();
+            expect(lamb.takeFrom).toThrow();
+            expect(lamb.take(1)).toThrow();
+            expect(lamb.take()).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () { lamb.take(null, 0); }).toThrow();
-            expect(function () { lamb.take(void 0, 0); }).toThrow();
-            expect(function () { lamb.takeN(0)(null); }).toThrow();
-            expect(function () { lamb.takeN(0)(void 0); }).toThrow();
+            expect(function () { lamb.takeFrom(null, 0); }).toThrow();
+            expect(function () { lamb.takeFrom(void 0, 0); }).toThrow();
+            expect(function () { lamb.take(0)(null); }).toThrow();
+            expect(function () { lamb.take(0)(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             wannabeEmptyArrays.forEach(function (value) {
-                expect(lamb.take(value, 0)).toEqual([]);
-                expect(lamb.takeN(0)(value)).toEqual([]);
+                expect(lamb.takeFrom(value, 0)).toEqual([]);
+                expect(lamb.take(0)(value)).toEqual([]);
             });
         });
     });

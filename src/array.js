@@ -55,11 +55,32 @@ function appendTo (arrayLike, value) {
  * @returns {Array}
  */
 function difference (array) {
-    var rest = flatMap(_argsTail.apply(null, arguments), dropN(0));
+    var rest = flatMap(_argsTail.apply(null, arguments), drop(0));
     var isInRest = partial(isIn, rest, _, 0);
 
     return filter(array, not(isInRest));
 }
+
+/**
+ * A curried version of {@link module:lamb.dropFrom|dropFrom} that expects the number of elements
+ * to drop to build a function waiting for the list to take the elements from.<br/>
+ * See the note and examples for {@link module:lamb.dropFrom|dropFrom} about passing a
+ * negative <code>n</code>.
+ * @example
+ * var drop2 = _.drop(2);
+ *
+ * drop2([1, 2, 3, 4, 5]) // => [3, 4, 5]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.dropFrom|dropFrom}
+ * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @param {Number} n
+ * @returns {Function}
+ */
+var drop = _curry2(dropFrom, true);
 
 /**
  * Builds an array without the first <code>n</code> elements of the given array or array-like object.
@@ -68,42 +89,22 @@ function difference (array) {
  * @example
  * var arr = [1, 2, 3, 4, 5];
  *
- * _.drop(arr, 2) // => [3, 4, 5]
- * _.drop(arr, -1) // => [5]
- * _.drop(arr, -10) // => [1, 2, 3, 4, 5]
+ * _.dropFrom(arr, 2) // => [3, 4, 5]
+ * _.dropFrom(arr, -1) // => [5]
+ * _.dropFrom(arr, -10) // => [1, 2, 3, 4, 5]
  *
  * @memberof module:lamb
  * @category Array
- * @see {@link module:lamb.dropN|dropN}
- * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.drop|drop}
+ * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
  */
-function drop (arrayLike, n) {
+function dropFrom (arrayLike, n) {
     return slice(arrayLike, n, arrayLike.length);
 }
-
-/**
- * A curried version of {@link module:lamb.drop|drop} that expects the number of elements
- * to drop to build a function waiting for the list to take the elements from.
- * See the note and examples for {@link module:lamb.drop|drop} about passing a negative <code>n</code>.
- * @example
- * var drop2 = _.dropN(2);
- *
- * drop2([1, 2, 3, 4, 5]) // => [3, 4, 5]
- *
- * @memberof module:lamb
- * @category Array
- * @function
- * @see {@link module:lamb.drop|drop}
- * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
- * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
- * @param {Number} n
- * @returns {Function}
- */
-var dropN = _curry2(drop, true);
 
 /**
  * Builds a function that drops the first <code>n</code> elements satisfying a predicate
@@ -118,8 +119,8 @@ var dropN = _curry2(drop, true);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.takeWhile|takeWhile}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
- * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+ * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -485,7 +486,28 @@ var shallowFlatten = _makeArrayFlattener(false);
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
-var tail = dropN(1);
+var tail = drop(1);
+
+/**
+ * A curried version of {@link module:lamb.takeFrom|takeFrom} that expects the number of elements
+ * to retrieve to build a function waiting for the list to take the elements from.<br/>
+ * See the note and examples for {@link module:lamb.takeFrom|takeFrom} about passing a
+ * negative <code>n</code>.
+ * @example
+ * var take2 = _.take(2);
+ *
+ * take2([1, 2, 3, 4, 5]) // => [1, 2]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.takeFrom|takeFrom}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+ * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @param {Number} n
+ * @returns {Function}
+ */
+var take = _curry2(takeFrom, true);
 
 /**
  * Retrieves the first <code>n</code> elements from an array or array-like object.<br/>
@@ -494,41 +516,22 @@ var tail = dropN(1);
  * @example
  * var arr = [1, 2, 3, 4, 5];
  *
- * _.take(arr, 3) // => [1, 2, 3]
- * _.take(arr, -1) // => [1, 2, 3, 4]
- * _.take(arr, -10) // => []
+ * _.takeFrom(arr, 3) // => [1, 2, 3]
+ * _.takeFrom(arr, -1) // => [1, 2, 3, 4]
+ * _.takeFrom(arr, -10) // => []
  *
  * @memberof module:lamb
  * @category Array
- * @function
- * @see {@link module:lamb.takeN|takeN}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.take|take}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
  */
-var take = partial(slice, _, 0, _);
-
-/**
- * A curried version of {@link module:lamb.take|take} that expects the number of elements
- * to retrieve to build a function waiting for the list to take the elements from.
- * See the note and examples for {@link module:lamb.take|take} about passing a negative <code>n</code>.
- * @example
- * var take2 = _.takeN(2);
- *
- * take2([1, 2, 3, 4, 5]) // => [1, 2]
- *
- * @memberof module:lamb
- * @category Array
- * @function
- * @see {@link module:lamb.take|take}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
- * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
- * @param {Number} n
- * @returns {Function}
- */
-var takeN = _curry2(take, true);
+function takeFrom (arrayLike, n) {
+    return slice(arrayLike, 0, n);
+}
 
 /**
  * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
@@ -543,8 +546,8 @@ var takeN = _curry2(take, true);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.dropWhile|dropWhile}
- * @see {@link module:lamb.take|take}, {@link module:lamb.takeN|takeN}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -651,7 +654,7 @@ var union = unionBy(identity);
  * @returns {Function}
  */
 function unionBy (iteratee) {
-    return compose(uniquesBy(iteratee), flatMapWith(dropN(0)), list);
+    return compose(uniquesBy(iteratee), flatMapWith(drop(0)), list);
 }
 
 /**
@@ -765,7 +768,7 @@ lamb.append = append;
 lamb.appendTo = appendTo;
 lamb.difference = difference;
 lamb.drop = drop;
-lamb.dropN = dropN;
+lamb.dropFrom = dropFrom;
 lamb.dropWhile = dropWhile;
 lamb.flatMap = flatMap;
 lamb.flatMapWith = flatMapWith;
@@ -783,7 +786,7 @@ lamb.pullFrom = pullFrom;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;
 lamb.take = take;
-lamb.takeN = takeN;
+lamb.takeFrom = takeFrom;
 lamb.takeWhile = takeWhile;
 lamb.transpose = transpose;
 lamb.union = union;

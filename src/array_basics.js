@@ -478,7 +478,7 @@ function reverse (arrayLike) {
  * to ensure that dense arrays are returned.<br/>
  * Also note that, unlike the native method, the <code>start</code> and <code>end</code>
  * parameters aren't optional and will be simply converted to integer.<br/>
- * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+ * See also {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
  * slice to the end of the array-like.
  * @example
  * var arr = [1, 2, 3, 4, 5];
@@ -490,7 +490,7 @@ function reverse (arrayLike) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.sliceAt|sliceAt}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @param {ArrayLike} arrayLike - Any array like object.
  * @param {Number} start - Index at which to begin extraction.
  * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
@@ -524,7 +524,7 @@ function slice (arrayLike, start, end) {
 /**
  * Given the <code>start</code> and <code>end</code> bounds, builds a partial application
  * of {@link module:lamb.slice|slice} expecting the array-like object to slice.<br/>
- * See also {@link module:lamb.drop|drop} and {@link module:lamb.dropN|dropN} if you want a
+ * See also {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
  * slice to the end of the array-like.
  * @example
  * var arr = [1, 2, 3, 4, 5];
@@ -538,7 +538,7 @@ function slice (arrayLike, start, end) {
  * @category Array
  * @function
  * @see {@link module:lamb.slice|slice}
- * @see {@link module:lamb.drop|drop}, {@link module:lamb.dropN|dropN}
+ * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @param {Number} start - Index at which to begin extraction.
  * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
  * @returns {Function}
