@@ -55,15 +55,11 @@ var applyTo = _curry2(application, true);
  * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
  * pass a negative arity.
  * @example
- * function maxArgument () {
- *     return Math.max.apply(null, arguments);
- * }
- *
- * maxArgument(10, 11, 45, 99) // => 99
- * _.aritize(maxArgument, 2)(10, 11, 45, 99) // => 11
+ * Math.max(10, 11, 45, 99) // => 99
+ * _.aritize(Math.max, 2)(10, 11, 45, 99) // => 11
  *
  * @example <caption>Using a negative arity:</caption>
- * _.aritize(maxArgument, -1)(10, 11, 45, 99) // => 45
+ * _.aritize(Math.max, -1)(10, 11, 45, 99) // => 45
  *
  * @memberof module:lamb
  * @category Function
@@ -367,20 +363,16 @@ function getArgAt (idx) {
 }
 
 /**
- * Builds a function that will invoke the given method name on any received object and return
- * the result. If no method with such name is found the function will return <code>undefined</code>.
+ * Builds a function that will invoke the given method name on any received object and
+ * return the result. If no method with such name is found the function will return
+ * <code>undefined</code>.<br/>
  * Along with the method name it's possible to supply some arguments that will be bound to the
- * method call.<br/>
- * Further arguments can also be passed when the function is actually called, and they will be
- * concatenated to the bound ones.<br/>
- * If different objects share a method name it's possible to build polymorphic functions as you
- * can see in the example below.<br/>
- * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this
- * behaviour by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex
- * polymorphic functions without the need of homonymy.<br/>
- * Returning <code>undefined</code> or checking for such value is meant to favor composition and
- * interoperability between the aforementioned functions: for a more standard behaviour see also
- * {@link module:lamb.generic|generic}.
+ * method call. Further arguments can also be passed when the function is actually called, and
+ * they will be concatenated to the bound ones.<br/>
+ * Returning <code>undefined</code> is a behaviour meant to quickly create a case for
+ * {@link module:lamb.adapter|adapter} without the need to check for the existence of the
+ * desired method.<br/>
+ * See also {@link module:lamb.generic|generic} to create functions out of object methods.
  * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
  * var polySlice = _.invoker("slice");
  *

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.51.0-alpha.6
+ * @version 0.51.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.51.0-alpha.6";
+    lamb._version = "0.51.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -1795,8 +1795,7 @@
      * <code>false</code> value is produced, which is returned immediately.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
-     * var isPositive = function (n) { return n > 0; };
-     * var isPositiveEven = _.allOf(isEven, isPositive);
+     * var isPositiveEven = _.allOf(isEven, _.isGT(0));
      *
      * isPositiveEven(-2) // => false
      * isPositiveEven(11) // => false
@@ -1956,9 +1955,7 @@
      * shortcuts to common use cases.
      * @example
      * var isEven = function (n) { return n % 2 === 0};
-     * var halve = function (n) { return n / 2; };
-     * var double = function (n) { return n * 2; };
-     * var halveEvenAndDoubleOdd = _.condition(isEven, halve, double);
+     * var halveEvenAndDoubleOdd = _.condition(isEven, _.divideBy(2), _.multiplyBy(2));
      *
      * halveEvenAndDoubleOdd(5) // => 10
      * halveEvenAndDoubleOdd(6) // => 3
@@ -2287,8 +2284,7 @@
      * where its <code>trueFn</code> parameter is the [identity function]{@link module:lamb.identity}.
      * @example
      * var isEven = function (n) { return n % 2 === 0};
-     * var halve = function (n) { return n / 2; };
-     * var halveUnlessIsEven = _.unless(isEven, halve);
+     * var halveUnlessIsEven = _.unless(isEven, _.divideBy(2));
      *
      * halveUnlessIsEven(5) // => 2.5
      * halveUnlessIsEven(6) // => 6
@@ -2315,9 +2311,8 @@
      * It's a shortcut for a common use case of {@link module:lamb.condition|condition},
      * where its <code>falseFn</code> parameter is the [identity function]{@link module:lamb.identity}.
      * @example
-     * var isEven = function (n) { return n % 2 === 0};
-     * var halve = function (n) { return n / 2; };
-     * var halveIfEven = _.when(isEven, halve);
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var halveIfEven = _.when(isEven, _.divideBy(2));
      *
      * halveIfEven(5) // => 5
      * halveIfEven(6) // => 3
@@ -2372,7 +2367,7 @@
      * @param {Number} a
      * @returns {Function}
      */
-    var add = _curry2(sum);
+    var add = _curry2(sum, true);
 
     /**
      * "Clamps" a number within the given limits, both included.<br/>
@@ -2640,7 +2635,7 @@
      * @param {Number} a
      * @returns {Function}
      */
-    var multiplyBy = _curry2(multiply);
+    var multiplyBy = _curry2(multiply, true);
 
     /**
      * Generates a random integer between two given integers, both included.
@@ -4851,15 +4846,11 @@
      * As {@link module:lamb.slice|slice} is used to extract the arguments, you can also
      * pass a negative arity.
      * @example
-     * function maxArgument () {
-     *     return Math.max.apply(null, arguments);
-     * }
-     *
-     * maxArgument(10, 11, 45, 99) // => 99
-     * _.aritize(maxArgument, 2)(10, 11, 45, 99) // => 11
+     * Math.max(10, 11, 45, 99) // => 99
+     * _.aritize(Math.max, 2)(10, 11, 45, 99) // => 11
      *
      * @example <caption>Using a negative arity:</caption>
-     * _.aritize(maxArgument, -1)(10, 11, 45, 99) // => 45
+     * _.aritize(Math.max, -1)(10, 11, 45, 99) // => 45
      *
      * @memberof module:lamb
      * @category Function
@@ -5163,20 +5154,16 @@
     }
 
     /**
-     * Builds a function that will invoke the given method name on any received object and return
-     * the result. If no method with such name is found the function will return <code>undefined</code>.
+     * Builds a function that will invoke the given method name on any received object and
+     * return the result. If no method with such name is found the function will return
+     * <code>undefined</code>.<br/>
      * Along with the method name it's possible to supply some arguments that will be bound to the
-     * method call.<br/>
-     * Further arguments can also be passed when the function is actually called, and they will be
-     * concatenated to the bound ones.<br/>
-     * If different objects share a method name it's possible to build polymorphic functions as you
-     * can see in the example below.<br/>
-     * {@link module:lamb.condition|Condition} can be used to wrap <code>invoker</code> to avoid this
-     * behaviour by adding a predicate, while {@link module:lamb.adapter|adapter} can build more complex
-     * polymorphic functions without the need of homonymy.<br/>
-     * Returning <code>undefined</code> or checking for such value is meant to favor composition and
-     * interoperability between the aforementioned functions: for a more standard behaviour see also
-     * {@link module:lamb.generic|generic}.
+     * method call. Further arguments can also be passed when the function is actually called, and
+     * they will be concatenated to the bound ones.<br/>
+     * Returning <code>undefined</code> is a behaviour meant to quickly create a case for
+     * {@link module:lamb.adapter|adapter} without the need to check for the existence of the
+     * desired method.<br/>
+     * See also {@link module:lamb.generic|generic} to create functions out of object methods.
      * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
      * var polySlice = _.invoker("slice");
      *

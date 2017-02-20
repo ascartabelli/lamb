@@ -13,7 +13,7 @@
  * @param {Number} a
  * @returns {Function}
  */
-var add = _curry2(sum);
+var add = _curry2(sum, true);
 
 /**
  * "Clamps" a number within the given limits, both included.<br/>
@@ -281,7 +281,7 @@ function multiply (a, b) {
  * @param {Number} a
  * @returns {Function}
  */
-var multiplyBy = _curry2(multiply);
+var multiplyBy = _curry2(multiply, true);
 
 /**
  * Generates a random integer between two given integers, both included.

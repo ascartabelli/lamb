@@ -55,11 +55,11 @@ Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.c
 The URLs above will retrieve the latest version, but you can target a specific one:
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.50.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.51.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.50.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.51.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +110,16 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.51.0 - *2017/02/20***
+  - **API change**: removed the `iteratee` parameter from `uniques`
+  - **API change**: removed `fromIndex` parameter from `contains` and `isIn`
+  - **API change**: `tapArgs` isn't variadic anymore and accepts an array of "tappers" as the second parameter
+  - **API change**: renamed `drop` and `take` to `dropFrom` and `takeFrom`
+  - **API change**: renamed `dropN` and `takeN` to `drop` and `take`
+  - **API change**: the `falseFn` parameter of `condition` is no longer optional
+  - Added `case` to quickly build cases for `adapter`
+  - Added `unionBy` and `uniquesBy`
+
 - **v0.50.0 - *2017/02/08***
   - **API change**: renamed `is` to `areSame` and `isSVZ` to `areSVZ`. The old names are now used for curried version of those functions
   - **API change**: removed `isNot`
@@ -150,9 +160,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Re-added `apply` as a left-curried version of `application`
   - Added `clampWithin` and `isInstanceOf`
   - Updated tests and doc comments
-
-- **v0.46.0 - *2016/12/07***
-  - **Fully compatible with versions down to 0.44.x**
-  - Added `isFinite`, `isInteger`, `isSafeInteger`
-  - Code clean-up and minor performance improvements in sorting functions
-  - First step in improving the documentation site

@@ -55,8 +55,7 @@ function adapter () {
  * <code>false</code> value is produced, which is returned immediately.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
- * var isPositive = function (n) { return n > 0; };
- * var isPositiveEven = _.allOf(isEven, isPositive);
+ * var isPositiveEven = _.allOf(isEven, _.isGT(0));
  *
  * isPositiveEven(-2) // => false
  * isPositiveEven(11) // => false
@@ -216,9 +215,7 @@ function case_ (predicate, fn) {
  * shortcuts to common use cases.
  * @example
  * var isEven = function (n) { return n % 2 === 0};
- * var halve = function (n) { return n / 2; };
- * var double = function (n) { return n * 2; };
- * var halveEvenAndDoubleOdd = _.condition(isEven, halve, double);
+ * var halveEvenAndDoubleOdd = _.condition(isEven, _.divideBy(2), _.multiplyBy(2));
  *
  * halveEvenAndDoubleOdd(5) // => 10
  * halveEvenAndDoubleOdd(6) // => 3
@@ -547,8 +544,7 @@ function not (predicate) {
  * where its <code>trueFn</code> parameter is the [identity function]{@link module:lamb.identity}.
  * @example
  * var isEven = function (n) { return n % 2 === 0};
- * var halve = function (n) { return n / 2; };
- * var halveUnlessIsEven = _.unless(isEven, halve);
+ * var halveUnlessIsEven = _.unless(isEven, _.divideBy(2));
  *
  * halveUnlessIsEven(5) // => 2.5
  * halveUnlessIsEven(6) // => 6
@@ -575,9 +571,8 @@ function unless (predicate, fn) {
  * It's a shortcut for a common use case of {@link module:lamb.condition|condition},
  * where its <code>falseFn</code> parameter is the [identity function]{@link module:lamb.identity}.
  * @example
- * var isEven = function (n) { return n % 2 === 0};
- * var halve = function (n) { return n / 2; };
- * var halveIfEven = _.when(isEven, halve);
+ * var isEven = function (n) { return n % 2 === 0; };
+ * var halveIfEven = _.when(isEven, _.divideBy(2));
  *
  * halveIfEven(5) // => 5
  * halveIfEven(6) // => 3
