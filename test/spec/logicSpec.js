@@ -8,6 +8,7 @@ describe("lamb.logic", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+
     var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
 
     function Foo (value) {
@@ -15,7 +16,11 @@ describe("lamb.logic", function () {
     }
 
     Foo.prototype = {
+        _safeValue: 99,
         value: 0,
+        getSafeValue: function () {
+            return this._safeValue;
+        },
         getValue: function () {
             return typeof this.value === "number" ? this.value : void 0;
         },
@@ -26,15 +31,18 @@ describe("lamb.logic", function () {
             return this.value > 0;
         }
     };
+    Foo.prototype.getIfPositiveOrGetSafe = lamb.condition(Foo.prototype.isPositive, Foo.prototype.getValue, Foo.prototype.getSafeValue);
+    Foo.prototype.getIfPositiveOrUndefined = lamb.case(Foo.prototype.isPositive, Foo.prototype.getValue);
+    Foo.prototype.getWhenPositiveOrElse = lamb.when(Foo.prototype.isPositive, Foo.prototype.getValue);
+    Foo.prototype.getUnlessIsPositiveOrElse = lamb.unless(Foo.prototype.isPositive, Foo.prototype.getValue);
     Foo.prototype.isOdd = lamb.not(Foo.prototype.isEven);
     Foo.prototype.isPositiveEven = lamb.allOf(Foo.prototype.isEven, Foo.prototype.isPositive);
     Foo.prototype.isPositiveOrEven = lamb.anyOf(Foo.prototype.isEven, Foo.prototype.isPositive);
 
-
     describe("adapter", function () {
         it("should accept a series of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
             var isEven = function (n) { return n % 2 === 0; };
-            var filterString = lamb.condition(
+            var filterString = lamb.case(
                 lamb.isType("String"),
                 lamb.compose(lamb.invoker("join", ""), lamb.filter)
             );
@@ -191,49 +199,104 @@ describe("lamb.logic", function () {
         });
     });
 
-    describe("condition", function () {
+    describe("case / condition", function () {
         var halve = lamb.divideBy(2);
         var isGreaterThan5 = lamb.isGT(5);
         var halveIfGreaterThan5 = lamb.condition(isGreaterThan5, halve, lamb.identity);
 
-        it("should build a function that conditionally executes the received functions evaluating a predicate", function () {
-            expect(halveIfGreaterThan5(3)).toBe(3);
-            expect(halveIfGreaterThan5(10)).toBe(5);
+        describe("case", function () {
+            it("should call the received function if the predicate is satisfied by the same arguments", function () {
+                expect(lamb.case(isGreaterThan5, halve)(10)).toBe(5);
+            });
+
+            it("should build a function that returns `undefined` if the predicate isn't satisfied", function () {
+                expect(lamb.case(isGreaterThan5, halve)(3)).toBeUndefined();
+            });
         });
 
-        it("should execute `trueFn` if the predicate is satisfied even if `falseFn` is missing", function () {
-            expect(lamb.condition(isGreaterThan5, halve)(8)).toBe(4);
+        describe("condition", function () {
+            it("should build a function that conditionally executes the received functions evaluating a predicate", function () {
+                expect(halveIfGreaterThan5(3)).toBe(3);
+                expect(halveIfGreaterThan5(10)).toBe(5);
+            });
+
+            it("should build a function throwing an exception if `falseFn` isn't a function or is missing", function () {
+                nonFunctions.forEach(function (value) {
+                    expect(lamb.condition(lamb.always(false), lamb.always(99), value)).toThrow();
+                });
+
+                expect(lamb.condition(lamb.always(false), lamb.always(99))).toThrow();
+            });
         });
 
-        it("should return `undefined` if the predicate isn't satisfied and `falseFn` is missing", function () {
-            expect(lamb.condition(isGreaterThan5, halve)(3)).toBeUndefined();
+        it("should pass all the received arguments to both the predicate and the chosen branching function", function () {
+            var satisfiedPredicate = jasmine.createSpy().and.returnValue(true);
+            var notSatisfiedPredicate = jasmine.createSpy().and.returnValue(false);
+
+            var condA = lamb.condition(satisfiedPredicate, lamb.list, lamb.always([]));
+            var condB = lamb.condition(notSatisfiedPredicate, lamb.always([]), lamb.list);
+            var caseA = lamb.case(satisfiedPredicate, lamb.list);
+            var caseB = lamb.case(notSatisfiedPredicate, lamb.always([]))
+
+            expect(condA(1, 2, 3, 4)).toEqual([1, 2, 3, 4]);
+            expect(condB(5, 6, 7)).toEqual([5, 6, 7]);
+            expect(caseA(8, 9, 10)).toEqual([8, 9, 10]);
+            expect(caseB(11, 12)).toBeUndefined();
+
+            expect(satisfiedPredicate.calls.count()).toBe(2);
+            expect(satisfiedPredicate.calls.argsFor(0)).toEqual([1, 2, 3, 4]);
+            expect(satisfiedPredicate.calls.argsFor(1)).toEqual([8, 9, 10]);
+
+            expect(notSatisfiedPredicate.calls.count()).toBe(2);
+            expect(notSatisfiedPredicate.calls.argsFor(0)).toEqual([5, 6, 7]);
+            expect(notSatisfiedPredicate.calls.argsFor(1)).toEqual([11, 12]);
         });
 
         it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-            var fn = lamb.partial(lamb.condition, lamb, lamb.always("yes"), lamb.always("no"));
+            var condA = lamb.condition(hasEvens, lamb.always("yes"), lamb.always("no"));
+            var condB = lamb.condition(isVowel, lamb.always("yes"), lamb.always("no"));
+            var caseA = lamb.case(hasEvens, lamb.always("yes"));
+            var caseB = lamb.case(isVowel, lamb.always("yes"));
 
-            expect(fn(hasEvens)([1, 3, 5, 7])).toBe("no");
-            expect(fn(hasEvens)([1, 2, 5, 7])).toBe("yes");
-            expect(fn(isVowel)("b")).toBe("no");
-            expect(fn(isVowel)("a")).toBe("yes");
+            expect(condA([1, 2, 5, 7])).toBe("yes");
+            expect(condA([1, 3, 5, 7])).toBe("no");
+            expect(condB("a")).toBe("yes");
+            expect(condB("b")).toBe("no");
+
+            expect(caseA([1, 2, 5, 7])).toBe("yes");
+            expect(caseA([1, 3, 5, 7])).toBeUndefined();
+            expect(caseB("a")).toBe("yes");
+            expect(caseB("b")).toBeUndefined();
+        });
+
+        it("should keep the functions' context", function () {
+            expect(new Foo(55).getIfPositiveOrGetSafe()).toBe(55);
+            expect(new Foo(-55).getIfPositiveOrGetSafe()).toBe(99);
+
+            expect(new Foo(55).getIfPositiveOrUndefined()).toBe(55);
+            expect(new Foo(-55).getIfPositiveOrUndefined()).toBeUndefined();
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {
             nonFunctions.forEach(function (value) {
                 expect(lamb.condition(value, lamb.always(99))).toThrow();
+                expect(lamb.case(value, lamb.always(99))).toThrow();
             });
         });
 
         it("should build a function throwing an exception if `trueFn` isn't a function or is missing", function () {
             nonFunctions.forEach(function (value) {
                 expect(lamb.condition(lamb.always(true), value, lamb.always(99))).toThrow();
+                expect(lamb.case(lamb.always(true), value)).toThrow();
             });
 
             expect(lamb.condition(lamb.always(true))).toThrow();
+            expect(lamb.case(lamb.always(true))).toThrow();
         });
 
         it("should build a function throwing an exception if called without arguments", function () {
             expect(lamb.condition()).toThrow();
+            expect(lamb.case()).toThrow();
         });
     });
 
@@ -394,6 +457,16 @@ describe("lamb.logic", function () {
             expect(incSpy.calls.count()).toBe(2);
             expect(incSpy.calls.argsFor(0)).toEqual([5]);
             expect(incSpy.calls.argsFor(1)).toEqual([4]);
+        });
+
+        it("should keep the functions' context", function () {
+            var positiveFoo = new Foo(33);
+            var negativeFoo = new Foo(-33);
+
+            expect(positiveFoo.getWhenPositiveOrElse(88)).toBe(33);
+            expect(negativeFoo.getWhenPositiveOrElse(88)).toBe(88);
+            expect(positiveFoo.getUnlessIsPositiveOrElse(-88)).toBe(-88);
+            expect(negativeFoo.getUnlessIsPositiveOrElse(-88)).toBe(-33);
         });
 
         it("should build a function throwing an exception if the predicate isn't a function", function () {

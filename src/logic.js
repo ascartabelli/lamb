@@ -1,7 +1,7 @@
 /**
  * Accepts a series of functions and builds a function that applies the received
  * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
- * Meant to work in sinergy with {@link module:lamb.condition|condition} and
+ * Meant to work in sinergy with {@link module:lamb.case|case} and
  * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
@@ -9,7 +9,7 @@
  * var filterString = _.compose(_.invoker("join", ""), _.filter);
  * var filterAdapter = _.adapter(
  *     _.invoker("filter"),
- *     _.condition(_.isType("String"), filterString)
+ *     _.case(_.isType("String"), filterString)
  * );
  *
  * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -25,6 +25,8 @@
  *
  * @memberof module:lamb
  * @category Logic
+ * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.invoker|invoker}
  * @param {...Function} fn
  * @returns {Function}
  */
@@ -180,10 +182,34 @@ function areSVZ (a, b) {
 }
 
 /**
+ * Builds a case for {@link module:lamb.adapter|adapter}.<br/>
+ * The function will apply the received arguments to <code>fn</code> if the predicate is satisfied
+ * with the same arguments, otherwise will return <code>undefined</code>.<br/>
+ * See also {@link module:lamb.condition|condition} to build a condition with two branching functions.
+ * @example
+ * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
+ *
+ * halveIfNumber(2) // => 1
+ * halveIfNumber("2") // => undefined
+ *
+ * @memberof module:lamb
+ * @category Logic
+ * @alias case
+ * @see {@link module:lamb.adapter|adapter}
+ * @see {@link module:lamb.condition|condition}
+ * @param {Function} predicate
+ * @param {Function} fn
+ * @returns {Function}
+ */
+function case_ (predicate, fn) {
+    return function () {
+        return predicate.apply(this, arguments) ? fn.apply(this, arguments) : void 0;
+    };
+}
+
+/**
  * Builds a function that will apply the received arguments to <code>trueFn</code>,
  * if the predicate is satisfied with the same arguments, or to <code>falseFn</code> otherwise.<br/>
- * If <code>falseFn</code> isn't provided and the predicate isn't satisfied the function
- * will return <code>undefined</code>.<br/>
  * Although you can use other <code>condition</code>s as <code>trueFn</code> or <code>falseFn</code>,
  * it's probably better to use {@link module:lamb.adapter|adapter} to build more complex behaviours.<br/>
  * See also {@link module:lamb.unless|unless} and {@link module:lamb.when|when} as they are
@@ -197,29 +223,18 @@ function areSVZ (a, b) {
  * halveEvenAndDoubleOdd(5) // => 10
  * halveEvenAndDoubleOdd(6) // => 3
  *
- * var halveIfNumber = _.condition(_.isType("Number"), halve);
- *
- * halveIfNumber(2) // => 1
- * halveIfNumber("2") // => undefined
- *
  * @memberof module:lamb
  * @category Logic
  * @see {@link module:lamb.unless|unless}
  * @see {@link module:lamb.when|when}
  * @param {Function} predicate
  * @param {Function} trueFn
- * @param {Function} [falseFn]
+ * @param {Function} falseFn
  * @returns {Function}
  */
 function condition (predicate, trueFn, falseFn) {
     return function () {
-        if (predicate.apply(this, arguments)) {
-            return trueFn.apply(this, arguments);
-        } else if (falseFn) {
-            return falseFn.apply(this, arguments);
-        } else {
-            return void 0;
-        }
+        return (predicate.apply(this, arguments) ? trueFn : falseFn).apply(this, arguments);
     };
 }
 
@@ -586,6 +601,7 @@ lamb.allOf = allOf;
 lamb.anyOf = anyOf;
 lamb.areSame = areSame;
 lamb.areSVZ = areSVZ;
+lamb.case = case_;
 lamb.condition = condition;
 lamb.gt = gt;
 lamb.gte = gte;
