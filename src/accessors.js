@@ -490,7 +490,7 @@ function updateIn (source, key, updater) {
  * @param {Function} updater
  * @returns {Array}
  */
-var updateIndex = partial(_setIndex, _, _, null, _);
+var updateIndex = partial(_setIndex, [_, _, null, _]);
 
 /**
  * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided

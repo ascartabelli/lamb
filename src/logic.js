@@ -91,7 +91,7 @@ function allOf () {
  *     {id: 2, name: "Jane", group: "root"},
  *     {id: 3, name: "Mario", group: "admin"}
  * ];
- * var isInGroup = _.partial(_.hasKeyValue, "group");
+ * var isInGroup = _.partial(_.hasKeyValue, ["group"]);
  * var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
  *
  * isSuperUser(users[0]) // => false

@@ -40,7 +40,7 @@
  */
 function checker (predicate, message, keyPaths, pathSeparator) {
     return function (obj) {
-        var getValues = partial(getPathIn, obj, _, pathSeparator);
+        var getValues = partial(getPathIn, [obj, _, pathSeparator]);
 
         return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
     };

@@ -56,7 +56,7 @@ function appendTo (arrayLike, value) {
  */
 function difference (array) {
     var rest = flatMap(_argsTail.apply(null, arguments), drop(0));
-    var isInRest = partial(isIn, rest, _, 0);
+    var isInRest = partial(isIn, [rest, _, 0]);
 
     return filter(array, not(isInRest));
 }
@@ -215,7 +215,7 @@ var flatten = _makeArrayFlattener(true);
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
-var init = partial(slice, _, 0, -1);
+var init = partial(slice, [_, 0, -1]);
 
 /**
  * Inserts the provided element in a copy of an array-like object at the

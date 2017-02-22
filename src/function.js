@@ -392,7 +392,7 @@ function getArgAt (idx) {
  * @returns {Function}
  */
 function invoker (methodName) {
-    return partial(_invoker, _argsTail.apply(null, arguments), methodName);
+    return partial(_invoker, [_argsTail.apply(null, arguments), methodName]);
 }
 
 /**
@@ -415,7 +415,7 @@ function invoker (methodName) {
  * @returns {Function}
  */
 function invokerOn (target) {
-    return partial(_invoker, [], _, target);
+    return partial(_invoker, [[], _, target]);
 }
 
 /**
@@ -427,7 +427,7 @@ function invokerOn (target) {
  *
  * sumArgs(1, 2, 3, 4, 5) // => 15
  *
- * var square = _.partial(Math.pow, _, 2);
+ * var square = _.partial(Math.pow, [_, 2]);
  * var sumSquares = _.mapArgs(sumArgs, square);
  *
  * sumSquares(1, 2, 3, 4, 5) // => 55
@@ -446,7 +446,7 @@ function mapArgs (fn, mapper) {
 /**
  * Creates a pipeline of functions, where each function consumes the result of the previous one.
  * @example
- * var square = _.partial(Math.pow, _, 2);
+ * var square = _.partial(Math.pow, [_, 2]);
  * var getMaxAndSquare = _.pipe(Math.max, square);
  *
  * getMaxAndSquare(3, 5) // => 25

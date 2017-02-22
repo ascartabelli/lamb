@@ -566,7 +566,7 @@ function _makePartial3 (fn, shouldAritize) {
     return function (a, b) {
         var f = shouldAritize && arguments.length !== 2 ? binary(fn) : fn;
 
-        return partial(f, _, a, b);
+        return partial(f, [_, a, b]);
     };
 }
 
@@ -579,7 +579,7 @@ function _makePartial3 (fn, shouldAritize) {
  */
 function _makePartial4 (fn) {
     return function (a, b, c) {
-        return partial(fn, _, a, b, c);
+        return partial(fn, [_, a, b, c]);
     };
 }
 
@@ -915,5 +915,5 @@ var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
  * @returns {Function}
  */
 var _valuesFrom = _curry2(function (getKeys, obj) {
-    return map(getKeys(obj), partial(getIn, obj));
+    return map(getKeys(obj), partial(getIn, [obj]));
 });

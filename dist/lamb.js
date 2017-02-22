@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.51.0
+ * @version 0.52.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.51.0";
+    lamb._version = "0.52.0-alpha.1";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -145,7 +145,7 @@
      *     {id: 2, name: "Jane", active: true, confirmedMail: false},
      *     {id: 3, name: "Mario", active: false, confirmedMail: false}
      * ];
-     * var isKeyTrue = _.partial(_.hasKeyValue, _, true);
+     * var isKeyTrue = _.partial(_.hasKeyValue, [_, true]);
      * var isActive = isKeyTrue("active");
      * var hasConfirmedMail = isKeyTrue("confirmedMail");
      *
@@ -158,13 +158,15 @@
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @param {Function} fn
-     * @param {...*} args
+     * @param {Array} args
      * @returns {Function}
      */
-    function partial (fn) {
-        var args = _argsTail.apply(null, arguments);
-
+    function partial (fn, args) {
         return function () {
+            if (!Array.isArray(args)) {
+                return fn.apply(this, arguments);
+            }
+
             var lastIdx = 0;
             var newArgs = [];
             var argsLen = args.length;
@@ -756,7 +758,7 @@
         return function (a, b) {
             var f = shouldAritize && arguments.length !== 2 ? binary(fn) : fn;
 
-            return partial(f, _, a, b);
+            return partial(f, [_, a, b]);
         };
     }
 
@@ -769,7 +771,7 @@
      */
     function _makePartial4 (fn) {
         return function (a, b, c) {
-            return partial(fn, _, a, b, c);
+            return partial(fn, [_, a, b, c]);
         };
     }
 
@@ -1105,7 +1107,7 @@
      * @returns {Function}
      */
     var _valuesFrom = _curry2(function (getKeys, obj) {
-        return map(getKeys(obj), partial(getIn, obj));
+        return map(getKeys(obj), partial(getIn, [obj]));
     });
 
     /**
@@ -1831,7 +1833,7 @@
      *     {id: 2, name: "Jane", group: "root"},
      *     {id: 3, name: "Mario", group: "admin"}
      * ];
-     * var isInGroup = _.partial(_.hasKeyValue, "group");
+     * var isInGroup = _.partial(_.hasKeyValue, ["group"]);
      * var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
      *
      * isSuperUser(users[0]) // => false
@@ -3391,7 +3393,7 @@
      * @param {Function} updater
      * @returns {Array}
      */
-    var updateIndex = partial(_setIndex, _, _, null, _);
+    var updateIndex = partial(_setIndex, [_, _, null, _]);
 
     /**
      * Builds a partial application of {@link module:lamb.updateIn|updateIn} with the provided
@@ -3577,7 +3579,7 @@
      */
     function difference (array) {
         var rest = flatMap(_argsTail.apply(null, arguments), drop(0));
-        var isInRest = partial(isIn, rest, _, 0);
+        var isInRest = partial(isIn, [rest, _, 0]);
 
         return filter(array, not(isInRest));
     }
@@ -3736,7 +3738,7 @@
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
-    var init = partial(slice, _, 0, -1);
+    var init = partial(slice, [_, 0, -1]);
 
     /**
      * Inserts the provided element in a copy of an array-like object at the
@@ -4732,7 +4734,7 @@
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
      */
-    var sorter = partial(_sorter, _, false, _);
+    var sorter = partial(_sorter, [_, false, _]);
 
     /**
      * Creates a descending sort criterion with the provided <code>reader</code> and
@@ -4751,7 +4753,7 @@
      * @param {Function} [comparer] An optional custom comparer function.
      * @returns {Sorter}
      */
-    var sorterDesc = partial(_sorter, _, true, _);
+    var sorterDesc = partial(_sorter, [_, true, _]);
 
     /**
      * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria.
@@ -5183,7 +5185,7 @@
      * @returns {Function}
      */
     function invoker (methodName) {
-        return partial(_invoker, _argsTail.apply(null, arguments), methodName);
+        return partial(_invoker, [_argsTail.apply(null, arguments), methodName]);
     }
 
     /**
@@ -5206,7 +5208,7 @@
      * @returns {Function}
      */
     function invokerOn (target) {
-        return partial(_invoker, [], _, target);
+        return partial(_invoker, [[], _, target]);
     }
 
     /**
@@ -5218,7 +5220,7 @@
      *
      * sumArgs(1, 2, 3, 4, 5) // => 15
      *
-     * var square = _.partial(Math.pow, _, 2);
+     * var square = _.partial(Math.pow, [_, 2]);
      * var sumSquares = _.mapArgs(sumArgs, square);
      *
      * sumSquares(1, 2, 3, 4, 5) // => 55
@@ -5237,7 +5239,7 @@
     /**
      * Creates a pipeline of functions, where each function consumes the result of the previous one.
      * @example
-     * var square = _.partial(Math.pow, _, 2);
+     * var square = _.partial(Math.pow, [_, 2]);
      * var getMaxAndSquare = _.pipe(Math.max, square);
      *
      * getMaxAndSquare(3, 5) // => 25
@@ -5517,7 +5519,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var merge = partial(_merge, _safeEnumerables);
+    var merge = partial(_merge, [_safeEnumerables]);
 
     /**
      * Same as {@link module:lamb.merge|merge}, but only the own properties of the
@@ -5547,7 +5549,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var mergeOwn = partial(_merge, _safeKeys);
+    var mergeOwn = partial(_merge, [_safeKeys]);
 
     /**
      * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
@@ -6030,7 +6032,7 @@
      */
     function checker (predicate, message, keyPaths, pathSeparator) {
         return function (obj) {
-            var getValues = partial(getPathIn, obj, _, pathSeparator);
+            var getValues = partial(getPathIn, [obj, _, pathSeparator]);
 
             return predicate.apply(obj, map(keyPaths, getValues)) ? [] : [message, keyPaths];
         };

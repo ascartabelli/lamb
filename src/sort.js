@@ -161,7 +161,7 @@ function sortedInsert (arrayLike, element) {
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
  */
-var sorter = partial(_sorter, _, false, _);
+var sorter = partial(_sorter, [_, false, _]);
 
 /**
  * Creates a descending sort criterion with the provided <code>reader</code> and
@@ -180,7 +180,7 @@ var sorter = partial(_sorter, _, false, _);
  * @param {Function} [comparer] An optional custom comparer function.
  * @returns {Sorter}
  */
-var sorterDesc = partial(_sorter, _, true, _);
+var sorterDesc = partial(_sorter, [_, true, _]);
 
 /**
  * Builds a partial application of {@link module:lamb.sort|sort} using the provided criteria.

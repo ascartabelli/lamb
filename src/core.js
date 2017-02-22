@@ -125,7 +125,7 @@ function identity (value) {
  *     {id: 2, name: "Jane", active: true, confirmedMail: false},
  *     {id: 3, name: "Mario", active: false, confirmedMail: false}
  * ];
- * var isKeyTrue = _.partial(_.hasKeyValue, _, true);
+ * var isKeyTrue = _.partial(_.hasKeyValue, [_, true]);
  * var isActive = isKeyTrue("active");
  * var hasConfirmedMail = isKeyTrue("confirmedMail");
  *
@@ -138,13 +138,15 @@ function identity (value) {
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @param {Function} fn
- * @param {...*} args
+ * @param {Array} args
  * @returns {Function}
  */
-function partial (fn) {
-    var args = _argsTail.apply(null, arguments);
-
+function partial (fn, args) {
     return function () {
+        if (!Array.isArray(args)) {
+            return fn.apply(this, arguments);
+        }
+
         var lastIdx = 0;
         var newArgs = [];
         var argsLen = args.length;

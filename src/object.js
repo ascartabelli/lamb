@@ -153,7 +153,7 @@ function make (names, values) {
  * @param {...Object} source
  * @returns {Object}
  */
-var merge = partial(_merge, _safeEnumerables);
+var merge = partial(_merge, [_safeEnumerables]);
 
 /**
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the
@@ -183,7 +183,7 @@ var merge = partial(_merge, _safeEnumerables);
  * @param {...Object} source
  * @returns {Object}
  */
-var mergeOwn = partial(_merge, _safeKeys);
+var mergeOwn = partial(_merge, [_safeKeys]);
 
 /**
  * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are
