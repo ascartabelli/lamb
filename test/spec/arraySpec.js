@@ -527,7 +527,7 @@ describe("lamb.array", function () {
         });
 
         it("should accept array-like objects", function () {
-            expect(lamb.intersection("123", "23")).toEqual(["2", "3"]);
+            expect(lamb.intersection("123", "23", "432", "321")).toEqual(["2", "3"]);
             expect(lamb.intersection(["1", "2"], "23", "42")).toEqual(["2"]);
         });
 

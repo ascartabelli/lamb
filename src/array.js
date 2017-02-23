@@ -38,7 +38,7 @@ function appendTo (arrayLike, value) {
 }
 
 /**
- * Returns an array of items present only in the first of the given arrays.<br/>
+ * Returns an array of items present only in the first of the given array-like objects.<br/>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
@@ -46,19 +46,20 @@ function appendTo (arrayLike, value) {
  * var a3 = [4, 5, 3, 1];
  *
  * _.difference(a1, a2) // => [1, 3]
+ * _.difference(a2, a3) // => [2]
  * _.difference(a1, a2, a3) // => []
  *
  * @memberof module:lamb
  * @category Array
- * @param {Array} array
- * @param {...Array} other
+ * @param {ArrayLike} arrayLike
+ * @param {...ArrayLike} other
  * @returns {Array}
  */
-function difference (array) {
+function difference (arrayLike) {
     var rest = flatMap(_argsTail.apply(null, arguments), drop(0));
     var isInRest = partial(isIn, [rest, _, 0]);
 
-    return filter(array, not(isInRest));
+    return filter(arrayLike, not(isInRest));
 }
 
 /**
@@ -274,7 +275,7 @@ function insert (arrayLike, index, element) {
 var insertAt = _makePartial3(insert);
 
 /**
- * Returns an array of every item that is included in all given arrays.<br>
+ * Returns an array of every item that is included in all given arrays or array-like objects.<br/>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
@@ -282,11 +283,12 @@ var insertAt = _makePartial3(insert);
  * var a3 = [5, 6, 7];
  *
  * _.intersection(a1, a2) // => [2, 4]
+ * _.intersection(a2, a3) // => [5, 6]
  * _.intersection(a1, a3) // => []
  *
  * @memberof module:lamb
  * @category Array
- * @param {...Array} array
+ * @param {...ArrayLike} arrayLike
  * @returns {Array}
  */
 function intersection () {
