@@ -64,17 +64,18 @@ function always (value) {
  */
 function compose () {
     var functions = arguments;
+    var len = functions.length;
 
-    return function () {
-        var len = functions.length - 1;
-        var result = functions[len].apply(this, arguments);
+    return len ? function () {
+        var idx = len - 1;
+        var result = functions[idx].apply(this, arguments);
 
-        for (var i = len - 1; i > -1; i--) {
-            result = functions[i].call(this, result);
+        while (idx--) {
+            result = functions[idx].call(this, result);
         }
 
         return result;
-    };
+    } : identity;
 }
 
 /**

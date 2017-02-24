@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.52.0-alpha.7
+ * @version 0.52.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.52.0-alpha.7";
+    lamb._version = "0.52.0-alpha.8";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -84,17 +84,18 @@
      */
     function compose () {
         var functions = arguments;
+        var len = functions.length;
 
-        return function () {
-            var len = functions.length - 1;
-            var result = functions[len].apply(this, arguments);
+        return len ? function () {
+            var idx = len - 1;
+            var result = functions[idx].apply(this, arguments);
 
-            for (var i = len - 1; i > -1; i--) {
-                result = functions[i].call(this, result);
+            while (idx--) {
+                result = functions[idx].call(this, result);
             }
 
             return result;
-        };
+        } : identity;
     }
 
     /**

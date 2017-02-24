@@ -801,8 +801,12 @@ describe("lamb.function", function () {
             expect(lamb.pipe(fn)(5, 4, 3)).toBe(-2);
         });
 
-        it("should build a function throwing an exception if it is called without arguments", function () {
-            expect(lamb.pipe()).toThrow();
+        it("should behave like `identity` if no functions are passed", function () {
+            var obj = {};
+
+            expect(lamb.pipe()(obj)).toBe(obj);
+            expect(lamb.pipe()()).toBeUndefined();
+            expect(lamb.pipe()(2, 3, 4)).toBe(2);
         });
 
         it("should build a function throwing an exception if any parameter is not a function", function () {
