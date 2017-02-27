@@ -1,8 +1,14 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonFunctions = commons.vars.nonFunctions;
+var nonNils = commons.vars.nonNils;
+var nonNulls = commons.vars.nonNulls;
+var nonUndefineds = commons.vars.nonUndefineds;
+var valuesList = commons.vars.valuesList;
 
 describe("lamb.type", function () {
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    
     describe("isInstanceOf", function () {
         it("should build a predicate to check if an object is an instance of the given constructor", function () {
             function SomeObjA () {}
@@ -51,7 +57,7 @@ describe("lamb.type", function () {
         });
 
         it("should return false for every other value", function () {
-            [[], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+            nonNils.forEach(function (value) {
                 expect(lamb.isNil(value)).toBe(false);
             });
         });
@@ -67,7 +73,7 @@ describe("lamb.type", function () {
         });
 
         it("should return false for every other value", function () {
-            [void 0, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+            nonNulls.forEach(function (value) {
                 expect(lamb.isNull(value)).toBe(false);
             });
         });
@@ -84,9 +90,8 @@ describe("lamb.type", function () {
             expect(isFunction(new Date())).toBe(false);
         });
 
-        it("should build a function returning false for every value if called without arguments or with an invalid type", function () {
-            [null, void 0, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
-                expect(lamb.isType(value)(value)).toBe(false);
+        it("should build a function returning false for every value if called without arguments", function () {
+            valuesList.forEach(function (value) {
                 expect(lamb.isType()(value)).toBe(false);
             });
         });
@@ -102,7 +107,7 @@ describe("lamb.type", function () {
         });
 
         it("should return false for every other value", function () {
-            [null, [], {}, "", /foo/, 0, function () {}, NaN, true, new Date()].forEach(function (value) {
+            nonUndefineds.forEach(function (value) {
                 expect(lamb.isUndefined(value)).toBe(false);
             });
         });
@@ -112,6 +117,7 @@ describe("lamb.type", function () {
         it("should extract the \"type tag\" from the given value", function () {
             var getArgsType = function () { return lamb.type(arguments); };
             expect(getArgsType()).toBe("Arguments");
+            expect(lamb.type(new getArgsType())).toBe("Object");
             expect(lamb.type(void 0)).toBe("Undefined");
             expect(lamb.type(null)).toBe("Null");
             expect(lamb.type(NaN)).toBe("Number");
@@ -128,7 +134,6 @@ describe("lamb.type", function () {
             expect(lamb.type(new Array())).toBe("Array");
             expect(lamb.type(Object.create(null))).toBe("Object");
             expect(lamb.type({})).toBe("Object");
-            expect(lamb.type(new getArgsType())).toBe("Object");
         });
     });
 });

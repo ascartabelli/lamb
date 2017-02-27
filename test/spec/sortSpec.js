@@ -1,10 +1,13 @@
-var lamb = require("../../dist/lamb.js");
-var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+var sparseArrayEquality = commons.equalities.sparseArrayEquality;
+
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 
 describe("lamb.sort", function () {
     var descSorter = lamb.sorterDesc();
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);

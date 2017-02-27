@@ -1,11 +1,15 @@
-var lamb = require("../../dist/lamb.js");
-var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+var sparseArrayEquality = commons.equalities.sparseArrayEquality;
+
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
+var wannabeZeroes = commons.vars.wannabeZeroes;
 
 describe("lamb.array_basics", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
@@ -795,7 +799,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should convert to integer any value received as `start` or `end` following ECMA specifications", function () {
-            // see http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
+            // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
 
             expect(lamb.slice(arr, new Date(1), new Date(4))).toEqual([2, 3, 4]);
             expect(lamb.slice(arr, 1.8, 4.9)).toEqual([2, 3, 4]);
@@ -848,10 +852,8 @@ describe("lamb.array_basics", function () {
             expect(lamb.sliceAt(-4.8, -2.9)(s)).toEqual(["o", "r"]);
             expect(lamb.sliceAt("-4.8", "-2.9")(s)).toEqual(["o", "r"]);
             expect(lamb.sliceAt([-4.8], [-2.9])(s)).toEqual(["o", "r"]);
-        });
 
-        it("should interpret as zeroes values received, or not, as `min` or `max` that don't have an integer representation", function () {
-            [void 0, [1, 2], {a: 2}, "2a", /foo/, NaN, function () {}].forEach(function (value) {
+            wannabeZeroes.forEach(function (value) {
                 expect(lamb.slice(arr, value, arr.length)).toEqual(arrCopy);
                 expect(lamb.slice(s, value, s.length)).toEqual(s.split(""));
                 expect(lamb.slice(arr, 0, value)).toEqual([]);
@@ -861,14 +863,14 @@ describe("lamb.array_basics", function () {
                 expect(lamb.sliceAt(value, s.length)(s)).toEqual(s.split(""));
                 expect(lamb.sliceAt(0, value)(arr)).toEqual([]);
                 expect(lamb.sliceAt(0, value)(s)).toEqual([]);
-
-                expect(lamb.slice(arr, 0)).toEqual([]);
-                expect(lamb.slice(s, 0)).toEqual([]);
-
-                expect(lamb.sliceAt(0)(arr)).toEqual([]);
-                expect(lamb.sliceAt(0)(s)).toEqual([]);
-
             });
+        });
+
+        it("should interpret as zeroes missing values in the `start` or `end` parameter", function () {
+            expect(lamb.slice(arr, 0)).toEqual([]);
+            expect(lamb.slice(s, 0)).toEqual([]);
+            expect(lamb.sliceAt(0)(arr)).toEqual([]);
+            expect(lamb.sliceAt(0)(s)).toEqual([]);
 
             expect(lamb.slice(arr)).toEqual([]);
             expect(lamb.sliceAt()(arr)).toEqual([]);

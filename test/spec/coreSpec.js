@@ -1,8 +1,11 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonArrayLikes = commons.vars.nonArrayLikes;
+var nonFunctions = commons.vars.nonFunctions;
 
 describe("lamb.core", function () {
-    var nonArrayLikes = [/foo/, 1, function () {}, NaN, true, new Date(), {}, null, void 0];
-
     describe("_version", function () {
         it("should equal the package.json version", function () {
             expect(lamb._version).toBe(require("../../package.json").version);
@@ -56,7 +59,7 @@ describe("lamb.core", function () {
         });
 
         it("should build a function throwing an exception if any parameter is not a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.compose(lamb.identity, value)).toThrow();
                 expect(lamb.compose(value, lamb.identity)).toThrow();
             });
@@ -83,7 +86,7 @@ describe("lamb.core", function () {
         });
 
         it("should build a function throwing an exception if called without arguments or if `method` isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.generic(value)).toThrow();
             });
 
@@ -180,7 +183,7 @@ describe("lamb.core", function () {
         });
 
         it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.partial(value)).toThrow();
             });
 

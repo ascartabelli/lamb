@@ -1,12 +1,14 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonStrings = commons.vars.nonStrings;
+var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 
 describe("lamb.object", function () {
-    var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
-    var invalidKeysAsStrings = invalidKeys.map(String);
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-    var wannabeEmptyArrays = wannabeEmptyObjects.concat({});
-
     describe("enumerables", function () {
         it("should build an array with all the enumerables keys of an object", function () {
             var baseFoo = Object.create({a: 1}, {b: {value: 2}});
@@ -86,7 +88,7 @@ describe("lamb.object", function () {
         });
 
         it("should treat every other value as an empty array and return an empty object", function () {
-            [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+            wannabeEmptyArrays.forEach(function (value) {
                 expect(lamb.fromPairs(value)).toEqual({});
             });
         });
@@ -490,7 +492,7 @@ describe("lamb.object", function () {
 
         var oddObject = {};
 
-        invalidKeysAsStrings.forEach(function (key, idx) {
+        nonStringsAsStrings.forEach(function (key, idx) {
             oddObject[key] = idx;
         });
 
@@ -545,8 +547,8 @@ describe("lamb.object", function () {
             it("should convert to string every value in the `whitelist` parameter", function () {
                 var testObj = lamb.merge({bar: "baz"}, oddObject);
 
-                expect(lamb.pick(testObj, invalidKeysAsStrings)).toEqual(oddObject);
-                expect(lamb.pickKeys(invalidKeysAsStrings)(testObj)).toEqual(oddObject);
+                expect(lamb.pick(testObj, nonStringsAsStrings)).toEqual(oddObject);
+                expect(lamb.pickKeys(nonStringsAsStrings)(testObj)).toEqual(oddObject);
             });
 
             it("should throw an exception if called without the main data argument", function () {
@@ -563,7 +565,7 @@ describe("lamb.object", function () {
             });
 
             it("should treat other values for the `whitelist` parameter as an empty array and return an empty object", function () {
-                [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                wannabeEmptyArrays.forEach(function (value) {
                     expect(lamb.pick({a: 1, b: 2}, value)).toEqual({});
                     expect(lamb.pickKeys(value)({a: 1, b: 2})).toEqual({});
                 });
@@ -689,8 +691,8 @@ describe("lamb.object", function () {
             it("should convert to string every value in the `blacklist` parameter", function () {
                 var testObj = lamb.merge({bar: "baz"}, oddObject);
 
-                expect(lamb.skip(testObj, invalidKeysAsStrings)).toEqual({bar: "baz"});
-                expect(lamb.skipKeys(invalidKeysAsStrings)(testObj)).toEqual({bar: "baz"});
+                expect(lamb.skip(testObj, nonStringsAsStrings)).toEqual({bar: "baz"});
+                expect(lamb.skipKeys(nonStringsAsStrings)(testObj)).toEqual({bar: "baz"});
             });
 
             it("should throw an exception if called without the main data argument", function () {
@@ -708,7 +710,7 @@ describe("lamb.object", function () {
             });
 
             it("should treat other values for the `blacklist` parameter as an empty array and return a copy of the source object", function () {
-                [{}, /foo/, 1, function () {}, NaN, true, new Date()].forEach(function (value) {
+                wannabeEmptyArrays.forEach(function (value) {
                     var r1 = lamb.skip(simpleObj, value);
                     var r2 = lamb.skipKeys(value)(simpleObj);
 
@@ -938,7 +940,7 @@ describe("lamb.object", function () {
         });
 
         it("should return a copy of the source object for any other value passed as the keys' map", function () {
-            [/foo/, 1, function () {}, NaN, true, new Date(), null, void 0].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 var r1 = lamb.rename(obj, value);
                 var r2 = lamb.renameKeys(value)(obj);
                 var r3 = lamb.renameWith(lamb.always(value))(obj);

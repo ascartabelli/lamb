@@ -1,4 +1,9 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonFunctions = commons.vars.nonFunctions;
+var valuesList = commons.vars.valuesList;
 
 describe("lamb.logic", function () {
     var isEven = function (n) { return n % 2 === 0; };
@@ -8,8 +13,6 @@ describe("lamb.logic", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
-
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
 
     function Foo (value) {
         this.value = value;
@@ -41,7 +44,6 @@ describe("lamb.logic", function () {
 
     describe("adapter", function () {
         it("should accept a series of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
-            var isEven = function (n) { return n % 2 === 0; };
             var filterString = lamb.case(
                 lamb.isType("String"),
                 lamb.compose(lamb.invoker("join", ""), lamb.filter)
@@ -103,7 +105,7 @@ describe("lamb.logic", function () {
         });
 
         it("should return `true` for any value if not supplied with predicates because of vacuous truth", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date(), function () {}].forEach(function (value) {
+            valuesList.forEach(function (value) {
                 expect(lamb.allOf()(value)).toBe(true);
             });
         });
@@ -140,7 +142,7 @@ describe("lamb.logic", function () {
         });
 
         it("should return `false` for any value if not supplied with predicates", function () {
-            ["foo", null, void 0, {}, [], /foo/, 1, NaN, true, new Date(), function () {}].forEach(function (value) {
+            valuesList.forEach(function (value) {
                 expect(lamb.anyOf()(value)).toBe(false);
             });
         });
@@ -412,7 +414,7 @@ describe("lamb.logic", function () {
     });
 
     describe("unless / when", function () {
-        var increment = function (n) { return ++n; };
+        var increment = lamb.add(1);
         var incArray = lamb.mapWith(increment);
         var a1 = [1, 3, 5];
         var a2 = [1, 4, 5];

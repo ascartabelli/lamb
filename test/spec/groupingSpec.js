@@ -1,5 +1,10 @@
-var lamb = require("../../dist/lamb.js");
-var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+var sparseArrayEquality = commons.equalities.sparseArrayEquality;
+
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 
 describe("lamb.grouping", function () {
     var persons = [
@@ -65,8 +70,6 @@ describe("lamb.grouping", function () {
         return person.age > 20 ? "over20" : "under20";
     };
 
-    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
-
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
@@ -87,7 +90,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should throw an exception if the iteratee isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.count(persons, value); }).toThrow();
                 expect(function () { lamb.countBy(value)(persons); }).toThrow();
             });
@@ -152,7 +155,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should throw an exception if the iteratee isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.group(persons, value); }).toThrow();
                 expect(function () { lamb.groupBy(value)(persons); }).toThrow();
             });
@@ -214,7 +217,7 @@ describe("lamb.grouping", function () {
         });
 
         it("should throw an exception if the iteratee isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(function () { lamb.index(persons, value); }).toThrow();
                 expect(function () { lamb.indexBy(value)(persons); }).toThrow();
             });

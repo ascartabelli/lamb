@@ -1,11 +1,13 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonStrings = commons.vars.nonStrings;
+var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
 
 describe("lamb.object_checking", function () {
-    var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
-    var invalidKeysAsStrings = invalidKeys.map(String);
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-
     describe("Property checking", function () {
         var obj = {"foo" : "bar"};
 
@@ -43,10 +45,9 @@ describe("lamb.object_checking", function () {
             });
 
             it("should convert other values for the `key` parameter to string", function () {
-                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, new Date()];
-                var testObj = lamb.make(keys.map(String), []);
+                var testObj = lamb.make(nonStringsAsStrings, []);
 
-                keys.forEach(function (key) {
+                nonStrings.forEach(function (key) {
                     expect(lamb.has(testObj, key)).toBe(true);
                     expect(lamb.hasKey(key)(testObj)).toBe(true);
                 });
@@ -112,10 +113,9 @@ describe("lamb.object_checking", function () {
             });
 
             it("should convert other values for the `key` parameter to string", function () {
-                var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, new Date()];
-                var testObj = lamb.make(keys.map(String), []);
+                var testObj = lamb.make(nonStringsAsStrings, []);
 
-                keys.forEach(function (key) {
+                nonStrings.forEach(function (key) {
                     expect(lamb.hasOwn(testObj, key)).toBe(true);
                     expect(lamb.hasOwnKey(key)(testObj)).toBe(true);
                 });
@@ -200,14 +200,13 @@ describe("lamb.object_checking", function () {
         });
 
         it("should convert other values for the `key` parameter to string", function () {
-            var d = new Date();
-            var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-            var stringKeys = keys.map(String);
-            var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var testObj = lamb.make(stringKeys, values);
+            var testObj = lamb.make(
+                nonStringsAsStrings,
+                lamb.range(0, nonStringsAsStrings.length, 1)
+            );
 
-            keys.forEach(function (key) {
-                var value = stringKeys.indexOf(String(key));
+            nonStrings.forEach(function (key) {
+                var value = nonStringsAsStrings.indexOf(String(key));
                 expect(lamb.hasKeyValue(key, value)(testObj)).toBe(true);
             });
 
@@ -324,10 +323,10 @@ describe("lamb.object_checking", function () {
 
         it("should convert other values for the `path` parameter to string", function () {
             var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var testObj = lamb.make(invalidKeysAsStrings, values);
+            var testObj = lamb.make(nonStringsAsStrings, values);
 
-            invalidKeys.forEach(function (key) {
-                var value = values[invalidKeysAsStrings.indexOf(String(key))];
+            nonStrings.forEach(function (key) {
+                var value = values[nonStringsAsStrings.indexOf(String(key))];
                 expect(lamb.hasPathValue(key, value, "_")(testObj)).toBe(true);
             });
 
@@ -418,14 +417,13 @@ describe("lamb.object_checking", function () {
         });
 
         it("should convert other values for the `key` parameter to string", function () {
-            var d = new Date();
-            var keys = [null, void 0, {a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-            var stringKeys = keys.map(String);
-            var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var testObj = lamb.make(stringKeys, values);
+            var testObj = lamb.make(
+                nonStringsAsStrings,
+                lamb.range(0, nonStringsAsStrings.length, 1)
+            );
 
-            keys.forEach(function (key) {
-                var value = stringKeys.indexOf(String(key));
+            nonStrings.forEach(function (key) {
+                var value = nonStringsAsStrings.indexOf(String(key));
 
                 expect(lamb.keySatisfies(isValue(value), key)(testObj)).toBe(true);
             });
@@ -582,9 +580,9 @@ describe("lamb.object_checking", function () {
 
         it("should convert other values for the `path` parameter to string", function () {
             var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var testObj = lamb.make(invalidKeysAsStrings, values);
+            var testObj = lamb.make(nonStringsAsStrings, values);
 
-            invalidKeys.forEach(function (key) {
+            nonStrings.forEach(function (key) {
                 expect(lamb.pathExists(key, "_")(testObj)).toBe(true);
                 expect(lamb.pathExistsIn(testObj, key, "_")).toBe(true);
             });
@@ -720,9 +718,9 @@ describe("lamb.object_checking", function () {
 
         it("should convert other values for the `path` parameter to string", function () {
             var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var testObj = lamb.make(invalidKeysAsStrings, values);
+            var testObj = lamb.make(nonStringsAsStrings, values);
 
-            invalidKeys.forEach(function (key, idx) {
+            nonStrings.forEach(function (key, idx) {
                 expect(lamb.pathSatisfies(isValue(values[idx]), key, "_")(testObj)).toBe(true);
             });
 

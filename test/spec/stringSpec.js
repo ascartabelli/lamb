@@ -1,5 +1,8 @@
+var commons = require("../commons.js");
 
-var lamb = require("../../dist/lamb.js");
+var lamb = commons.lamb;
+
+var wannabeZeroes = commons.vars.wannabeZeroes;
 
 describe("lamb.string", function () {
     describe("padLeft / padRight", function () {
@@ -20,9 +23,9 @@ describe("lamb.string", function () {
             expect(lamb.padRight(source, "-", -1)).toBe("foo");
             expect(lamb.padRight(source, "-", 3)).toBe("foo");
 
-            [null, void 0, /foo/, [], function () {}, NaN, {}].forEach(function (value) {
-                expect(lamb.padLeft("", "-", value)).toBe("");
-                expect(lamb.padRight("", "-", value)).toBe("");
+            wannabeZeroes.forEach(function (value) {
+                expect(lamb.padLeft(source, "-", value)).toBe("foo");
+                expect(lamb.padRight(source, "-", value)).toBe("foo");
             });
         });
 
@@ -39,11 +42,13 @@ describe("lamb.string", function () {
         it("should convert to string values received as padding characters", function () {
             var d = new Date();
             var dChar = String(d)[0];
-            var values = [null, void 0, [7,8], /foo/, 1, function () {}, NaN, true, d, {a: 2}];
+            var values = [null, void 0, [7, 8], /foo/, 1, function () {}, NaN, true, d, {a: 2}];
             var resultsA = ["nnfoo", "uufoo", "77foo", "//foo", "11foo", "fffoo", "NNfoo", "ttfoo", dChar + dChar + "foo", "[[foo"]
+            var resultsB = ["foonn", "foouu", "foo77", "foo//", "foo11", "fooff", "fooNN", "foott", "foo" + dChar + dChar, "foo[["];
+
             values.forEach(function (value, idx) {
                 expect(lamb.padLeft(source, value, 5)).toBe(resultsA[idx]);
-                // expect(lamb.padRight(source, value, 5)).toBe("foo  ");
+                expect(lamb.padRight(source, value, 5)).toBe(resultsB[idx]);
             });
         });
 
@@ -88,8 +93,8 @@ describe("lamb.string", function () {
             expect(lamb.repeat(source, 3.8)).toBe("foofoofoo");
         });
 
-        it("should convert to number every other value passed as the `times` parameter", function () {
-            [null, void 0, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+        it("should convert to integer every other value passed as the `times` parameter", function () {
+            wannabeZeroes.forEach(function (value) {
                 expect(lamb.repeat("foo", value)).toBe("");
             });
 

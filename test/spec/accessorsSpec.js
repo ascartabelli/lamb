@@ -1,9 +1,16 @@
-var lamb = require("../../dist/lamb.js");
-var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+var sparseArrayEquality = commons.equalities.sparseArrayEquality;
+
+var nonStrings = commons.vars.nonStrings;
+var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
+var nonFunctions = commons.vars.nonFunctions;
+var nonIntegers = commons.vars.nonIntegers;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
+var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
 
 describe("lamb.accessors", function () {
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
@@ -15,7 +22,6 @@ describe("lamb.accessors", function () {
         var sparseArr = [, , 3, ,];
         var sparseArrCopy = sparseArr.slice();
         var sparseArrAsDense = [void 0, void 0, 3, void 0];
-        var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
         afterEach(function () {
             expect(arr).toEqual(arrCopy);
@@ -68,21 +74,29 @@ describe("lamb.accessors", function () {
                 expect(function () { lamb.last(void 0); }).toThrow();
             });
 
-            it("should return undefined for every other value and when no index is supplied, the index isn't an integer or the index is out of bounds", function () {
-                [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
-                    expect(lamb.getIndex(arr, v)).toBeUndefined();
-                    expect(lamb.getAt(v)(arr)).toBeUndefined();
-                });
-
+            it("should return `undefined` for any other value", function () {
                 wannabeEmptyArrays.forEach(function (v) {
                     expect(lamb.getIndex(v, 2)).toBeUndefined();
                     expect(lamb.getAt(2)(v)).toBeUndefined();
                     expect(lamb.head(v)).toBeUndefined();
                     expect(lamb.last(v)).toBeUndefined();
                 });
+            });
 
-                expect(lamb.getIndex(arr, 2.2)).toBeUndefined();
-                expect(lamb.getAt("1")(arr)).toBeUndefined();
+            it("should return `undefined` if the index is out of bounds", function () {
+                expect(lamb.getIndex(arr, -6)).toBeUndefined();
+                expect(lamb.getIndex(arr, 66)).toBeUndefined();
+
+                expect(lamb.getAt(-6)(arr)).toBeUndefined();
+                expect(lamb.getAt(66)(arr)).toBeUndefined();
+            });
+
+            it("should return `undefined` when no index is supplied or the index isn't an integer", function () {
+                nonIntegers.forEach(function (v) {
+                    expect(lamb.getIndex(arr, v)).toBeUndefined();
+                    expect(lamb.getAt(v)(arr)).toBeUndefined();
+                });
+
                 expect(lamb.getIndex(arr)).toBeUndefined();
                 expect(lamb.getAt()(arr)).toBeUndefined();
                 expect(lamb.head([])).toBeUndefined();
@@ -124,14 +138,13 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
-                var values = [NaN, null, void 0, {}, [], [2], "a", "2", "2.5", 2.5];
-                var results = values.reduce(function (result, value) {
+                var results = nonIntegers.reduce(function (result, value) {
                     result.push(lamb.setIndex(arr, value, 99));
                     result.push(lamb.setAt(value, 99)(arr));
 
                     return result;
                 }, []);
-                var results2 = values.reduce(function (result, value) {
+                var results2 = nonIntegers.reduce(function (result, value) {
                     result.push(lamb.setIndex(sparseArr, value, 99));
                     result.push(lamb.setAt(value, 99)(sparseArr));
 
@@ -238,14 +251,13 @@ describe("lamb.accessors", function () {
             });
 
             it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
-                var values = [NaN, null, void 0, {}, [], [2], "a", "2", "2.5", 2.5];
-                var results = values.reduce(function (result, value) {
+                var results = nonIntegers.reduce(function (result, value) {
                     result.push(lamb.updateIndex(arr, value, fn99));
                     result.push(lamb.updateAt(value, fn99)(arr));
 
                     return result;
                 }, []);
-                var results2 = values.reduce(function (result, value) {
+                var results2 = nonIntegers.reduce(function (result, value) {
                     result.push(lamb.updateIndex(sparseArr, value, fn99));
                     result.push(lamb.updateAt(value, fn99)(sparseArr));
 
@@ -324,10 +336,6 @@ describe("lamb.accessors", function () {
     });
 
     describe("Object accessors", function () {
-        var invalidKeys = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date()];
-        var invalidKeysAsStrings = invalidKeys.map(String);
-        var wannabeEmptyObjects = [/foo/, 1, function () {}, NaN, true, new Date()];
-
         describe("getIn / getKey", function () {
             var obj = {"foo" : 1, "bar" : 2, "baz" : 3};
             Object.defineProperty(obj, "qux", {value: 4});
@@ -371,17 +379,19 @@ describe("lamb.accessors", function () {
             });
 
             it("should convert other values for the `key` parameter to string", function () {
-                var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                var testObj = lamb.make(invalidKeysAsStrings, values);
+                var values = lamb.range(0, nonStringsAsStrings.length, 1);
+                var testObj = lamb.make(nonStringsAsStrings, values);
 
-                invalidKeys.forEach(function (key) {
-                    var value = values[invalidKeysAsStrings.indexOf(String(key))];
+                nonStrings.forEach(function (key) {
+                    var value = values[nonStringsAsStrings.indexOf(String(key))];
                     expect(lamb.getIn(testObj, key)).toBe(value);
                     expect(lamb.getKey(key)(testObj)).toBe(value);
                 });
 
-                expect(lamb.getIn(testObj)).toBe(1);
-                expect(lamb.getKey()(testObj)).toBe(1);
+                var idx = nonStringsAsStrings.indexOf("undefined");
+
+                expect(lamb.getIn(testObj)).toBe(idx);
+                expect(lamb.getKey()(testObj)).toBe(idx);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -508,10 +518,10 @@ describe("lamb.accessors", function () {
 
             it("should convert other values for the `path` parameter to string", function () {
                 var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                var testObj = lamb.make(invalidKeysAsStrings, values);
+                var testObj = lamb.make(nonStringsAsStrings, values);
 
-                invalidKeys.forEach(function (key) {
-                    var value = values[invalidKeysAsStrings.indexOf(String(key))];
+                nonStrings.forEach(function (key) {
+                    var value = values[nonStringsAsStrings.indexOf(String(key))];
                     expect(lamb.getPathIn(testObj, key, "_")).toBe(value);
                     expect(lamb.getPath(key, "_")(testObj)).toBe(value);
                 });
@@ -615,9 +625,9 @@ describe("lamb.accessors", function () {
 
                 it("should convert other values for the `key` parameter to string", function () {
                     var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                    var testObj = lamb.make(invalidKeysAsStrings, values);
+                    var testObj = lamb.make(nonStringsAsStrings, values);
 
-                    invalidKeys.forEach(function (key) {
+                    nonStrings.forEach(function (key) {
                         var expected = lamb.merge(testObj);
                         expected[String(key)] = 99;
 
@@ -729,9 +739,9 @@ describe("lamb.accessors", function () {
 
                 it("should convert other values for the `key` parameter to string", function () {
                     var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                    var testObj = lamb.make(invalidKeysAsStrings, values);
+                    var testObj = lamb.make(nonStringsAsStrings, values);
 
-                    invalidKeys.forEach(function (key) {
+                    nonStrings.forEach(function (key) {
                         var expected = lamb.merge(testObj);
                         expected[String(key)] = 99;
 
@@ -965,9 +975,9 @@ describe("lamb.accessors", function () {
 
                 it("should convert other values for the `path` parameter to string", function () {
                     var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                    var testObj = lamb.make(invalidKeysAsStrings, values);
+                    var testObj = lamb.make(nonStringsAsStrings, values);
 
-                    invalidKeys.forEach(function (key) {
+                    nonStrings.forEach(function (key) {
                         var expected = lamb.merge(testObj);
                         expected[String(key)] = 99;
 
@@ -1222,9 +1232,9 @@ describe("lamb.accessors", function () {
 
                 it("should convert other values for the `path` parameter to string", function () {
                     var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-                    var testObj = lamb.make(invalidKeysAsStrings, values);
+                    var testObj = lamb.make(nonStringsAsStrings, values);
 
-                    invalidKeys.forEach(function (key) {
+                    nonStrings.forEach(function (key) {
                         var expected = lamb.merge(testObj);
                         expected[String(key)] = 99;
 

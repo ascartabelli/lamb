@@ -1,4 +1,15 @@
-var lamb = require("../../dist/lamb.js");
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+
+var nonArrayLikes = commons.vars.nonArrayLikes;
+var nonFunctions = commons.vars.nonFunctions;
+var nonIntegers = commons.vars.nonIntegers;
+var nonStrings = commons.vars.nonStrings;
+var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
+var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
+var wannabeZeroes = commons.vars.wannabeZeroes;
 
 describe("lamb.function", function () {
     function Foo (value) {
@@ -10,12 +21,6 @@ describe("lamb.function", function () {
             return (this.value + a) / b;
         }
     }
-
-    var nonArrayLikes = [/foo/, 1, function () {}, NaN, true, new Date(), {}, null, void 0];
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
-    var invalidMethods = [null, void 0, {a: 2}, [1, 2], /foo/, 1.5, function () {}, NaN, true, new Date ()];
-    var invalidMethodsAsStrings = invalidMethods.map(String);
-    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
 
     describe("application / apply / applyTo", function () {
         it("should apply the desired function to the given arguments", function () {
@@ -108,9 +113,9 @@ describe("lamb.function", function () {
         });
 
         it("should convert the arity to an integer following ECMA specifications", function () {
-            // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
+            // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
 
-            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (value, idx) {
+            wannabeZeroes.forEach(function (value, idx) {
                 expect(lamb.aritize(maxArgumentSpy, value)(0, 1, 2, 3, 4, 5)).toBe(-Infinity);
                 expect(maxArgumentSpy.calls.argsFor(idx).length).toBe(0);
             });
@@ -231,7 +236,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.asPartial(value)).toThrow();
             });
 
@@ -589,10 +594,11 @@ describe("lamb.function", function () {
             expect(lamb.getArgAt(2)()).toBeUndefined();
         });
 
-        it("should build a function returning `undefined` if the index isn't an integer", function () {
-            [-6, 66, NaN, null, void 0, {}, [], [2], "a", "1", "1.5", 1.5].forEach(function (v) {
+        it("should build a function returning `undefined` if the index isn't an integer or if it's missing", function () {
+            nonIntegers.forEach(function (v) {
                 expect(lamb.getArgAt(v)("a", "b", "c")).toBeUndefined();
             });
+
             expect(lamb.getArgAt()("a", "b", "c")).toBeUndefined();
         });
     });
@@ -643,10 +649,10 @@ describe("lamb.function", function () {
         it("should convert to string every value received as a method name", function () {
             var obj = {};
 
-            invalidMethodsAsStrings.forEach(function (method, idx) {
+            nonStringsAsStrings.forEach(function (method, idx) {
                 obj[method] = lamb.always(method);
 
-                expect(lamb.invoker(invalidMethods[idx])(obj)).toBe(method);
+                expect(lamb.invoker(nonStrings[idx])(obj)).toBe(method);
             });
 
             expect(lamb.invoker()(obj)).toBe("undefined");
@@ -659,7 +665,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function that converts to object every other value", function () {
-            [/foo/, 1, function () {}, NaN, true].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(slice(value)).toBeUndefined();
             });
         });
@@ -710,10 +716,10 @@ describe("lamb.function", function () {
             var obj = {};
             var callOnObj = lamb.invokerOn(obj);
 
-            invalidMethodsAsStrings.forEach(function (method, idx) {
+            nonStringsAsStrings.forEach(function (method, idx) {
                 obj[method] = lamb.always(method);
 
-                expect(callOnObj(invalidMethods[idx])).toBe(method);
+                expect(callOnObj(nonStrings[idx])).toBe(method);
             });
 
             expect(callOnObj()).toBe("undefined");
@@ -726,7 +732,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function that converts to object every other value", function () {
-            [/foo/, 1, function () {}, NaN, true].forEach(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.invokerOn(value)("someMethod")).toBeUndefined();
             });
         });
@@ -796,7 +802,7 @@ describe("lamb.function", function () {
         });
 
         it("should build a function throwing an exception if any parameter is not a function", function () {
-            [void 0, null, {}, [1, 2], "foo", /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonFunctions.forEach(function (value) {
                 expect(lamb.pipe(lamb.identity, value)).toThrow();
                 expect(lamb.pipe(value, lamb.identity)).toThrow();
             });

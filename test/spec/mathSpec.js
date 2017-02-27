@@ -1,5 +1,9 @@
+var commons = require("../commons.js");
 
-var lamb = require("../../dist/lamb.js");
+var lamb = commons.lamb;
+
+var nonNumbers = commons.vars.nonNumbers;
+var wannabeNaNs = commons.vars.wannabeNaNs;
 
 describe("lamb.math", function () {
     describe("add / sum", function () {
@@ -58,8 +62,7 @@ describe("lamb.math", function () {
             expect(lamb.clampWithin(null, 2)(-1)).toBe(0);
             expect(lamb.clampWithin(-1, null)(5)).toBe(0);
 
-            // NaNs if converted to Number
-            [void 0, [1, 2], {a: 2}, "2a", /foo/, NaN, function () {}].forEach(function (value) {
+            wannabeNaNs.forEach(function (value) {
                 expect(lamb.clamp(value, 99, 100)).toEqual(NaN);
                 expect(lamb.clamp(99, value, 100)).toBe(99);
                 expect(lamb.clamp(99, value, 98)).toBe(98);
@@ -115,7 +118,7 @@ describe("lamb.math", function () {
         });
 
         it("should return `false` for any non-number value and when it's called without arguments", function () {
-            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+            nonNumbers.forEach(function (value) {
                 expect(lamb.isFinite(value)).toBe(false);
             });
 
@@ -135,7 +138,7 @@ describe("lamb.math", function () {
         });
 
         it("should return `false` for any non-number value and when it's called without arguments", function () {
-            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+            nonNumbers.forEach(function (value) {
                 expect(lamb.isInteger(value)).toBe(false);
             });
 
@@ -158,7 +161,7 @@ describe("lamb.math", function () {
         });
 
         it("should return `false` for any non-number value and when it's called without arguments", function () {
-            ["2", null, void 0, {}, [1], /foo/, function () {}, true, new Date()].forEach(function (value) {
+            nonNumbers.forEach(function (value) {
                 expect(lamb.isSafeInteger(value)).toBe(false);
             });
 

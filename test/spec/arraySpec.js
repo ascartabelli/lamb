@@ -1,12 +1,17 @@
-var lamb = require("../../dist/lamb.js");
-var sparseArrayEquality = require("../custom_equalities.js").sparseArrayEquality;
+var commons = require("../commons.js");
+
+var lamb = commons.lamb;
+var sparseArrayEquality = commons.equalities.sparseArrayEquality;
+
+var nonStrings = commons.vars.nonStrings;
+var nonArrayLikes = commons.vars.nonArrayLikes;
+var nonFunctions = commons.vars.nonFunctions;
+var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
+var wannabeZeroes = commons.vars.wannabeZeroes;
 
 describe("lamb.array", function () {
     // to check "truthy" and "falsy" values returned by predicates
     var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
-    var wannabeEmptyArrays = [/foo/, 1, function () {}, NaN, true, new Date(), {}];
-    var nonArrayLikes = wannabeEmptyArrays.concat(null, void 0);
-    var nonFunctions = [null, void 0, {}, [], /foo/, "foo", 1, NaN, true, new Date()];
 
     beforeEach(function() {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
@@ -151,7 +156,7 @@ describe("lamb.array", function () {
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
-            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+            wannabeZeroes.forEach(function (value) {
                 expect(lamb.drop(value)(arr)).toEqual(arr);
                 expect(lamb.dropFrom(arr, value)).toEqual(arr);
             });
@@ -456,7 +461,7 @@ describe("lamb.array", function () {
         });
 
         it("should convert the index to an integer following ECMA specifications", function () {
-            // see http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger
+            // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
             var r = [99, 1, 2, 3, 4, 5];
 
             [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (value) {
@@ -640,18 +645,18 @@ describe("lamb.array", function () {
 
     describe("pluck / pluckKey", function () {
         var arr = [
-            {"foo": 1, "bar": 2, "baz": 3},
-            {"foo": 34, "bar": 22, "baz": 73},
-            {"foo": 45, "bar": 21, "baz": 83},
-            {"foo": 65, "bar": 92, "baz": 39}
+            {bar: 1, baz: 2, qux: 3},
+            {bar: 34, baz: 22, qux: 73},
+            {bar: 45, baz: 21, qux: 83},
+            {bar: 65, baz: 92, qux: 39}
         ];
 
         var lists = [[1, 2], [3, 4, 5], [6]];
         var s = "hello";
 
         it("should return an array of values taken from the given property of the source array elements", function () {
-            expect(lamb.pluck(arr, "bar")).toEqual([2, 22, 21, 92]);
-            expect(lamb.pluckKey("bar")(arr)).toEqual([2, 22, 21, 92]);
+            expect(lamb.pluck(arr, "baz")).toEqual([2, 22, 21, 92]);
+            expect(lamb.pluckKey("baz")(arr)).toEqual([2, 22, 21, 92]);
             expect(lamb.pluck(lists, "length")).toEqual([2, 3, 1]);
             expect(lamb.pluckKey("length")(lists)).toEqual([2, 3, 1]);
         });
@@ -664,38 +669,41 @@ describe("lamb.array", function () {
         it("should return a list of undefined values if no property is specified or if the property doesn't exist", function () {
             var r = [void 0, void 0, void 0, void 0];
 
-            ["length", null, void 0, {}, [], /foo/, 1, NaN, true, new Date()].forEach(function (value) {
+            nonStrings.forEach(function (value) {
                 expect(lamb.pluck(arr, value)).toEqual(r);
                 expect(lamb.pluckKey(value)(arr)).toEqual(r);
             });
+
+            expect(lamb.pluck(arr, "foo")).toEqual(r);
+            expect(lamb.pluckKey("foo")(arr)).toEqual(r);
 
             expect(lamb.pluck(arr)).toEqual(r);
             expect(lamb.pluckKey()(arr)).toEqual(r);
         });
 
         it("should not skip deleted or unassigned indexes in the array-like and throw an exception", function () {
-            var a = [, {"foo": 2}];
+            var a = [, {bar: 2}];
 
-            expect(function () { lamb.pluck(a, "foo"); }).toThrow();
-            expect(function () { lamb.pluckKey("foo")(a); }).toThrow();
+            expect(function () { lamb.pluck(a, "bar"); }).toThrow();
+            expect(function () { lamb.pluckKey("bar")(a); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {
             expect(lamb.pluck).toThrow();
-            expect(lamb.pluckKey("foo")).toThrow();
+            expect(lamb.pluckKey("bar")).toThrow();
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-            expect(function () { lamb.pluck(null, "foo"); }).toThrow();
-            expect(function () { lamb.pluck(void 0, "foo"); }).toThrow();
-            expect(function () { lamb.pluckKey("foo")(null); }).toThrow();
-            expect(function () { lamb.pluckKey("foo")(void 0); }).toThrow();
+            expect(function () { lamb.pluck(null, "bar"); }).toThrow();
+            expect(function () { lamb.pluck(void 0, "bar"); }).toThrow();
+            expect(function () { lamb.pluckKey("bar")(null); }).toThrow();
+            expect(function () { lamb.pluckKey("bar")(void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {
             wannabeEmptyArrays.forEach(function (value) {
-                expect(lamb.pluck(value, "foo")).toEqual([]);
-                expect(lamb.pluckKey("foo")(value)).toEqual([]);
+                expect(lamb.pluck(value, "bar")).toEqual([]);
+                expect(lamb.pluckKey("bar")(value)).toEqual([]);
             });
         });
     });
@@ -900,7 +908,7 @@ describe("lamb.array", function () {
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
-            ["foo", null, void 0, {}, [], /foo/, function () {}, NaN, false].forEach(function (value) {
+            wannabeZeroes.forEach(function (value) {
                 expect(lamb.take(value)(arr)).toEqual([]);
                 expect(lamb.takeFrom(arr, value)).toEqual([]);
             });
