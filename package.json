@@ -27,14 +27,14 @@
     "url": "https://github.com/ascartabelli/lamb.git"
   },
   "engines": {
-    "node": ">=0.11.0"
+    "node": ">=4.0.0"
   },
   "scripts": {
     "test": "gulp test",
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.52.0-alpha.3",
+  "version": "0.52.0-alpha.4",
   "devDependencies": {
     "coveralls": "^2.11.16",
     "gulp": "^3.9.1",
@@ -48,7 +48,6 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.11.1",
     "gulp-uglify": "^2.0.1",
-    "gulp-util": "^3.0.8",
     "plato": "^1.7.0"
   },
   "dependencies": {}

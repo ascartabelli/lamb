@@ -4,7 +4,6 @@ var gulp = require("gulp");
 var pkg = require("./package.json");
 var concat = require("gulp-concat");
 var footer = require("gulp-footer");
-var gutil = require("gulp-util");
 var header = require("gulp-header");
 var indent = require("gulp-indent");
 var istanbul = require("gulp-istanbul");
@@ -31,20 +30,13 @@ var scripts = [
 ];
 
 function lint () {
-    // eslint supports node >= 4
-    if (parseInt(process.versions.node, 10) >= 4) {
-        // isolated because of shelljs, again
-        var eslint = require("gulp-eslint");
+    // isolated because of shelljs, again
+    var eslint = require("gulp-eslint");
 
-        return gulp.src("./dist/lamb.js")
-            .pipe(eslint())
-            .pipe(eslint.format())
-            .pipe(eslint.failAfterError());
-    } else {
-        return gutil.log(gutil.colors.yellow(
-            "[skipped linting for node " + process.version + "]"
-        ));
-    }
+    return gulp.src("./dist/lamb.js")
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 }
 
 gulp.task("analysis", function (done) {
