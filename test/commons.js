@@ -114,10 +114,6 @@ var nonNumbers = concat(
     strings
 );
 
-var nonIntegers = concat(nonNumbers, numbers.filter(function (value) {
-    return value % 1 !== 0;
-}));
-
 var valuesList = concat(nils, nonNils);
 
 module.exports = {
@@ -128,7 +124,6 @@ module.exports = {
         nonStringsAsStrings: nonStringsAsStrings,
         nonArrayLikes: nonArrayLikes,
         nonFunctions: nonFunctions,
-        nonIntegers: nonIntegers,
         nonNils: nonNils,
         nonNulls: nonNulls,
         nonNumbers: nonNumbers,

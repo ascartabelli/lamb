@@ -4,7 +4,6 @@ var lamb = commons.lamb;
 
 var nonArrayLikes = commons.vars.nonArrayLikes;
 var nonFunctions = commons.vars.nonFunctions;
-var nonIntegers = commons.vars.nonIntegers;
 var nonStrings = commons.vars.nonStrings;
 var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
@@ -594,12 +593,17 @@ describe("lamb.function", function () {
             expect(lamb.getArgAt(2)()).toBeUndefined();
         });
 
-        it("should build a function returning `undefined` if the index isn't an integer or if it's missing", function () {
-            nonIntegers.forEach(function (v) {
-                expect(lamb.getArgAt(v)("a", "b", "c")).toBeUndefined();
+        it("should convert the `idx` parameter to integer", function () {
+            wannabeZeroes.forEach(function (value) {
+                expect(lamb.getArgAt(value)("a", "b", "c")).toBe("a");
             });
 
-            expect(lamb.getArgAt()("a", "b", "c")).toBeUndefined();
+            [[1], 1.5, true, "1"].forEach(function (value) {
+                expect(lamb.getArgAt(value)("a", "b", "c")).toBe("b");
+            });
+
+            expect(lamb.getArgAt(new Date())("a", "b", "c")).toBeUndefined();
+            expect(lamb.getArgAt()("a", "b", "c")).toBe("a");
         });
     });
 

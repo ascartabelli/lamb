@@ -6,9 +6,9 @@ var sparseArrayEquality = commons.equalities.sparseArrayEquality;
 var nonStrings = commons.vars.nonStrings;
 var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
 var nonFunctions = commons.vars.nonFunctions;
-var nonIntegers = commons.vars.nonIntegers;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
+var wannabeZeroes = commons.vars.wannabeZeroes;
 
 describe("lamb.accessors", function () {
     beforeEach(function() {
@@ -58,6 +58,35 @@ describe("lamb.accessors", function () {
                 expect(lamb.last(sparseArr)).toBe(void 0);
             });
 
+            it("should return `undefined` if the index is out of bounds", function () {
+                expect(lamb.getIndex(arr, -6)).toBeUndefined();
+                expect(lamb.getIndex(arr, 66)).toBeUndefined();
+
+                expect(lamb.getAt(-6)(arr)).toBeUndefined();
+                expect(lamb.getAt(66)(arr)).toBeUndefined();
+
+                expect(lamb.head([])).toBeUndefined();
+                expect(lamb.last([])).toBeUndefined();
+            });
+
+            it("should convert the `index` parameter to integer", function () {
+                wannabeZeroes.forEach(function (value) {
+                    expect(lamb.getIndex(arr, value)).toBe(arr[0]);
+                    expect(lamb.getAt(value)(arr)).toBe(arr[0]);
+                });
+
+                [[1], 1.5, true, "1"].forEach(function (value) {
+                    expect(lamb.getIndex(arr, value)).toBe(arr[1]);
+                    expect(lamb.getAt(value)(arr)).toBe(arr[1]);
+                });
+
+                expect(lamb.getIndex(arr, new Date())).toBeUndefined();
+                expect(lamb.getAt(new Date())(arr)).toBeUndefined();
+
+                expect(lamb.getIndex(arr)).toBe(arr[0]);
+                expect(lamb.getAt()(arr)).toBe(arr[0]);
+            });
+
             it("should throw an exception if called without the data argument", function () {
                 expect(lamb.getIndex).toThrow();
                 expect(lamb.getAt(1)).toThrow();
@@ -81,26 +110,6 @@ describe("lamb.accessors", function () {
                     expect(lamb.head(v)).toBeUndefined();
                     expect(lamb.last(v)).toBeUndefined();
                 });
-            });
-
-            it("should return `undefined` if the index is out of bounds", function () {
-                expect(lamb.getIndex(arr, -6)).toBeUndefined();
-                expect(lamb.getIndex(arr, 66)).toBeUndefined();
-
-                expect(lamb.getAt(-6)(arr)).toBeUndefined();
-                expect(lamb.getAt(66)(arr)).toBeUndefined();
-            });
-
-            it("should return `undefined` when no index is supplied or the index isn't an integer", function () {
-                nonIntegers.forEach(function (v) {
-                    expect(lamb.getIndex(arr, v)).toBeUndefined();
-                    expect(lamb.getAt(v)(arr)).toBeUndefined();
-                });
-
-                expect(lamb.getIndex(arr)).toBeUndefined();
-                expect(lamb.getAt()(arr)).toBeUndefined();
-                expect(lamb.head([])).toBeUndefined();
-                expect(lamb.last([])).toBeUndefined();
             });
         });
 
@@ -137,36 +146,6 @@ describe("lamb.accessors", function () {
                 expect(lamb.setAt(3, 99)(sparseArr)).toEqual(r2);
             });
 
-            it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
-                var results = nonIntegers.reduce(function (result, value) {
-                    result.push(lamb.setIndex(arr, value, 99));
-                    result.push(lamb.setAt(value, 99)(arr));
-
-                    return result;
-                }, []);
-                var results2 = nonIntegers.reduce(function (result, value) {
-                    result.push(lamb.setIndex(sparseArr, value, 99));
-                    result.push(lamb.setAt(value, 99)(sparseArr));
-
-                    return result;
-                }, []);
-
-                results.push(lamb.setIndex(arr));
-                results.push(lamb.setAt()(arr));
-                results2.push(lamb.setIndex(sparseArr));
-                results2.push(lamb.setAt()(sparseArr));
-
-                results.forEach(function (value) {
-                    expect(value).toEqual(arr);
-                    expect(value).not.toBe(arr);
-                });
-
-                results2.forEach(function (value) {
-                    expect(value).toEqual(sparseArrAsDense);
-                    expect(value).not.toBe(sparseArr);
-                });
-            });
-
             it("should return an array copy of the array-like if the index is out of bounds", function () {
                 var newArr = lamb.setIndex(arr, 5, 99);
                 var newArr2 = lamb.setAt(-6, 99)(arr);
@@ -183,6 +162,28 @@ describe("lamb.accessors", function () {
                 expect(newSparseArr).not.toBe(sparseArr);
                 expect(newSparseArr2).toEqual(sparseArrAsDense);
                 expect(newSparseArr2).not.toBe(sparseArr);
+            });
+
+            it("should convert the `index` parameter to integer", function () {
+                var r1 = [99, 2, 3, 4, 5];
+                var r2 = [1, 99, 3, 4, 5];
+                var r3 = [void 0, 2, 3, 4, 5];
+
+                wannabeZeroes.forEach(function (value) {
+                    expect(lamb.setIndex(arr, value, 99)).toEqual(r1);
+                    expect(lamb.setAt(value, 99)(arr)).toEqual(r1);
+                });
+
+                [[1], 1.5, true, "1"].forEach(function (value) {
+                    expect(lamb.setIndex(arr, value, 99)).toEqual(r2);
+                    expect(lamb.setAt(value, 99)(arr)).toEqual(r2);
+                });
+
+                expect(lamb.setIndex(arr, new Date(), 99)).toEqual(arr);
+                expect(lamb.setAt(new Date(), 99)(arr)).toEqual(arr);
+
+                expect(lamb.setIndex(arr)).toEqual(r3);
+                expect(lamb.setAt()(arr)).toEqual(r3);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -250,36 +251,6 @@ describe("lamb.accessors", function () {
                 expect(lamb.updateAt(3, fn99)(sparseArr)).toEqual(r2);
             });
 
-            it("should return an array copy of the array-like if the index is not an integer or if is missing", function () {
-                var results = nonIntegers.reduce(function (result, value) {
-                    result.push(lamb.updateIndex(arr, value, fn99));
-                    result.push(lamb.updateAt(value, fn99)(arr));
-
-                    return result;
-                }, []);
-                var results2 = nonIntegers.reduce(function (result, value) {
-                    result.push(lamb.updateIndex(sparseArr, value, fn99));
-                    result.push(lamb.updateAt(value, fn99)(sparseArr));
-
-                    return result;
-                }, []);
-
-                results.push(lamb.updateIndex(arr));
-                results.push(lamb.updateAt()(arr));
-                results2.push(lamb.updateIndex(sparseArr));
-                results2.push(lamb.updateAt()(sparseArr));
-
-                results.forEach(function (value) {
-                    expect(value).toEqual(arr);
-                    expect(value).not.toBe(arr);
-                });
-
-                results2.forEach(function (value) {
-                    expect(value).toEqual(sparseArrAsDense);
-                    expect(value).not.toBe(sparseArr);
-                });
-            });
-
             it("should return an array copy of the array-like if the index is out of bounds", function () {
                 var newArr = lamb.updateIndex(arr, 5, fn99);
                 var newArr2 = lamb.updateAt(-6, fn99)(arr);
@@ -298,10 +269,22 @@ describe("lamb.accessors", function () {
                 expect(newSparseArr2).not.toBe(sparseArr);
             });
 
-            it("should check the existence of the destination index before trying to apply the received function to it", function () {
-                var toUpperCase = lamb.invoker("toUpperCase");
-                expect(lamb.updateIndex(s, 10, toUpperCase)).toEqual(["a", "b", "c", "d", "e"]);
-                expect(lamb.updateAt(10, toUpperCase)(s)).toEqual(["a", "b", "c", "d", "e"]);
+            it("should convert the `index` parameter to integer", function () {
+                var r1 = [99, 2, 3, 4, 5];
+                var r2 = [1, 99, 3, 4, 5];
+
+                wannabeZeroes.forEach(function (value) {
+                    expect(lamb.updateIndex(arr, value, fn99)).toEqual(r1);
+                    expect(lamb.updateAt(value, fn99)(arr)).toEqual(r1);
+                });
+
+                [[1], 1.5, true, "1"].forEach(function (value) {
+                    expect(lamb.updateIndex(arr, value, fn99)).toEqual(r2);
+                    expect(lamb.updateAt(value, fn99)(arr)).toEqual(r2);
+                });
+
+                expect(lamb.updateIndex(arr, new Date(), fn99)).toEqual(arr);
+                expect(lamb.updateAt(new Date(), fn99)(arr)).toEqual(arr);
             });
 
             it("should throw an exception if the `updater` isn't a function or if is missing", function () {

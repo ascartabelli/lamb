@@ -780,7 +780,7 @@ function _setPathIn (obj, parts, value) {
         );
     }
 
-    return _isArrayIndex(obj, key) ? _setIndex(obj, +key, v) : _setIn(obj, key, v);
+    return _isArrayIndex(obj, key) ? _setIndex(obj, key, v) : _setIn(obj, key, v);
 }
 
 /**
@@ -863,20 +863,18 @@ function _toInteger (value) {
 }
 
 /**
- * Checks if the given index, even negative, is an integer within the provided
- * length. If so returns its natural number equivalent.<br/>
- * Returns <code>undefined<code> otherwise.
+ * Checks if the given number, even negative, represents an array-like index
+ * within the provided length. If so returns its natural number equivalent.<br/>
+ * Returns <code>NaN<code> otherwise.
  * @private
  * @param {Number} idx
  * @param {Number} len
  * @returns {Number}
  */
 function _toNaturalIndex (idx, len) {
-    if (isInteger(idx)) {
-        return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : NaN;
-    }
+    idx = _toInteger(idx);
 
-    return NaN;
+    return idx >= -len && idx < len ? idx < 0 ? idx + len : idx : NaN;
 }
 
 /**
