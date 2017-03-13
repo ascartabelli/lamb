@@ -1235,6 +1235,20 @@ describe("lamb.array", function () {
             it("should throw an exception when called without arguments", function () {
                 expect(lamb.transpose).toThrow();
             });
+
+            it("should throw an exception when a value in the array-like is `nil`", function () {
+                expect(function () { lamb.transpose([null, [1, 2, 3]]); }).toThrow();
+                expect(function () { lamb.transpose([[1, 2, 3], null]); }).toThrow();
+                expect(function () { lamb.transpose([void 0, [1, 2, 3]]); }).toThrow();
+                expect(function () { lamb.transpose([[1, 2, 3], void 0]); }).toThrow();
+            });
+
+            it("should consider other non-array-like values contained in the main array-like as empty arrays", function () {
+                wannabeEmptyArrays.forEach(function (value) {
+                    expect(lamb.transpose([[1, 2, 3], value])).toEqual([]);
+                    expect(lamb.transpose([value, [1, 2, 3]])).toEqual([]);
+                });
+            });
         });
 
         describe("zip", function () {
@@ -1266,6 +1280,8 @@ describe("lamb.array", function () {
             expect(function () { lamb.zip(void 0); }).toThrow();
             expect(function () { lamb.zip([1, 2], null); }).toThrow();
             expect(function () { lamb.zip([1, 2], void 0); }).toThrow();
+            expect(function () { lamb.zip([], null); }).toThrow();
+            expect(function () { lamb.zip([], void 0); }).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {

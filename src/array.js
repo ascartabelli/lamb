@@ -594,7 +594,7 @@ function transpose (arrayLike) {
         return [];
     }
 
-    for (var j = 0, elementLen; j < len && minLen > 0; j++) {
+    for (var j = 0, elementLen; j < len; j++) {
         elementLen = _toArrayLength(arrayLike[j].length);
 
         if (elementLen < minLen) {
