@@ -428,7 +428,9 @@ describe("lamb.array", function () {
 
     describe("insert / insertAt", function () {
         var arr = [1, 2, 3, 4, 5];
-        var result = [1, 2, 3, 99, 4, 5];
+        var result1 = [1, 2, 3, 99, 4, 5];
+        var result2 = [99, 1, 2, 3, 4, 5];
+        var result3 = [1, 2, 3, 4, 5, 99];
 
         afterEach(function () {
             expect(arr).toEqual([1, 2, 3, 4, 5]);
@@ -438,51 +440,48 @@ describe("lamb.array", function () {
             var r1 = lamb.insert(arr, 3, 99);
             var r2 = lamb.insertAt(3, 99)(arr);
 
-            expect(r1).toEqual(result);
-            expect(r2).toEqual(result);
+            expect(r1).toEqual(result1);
+            expect(r2).toEqual(result1);
             expect(r1).not.toBe(arr);
             expect(r2).not.toBe(arr);
         });
 
         it("should insert the element at the end of the array if the provided index is greater than its length", function () {
-            expect(lamb.insert(arr, 99, 99)).toEqual([1, 2, 3, 4, 5, 99]);
-            expect(lamb.insertAt(99, 99)(arr)).toEqual([1, 2, 3, 4, 5, 99]);
+            expect(lamb.insert(arr, 99, 99)).toEqual(result3);
+            expect(lamb.insertAt(99, 99)(arr)).toEqual(result3);
         });
 
         it("should allow the use of negative indexes", function () {
-            expect(lamb.insert(arr, -2, 99)).toEqual(result);
-            expect(lamb.insertAt(-2, 99)(arr)).toEqual(result);
+            expect(lamb.insert(arr, -2, 99)).toEqual(result1);
+            expect(lamb.insertAt(-2, 99)(arr)).toEqual(result1);
         });
 
         it("should insert the element at the start of the array if provided with a negative index which is out of bounds", function () {
-            var r = [99, 1, 2, 3, 4, 5];
-            expect(lamb.insert(arr, -99, 99)).toEqual(r);
-            expect(lamb.insertAt(-99, 99)(arr)).toEqual(r);
+            expect(lamb.insert(arr, -99, 99)).toEqual(result2);
+            expect(lamb.insertAt(-99, 99)(arr)).toEqual(result2);
         });
 
-        it("should convert the index to an integer following ECMA specifications", function () {
+        it("should convert the index to integer following ECMA specifications", function () {
             // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
-            var r = [99, 1, 2, 3, 4, 5];
 
-            [{}, "foo", NaN, null, void 0, function () {}, ["a", "b"]].forEach(function (value) {
-                expect(lamb.insert(arr, value, 99)).toEqual(r);
-                expect(lamb.insertAt(value, 99)(arr)).toEqual(r);
+            wannabeZeroes.forEach(function (value) {
+                expect(lamb.insert(arr, value, 99)).toEqual(result2);
+                expect(lamb.insertAt(value, 99)(arr)).toEqual(result2);
             });
 
-            expect(lamb.insert(arr, [3], 99)).toEqual(result);
-            expect(lamb.insertAt([-2], 99)(arr)).toEqual(result);
-            expect(lamb.insert(arr, 3.6, 99)).toEqual(result);
-            expect(lamb.insert(arr, 3.2, 99)).toEqual(result);
-            expect(lamb.insertAt(-2.8, 99)(arr)).toEqual(result);
-            expect(lamb.insertAt(-2.2, 99)(arr)).toEqual(result);
-            expect(lamb.insert(arr, "-2", 99)).toEqual(result);
-            expect(lamb.insertAt("3", 99)(arr)).toEqual(result);
+            [[3], -2, 3.6, 3.2, -2.8, -2.2, "-2", "3"].forEach(function (value) {
+                expect(lamb.insert(arr, value, 99)).toEqual(result1);
+                expect(lamb.insertAt(value, 99)(arr)).toEqual(result1);
+            });
+
+            expect(lamb.insert(arr, new Date(), 99)).toEqual(result3);
+            expect(lamb.insertAt(new Date(), 99)(arr)).toEqual(result3);
         });
 
         it("should work with array-like objects", function () {
             var s = "12345";
-            expect(lamb.insert(s, -2, "99")).toEqual(result.map(String));
-            expect(lamb.insertAt(3, "99")(s)).toEqual(result.map(String));
+            expect(lamb.insert(s, -2, "99")).toEqual(result1.map(String));
+            expect(lamb.insertAt(3, "99")(s)).toEqual(result1.map(String));
         });
 
         it("should always return dense arrays", function () {
