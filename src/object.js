@@ -143,8 +143,8 @@ function make (names, values) {
  * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
  * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
  *
- * @example <caption>Every other value will be treated as an empty object:</caption>
- * _.merge({a: 2}, null, NaN) // => {a: 2}
+ * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
+ * _.merge({a: 2}, 99, NaN) // => {a: 2}
  *
  * @memberof module:lamb
  * @category Object
@@ -153,7 +153,7 @@ function make (names, values) {
  * @param {...Object} source
  * @returns {Object}
  */
-var merge = partial(_merge, [_safeEnumerables]);
+var merge = partial(_merge, [enumerables]);
 
 /**
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the
@@ -173,8 +173,8 @@ var merge = partial(_merge, [_safeEnumerables]);
  * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
  * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
  *
- * @example <caption>Every other value will be treated as an empty object:</caption>
- * _.mergeOwn({a: 2}, null, NaN) // => {a: 2}
+ * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
+ * _.mergeOwn({a: 2}, 99, NaN) // => {a: 2}
  *
  * @memberof module:lamb
  * @category Object
@@ -183,7 +183,7 @@ var merge = partial(_merge, [_safeEnumerables]);
  * @param {...Object} source
  * @returns {Object}
  */
-var mergeOwn = partial(_merge, [_safeKeys]);
+var mergeOwn = partial(_merge, [keys]);
 
 /**
  * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are

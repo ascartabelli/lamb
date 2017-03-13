@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.52.0-alpha.9
+ * @version 0.52.0-alpha.10
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.52.0-alpha.9";
+    lamb._version = "0.52.0-alpha.10";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -5510,8 +5510,8 @@
      * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
-     * @example <caption>Every other value will be treated as an empty object:</caption>
-     * _.merge({a: 2}, null, NaN) // => {a: 2}
+     * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
+     * _.merge({a: 2}, 99, NaN) // => {a: 2}
      *
      * @memberof module:lamb
      * @category Object
@@ -5520,7 +5520,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var merge = partial(_merge, [_safeEnumerables]);
+    var merge = partial(_merge, [enumerables]);
 
     /**
      * Same as {@link module:lamb.merge|merge}, but only the own properties of the
@@ -5540,8 +5540,8 @@
      * _.mergeOwn([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
-     * @example <caption>Every other value will be treated as an empty object:</caption>
-     * _.mergeOwn({a: 2}, null, NaN) // => {a: 2}
+     * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
+     * _.mergeOwn({a: 2}, 99, NaN) // => {a: 2}
      *
      * @memberof module:lamb
      * @category Object
@@ -5550,7 +5550,7 @@
      * @param {...Object} source
      * @returns {Object}
      */
-    var mergeOwn = partial(_merge, [_safeKeys]);
+    var mergeOwn = partial(_merge, [keys]);
 
     /**
      * Same as {@link module:lamb.pairs|pairs}, but only the own enumerable properties of the object are

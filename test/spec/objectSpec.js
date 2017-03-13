@@ -286,30 +286,12 @@ describe("lamb.object", function () {
             expect(bar).toEqual({d: 4});
         });
 
-        it("should consider values other than objects or array-like objects as empty objects", function () {
-            expect(lamb.merge({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
-            expect(lamb.mergeOwn({a: 2}, /foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({a: 2});
-            expect(lamb.merge(/foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({});
-            expect(lamb.mergeOwn(/foo/, 1, function () {}, null, NaN, void 0, true, new Date())).toEqual({});
-        });
-
-        it("should transform array-like objects in objects with numbered string as properties", function () {
-            expect(lamb.merge([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
-            expect(lamb.mergeOwn([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
-            expect(lamb.merge("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
-            expect(lamb.mergeOwn("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
-        });
-
         describe("merge", function () {
             it("should merge the enumerable properties of the provided sources into a new object without mutating them", function () {
                 var newObj = lamb.merge(foo, bar);
 
                 expect(newObj).toEqual({a: 1, b: 2, c: 3, d: 4});
                 expect(newObj.z).toBeUndefined();
-            });
-
-            it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
-                expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
             });
         });
 
@@ -322,9 +304,44 @@ describe("lamb.object", function () {
                 expect(newObj.b).toBeUndefined();
                 expect(newObj.z).toBeUndefined();
             });
+        });
 
-            it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
-                expect(lamb.mergeOwn({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+        it("should transform array-like objects in objects with numbered string as properties", function () {
+            expect(lamb.merge([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
+            expect(lamb.mergeOwn([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
+            expect(lamb.merge("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
+            expect(lamb.mergeOwn("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
+        });
+
+        it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
+            expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+            expect(lamb.mergeOwn({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
+        });
+
+        it("should return an empty object if called without arguments", function () {
+            expect(lamb.merge()).toEqual({});
+            expect(lamb.mergeOwn()).toEqual({});
+        });
+
+        it("should throw an exception if called with `nil` values", function () {
+            expect(function () { lamb.merge({a: 2}, null); }).toThrow();
+            expect(function () { lamb.merge(null, {a: 2}); }).toThrow();
+            expect(function () { lamb.merge({a: 2}, void 0); }).toThrow();
+            expect(function () { lamb.merge(void 0, {a: 2}); }).toThrow();
+
+            expect(function () { lamb.mergeOwn({a: 2}, null); }).toThrow();
+            expect(function () { lamb.mergeOwn(null, {a: 2}); }).toThrow();
+            expect(function () { lamb.mergeOwn({a: 2}, void 0); }).toThrow();
+            expect(function () { lamb.mergeOwn(void 0, {a: 2}); }).toThrow();
+        });
+
+        it("should consider other values as empty objects", function () {
+            wannabeEmptyObjects.forEach(function (value) {
+                expect(lamb.merge({a: 2}, value)).toEqual({a: 2});
+                expect(lamb.merge(value, {a: 2})).toEqual({a: 2});
+
+                expect(lamb.mergeOwn({a: 2}, value)).toEqual({a: 2});
+                expect(lamb.mergeOwn(value, {a: 2})).toEqual({a: 2});
             });
         });
     });
