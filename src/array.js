@@ -292,6 +292,10 @@ var insertAt = _makePartial3(insert);
  * @returns {Array}
  */
 function intersection () {
+    if (arguments.length === 0) {
+        return [];
+    }
+
     var rest = _argsTail.apply(null, arguments);
 
     return filter(uniques(arguments[0]), function (item) {

@@ -540,8 +540,8 @@ describe("lamb.array", function () {
             expect(lamb.intersection([1, , 3], [void 0, 3], [3, , 4])).toEqual([void 0, 3]);
         });
 
-        it("should throw an exception if called without arguments", function () {
-            expect(lamb.intersection).toThrow();
+        it("should return an empty array if called without arguments", function () {
+            expect(lamb.intersection()).toEqual([]);
         });
 
         it("should throw an exception if any of the array-like is `null` or `undefined`", function () {
