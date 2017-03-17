@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.52.0-alpha.11
+ * @version 0.52.0-alpha.13
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.52.0-alpha.11";
+    lamb._version = "0.52.0-alpha.13";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -155,6 +155,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @see {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.asPartial|asPartial}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
@@ -185,11 +186,71 @@
         };
     }
 
+    /**
+     * Like {@link module:lamb.partial|partial} will build a partially applied function and
+     * it will accept placeholders.<br/>
+     * The difference is that the bound arguments will be appended to the ones received by
+     * the resulting function.
+     * @example
+     * <caption>Explaining the difference with <code>partial</code>:</caption>
+     * var f1 = _.partial(_.list, ["a", "b", "c"]);
+     * var f2 = _.partialRight(_.list, ["a", "b", "c"]);
+     *
+     * f1("d", "e") // => ["a", "b", "c", "d", "e"]
+     * f2("d", "e") // => ["d", "e", "a", "b", "c"]
+     *
+     * @example
+     * <caption>Explaining placeholder substitutions:</caption>
+     * var f1 = _.partial(_.list, ["a", _, _, "d"]);
+     * var f2 = _.partialRight(_.list, ["a", _, _, "d"]);
+     *
+     * f1("b", "c", "e") // => ["a", "b", "c", "d", "e"]
+     * f2("b", "c", "e") // => ["b", "a", "c", "e", "d"]
+     *
+     * @memberof module:lamb
+     * @category Function
+     * @see {@link module:lamb.partial|partial}
+     * @see {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
+     * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @param {Function} fn
+     * @param {Array} args
+     * @returns {Function}
+     */
+    function partialRight (fn, args) {
+        return function () {
+            if (!Array.isArray(args)) {
+                return fn.apply(this, arguments);
+            }
+
+            var lastIdx = arguments.length - 1;
+            var argsLen = args.length;
+            var boundArgs = Array(argsLen);
+            var newArgs = [];
+
+            for (var i = argsLen - 1, boundArg; i > -1; i--) {
+                boundArg = args[i];
+                boundArgs[i] = boundArg === _ ? arguments[lastIdx--] : boundArg;
+            }
+
+            for (i = 0; i <= lastIdx; i++) {
+                newArgs[i] = arguments[i];
+            }
+
+            for (var j = 0; j < argsLen; j++) {
+                newArgs[i++] = boundArgs[j];
+            }
+
+            return fn.apply(this, newArgs);
+        };
+    }
+
     lamb.always = always;
     lamb.compose = compose;
     lamb.generic = generic;
     lamb.identity = identity;
     lamb.partial = partial;
+    lamb.partialRight = partialRight;
 
     /**
      * Builds an array with the received arguments excluding the first one.<br/>
@@ -760,19 +821,6 @@
             var f = shouldAritize && arguments.length !== 2 ? binary(fn) : fn;
 
             return partial(f, [_, a, b]);
-        };
-    }
-
-    /**
-     * Builds a partial application of a quaternary function so that its first parameter
-     * is expected as the last one.
-     * @private
-     * @param {Function} fn
-     * @returns {Function}
-     */
-    function _makePartial4 (fn) {
-        return function (a, b, c) {
-            return partial(fn, [_, a, b, c]);
         };
     }
 
@@ -3239,7 +3287,6 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @see {@link module:lamb.setPathIn|setPathIn}
      * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
      * @param {String} path
@@ -3247,7 +3294,9 @@
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    var setPath = _makePartial4(setPathIn);
+    function setPath (path, value, separator) {
+        return partialRight(setPathIn, [path, value, separator]);
+    }
 
     /**
      * Allows to change a nested value in a copy of the provided object.<br/>
@@ -3433,7 +3482,6 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @function
      * @see {@link module:lamb.updatePathIn|updatePathIn}
      * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
      * @param {String} path
@@ -3441,7 +3489,9 @@
      * @param {String} [separator="."]
      * @returns {Function}
      */
-    var updatePath = _makePartial4(updatePathIn, false);
+    function updatePath (path, updater, separator) {
+        return partialRight(updatePathIn, [path, updater, separator]);
+    }
 
     /**
      * Allows to change a nested value in a copy of the given object by applying the provided
@@ -4913,7 +4963,7 @@
      *
      * @memberof module:lamb
      * @category Function
-     * @see {@link module:lamb.partial|partial}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @param {Function} fn
@@ -4995,7 +5045,8 @@
      * @category Function
      * @see {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
-     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+     * @see {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5022,7 +5073,8 @@
      * @category Function
      * @see {@link module:lamb.curryableRight|curryableRight}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
-     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+     * @see {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5045,7 +5097,8 @@
      * @category Function
      * @see {@link module:lamb.curryable|curryable}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
-     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+     * @see {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5067,7 +5120,8 @@
      * @category Function
      * @see {@link module:lamb.curry|curry}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
-     * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+     * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+     * @see {@link module:lamb.asPartial|asPartial}
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}

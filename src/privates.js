@@ -571,19 +571,6 @@ function _makePartial3 (fn, shouldAritize) {
 }
 
 /**
- * Builds a partial application of a quaternary function so that its first parameter
- * is expected as the last one.
- * @private
- * @param {Function} fn
- * @returns {Function}
- */
-function _makePartial4 (fn) {
-    return function (a, b, c) {
-        return partial(fn, [_, a, b, c]);
-    };
-}
-
-/**
  * Builds a reduce function. The <code>step</code> parameter must be <code>1</code>
  * to build  {@link module:lamb.reduce|reduce} and <code>-1</code> to build
  * {@link module:lamb.reduceRight|reduceRight}.

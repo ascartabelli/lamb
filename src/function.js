@@ -115,7 +115,7 @@ function aritize (fn, arity) {
  *
  * @memberof module:lamb
  * @category Function
- * @see {@link module:lamb.partial|partial}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @param {Function} fn
@@ -197,7 +197,8 @@ function collect () {
  * @category Function
  * @see {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
- * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+ * @see {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -224,7 +225,8 @@ function curry (fn, arity) {
  * @category Function
  * @see {@link module:lamb.curryableRight|curryableRight}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
- * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+ * @see {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -247,7 +249,8 @@ function curryable (fn, arity) {
  * @category Function
  * @see {@link module:lamb.curryable|curryable}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
- * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+ * @see {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -269,7 +272,8 @@ function curryableRight (fn, arity) {
  * @category Function
  * @see {@link module:lamb.curry|curry}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
- * @see {@link module:lamb.partial|partial}, {@link module:lamb.asPartial|asPartial}
+ * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+ * @see {@link module:lamb.asPartial|asPartial}
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}

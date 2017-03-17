@@ -337,7 +337,6 @@ var setKey = _makePartial3(setIn);
  *
  * @memberof module:lamb
  * @category Object
- * @function
  * @see {@link module:lamb.setPathIn|setPathIn}
  * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
  * @param {String} path
@@ -345,7 +344,9 @@ var setKey = _makePartial3(setIn);
  * @param {String} [separator="."]
  * @returns {Function}
  */
-var setPath = _makePartial4(setPathIn);
+function setPath (path, value, separator) {
+    return partialRight(setPathIn, [path, value, separator]);
+}
 
 /**
  * Allows to change a nested value in a copy of the provided object.<br/>
@@ -531,7 +532,6 @@ var updateKey = _makePartial3(updateIn);
  *
  * @memberof module:lamb
  * @category Object
- * @function
  * @see {@link module:lamb.updatePathIn|updatePathIn}
  * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
  * @param {String} path
@@ -539,7 +539,9 @@ var updateKey = _makePartial3(updateIn);
  * @param {String} [separator="."]
  * @returns {Function}
  */
-var updatePath = _makePartial4(updatePathIn, false);
+function updatePath (path, updater, separator) {
+    return partialRight(updatePathIn, [path, updater, separator]);
+}
 
 /**
  * Allows to change a nested value in a copy of the given object by applying the provided
