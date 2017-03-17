@@ -86,14 +86,12 @@ function compose () {
  * @category Function
  * @function
  * @example
- * var arr = [1, 2, 3, 4, 5];
- * var s = "hello";
  * var join = _.generic(Array.prototype.join);
  *
- * join(arr, "-") // => "1-2-3-4-5"
+ * join([1, 2, 3, 4, 5], "-") // => "1-2-3-4-5"
  *
  * // the function will work with any array-like object
- * join("s", "-") // => "h-e-l-l-o"
+ * join("hello", "-") // => "h-e-l-l-o"
  *
  * @param {Function} method
  * @returns {Function}

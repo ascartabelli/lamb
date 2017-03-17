@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.52.0-alpha.13
+ * @version 0.52.0
  * @module lamb
  * @license MIT
  * @preserve
@@ -17,7 +17,7 @@
      * @private
      * @type String
      */
-    lamb._version = "0.52.0-alpha.13";
+    lamb._version = "0.52.0";
 
     // alias used as a placeholder argument for partial application
     var _ = lamb;
@@ -106,14 +106,12 @@
      * @category Function
      * @function
      * @example
-     * var arr = [1, 2, 3, 4, 5];
-     * var s = "hello";
      * var join = _.generic(Array.prototype.join);
      *
-     * join(arr, "-") // => "1-2-3-4-5"
+     * join([1, 2, 3, 4, 5], "-") // => "1-2-3-4-5"
      *
      * // the function will work with any array-like object
-     * join("s", "-") // => "h-e-l-l-o"
+     * join("hello", "-") // => "h-e-l-l-o"
      *
      * @param {Function} method
      * @returns {Function}
@@ -289,7 +287,7 @@
 
     /**
      * Keeps building a partial application of the received function as long
-     * as it's called with placeholders; applies the original function with
+     * as it's called with placeholders; applies the original function to
      * the collected parameters otherwise.
      * @private
      * @param {Function} fn
@@ -810,7 +808,8 @@
      * Builds a partial application of a ternary function so that its first parameter
      * is expected as the last one.<br/>
      * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
-     * the absence of the <code>initialValue</code> transforms the "reduce" into a "fold".
+     * the absence of the <code>initialValue</code> transforms a "fold" operation into a
+     * "reduce" one.
      * @private
      * @param {Function} fn
      * @param {Boolean} shouldAritize
@@ -1241,9 +1240,6 @@
     /**
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
      * test.<br/>
-     * Since version <code>0.34.0</code> this function is no longer a generic version of
-     * [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}
-     * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
      * var isLowerCase = function (s) { return s.toLowerCase() === s; };
@@ -1397,9 +1393,6 @@
 
     /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
-     * Since version <code>0.34.0</code> this function is no longer a generic version of
-     * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
-     * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment:</caption>
      * var addClass = _.curry(function (className, element) {
@@ -1473,9 +1466,6 @@
     /**
      * Builds a new array by applying the iteratee function to each element of the
      * received array-like object.<br/>
-     * Since version <code>0.34.0</code> this function is no longer a generic version of
-     * [Array.prototype.map]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map}
-     * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
      * _.map(["Joe", "Mario", "Jane"], _.invoker("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
@@ -1523,9 +1513,6 @@
     /**
      * Reduces (or folds) the values of an array-like object, starting from the first, to a new
      * value using the provided <code>accumulator</code> function.<br/>
-     * Since version <code>0.34.0</code> this function is no longer a generic version of
-     * [Array.prototype.reduce]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce}
-     * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
      * _.reduce([1, 2, 3, 4], _.sum) // => 10
@@ -1545,9 +1532,6 @@
     /**
      * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last
      * element instead.<br/>
-     * Since version <code>0.34.0</code> this function is no longer a generic version of
-     * [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}
-     * for performance reasons.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @memberof module:lamb
      * @category Array
@@ -1632,12 +1616,11 @@
 
     /**
      * Builds an array by extracting a portion of an array-like object.<br/>
-     * Since version <code>0.48.0</code> this function is no longer a generic version of
-     * [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}
-     * to ensure that dense arrays are returned.<br/>
-     * Also note that, unlike the native method, the <code>start</code> and <code>end</code>
+     * Note that unlike the native array method this function ensures that dense
+     * arrays are returned.<br/>
+     * Also, unlike the native method, the <code>start</code> and <code>end</code>
      * parameters aren't optional and will be simply converted to integer.<br/>
-     * See also {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
+     * See {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
      * slice to the end of the array-like.
      * @example
      * var arr = [1, 2, 3, 4, 5];
@@ -1929,8 +1912,8 @@
      * @category Logic
      * @see {@link module:lamb.is|is}
      * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
-     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
-     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -1958,8 +1941,8 @@
      * @category Logic
      * @see {@link module:lamb.isSVZ|isSVZ}
      * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
-     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
-     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -2110,8 +2093,8 @@
      * @function
      * @see {@link module:lamb.areSame|areSame}
      * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
-     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
-     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
      * @param {*} value
      * @returns {Function}
      */
@@ -2241,8 +2224,8 @@
      * @function
      * @see {@link module:lamb.areSVZ|areSVZ}
      * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
-     * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
-     * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+     * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+     * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
      * @param {*} value
      * @returns {Function}
      */

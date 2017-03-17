@@ -42,24 +42,18 @@ or
 Doing so a `lamb` variable will be created in the global object.
 The source map for the minified file is in the same `dist` folder.
 
-Lamb it's also delivered on a CDN, courtesy of [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
+Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/latest/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.52.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb/dist/lamb.min.js"></script>
-```
-
-The URLs above will retrieve the latest version, but you can target a specific one:
-
-```html
-<script src="https://cdn.jsdelivr.net/lamb/0.51.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.52.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.51.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.52.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -110,6 +104,17 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.52.0 - *2017/03/17***
+  - **API change**: `partial` is no longer variadic and accepts a function and an array of arguments instead
+  - **API change**: `getArgAt` and all array accessors now convert their index parameter to integer
+  - **API change**: reverted change made in v0.50.0 about `compose` and `pipe`: now they return again the `identity` function if called without arguments
+  - **API change**: `merge` and `mergeOwn` now throw for `nil` values and convert to object everything else as before
+  - **API change**: `intersection` now return an empty array if called without parameters
+  - **Fixed**: `transpose` and `zip` now correctly throw when `nil` values, preceded by empty array-likes, are encountered
+  - Added `partialRight`
+  - `difference` and `intersection` are now correctly documented to work with array-like objects
+  - Updated test and moved shared variables to an external file
+
 - **v0.51.0 - *2017/02/20***
   - **API change**: removed the `iteratee` parameter from `uniques`
   - **API change**: removed `fromIndex` parameter from `contains` and `isIn`
@@ -151,12 +156,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `sliceAt`
   - All array functions always return dense arrays now
   - Updated tests
-
-- **v0.47.0 - *2016/12/16***
-  - **API change**: renamed `apply` to `application`
-  - **API change**: renamed `applyArgs` to `applyTo`
-  - **API change**: `clamp` now converts to number its arguments and returns `NaN` if `min` is greater than `max`
-  - **API change**: removed `wrap`
-  - Re-added `apply` as a left-curried version of `application`
-  - Added `clampWithin` and `isInstanceOf`
-  - Updated tests and doc comments

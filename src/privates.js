@@ -35,7 +35,7 @@ function _argsToArrayFrom (idx) {
 
 /**
  * Keeps building a partial application of the received function as long
- * as it's called with placeholders; applies the original function with
+ * as it's called with placeholders; applies the original function to
  * the collected parameters otherwise.
  * @private
  * @param {Function} fn
@@ -556,7 +556,8 @@ function _makeCriterion (criterion) {
  * Builds a partial application of a ternary function so that its first parameter
  * is expected as the last one.<br/>
  * The <code>shouldAritize</code> parameter is for the "reduce" functions, where
- * the absence of the <code>initialValue</code> transforms the "reduce" into a "fold".
+ * the absence of the <code>initialValue</code> transforms a "fold" operation into a
+ * "reduce" one.
  * @private
  * @param {Function} fn
  * @param {Boolean} shouldAritize

@@ -82,9 +82,6 @@ var every = _curry2(everyIn, true);
 /**
  * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
  * test.<br/>
- * Since version <code>0.34.0</code> this function is no longer a generic version of
- * [Array.prototype.filter]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter}
- * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
  * var isLowerCase = function (s) { return s.toLowerCase() === s; };
@@ -238,9 +235,6 @@ var findWhere = _curry2(find, true);
 
 /**
  * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
- * Since version <code>0.34.0</code> this function is no longer a generic version of
- * [Array.prototype.forEach]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
- * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example <caption>Adding a CSS class to all elements of a NodeList in a browser environment:</caption>
  * var addClass = _.curry(function (className, element) {
@@ -314,9 +308,6 @@ var list = _argsToArrayFrom(0);
 /**
  * Builds a new array by applying the iteratee function to each element of the
  * received array-like object.<br/>
- * Since version <code>0.34.0</code> this function is no longer a generic version of
- * [Array.prototype.map]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map}
- * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
  * _.map(["Joe", "Mario", "Jane"], _.invoker("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
@@ -364,9 +355,6 @@ var mapWith = _curry2(map, true);
 /**
  * Reduces (or folds) the values of an array-like object, starting from the first, to a new
  * value using the provided <code>accumulator</code> function.<br/>
- * Since version <code>0.34.0</code> this function is no longer a generic version of
- * [Array.prototype.reduce]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce}
- * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
  * _.reduce([1, 2, 3, 4], _.sum) // => 10
@@ -386,9 +374,6 @@ var reduce = _makeReducer(1);
 /**
  * Same as {@link module:lamb.reduce|reduce}, but starts the fold operation from the last
  * element instead.<br/>
- * Since version <code>0.34.0</code> this function is no longer a generic version of
- * [Array.prototype.reduceRight]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight}
- * for performance reasons.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @memberof module:lamb
  * @category Array
@@ -473,12 +458,11 @@ function reverse (arrayLike) {
 
 /**
  * Builds an array by extracting a portion of an array-like object.<br/>
- * Since version <code>0.48.0</code> this function is no longer a generic version of
- * [Array.prototype.slice]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice}
- * to ensure that dense arrays are returned.<br/>
- * Also note that, unlike the native method, the <code>start</code> and <code>end</code>
+ * Note that unlike the native array method this function ensures that dense
+ * arrays are returned.<br/>
+ * Also, unlike the native method, the <code>start</code> and <code>end</code>
  * parameters aren't optional and will be simply converted to integer.<br/>
- * See also {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
+ * See {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
  * slice to the end of the array-like.
  * @example
  * var arr = [1, 2, 3, 4, 5];

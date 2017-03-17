@@ -140,8 +140,8 @@ function anyOf () {
  * @category Logic
  * @see {@link module:lamb.is|is}
  * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
- * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
- * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+ * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}
@@ -169,8 +169,8 @@ function areSame (a, b) {
  * @category Logic
  * @see {@link module:lamb.isSVZ|isSVZ}
  * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
- * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
- * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+ * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}
@@ -321,8 +321,8 @@ function gte (a, b) {
  * @function
  * @see {@link module:lamb.areSame|areSame}
  * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
- * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
- * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+ * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
  * @param {*} value
  * @returns {Function}
  */
@@ -452,8 +452,8 @@ var isLTE = _curry2(lte, true);
  * @function
  * @see {@link module:lamb.areSVZ|areSVZ}
  * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
- * @see [SameValue comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevalue}
- * @see [SameValueZero comparison]{@link http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero}
+ * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
+ * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
  * @param {*} value
  * @returns {Function}
  */
