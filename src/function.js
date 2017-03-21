@@ -118,6 +118,7 @@ function aritize (fn, arity) {
  * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
  * @param {Function} fn
  * @returns {Function}
  */

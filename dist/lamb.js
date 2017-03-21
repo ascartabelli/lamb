@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.52.0
+ * @version 0.53.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -10,17 +10,42 @@
     "use strict";
 
     var lamb = Object.create(null);
+    var _ = {}; // internal placeholder for partial application
+    var _placeholder = lamb; // default value for public placeholder
 
-    /**
-     * The current module version.
-     * @memberof module:lamb
-     * @private
-     * @type String
-     */
-    lamb._version = "0.52.0";
+    Object.defineProperties(lamb, {
+        /**
+         * The object used as a placeholder in partial application. Its default value is
+         * the <code>lamb</code> object itself.<br/>
+         * The property is public so that you can make Lamb use your own placeholder, however
+         * you can't change it at will or the partially applied functions you defined before the
+         * change won't recognize the former placeholder.
+         * @memberof module:lamb
+         * @category Special properties
+         * @alias @@lamb/placeholder
+         * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
+         * @see {@link module:lamb.asPartial|asPartial}
+         * @type Object
+         */
+        "@@lamb/placeholder": {
+            get: function () {
+                return _placeholder;
+            },
+            set: function (value) {
+                _placeholder = value;
+            }
+        },
 
-    // alias used as a placeholder argument for partial application
-    var _ = lamb;
+        /**
+         * The current library version.
+         * @memberof module:lamb
+         * @category Special properties
+         * @alias @@lamb/version
+         * @readonly
+         * @type String
+         */
+        "@@lamb/version": {value: "0.53.0-alpha.1"}
+    });
 
     // prototype shortcuts
     var _objectProto = Object.prototype;
@@ -136,8 +161,11 @@
     }
 
     /**
-     * Builds a partially applied function. The <code>lamb</code> object itself can be used
-     * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
+     * Builds a partially applied function. The <code>lamb</code> object itself can be
+     * used as a placeholder argument and it's useful to alias it with a short symbol
+     * such as <code>_</code>.<br/>
+     * You can use a custom placeholder by setting the
+     * {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder} property.
      * @example
      * var users = [
      *     {id: 1, name: "John", active: true, confirmedMail: true},
@@ -157,6 +185,7 @@
      * @see {@link module:lamb.asPartial|asPartial}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
      * @param {Function} fn
      * @param {Array} args
      * @returns {Function}
@@ -173,7 +202,7 @@
 
             for (var i = 0, boundArg; i < argsLen; i++) {
                 boundArg = args[i];
-                newArgs[i] = boundArg === _ ? arguments[lastIdx++] : boundArg;
+                newArgs[i] = _isPlaceholder(boundArg) ? arguments[lastIdx++] : boundArg;
             }
 
             for (var len = arguments.length; lastIdx < len; lastIdx++) {
@@ -211,6 +240,7 @@
      * @see {@link module:lamb.asPartial|asPartial}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
      * @param {Function} fn
      * @param {Array} args
      * @returns {Function}
@@ -228,7 +258,7 @@
 
             for (var i = argsLen - 1, boundArg; i > -1; i--) {
                 boundArg = args[i];
-                boundArgs[i] = boundArg === _ ? arguments[lastIdx--] : boundArg;
+                boundArgs[i] = _isPlaceholder(boundArg) ? arguments[lastIdx--] : boundArg;
             }
 
             for (i = 0; i <= lastIdx; i++) {
@@ -303,15 +333,15 @@
             var canApply = true;
 
             for (var i = 0; i < argsLen; i++) {
-                if (arguments[i] === _) {
+                if (_isPlaceholder(arguments[i])) {
                     canApply = false;
                     break;
                 }
             }
 
-            for (var idx = 0, boundArg; idx < argsHolderLen; idx++) {
-                boundArg = argsHolder[idx];
-                newArgs[idx] = lastIdx < argsLen && boundArg === _ ? arguments[lastIdx++] : boundArg;
+            for (var idx = 0, bound; idx < argsHolderLen; idx++) {
+                bound = argsHolder[idx];
+                newArgs[idx] = lastIdx < argsLen && _isPlaceholder(bound) ? arguments[lastIdx++] : bound;
             }
 
             while (lastIdx < argsLen) {
@@ -739,6 +769,16 @@
      * @returns {Boolean}
      */
     var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
+
+    /**
+     * Checks whether the given value is the internal or the public placeholder.
+     * @private
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    function _isPlaceholder (value) {
+        return value === _ || value === _placeholder;
+    }
 
     /**
      * Accepts an object and build a function expecting a key to create a "pair" with the key
@@ -4949,6 +4989,7 @@
      * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+     * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
      * @param {Function} fn
      * @returns {Function}
      */

@@ -51,15 +51,15 @@ function _asPartial (fn, argsHolder) {
         var canApply = true;
 
         for (var i = 0; i < argsLen; i++) {
-            if (arguments[i] === _) {
+            if (_isPlaceholder(arguments[i])) {
                 canApply = false;
                 break;
             }
         }
 
-        for (var idx = 0, boundArg; idx < argsHolderLen; idx++) {
-            boundArg = argsHolder[idx];
-            newArgs[idx] = lastIdx < argsLen && boundArg === _ ? arguments[lastIdx++] : boundArg;
+        for (var idx = 0, bound; idx < argsHolderLen; idx++) {
+            bound = argsHolder[idx];
+            newArgs[idx] = lastIdx < argsLen && _isPlaceholder(bound) ? arguments[lastIdx++] : bound;
         }
 
         while (lastIdx < argsLen) {
@@ -487,6 +487,16 @@ function _isEnumerable (obj, key) {
  * @returns {Boolean}
  */
 var _isOwnEnumerable = generic(_objectProto.propertyIsEnumerable);
+
+/**
+ * Checks whether the given value is the internal or the public placeholder.
+ * @private
+ * @param {*} value
+ * @returns {Boolean}
+ */
+function _isPlaceholder (value) {
+    return value === _ || value === _placeholder;
+}
 
 /**
  * Accepts an object and build a function expecting a key to create a "pair" with the key

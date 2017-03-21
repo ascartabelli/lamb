@@ -1,14 +1,4 @@
 
-// alias used as a placeholder argument for partial application
-var _ = lamb;
-
-// prototype shortcuts
-var _objectProto = Object.prototype;
-var _stringProto = String.prototype;
-
-// constants
-var MAX_ARRAY_LENGTH = 4294967295;
-
 /**
  * Builds a function that returns a constant value.
  * It's actually the simplest form of the K combinator or Kestrel.
@@ -116,8 +106,11 @@ function identity (value) {
 }
 
 /**
- * Builds a partially applied function. The <code>lamb</code> object itself can be used
- * as a placeholder argument and it's useful to alias it with a short symbol such as <code>_</code>.
+ * Builds a partially applied function. The <code>lamb</code> object itself can be
+ * used as a placeholder argument and it's useful to alias it with a short symbol
+ * such as <code>_</code>.<br/>
+ * You can use a custom placeholder by setting the
+ * {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder} property.
  * @example
  * var users = [
  *     {id: 1, name: "John", active: true, confirmedMail: true},
@@ -137,6 +130,7 @@ function identity (value) {
  * @see {@link module:lamb.asPartial|asPartial}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
  * @param {Function} fn
  * @param {Array} args
  * @returns {Function}
@@ -153,7 +147,7 @@ function partial (fn, args) {
 
         for (var i = 0, boundArg; i < argsLen; i++) {
             boundArg = args[i];
-            newArgs[i] = boundArg === _ ? arguments[lastIdx++] : boundArg;
+            newArgs[i] = _isPlaceholder(boundArg) ? arguments[lastIdx++] : boundArg;
         }
 
         for (var len = arguments.length; lastIdx < len; lastIdx++) {
@@ -191,6 +185,7 @@ function partial (fn, args) {
  * @see {@link module:lamb.asPartial|asPartial}
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
+ * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
  * @param {Function} fn
  * @param {Array} args
  * @returns {Function}
@@ -208,7 +203,7 @@ function partialRight (fn, args) {
 
         for (var i = argsLen - 1, boundArg; i > -1; i--) {
             boundArg = args[i];
-            boundArgs[i] = boundArg === _ ? arguments[lastIdx--] : boundArg;
+            boundArgs[i] = _isPlaceholder(boundArg) ? arguments[lastIdx--] : boundArg;
         }
 
         for (i = 0; i <= lastIdx; i++) {

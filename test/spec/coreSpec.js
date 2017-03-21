@@ -6,9 +6,45 @@ var nonArrayLikes = commons.vars.nonArrayLikes;
 var nonFunctions = commons.vars.nonFunctions;
 
 describe("lamb.core", function () {
-    describe("_version", function () {
+    describe("@@lamb/placeholder", function () {
+        it("should be the `lamb` object itself by default", function () {
+            expect(lamb["@@lamb/placeholder"]).toBe(lamb);
+        });
+
+        describe("placheholder change", function () {
+            var __ = {};
+
+            beforeEach(function () {
+                lamb["@@lamb/placeholder"] = __;
+            });
+
+            afterEach(function () {
+                expect(lamb["@@lamb/placeholder"]).toBe(__);
+
+                lamb["@@lamb/placeholder"] = lamb;
+
+                expect(lamb["@@lamb/placeholder"]).toBe(lamb);
+            });
+
+            it("should be possible to use a custom placeholder", function () {
+                var f1 = lamb.partial(lamb.list, ["a", __, __, "d"]);
+                var f2 = lamb.partialRight(lamb.list, ["a", __, __, "d"]);
+                var f3 = lamb.asPartial(lamb.list);
+
+                expect(f1("b", "c", "e")).toEqual(["a", "b", "c", "d", "e"]);
+                expect(f2("b", "c", "e")).toEqual(["b", "a", "c", "e", "d"]);
+                expect(f3("a", __, __, "d")("b", __)("c", __)("e")).toEqual(["a", "b", "c", "d", "e"]);
+            });
+
+            it("should not affect lamb's functions built using partial application", function () {
+                expect(lamb.updateIndex([1, 2, 3], 1, lamb.add(5))).toEqual([1, 7, 3]);
+            });
+        });
+    });
+
+    describe("@@lamb/version", function () {
         it("should equal the package.json version", function () {
-            expect(lamb._version).toBe(require("../../package.json").version);
+            expect(lamb["@@lamb/version"]).toBe(require("../../package.json").version);
         });
     });
 
