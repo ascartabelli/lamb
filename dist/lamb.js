@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.53.0-alpha.1
+ * @version 0.53.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @readonly
          * @type String
          */
-        "@@lamb/version": {value: "0.53.0-alpha.1"}
+        "@@lamb/version": {value: "0.53.0-alpha.2"}
     });
 
     // prototype shortcuts
@@ -318,7 +318,9 @@
     /**
      * Keeps building a partial application of the received function as long
      * as it's called with placeholders; applies the original function to
-     * the collected parameters otherwise.
+     * the collected parameters otherwise.<br/>
+     * The function checks only the public placeholder to gain a little performance
+     * as no function in Lamb is built with {@link module:lamb.asPartial|asPartial}.
      * @private
      * @param {Function} fn
      * @param {Array} argsHolder
@@ -326,29 +328,32 @@
      */
     function _asPartial (fn, argsHolder) {
         return function () {
-            var argsHolderLen = argsHolder.length;
             var argsLen = arguments.length;
             var lastIdx = 0;
             var newArgs = [];
-            var canApply = true;
 
-            for (var i = 0; i < argsLen; i++) {
-                if (_isPlaceholder(arguments[i])) {
-                    canApply = false;
-                    break;
-                }
-            }
-
-            for (var idx = 0, bound; idx < argsHolderLen; idx++) {
-                bound = argsHolder[idx];
-                newArgs[idx] = lastIdx < argsLen && _isPlaceholder(bound) ? arguments[lastIdx++] : bound;
+            for (var i = 0, len = argsHolder.length, boundArg; i < len; i++) {
+                boundArg = argsHolder[i];
+                newArgs[i] = boundArg === _placeholder && lastIdx < argsLen ? arguments[lastIdx++] : boundArg;
             }
 
             while (lastIdx < argsLen) {
-                newArgs[idx++] = arguments[lastIdx++];
+                newArgs[i++] = arguments[lastIdx++];
             }
 
-            return canApply ? fn.apply(this, newArgs) : _asPartial(fn, newArgs);
+            for (i = 0; i < argsLen; i++) {
+                if (arguments[i] === _placeholder) {
+                    return _asPartial(fn, newArgs);
+                }
+            }
+
+            for (i = 0, len = newArgs.length; i < len; i++) {
+                if (newArgs[i] === _placeholder) {
+                    newArgs[i] = void 0;
+                }
+            }
+
+            return fn.apply(this, newArgs);
         };
     }
 

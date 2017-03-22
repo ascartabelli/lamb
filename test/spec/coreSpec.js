@@ -180,7 +180,7 @@ describe("lamb.core", function () {
             expect(lamb.partial(f2, ["a", _, "e"])("c")).toBe("acbed");
         });
 
-        it("should give an undefined value to unfilled placeholders", function () {
+        it("should give an `undefined` value to unfilled placeholders", function () {
             var f1 = lamb.partial(lamb.list, [_, 2, _, 3, _, 5, _]);
             var f2 = lamb.partialRight(lamb.list, [_, 2, _, 3, _, 5, _]);
 

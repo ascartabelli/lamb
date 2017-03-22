@@ -203,17 +203,10 @@ describe("lamb.function", function () {
             expect(fooSubtractSpy.calls.argsFor(0)).toEqual([5, 4, 3, 2, 6, 7, 8]);
         });
 
-        it("should not add a `undefined` parameter if a partial application is called without arguments", function () {
-            var fn = _.asPartial(fooSubtractSpy);
+        it("should give an `undefined` value to unfilled placeholders", function () {
+            var fn = lamb.asPartial(lamb.list)(_, 2, _, 3, _, 5, _);
 
-            expect(fn(_, 4, 3, 2)(5, _)()).toBe(-4);
-            expect(fooSubtractSpy.calls.argsFor(0)).toEqual([5, 4, 3, 2, _]);
-        });
-
-        it("should let the value of unfilled placeholders to be the \"lamb\" object", function () {
-            var foo = lamb.asPartial(lamb.list)(_, 2, _, 3, _, 5, _);
-
-            expect(foo(1)).toEqual([1, 2, _, 3, _, 5, _]);
+            expect(fn(1)).toEqual([1, 2, void 0, 3, void 0, 5, void 0]);
         });
 
         it("should preserve the function's context", function () {
