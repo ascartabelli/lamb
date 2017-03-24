@@ -68,7 +68,7 @@ function getIn (obj, key) {
 function getIndex (arrayLike, index) {
     var idx = _toNaturalIndex(index, _toArrayLength(arrayLike.length));
 
-    return isNaN(idx) ? void 0 : arrayLike[idx];
+    return idx === idx ? arrayLike[idx] : void 0; // eslint-disable-line no-self-compare
 }
 
 /**

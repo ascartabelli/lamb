@@ -261,6 +261,19 @@ function _flatten (array, isDeep, output, idx) {
 }
 
 /**
+ * Converts a value to a number and returns it if it's not NaN, otherwise
+ * returns zero.
+ * @private
+ * @param {*} value
+ * @returns {Number}
+ */
+function _forceToNumber (value) {
+    var n = +value;
+
+    return n === n ? n : 0; // eslint-disable-line no-self-compare
+}
+
+/**
  * Establishes at which index an element should be inserted in a sorted array to respect
  * the array order. Needs the comparer used to sort the array.
  * @private
@@ -750,7 +763,7 @@ function _setIndex (arrayLike, idx, value, updater) {
     var result = slice(arrayLike, 0, arrayLike.length);
     var n = _toNaturalIndex(idx, result.length);
 
-    if (!isNaN(n)) {
+    if (n === n) { // eslint-disable-line no-self-compare
         result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
     }
 
@@ -856,7 +869,7 @@ function _toArrayLength (value) {
 function _toInteger (value) {
     var n = +value;
 
-    if (isNaN(n)) {
+    if (n !== n) { // eslint-disable-line no-self-compare
         return 0;
     } else if (n % 1 === 0) {
         return n;

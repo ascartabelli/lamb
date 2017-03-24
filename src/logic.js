@@ -176,8 +176,7 @@ function areSame (a, b) {
  * @returns {Boolean}
  */
 function areSVZ (a, b) {
-    // eslint-disable-next-line no-self-compare
-    return a !== a ? b !== b : a === b;
+    return a !== a ? b !== b : a === b; // eslint-disable-line no-self-compare
 }
 
 /**

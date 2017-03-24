@@ -53,15 +53,20 @@ var wannabeNaNs = concat(
     objects.slice(1) // can't extract the primitive value of `Object.create(null)` and it's not worth adding checks for it
 );
 
-// values that will be transformed to zeroes (even negative zeroes) if casted to integers
-// following this specification: https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
-var wannabeZeroes = concat(
+// values that will be transformed to zeroes (even negative zeroes) if casted to numbers
+var zeroesAsNumbers = concat(
     [[]],
     nils,
     others,
     booleans.slice(0, 2),
     charStrings,
-    objects.slice(1), // can't extract the primitive value of `Object.create(null)` and it's not worth adding checks for it
+    objects.slice(1) // can't extract the primitive value of `Object.create(null)` and it's not worth adding checks for it
+);
+
+// values that will be transformed to zeroes (even negative zeroes) if casted to integers
+// following this specification: https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
+var zeroesAsIntegers = concat(
+    zeroesAsNumbers,
     numbers.slice(0, 8),
     numberStrings.slice(0, 8)
 );
@@ -132,6 +137,7 @@ module.exports = {
         wannabeEmptyArrays: wannabeEmptyArrays,
         wannabeEmptyObjects: wannabeEmptyObjects,
         wannabeNaNs: wannabeNaNs,
-        wannabeZeroes: wannabeZeroes
+        zeroesAsIntegers: zeroesAsIntegers,
+        zeroesAsNumbers: zeroesAsNumbers
     })
 };

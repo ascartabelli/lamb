@@ -7,7 +7,7 @@ var nonStrings = commons.vars.nonStrings;
 var nonArrayLikes = commons.vars.nonArrayLikes;
 var nonFunctions = commons.vars.nonFunctions;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
-var wannabeZeroes = commons.vars.wannabeZeroes;
+var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.array", function () {
     // to check "truthy" and "falsy" values returned by predicates
@@ -156,7 +156,7 @@ describe("lamb.array", function () {
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.drop(value)(arr)).toEqual(arr);
                 expect(lamb.dropFrom(arr, value)).toEqual(arr);
             });
@@ -464,7 +464,7 @@ describe("lamb.array", function () {
         it("should convert the index to integer following ECMA specifications", function () {
             // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
 
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.insert(arr, value, 99)).toEqual(result2);
                 expect(lamb.insertAt(value, 99)(arr)).toEqual(result2);
             });
@@ -907,7 +907,7 @@ describe("lamb.array", function () {
         it("should convert to integer the value received as `n`", function () {
             var arr = [1, 2, 3, 4 , 5];
 
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.take(value)(arr)).toEqual([]);
                 expect(lamb.takeFrom(arr, value)).toEqual([]);
             });

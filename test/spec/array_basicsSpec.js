@@ -5,7 +5,7 @@ var sparseArrayEquality = commons.equalities.sparseArrayEquality;
 
 var nonFunctions = commons.vars.nonFunctions;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
-var wannabeZeroes = commons.vars.wannabeZeroes;
+var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.array_basics", function () {
     // to check "truthy" and "falsy" values returned by predicates
@@ -853,7 +853,7 @@ describe("lamb.array_basics", function () {
             expect(lamb.sliceAt("-4.8", "-2.9")(s)).toEqual(["o", "r"]);
             expect(lamb.sliceAt([-4.8], [-2.9])(s)).toEqual(["o", "r"]);
 
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.slice(arr, value, arr.length)).toEqual(arrCopy);
                 expect(lamb.slice(s, value, s.length)).toEqual(s.split(""));
                 expect(lamb.slice(arr, 0, value)).toEqual([]);

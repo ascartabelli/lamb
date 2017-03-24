@@ -2,7 +2,7 @@ var commons = require("../commons.js");
 
 var lamb = commons.lamb;
 
-var wannabeZeroes = commons.vars.wannabeZeroes;
+var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.string", function () {
     describe("padLeft / padRight", function () {
@@ -23,7 +23,7 @@ describe("lamb.string", function () {
             expect(lamb.padRight(source, "-", -1)).toBe("foo");
             expect(lamb.padRight(source, "-", 3)).toBe("foo");
 
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.padLeft(source, "-", value)).toBe("foo");
                 expect(lamb.padRight(source, "-", value)).toBe("foo");
             });
@@ -94,7 +94,7 @@ describe("lamb.string", function () {
         });
 
         it("should convert to integer every other value passed as the `times` parameter", function () {
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.repeat("foo", value)).toBe("");
             });
 

@@ -8,7 +8,7 @@ var nonStrings = commons.vars.nonStrings;
 var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
-var wannabeZeroes = commons.vars.wannabeZeroes;
+var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.function", function () {
     function Foo (value) {
@@ -114,7 +114,7 @@ describe("lamb.function", function () {
         it("should convert the arity to an integer following ECMA specifications", function () {
             // see https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
 
-            wannabeZeroes.forEach(function (value, idx) {
+            zeroesAsIntegers.forEach(function (value, idx) {
                 expect(lamb.aritize(maxArgumentSpy, value)(0, 1, 2, 3, 4, 5)).toBe(-Infinity);
                 expect(maxArgumentSpy.calls.argsFor(idx).length).toBe(0);
             });
@@ -587,7 +587,7 @@ describe("lamb.function", function () {
         });
 
         it("should convert the `idx` parameter to integer", function () {
-            wannabeZeroes.forEach(function (value) {
+            zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.getArgAt(value)("a", "b", "c")).toBe("a");
             });
 

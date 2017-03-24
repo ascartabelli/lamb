@@ -718,8 +718,7 @@ function uniquesBy (iteratee) {
         for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
             value = iteratee(arrayLike[i], i, arrayLike);
 
-            // eslint-disable-next-line no-self-compare
-            if (value === value) {
+            if (value === value) { // eslint-disable-line no-self-compare
                 if (seen.indexOf(value) === -1) {
                     seen[seen.length] = value;
                     result[result.length] = arrayLike[i];

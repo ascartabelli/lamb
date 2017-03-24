@@ -8,7 +8,7 @@ var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
 var nonFunctions = commons.vars.nonFunctions;
 var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
-var wannabeZeroes = commons.vars.wannabeZeroes;
+var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.accessors", function () {
     beforeEach(function() {
@@ -70,7 +70,7 @@ describe("lamb.accessors", function () {
             });
 
             it("should convert the `index` parameter to integer", function () {
-                wannabeZeroes.forEach(function (value) {
+                zeroesAsIntegers.forEach(function (value) {
                     expect(lamb.getIndex(arr, value)).toBe(arr[0]);
                     expect(lamb.getAt(value)(arr)).toBe(arr[0]);
                 });
@@ -169,7 +169,7 @@ describe("lamb.accessors", function () {
                 var r2 = [1, 99, 3, 4, 5];
                 var r3 = [void 0, 2, 3, 4, 5];
 
-                wannabeZeroes.forEach(function (value) {
+                zeroesAsIntegers.forEach(function (value) {
                     expect(lamb.setIndex(arr, value, 99)).toEqual(r1);
                     expect(lamb.setAt(value, 99)(arr)).toEqual(r1);
                 });
@@ -273,7 +273,7 @@ describe("lamb.accessors", function () {
                 var r1 = [99, 2, 3, 4, 5];
                 var r2 = [1, 99, 3, 4, 5];
 
-                wannabeZeroes.forEach(function (value) {
+                zeroesAsIntegers.forEach(function (value) {
                     expect(lamb.updateIndex(arr, value, fn99)).toEqual(r1);
                     expect(lamb.updateAt(value, fn99)(arr)).toEqual(r1);
                 });

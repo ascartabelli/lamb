@@ -307,9 +307,16 @@ function randomInt (min, max) {
  * but not including, <code>limit</code>, using the given <code>step</code>.
  * @example
  * _.range(2, 10) // => [2, 3, 4, 5, 6, 7, 8, 9]
- * _.range(2, 10, 0) // => [2]
  * _.range(1, -10, -2) // => [1, -1, -3, -5, -7, -9]
- * _.range(1, -10, 2) // => [1]
+ * _.range(0, 3, 1) // => [0, 1, 2]
+ * _.range(-0, 3, 1) // => [-0, 1, 2]
+ * _.range(1, -10, 2) // => []
+ * _.range(3, 5, -1) // => []
+ *
+ * @example <caption>Behaviour if <code>step</code> happens to be zero:</caption>
+ * _.range(2, 10, 0) // => [2]
+ * _.range(2, -10, 0) // => [2]
+ * _.range(2, 2, 0) // => []
  *
  * @memberof module:lamb
  * @category Math
@@ -320,17 +327,23 @@ function randomInt (min, max) {
  * @returns {Number[]}
  */
 function range (start, limit, step) {
-    if (step === 0 || arguments.length < 2) {
-        return [start];
-    }
+    start = _forceToNumber(start);
+    limit = _forceToNumber(limit);
+    step = arguments.length === 3 ? _forceToNumber(step) : 1;
 
-    if (!step) {
-        step = 1;
+    if (step === 0) {
+        return limit === start ? [] : [start];
     }
 
     var len = Math.max(Math.ceil((limit - start) / step), 0);
+    var result = Array(len);
 
-    return generate(start, len, add(step));
+    for (var i = 0, last = start; i < len; i++) {
+        result[i] = last;
+        last += step;
+    }
+
+    return result;
 }
 
 /**

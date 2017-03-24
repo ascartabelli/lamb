@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.53.0-alpha.2
+ * @version 0.53.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @readonly
          * @type String
          */
-        "@@lamb/version": {value: "0.53.0-alpha.2"}
+        "@@lamb/version": {value: "0.53.0-alpha.3"}
     });
 
     // prototype shortcuts
@@ -543,6 +543,19 @@
     }
 
     /**
+     * Converts a value to a number and returns it if it's not NaN, otherwise
+     * returns zero.
+     * @private
+     * @param {*} value
+     * @returns {Number}
+     */
+    function _forceToNumber (value) {
+        var n = +value;
+
+        return n === n ? n : 0; // eslint-disable-line no-self-compare
+    }
+
+    /**
      * Establishes at which index an element should be inserted in a sorted array to respect
      * the array order. Needs the comparer used to sort the array.
      * @private
@@ -1032,7 +1045,7 @@
         var result = slice(arrayLike, 0, arrayLike.length);
         var n = _toNaturalIndex(idx, result.length);
 
-        if (!isNaN(n)) {
+        if (n === n) { // eslint-disable-line no-self-compare
             result[n] = arguments.length === 4 ? updater(arrayLike[n]) : value;
         }
 
@@ -1138,7 +1151,7 @@
     function _toInteger (value) {
         var n = +value;
 
-        if (isNaN(n)) {
+        if (n !== n) { // eslint-disable-line no-self-compare
             return 0;
         } else if (n % 1 === 0) {
             return n;
@@ -1993,8 +2006,7 @@
      * @returns {Boolean}
      */
     function areSVZ (a, b) {
-        // eslint-disable-next-line no-self-compare
-        return a !== a ? b !== b : a === b;
+        return a !== a ? b !== b : a === b; // eslint-disable-line no-self-compare
     }
 
     /**
@@ -2738,9 +2750,16 @@
      * but not including, <code>limit</code>, using the given <code>step</code>.
      * @example
      * _.range(2, 10) // => [2, 3, 4, 5, 6, 7, 8, 9]
-     * _.range(2, 10, 0) // => [2]
      * _.range(1, -10, -2) // => [1, -1, -3, -5, -7, -9]
-     * _.range(1, -10, 2) // => [1]
+     * _.range(0, 3, 1) // => [0, 1, 2]
+     * _.range(-0, 3, 1) // => [-0, 1, 2]
+     * _.range(1, -10, 2) // => []
+     * _.range(3, 5, -1) // => []
+     *
+     * @example <caption>Behaviour if <code>step</code> happens to be zero:</caption>
+     * _.range(2, 10, 0) // => [2]
+     * _.range(2, -10, 0) // => [2]
+     * _.range(2, 2, 0) // => []
      *
      * @memberof module:lamb
      * @category Math
@@ -2751,17 +2770,23 @@
      * @returns {Number[]}
      */
     function range (start, limit, step) {
-        if (step === 0 || arguments.length < 2) {
-            return [start];
-        }
+        start = _forceToNumber(start);
+        limit = _forceToNumber(limit);
+        step = arguments.length === 3 ? _forceToNumber(step) : 1;
 
-        if (!step) {
-            step = 1;
+        if (step === 0) {
+            return limit === start ? [] : [start];
         }
 
         var len = Math.max(Math.ceil((limit - start) / step), 0);
+        var result = Array(len);
 
-        return generate(start, len, add(step));
+        for (var i = 0, last = start; i < len; i++) {
+            result[i] = last;
+            last += step;
+        }
+
+        return result;
     }
 
     /**
@@ -3046,7 +3071,7 @@
     function getIndex (arrayLike, index) {
         var idx = _toNaturalIndex(index, _toArrayLength(arrayLike.length));
 
-        return isNaN(idx) ? void 0 : arrayLike[idx];
+        return idx === idx ? arrayLike[idx] : void 0; // eslint-disable-line no-self-compare
     }
 
     /**
@@ -4318,8 +4343,7 @@
             for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
                 value = iteratee(arrayLike[i], i, arrayLike);
 
-                // eslint-disable-next-line no-self-compare
-                if (value === value) {
+                if (value === value) { // eslint-disable-line no-self-compare
                     if (seen.indexOf(value) === -1) {
                         seen[seen.length] = value;
                         result[result.length] = arrayLike[i];
