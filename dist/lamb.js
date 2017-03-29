@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.53.0-alpha.3
+ * @version 0.53.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @readonly
          * @type String
          */
-        "@@lamb/version": {value: "0.53.0-alpha.3"}
+        "@@lamb/version": {value: "0.53.0-alpha.4"}
     });
 
     // prototype shortcuts
@@ -3663,28 +3663,28 @@
     }
 
     /**
-     * Returns an array of items present only in the first of the given array-like objects.<br/>
-     * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
+     * Returns an array of unique items present only in the first of the two given
+     * array-like objects. To determine uniqueness the function uses the
+     * ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
-     * var a1 = [1, 2, 3, 4];
-     * var a2 = [2, 4, 5];
-     * var a3 = [4, 5, 3, 1];
+     * var a1 = [1, 2, 1, 3, 4];
+     * var a2 = [2, 4, 5, 6];
+     * var a3 = [3, 4, 5, 2, 1];
      *
      * _.difference(a1, a2) // => [1, 3]
-     * _.difference(a2, a3) // => [2]
-     * _.difference(a1, a2, a3) // => []
+     * _.difference(a2, a3) // => [6]
+     * _.difference(a1, a3) // => []
      *
      * @memberof module:lamb
      * @category Array
      * @param {ArrayLike} arrayLike
-     * @param {...ArrayLike} other
+     * @param {ArrayLike} other
      * @returns {Array}
      */
-    function difference (arrayLike) {
-        var rest = flatMap(_argsTail.apply(null, arguments), drop(0));
-        var isInRest = partial(isIn, [rest, _, 0]);
+    function difference (arrayLike, other) {
+        var isNotInOther = partial(not(isIn), [other]);
 
-        return filter(arrayLike, not(isInRest));
+        return uniques(filter(arrayLike, isNotInOther));
     }
 
     /**
