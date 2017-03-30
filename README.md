@@ -45,15 +45,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.52.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.53.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.52.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.53.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.52.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.53.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -104,6 +104,13 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.53.0 - *2017/03/30***
+  - **API change**: unfilled placeholders in functions built with `asPartial` now assume an `undefined` value
+  - **API change**: `range` now converts to number its parameters and will return an empty array if the specified range is invalid
+  - **API change**: `difference` is now a binary function and returns a result without duplicates
+  - Changed the name of the property holding the library's version
+  - Added the possibility to use custom placeholders in partial application
+
 - **v0.52.0 - *2017/03/17***
   - **API change**: `partial` is no longer variadic and accepts a function and an array of arguments instead
   - **API change**: `getArgAt` and all array accessors now convert their index parameter to integer
@@ -149,10 +156,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Updated tests for `hasPathValue` and "pick" and "skip" functions
   - Updated tests of `updatePath` to check negative array indexes that are out of bounds
   - Updated dev dependencies
-
-- **v0.48.0 - *2017/01/10***
-  - **API change**: `slice` isn't a generic anymore to ensure that dense arrays are returned and has no optional parameters
-  - **Fixed**: `pull` and `pullFrom` now consider `nil`s received as the `values` parameter as empty arrays
-  - Added `sliceAt`
-  - All array functions always return dense arrays now
-  - Updated tests

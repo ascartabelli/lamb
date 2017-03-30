@@ -275,11 +275,11 @@ function insert (arrayLike, index, element) {
 var insertAt = _makePartial3(insert);
 
 /**
- * Returns an array of every item that is included in all given arrays or array-like objects.<br/>
+ * Returns an array of every unique item that is included in all given arrays or array-like objects.<br/>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
  * var a1 = [1, 2, 3, 4];
- * var a2 = [2, 5, 4, 6];
+ * var a2 = [2, 5, 4, 2, 6];
  * var a3 = [5, 6, 7];
  *
  * _.intersection(a1, a2) // => [2, 4]
@@ -317,7 +317,7 @@ function intersection () {
  * @see {@link module:lamb.partitionWith|partitionWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
- * @returns {Array<Array<*>, Array<*>>}
+ * @returns {Array<Array, Array>}
  */
 function partition (arrayLike, predicate) {
     var result = [[], []];
@@ -587,8 +587,8 @@ function takeWhile (predicate) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.zip|zip}
- * @param {ArrayLike<ArrayLike<*>>} arrayLike
- * @returns {Array<Array<*>>}
+ * @param {ArrayLike<ArrayLike>} arrayLike
+ * @returns {Array<Array>}
  */
 function transpose (arrayLike) {
     var minLen = MAX_ARRAY_LENGTH;
@@ -751,7 +751,7 @@ function uniquesBy (iteratee) {
  * @see {@link module:lamb.transpose|transpose} for the reverse operation
  * @see {@link module:lamb.zipWithIndex|zipWithIndex}
  * @param {...ArrayLike} arrayLike
- * @returns {Array<Array<*>>}
+ * @returns {Array<Array>}
  */
 var zip = compose(transpose, list);
 

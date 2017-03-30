@@ -558,7 +558,7 @@ var skipKeys = _curry2(skip, true);
  * @see {@link module:lamb.tearOwn|tearOwn}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @param {Object} obj
- * @returns {Array<Array<String>, Array<*>>}
+ * @returns {Array<String[], Array>}
  */
 var tear = _tearFrom(enumerables);
 
@@ -580,7 +580,7 @@ var tear = _tearFrom(enumerables);
  * @see {@link module:lamb.tear|tear}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @param {Object} obj
- * @returns {Array<Array<String>, Array<*>>}
+ * @returns {Array<String[], Array>}
  */
 var tearOwn = _tearFrom(keys);
 
