@@ -117,7 +117,7 @@ var hasKey = _curry2(has, true);
  */
 function hasKeyValue (key, value) {
     return function (obj) {
-        return isUndefined(value) ? has(obj, key) : areSVZ(value, obj[key]);
+        return isUndefined(value) ? has(obj, key) && obj[key] === value : areSVZ(value, obj[key]);
     };
 }
 
