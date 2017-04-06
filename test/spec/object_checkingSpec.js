@@ -234,7 +234,7 @@ describe("lamb.object_checking", function () {
     });
 
     describe("hasPathValue", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
@@ -281,6 +281,13 @@ describe("lamb.object_checking", function () {
             expect(lamb.hasPathValue("b.c.3", void 0)(obj)).toBe(false);
             expect(lamb.hasPathValue("b.c.-4", void 0)(obj)).toBe(false);
             expect(lamb.hasPathValue("b.e.z", void 0)(obj)).toBe(false);
+        });
+
+        it("should be able to check for `undefined` values in existing paths", function () {
+            expect(lamb.hasPathValue("b.e.b", void 0)(obj)).toBe(true);
+            expect(lamb.hasPathValue("b.e.b")(obj)).toBe(true);
+            expect(lamb.hasPathValue("b.e.a", void 0)(obj)).toBe(false);
+            expect(lamb.hasPathValue("b.e.a")(obj)).toBe(false);
         });
 
         it("should work with sparse arrays", function () {
@@ -462,7 +469,7 @@ describe("lamb.object_checking", function () {
     });
 
     describe("pathExists / pathExistsIn", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
@@ -485,6 +492,11 @@ describe("lamb.object_checking", function () {
             expect(lamb.pathExistsIn(obj, "z")).toBe(false);
             expect(lamb.pathExistsIn(obj, "a.z")).toBe(false);
             expect(lamb.pathExistsIn(obj, "b.a.z")).toBe(false);
+        });
+
+        it("should see existent paths when checking properties holding `undefined` values", function () {
+            expect(lamb.pathExists("b.e.b")(obj)).toBe(true);
+            expect(lamb.pathExistsIn(obj, "b.e.b")).toBe(true);
         });
 
         it("should be able to check paths with non-enumerable properties", function () {
@@ -620,7 +632,7 @@ describe("lamb.object_checking", function () {
     });
 
     describe("pathSatisfies", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
