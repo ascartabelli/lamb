@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.54.0-alpha.4
+ * @version 0.54.0-alpha.5
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @readonly
          * @type String
          */
-        "@@lamb/version": {value: "0.54.0-alpha.4"}
+        "@@lamb/version": {value: "0.54.0-alpha.5"}
     });
 
     // prototype shortcuts
@@ -5612,6 +5612,61 @@
     }
 
     /**
+     * Creates a new object by applying the given function
+     * to all enumerable properties of the source one.
+     * @example
+     * var weights = {
+     *     john: "72.5 Kg",
+     *     jane: "52.3 Kg"
+     * };
+     *
+     * _.mapValues(weights, parseFloat) // => {john: 72.5, jane: 52.3}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.mapValuesWith|mapValuesWith}
+     * @param {Object} source
+     * @param {ObjectIteratorCallback} fn
+     * @returns {Object}
+     */
+    function mapValues (source, fn) {
+        if (isNil(source)) {
+            throw _makeTypeErrorFor(source, "object");
+        }
+
+        var result = {};
+
+        for (var key in source) {
+            result[key] = fn(source[key], key, source);
+        }
+
+        return result;
+    }
+
+    /**
+     * A curried version of {@link module:lamb.mapValues|mapValues}.<br/>
+     * Expects a mapping function to build a new function waiting for the
+     * object to act upon.
+     * @example
+     * var incValues = _.mapValuesWith(_.add(1));
+     * var results = {
+     *     first: 10,
+     *     second: 5,
+     *     third: 3
+     * };
+     *
+     * incValues(results) // => {first: 11, second: 6, third: 4}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @see {@link module:lamb.mapValues|mapValues}
+     * @function
+     * @param {Function} fn
+     * @returns {Function}
+     */
+    var mapValuesWith = _curry2(mapValues, true);
+
+    /**
      * Merges the enumerable properties of the provided sources into a new object.<br/>
      * In case of key homonymy each source has precedence over the previous one.
      * @example
@@ -6084,6 +6139,8 @@
     lamb.immutable = immutable;
     lamb.keys = keys;
     lamb.make = make;
+    lamb.mapValues = mapValues;
+    lamb.mapValuesWith = mapValuesWith;
     lamb.merge = merge;
     lamb.mergeOwn = mergeOwn;
     lamb.ownPairs = ownPairs;

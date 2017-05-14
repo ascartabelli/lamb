@@ -561,11 +561,10 @@ describe("lamb.accessors", function () {
             var fooEquivalent = {a: [1, 2, 3], b: 2, c: 3, z: 5};
             var fooEnumerables = {a: [1, 2, 3], b: 2, c: 3};
 
-            // seems that this version of jasmine (2.2.1) checks only
-            // own enumerable properties with the "toEqual" expectation
+            // The "toEqual" matcher would have checked only own enumerable properties
             afterEach(function () {
                 for (var key in fooEquivalent) {
-                    expect(foo[key]).toEqual(fooEquivalent[key]);
+                    expect(fooEquivalent[key]).toEqual(foo[key]);
                 }
 
                 expect(foo.a).toBe(arr);
