@@ -1,8 +1,9 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
 
-var nonStrings = commons.vars.nonStrings;
 var nonStringsAsStrings = commons.vars.nonStringsAsStrings;
 var nonFunctions = commons.vars.nonFunctions;
 var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
@@ -26,6 +27,7 @@ describe("lamb.object", function () {
         });
 
         it("should retrieve only defined keys in sparse arrays", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             expect(lamb.enumerables([, 5, 6, ,])).toEqual(["1", "2"]);
         });
 
@@ -34,8 +36,8 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.enumerables(null)}).toThrow();
-            expect(function () {lamb.enumerables(void 0)}).toThrow();
+            expect(function () { lamb.enumerables(null); }).toThrow();
+            expect(function () { lamb.enumerables(void 0); }).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
@@ -55,10 +57,13 @@ describe("lamb.object", function () {
         });
 
         it("should convert missing or non-string keys to strings and missing values to `undefined`", function () {
-            var pairs = [[1], [void 0, 2], [null, 3], [, 4], ["z", ,]];
-            var result = {"1": void 0, "undefined": 2, "null": 3, "undefined": 4, "z": void 0};
+            /* eslint-disable comma-spacing, no-sparse-arrays */
+            var pairs = [[1], [void 0, 2], [null, 3], ["z", ,]];
+            var result = {1: void 0, undefined: 2, null: 3, z: void 0};
 
             expect(lamb.fromPairs(pairs)).toEqual(result);
+            expect(lamb.fromPairs([[, 4]])).toEqual({undefined: 4});
+            /* eslint-enable comma-spacing, no-sparse-arrays */
         });
 
         it("should return an empty object if supplied with an empty array", function () {
@@ -66,11 +71,11 @@ describe("lamb.object", function () {
         });
 
         it("should accept array-like objects as pairs", function () {
-            expect(lamb.fromPairs(["a1", "b2"])).toEqual({"a": "1", "b": "2"});
+            expect(lamb.fromPairs(["a1", "b2"])).toEqual({a: "1", b: "2"});
         });
 
         it("should try to retrieve pairs from array-like objects", function () {
-            expect(lamb.fromPairs("foo")).toEqual({"f": void 0, "o": void 0});
+            expect(lamb.fromPairs("foo")).toEqual({f: void 0, o: void 0});
         });
 
         it("should throw an exception if any of the pairs is `nil`", function () {
@@ -100,27 +105,25 @@ describe("lamb.object", function () {
 
         beforeEach(function () {
             persons = [
-                {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York"},
-                {"name": "John", "surname": "Doe", "age": 40, "city" : "London"},
-                {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"}
+                {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+                {name: "John", surname: "Doe", age: 40, city: "London"},
+                {name: "Mario", surname: "Rossi", age: 18, city: "Rome"}
             ];
 
             newPerson = {
-                "name": "Paolo",
-                "surname": "Bianchi",
-                "age": null,
-                "city": "Amsterdam",
-                "contact": {
-                    "mail": "paolo@bianchi.it",
-                    "phone": "+39123456789"
+                name: "Paolo",
+                surname: "Bianchi",
+                age: null,
+                city: "Amsterdam",
+                contact: {
+                    mail: "paolo@bianchi.it",
+                    phone: "+39123456789"
                 },
-                "luckyNumbers": [13, 17]
+                luckyNumbers: [13, 17]
             };
         });
 
         it("should make an object immutable", function () {
-            "use strict";
-
             var immutableNewPerson = lamb.immutable(newPerson);
 
             expect(immutableNewPerson).toBe(newPerson);
@@ -153,6 +156,7 @@ describe("lamb.object", function () {
                 bar: 2,
                 baz: persons
             };
+
             persons.push(foo);
 
             lamb.immutable(persons);
@@ -198,6 +202,7 @@ describe("lamb.object", function () {
         });
 
         it("should retrieve only defined keys in sparse arrays", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             expect(lamb.keys([, 5, 6, ,])).toEqual(["1", "2"]);
         });
 
@@ -206,8 +211,8 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.keys(null)}).toThrow();
-            expect(function () {lamb.keys(void 0)}).toThrow();
+            expect(function () { lamb.keys(null); }).toThrow();
+            expect(function () { lamb.keys(void 0); }).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
@@ -231,12 +236,14 @@ describe("lamb.object", function () {
         });
 
         it("should convert non-string keys to strings", function () {
-            expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({"null": 1, "undefined": 2, "2": 3});
+            expect(lamb.make([null, void 0, 2], [1, 2, 3])).toEqual({null: 1, undefined: 2, 2: 3});
         });
 
         it("should convert unassigned or deleted indexes in sparse arrays to `undefined` values", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.make(["a", "b", "c"], [1, , 3])).toEqual({a: 1, b: void 0, c: 3});
-            expect(lamb.make(["a", , "c"], [1, 2, 3])).toEqual({a: 1, "undefined": 2, c: 3});
+            expect(lamb.make(["a", , "c"], [1, 2, 3])).toEqual({a: 1, undefined: 2, c: 3});
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should accept array-like objects in both parameters", function () {
@@ -248,10 +255,10 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined` in the `keys` or in the `values` parameter", function () {
-            expect(function () {lamb.make(null, [])}).toThrow();
-            expect(function () {lamb.make(void 0, [])}).toThrow();
-            expect(function () {lamb.make([], null)}).toThrow();
-            expect(function () {lamb.make([], void 0)}).toThrow();
+            expect(function () { lamb.make(null, []); }).toThrow();
+            expect(function () { lamb.make(void 0, []); }).toThrow();
+            expect(function () { lamb.make([], null); }).toThrow();
+            expect(function () { lamb.make([], void 0); }).toThrow();
         });
 
         it("should consider other values for the `keys` parameter as empty arrays and return an empty object", function () {
@@ -262,22 +269,19 @@ describe("lamb.object", function () {
 
         it("should consider other values for the `values` parameter to be empty arrays", function () {
             wannabeEmptyArrays.forEach(function (v) {
-                expect(lamb.make(["foo", "bar"], v)).toEqual({"foo": void 0, "bar": void 0});
+                expect(lamb.make(["foo", "bar"], v)).toEqual({foo: void 0, bar: void 0});
             });
         });
     });
 
     describe("merge / mergeOwn", function () {
         var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
-        var foo = Object.create(baseFoo, {
-            c: {value: 3, enumerable: true}
-        });
-
+        var foo = Object.create(baseFoo, {c: {value: 3, enumerable: true}});
         var bar = {d: 4};
-
         var fooEquivalent = {a: 1, b: 2, c: 3, z: 5};
 
-        // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
+        // seems that this version of jasmine (2.2.1) checks only
+        // own enumerable properties with the "toEqual" expectation
         afterEach(function () {
             for (var key in fooEquivalent) {
                 expect(foo[key]).toEqual(fooEquivalent[key]);
@@ -307,13 +311,13 @@ describe("lamb.object", function () {
         });
 
         it("should transform array-like objects in objects with numbered string as properties", function () {
-            expect(lamb.merge([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
-            expect(lamb.mergeOwn([1, 2], {a: 2})).toEqual({"0": 1, "1": 2, "a": 2});
-            expect(lamb.merge("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
-            expect(lamb.mergeOwn("foo", {a: 2})).toEqual({"0": "f", "1": "o", "2": "o", "a": 2});
+            expect(lamb.merge([1, 2], {a: 2})).toEqual({0: 1, 1: 2, a: 2});
+            expect(lamb.mergeOwn([1, 2], {a: 2})).toEqual({0: 1, 1: 2, a: 2});
+            expect(lamb.merge("foo", {a: 2})).toEqual({0: "f", 1: "o", 2: "o", a: 2});
+            expect(lamb.mergeOwn("foo", {a: 2})).toEqual({0: "f", 1: "o", 2: "o", a: 2});
         });
 
-        it("should handle key homonymy by giving to each source precedence over the previous ones", function (){
+        it("should handle key homonymy by giving to each source precedence over the previous ones", function () {
             expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
             expect(lamb.mergeOwn({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
         });
@@ -370,8 +374,8 @@ describe("lamb.object", function () {
         });
 
         it("should work with array-like objects", function () {
-            var r1 = [["0", 1], ["1", 2],["2", 3]];
-            var r2 = [["0", "a"], ["1", "b"],["2", "c"]];
+            var r1 = [["0", 1], ["1", 2], ["2", 3]];
+            var r2 = [["0", "a"], ["1", "b"], ["2", "c"]];
 
             expect(lamb.ownPairs([1, 2, 3])).toEqual(r1);
             expect(lamb.ownPairs("abc")).toEqual(r2);
@@ -385,10 +389,10 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.ownPairs(null)}).toThrow();
-            expect(function () {lamb.ownPairs(void 0)}).toThrow();
-            expect(function () {lamb.pairs(null)}).toThrow();
-            expect(function () {lamb.pairs(void 0)}).toThrow();
+            expect(function () { lamb.ownPairs(null); }).toThrow();
+            expect(function () { lamb.ownPairs(void 0); }).toThrow();
+            expect(function () { lamb.pairs(null); }).toThrow();
+            expect(function () { lamb.pairs(void 0); }).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
@@ -447,10 +451,10 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.ownValues(null)}).toThrow();
-            expect(function () {lamb.ownValues(void 0)}).toThrow();
-            expect(function () {lamb.values(null)}).toThrow();
-            expect(function () {lamb.values(void 0)}).toThrow();
+            expect(function () { lamb.ownValues(null); }).toThrow();
+            expect(function () { lamb.ownValues(void 0); }).toThrow();
+            expect(function () { lamb.values(null); }).toThrow();
+            expect(function () { lamb.values(void 0); }).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
@@ -468,37 +472,37 @@ describe("lamb.object", function () {
 
         describe("values", function () {
             it("should pick all the enumerable properties of the given object", function () {
-                expect(lamb.values(foo)).toEqual([4, 1])
+                expect(lamb.values(foo)).toEqual([4, 1]);
             });
         });
     });
 
     describe("Property filtering", function () {
-        var baseSimpleObj = {"bar" : 2};
+        var baseSimpleObj = {bar: 2};
         var simpleObj = Object.create(baseSimpleObj, {
-            "foo" : {value: 1, enumerable: true},
-            "baz" : {value: 3, enumerable: true}
+            foo: {value: 1, enumerable: true},
+            baz: {value: 3, enumerable: true}
         });
 
         var persons = [
-            {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
-            {"name": "John", "surname": "Doe", "age": 40, "city": "London"},
-            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
-            {"name": "Paolo", "surname": "Bianchi", "age": 15, "city": "Amsterdam"}
+            {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+            {name: "John", surname: "Doe", age: 40, city: "London"},
+            {name: "Mario", surname: "Rossi", age: 18, city: "Rome"},
+            {name: "Paolo", surname: "Bianchi", age: 15, city: "Amsterdam"}
         ];
 
         var agesAndCities = [
-            {"age": 12, "city" : "New York"},
-            {"age": 40, "city" : "London"},
-            {"age": 18, "city": "Rome"},
-            {"age": 15, "city": "Amsterdam"}
+            {age: 12, city: "New York"},
+            {age: 40, city: "London"},
+            {age: 18, city: "Rome"},
+            {age: 15, city: "Amsterdam"}
         ];
 
         var names = [
-            {"name": "Jane", "surname": "Doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "Mario", "surname": "Rossi"},
-            {"name": "Paolo", "surname": "Bianchi"}
+            {name: "Jane", surname: "Doe"},
+            {name: "John", surname: "Doe"},
+            {name: "Mario", surname: "Rossi"},
+            {name: "Paolo", surname: "Bianchi"}
         ];
 
         var isNumber = function (v) { return typeof v === "number"; };
@@ -515,13 +519,13 @@ describe("lamb.object", function () {
 
         describe("pick / pickKeys", function () {
             it("should return an object having only the specified properties of the source object (if they exist)", function () {
-                expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({"foo" : 1, "baz" : 3});
-                expect(lamb.pickKeys(["foo", "baz", "foobaz"])(simpleObj)).toEqual({"foo" : 1, "baz" : 3});
+                expect(lamb.pick(simpleObj, ["foo", "baz", "foobaz"])).toEqual({foo: 1, baz: 3});
+                expect(lamb.pickKeys(["foo", "baz", "foobaz"])(simpleObj)).toEqual({foo: 1, baz: 3});
             });
 
             it("should include inherited properties", function () {
-                expect(lamb.pick(simpleObj, ["foo", "bar"])).toEqual({"foo": 1, "bar": 2});
-                expect(lamb.pickKeys(["foo", "bar"])(simpleObj)).toEqual({"foo": 1, "bar": 2});
+                expect(lamb.pick(simpleObj, ["foo", "bar"])).toEqual({foo: 1, bar: 2});
+                expect(lamb.pickKeys(["foo", "bar"])(simpleObj)).toEqual({foo: 1, bar: 2});
             });
 
             it("should include properties with `undefined` values in the result", function () {
@@ -531,24 +535,28 @@ describe("lamb.object", function () {
 
             it("should accept arrays and array-like objects and integers as keys", function () {
                 var result = {
-                    "0": {"name": "Jane", "surname": "Doe"},
-                    "2": {"name": "Mario", "surname": "Rossi"}
+                    0: {name: "Jane", surname: "Doe"},
+                    2: {name: "Mario", surname: "Rossi"}
                 };
 
                 expect(lamb.pick(names, ["0", 2])).toEqual(result);
                 expect(lamb.pickKeys(["0", 2])(names)).toEqual(result);
-                expect(lamb.pick("bar", [0, 2])).toEqual({"0": "b", "2": "r"});
-                expect(lamb.pickKeys([0, 2])("bar")).toEqual({"0": "b", "2": "r"});
+                expect(lamb.pick("bar", [0, 2])).toEqual({0: "b", 2: "r"});
+                expect(lamb.pickKeys([0, 2])("bar")).toEqual({0: "b", 2: "r"});
             });
 
             it("should see unassigned or deleted indexes in sparse arrays as non-existing keys", function () {
-                expect(lamb.pick([1, , 3], [0, 1])).toEqual({"0": 1});
-                expect(lamb.pickKeys([0, 1])([1, , 3])).toEqual({"0": 1});
+                /* eslint-disable no-sparse-arrays */
+                expect(lamb.pick([1, , 3], [0, 1])).toEqual({0: 1});
+                expect(lamb.pickKeys([0, 1])([1, , 3])).toEqual({0: 1});
+                /* eslint-enable no-sparse-arrays */
             });
 
             it("should see unassigned or deleted indexes in sparse arrays received as the `whitelist` as `undefined` values", function () {
-                expect(lamb.pick({"undefined": 1, a: 2, b: 3}, ["a", ,])).toEqual({"undefined": 1, a: 2});
-                expect(lamb.pickKeys(["a", ,])({"undefined": 1, a: 2, b: 3})).toEqual({"undefined": 1, a: 2});
+                /* eslint-disable comma-spacing, no-sparse-arrays */
+                expect(lamb.pick({undefined: 1, a: 2, b: 3}, ["a", ,])).toEqual({undefined: 1, a: 2});
+                expect(lamb.pickKeys(["a", ,])({undefined: 1, a: 2, b: 3})).toEqual({undefined: 1, a: 2});
+                /* eslint-enable comma-spacing, no-sparse-arrays */
             });
 
             it("should return an empty object if supplied with an empty list of keys", function () {
@@ -601,14 +609,14 @@ describe("lamb.object", function () {
                     expect(lamb.pickKeys(["a"])(v)).toEqual({});
                 });
 
-                expect(lamb.pick(/foo/, ["lastIndex"])).toEqual({"lastIndex": 0});
-                expect(lamb.pickKeys(["lastIndex"])(/foo/)).toEqual({"lastIndex": 0});
+                expect(lamb.pick(/foo/, ["lastIndex"])).toEqual({lastIndex: 0});
+                expect(lamb.pickKeys(["lastIndex"])(/foo/)).toEqual({lastIndex: 0});
             });
         });
 
         describe("pickIf", function () {
             it("should pick object properties using a predicate", function () {
-                expect(lamb.pickIf(isNumber)(persons[0])).toEqual({"age": 12});
+                expect(lamb.pickIf(isNumber)(persons[0])).toEqual({age: 12});
                 expect(persons.map(lamb.pickIf(isNameKey))).toEqual(names);
             });
 
@@ -619,12 +627,13 @@ describe("lamb.object", function () {
             it("should accept array-like objects", function () {
                 var isEven = function (n) { return n % 2 === 0; };
 
-                expect(lamb.pickIf(isEven)([1, 2, 3, 4])).toEqual({"1": 2, "3": 4});
-                expect(lamb.pickIf(isEven)("1234")).toEqual({"1": "2", "3": "4"});
+                expect(lamb.pickIf(isEven)([1, 2, 3, 4])).toEqual({1: 2, 3: 4});
+                expect(lamb.pickIf(isEven)("1234")).toEqual({1: "2", 3: "4"});
             });
 
             it("should not consider unassigned or deleted indexes in sparse arrays", function () {
-                expect(lamb.pickIf(lamb.isUndefined)([1, , 3, void 0])).toEqual({"3": void 0});
+                // eslint-disable-next-line no-sparse-arrays
+                expect(lamb.pickIf(lamb.isUndefined)([1, , 3, void 0])).toEqual({3: void 0});
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
@@ -654,13 +663,13 @@ describe("lamb.object", function () {
 
         describe("skip / skipKeys", function () {
             it("should return a copy of the given object without the specified properties", function () {
-                expect(lamb.skip(simpleObj, ["bar", "baz"])).toEqual({"foo" : 1});
-                expect(lamb.skipKeys(["bar", "baz"])(simpleObj)).toEqual({"foo" : 1});
+                expect(lamb.skip(simpleObj, ["bar", "baz"])).toEqual({foo: 1});
+                expect(lamb.skipKeys(["bar", "baz"])(simpleObj)).toEqual({foo: 1});
             });
 
             it("should include inherited properties", function () {
-                expect(lamb.skip(simpleObj, ["foo"])).toEqual({"bar": 2, "baz": 3});
-                expect(lamb.skipKeys(["foo"])(simpleObj)).toEqual({"bar": 2, "baz": 3});
+                expect(lamb.skip(simpleObj, ["foo"])).toEqual({bar: 2, baz: 3});
+                expect(lamb.skipKeys(["foo"])(simpleObj)).toEqual({bar: 2, baz: 3});
             });
 
             it("should include properties with `undefined` values in the result", function () {
@@ -670,33 +679,37 @@ describe("lamb.object", function () {
 
             it("should accept arrays and array-like objects and integers as keys", function () {
                 var result = {
-                    "0": {"name": "Jane", "surname": "Doe"},
-                    "2": {"name": "Mario", "surname": "Rossi"}
+                    0: {name: "Jane", surname: "Doe"},
+                    2: {name: "Mario", surname: "Rossi"}
                 };
 
                 expect(lamb.skip(names, ["1", 3])).toEqual(result);
                 expect(lamb.skipKeys(["1", 3])(names)).toEqual(result);
-                expect(lamb.skip("bar", [0, 2])).toEqual({"1": "a"});
-                expect(lamb.skipKeys([0, 2])("bar")).toEqual({"1": "a"});
+                expect(lamb.skip("bar", [0, 2])).toEqual({1: "a"});
+                expect(lamb.skipKeys([0, 2])("bar")).toEqual({1: "a"});
             });
 
             it("should see unassigned or deleted indexes in sparse arrays as non-existing keys", function () {
-                expect(lamb.skip([1, , 3], [2])).toEqual({"0": 1});
-                expect(lamb.skipKeys([2])([1, , 3])).toEqual({"0": 1});
+                /* eslint-disable no-sparse-arrays */
+                expect(lamb.skip([1, , 3], [2])).toEqual({0: 1});
+                expect(lamb.skipKeys([2])([1, , 3])).toEqual({0: 1});
+                /* eslint-enable no-sparse-arrays */
             });
 
             it("should see unassigned or deleted indexes in sparse arrays received as the `blacklist` as `undefined` values", function () {
-                expect(lamb.skip({"undefined": 1, a: 2, b: 3}, ["a", ,])).toEqual({b: 3});
-                expect(lamb.skipKeys(["a", ,])({"undefined": 1, a: 2, b: 3})).toEqual({b: 3});
+                /* eslint-disable comma-spacing, no-sparse-arrays */
+                expect(lamb.skip({undefined: 1, a: 2, b: 3}, ["a", ,])).toEqual({b: 3});
+                expect(lamb.skipKeys(["a", ,])({undefined: 1, a: 2, b: 3})).toEqual({b: 3});
+                /* eslint-enable comma-spacing, no-sparse-arrays */
             });
 
             it("should return a copy of the source object if supplied with an empty list of keys", function () {
                 var r1 = lamb.skip(simpleObj, []);
                 var r2 = lamb.skipKeys([])(simpleObj);
 
-                expect(r1).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                expect(r1).toEqual({foo: 1, bar: 2, baz: 3});
                 expect(r1).not.toBe(simpleObj);
-                expect(r2).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                expect(r2).toEqual({foo: 1, bar: 2, baz: 3});
                 expect(r2).not.toBe(simpleObj);
             });
 
@@ -723,7 +736,6 @@ describe("lamb.object", function () {
                 expect(function () { lamb.skipKeys(null)({a: 1}); }).toThrow();
                 expect(function () { lamb.skipKeys(void 0)({a: 1}); }).toThrow();
                 expect(function () { lamb.skipKeys()({a: 1}); }).toThrow();
-
             });
 
             it("should treat other values for the `blacklist` parameter as an empty array and return a copy of the source object", function () {
@@ -731,9 +743,9 @@ describe("lamb.object", function () {
                     var r1 = lamb.skip(simpleObj, value);
                     var r2 = lamb.skipKeys(value)(simpleObj);
 
-                    expect(r1).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                    expect(r1).toEqual({foo: 1, bar: 2, baz: 3});
                     expect(r1).not.toBe(simpleObj);
-                    expect(r2).toEqual({"foo" : 1, "bar" : 2, "baz" : 3});
+                    expect(r2).toEqual({foo: 1, bar: 2, baz: 3});
                     expect(r2).not.toBe(simpleObj);
                 });
             });
@@ -758,8 +770,10 @@ describe("lamb.object", function () {
 
         describe("skipIf", function () {
             it("should skip object properties using a predicate", function () {
-                expect(lamb.skipIf(isNumber)(persons[0])).toEqual({"name": "Jane", "surname": "Doe", "city": "New York"});
                 expect(persons.map(lamb.skipIf(isNameKey))).toEqual(agesAndCities);
+                expect(lamb.skipIf(isNumber)(persons[0])).toEqual(
+                    {name: "Jane", surname: "Doe", city: "New York"}
+                );
             });
 
             it("should include properties with `undefined` values in the result", function () {
@@ -769,12 +783,13 @@ describe("lamb.object", function () {
             it("should accept array-like objects", function () {
                 var isEven = function (n) { return n % 2 === 0; };
 
-                expect(lamb.skipIf(isEven)([1, 2, 3, 4])).toEqual({"0": 1, "2": 3});
-                expect(lamb.skipIf(isEven)("1234")).toEqual({"0": "1", "2": "3"});
+                expect(lamb.skipIf(isEven)([1, 2, 3, 4])).toEqual({0: 1, 2: 3});
+                expect(lamb.skipIf(isEven)("1234")).toEqual({0: "1", 2: "3"});
             });
 
             it("should not consider unassigned or deleted indexes in sparse arrays", function () {
-                expect(lamb.skipIf(lamb.not(lamb.isUndefined))([1, , 3, void 0])).toEqual({"3": void 0});
+                // eslint-disable-next-line no-sparse-arrays
+                expect(lamb.skipIf(lamb.not(lamb.isUndefined))([1, , 3, void 0])).toEqual({3: void 0});
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
@@ -811,7 +826,8 @@ describe("lamb.object", function () {
         });
         var objEquivalent = {"": 0, a: 1, b: 2, c: 3, d: 4, e: 5};
 
-        // seems that this version of jasmine (2.2.1) checks only own enumerable properties with the "toEqual" expectation
+        // seems that this version of jasmine (2.2.1) checks only
+        // own enumerable properties with the "toEqual" expectation
         afterEach(function () {
             for (var key in objEquivalent) {
                 expect(obj[key]).toEqual(objEquivalent[key]);
@@ -822,14 +838,15 @@ describe("lamb.object", function () {
 
         describe("renameWith", function () {
             it("should use the provided function to generate a keys' map for `rename`", function () {
-                var person = {"NAME": "John", "SURNAME": "Doe"};
+                var person = {NAME: "John", SURNAME: "Doe"};
                 var makeLowerKeysMap = function (source) {
                     var sourceKeys = lamb.keys(source);
+
                     return lamb.make(sourceKeys, sourceKeys.map(lamb.invoker("toLowerCase")));
                 };
                 var renameSpy = jasmine.createSpy().and.callFake(makeLowerKeysMap);
 
-                expect(lamb.renameWith(renameSpy)(person)).toEqual({"name": "John", "surname": "Doe"});
+                expect(lamb.renameWith(renameSpy)(person)).toEqual({name: "John", surname: "Doe"});
                 expect(renameSpy.calls.count()).toBe(1);
                 expect(renameSpy.calls.argsFor(0).length).toBe(1);
                 expect(renameSpy.calls.argsFor(0)[0]).toBe(person);
@@ -878,7 +895,7 @@ describe("lamb.object", function () {
 
         it("should give priority to the map and overwrite an existing key if necessary", function () {
             var keysMap = {a: "", b: "c"};
-            var result = {"" : 1, c: 2, d: 4, e: 5};
+            var result = {"": 1, c: 2, d: 4, e: 5};
 
             expect(lamb.rename(obj, keysMap)).toEqual(result);
             expect(lamb.renameKeys(keysMap)(obj)).toEqual(result);
@@ -892,6 +909,7 @@ describe("lamb.object", function () {
             var r4 = lamb.rename(obj, {f: "z"});
             var r5 = lamb.renameKeys({f: "z"})(obj);
             var r6 = lamb.renameWith(lamb.always({f: "z"}))(obj);
+
             expect(r1).toEqual(objEquivalent);
             expect(r2).toEqual(objEquivalent);
             expect(r3).toEqual(objEquivalent);
@@ -909,7 +927,7 @@ describe("lamb.object", function () {
         it("should accept array-like objects as a source", function () {
             var arr = [1, 2, 3];
             var s = "foo";
-            var keysMap = {"0": "a", "1": "b", "2": "c"};
+            var keysMap = {0: "a", 1: "b", 2: "c"};
             var r1 = {a: 1, b: 2, c: 3};
             var r2 = {a: "f", b: "o", c: "o"};
 
@@ -922,8 +940,8 @@ describe("lamb.object", function () {
         });
 
         it("should not consider unassigned or deleted indexes when the source is a sparse array", function () {
-            var arr = [1, , 3];
-            var keysMap = {"0": "a", "1": "b", "2": "c"};
+            var arr = [1, , 3]; // eslint-disable-line no-sparse-arrays
+            var keysMap = {0: "a", 1: "b", 2: "c"};
             var result = {a: 1, c: 3};
 
             expect(lamb.rename(arr, keysMap)).toEqual(result);
@@ -934,9 +952,9 @@ describe("lamb.object", function () {
         it("should accept array-like objects as key maps", function () {
             var arr = [1, 2, 3];
             var s = "bar";
-            var someObj = {"0": "a", "1": "b", "2": "c"};
-            var r1 = {"1": "a", "2": "b", "3": "c"};
-            var r2 = {"b": "a", "a": "b", "r": "c"};
+            var someObj = {0: "a", 1: "b", 2: "c"};
+            var r1 = {1: "a", 2: "b", 3: "c"};
+            var r2 = {b: "a", a: "b", r: "c"};
 
             expect(lamb.rename(someObj, arr)).toEqual(r1);
             expect(lamb.rename(someObj, s)).toEqual(r2);
@@ -947,9 +965,9 @@ describe("lamb.object", function () {
         });
 
         it("should not consider unassigned or deleted indexes when a sparse array is supplied as a key map", function () {
-            var someObj = {"0": "a", "1": "b", "2": "c"};
-            var arrKeyMap = [1, , 3];
-            var result = {"1": "a", "3": "c"};
+            var someObj = {0: "a", 1: "b", 2: "c"};
+            var arrKeyMap = [1, , 3]; // eslint-disable-line no-sparse-arrays
+            var result = {1: "a", 3: "c"};
 
             expect(lamb.rename(someObj, arrKeyMap)).toEqual(result);
             expect(lamb.renameKeys(arrKeyMap)(someObj)).toEqual(result);
@@ -961,6 +979,7 @@ describe("lamb.object", function () {
                 var r1 = lamb.rename(obj, value);
                 var r2 = lamb.renameKeys(value)(obj);
                 var r3 = lamb.renameWith(lamb.always(value))(obj);
+
                 expect(r1).toEqual(objEquivalent);
                 expect(r2).toEqual(objEquivalent);
                 expect(r3).toEqual(objEquivalent);
@@ -987,9 +1006,9 @@ describe("lamb.object", function () {
 
         it("should return an empty object for any other value passed as the source object", function () {
             wannabeEmptyObjects.forEach(function (value) {
-                expect(lamb.rename(value, {"0": 9})).toEqual({});
-                expect(lamb.renameKeys({"0": 9})(value)).toEqual({});
-                expect(lamb.renameWith(lamb.always({"0": 9}))(value)).toEqual({});
+                expect(lamb.rename(value, {0: 9})).toEqual({});
+                expect(lamb.renameKeys({0: 9})(value)).toEqual({});
+                expect(lamb.renameWith(lamb.always({0: 9}))(value)).toEqual({});
             });
         });
     });
@@ -1030,10 +1049,10 @@ describe("lamb.object", function () {
         });
 
         it("should throw an exception if supplied with `null` or `undefined`", function () {
-            expect(function () {lamb.tear(null)}).toThrow();
-            expect(function () {lamb.tear(void 0)}).toThrow();
-            expect(function () {lamb.tearOwn(null)}).toThrow();
-            expect(function () {lamb.tearOwn(void 0)}).toThrow();
+            expect(function () { lamb.tear(null); }).toThrow();
+            expect(function () { lamb.tear(void 0); }).toThrow();
+            expect(function () { lamb.tearOwn(null); }).toThrow();
+            expect(function () { lamb.tearOwn(void 0); }).toThrow();
         });
 
         it("should consider other values as empty objects", function () {

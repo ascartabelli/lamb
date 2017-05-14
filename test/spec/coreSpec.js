@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -54,6 +56,7 @@ describe("lamb.core", function () {
             var fn = lamb.always(o);
             var r1 = fn("foo");
             var r2 = fn();
+
             expect(r1).toBe(o);
             expect(r2).toBe(o);
             expect(r1).toBe(r2);
@@ -113,6 +116,7 @@ describe("lamb.core", function () {
             var fakeContext = {};
             var double = function (n) {
                 expect(this).toBe(fakeContext);
+
                 return n * 2;
             };
             var numbers = [1, 2, 3, 4, 5];
@@ -141,7 +145,8 @@ describe("lamb.core", function () {
             expect(lamb.identity(null)).toBe(null);
             expect(lamb.identity()).toBeUndefined();
 
-            var someRefType = {"foo" : 5};
+            var someRefType = {foo: 5};
+
             expect(lamb.identity(someRefType)).toBe(someRefType);
         });
     });
@@ -191,7 +196,7 @@ describe("lamb.core", function () {
         });
 
         it("should be safe to call the partial application multiple times with different values for unfilled placeholders", function () {
-            var list = [{"id" : "foo"}, {"id" : "bar"}, {"id" : "baz"}];
+            var list = [{id: "foo"}, {id: "bar"}, {id: "baz"}];
             var getID1 = lamb.partial(lamb.getIn, [_, "id"]);
             var getID2 = lamb.unary(lamb.partialRight(lamb.getIn, [_, "id"]));
 
@@ -216,7 +221,7 @@ describe("lamb.core", function () {
             var obj = {
                 values: [1, 2, 3],
                 foo: lamb.partial(fn, [4, _]),
-                bar: lamb.partialRight(fn, [_, 4]),
+                bar: lamb.partialRight(fn, [_, 4])
             };
 
             obj.foo(5);

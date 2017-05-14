@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -9,7 +11,7 @@ var wannabeEmptyObjects = commons.vars.wannabeEmptyObjects;
 
 describe("lamb.object_checking", function () {
     describe("Property checking", function () {
-        var obj = {"foo" : "bar"};
+        var obj = {foo: "bar"};
 
         describe("has / hasKey", function () {
             it("should check the existence of the property in an object", function () {
@@ -25,7 +27,7 @@ describe("lamb.object_checking", function () {
             });
 
             it("should accept integers as keys and accept array-like objects", function () {
-                var o = {"1": "a", "2": "b"};
+                var o = {1: "a", 2: "b"};
                 var arr = [1, 2, 3, 4];
                 var s = "abcd";
 
@@ -38,7 +40,7 @@ describe("lamb.object_checking", function () {
             });
 
             it("should consider only defined indexes in sparse arrays", function () {
-                var arr = [1, , 3];
+                var arr = [1, , 3]; // eslint-disable-line no-sparse-arrays
 
                 expect(lamb.has(arr, 1)).toBe(false);
                 expect(lamb.hasKey(1)(arr)).toBe(false);
@@ -52,8 +54,8 @@ describe("lamb.object_checking", function () {
                     expect(lamb.hasKey(key)(testObj)).toBe(true);
                 });
 
-                expect(lamb.has({"undefined": void 0})).toBe(true);
-                expect(lamb.hasKey()({"undefined": void 0})).toBe(true);
+                expect(lamb.has({undefined: void 0})).toBe(true);
+                expect(lamb.hasKey()({undefined: void 0})).toBe(true);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -93,7 +95,7 @@ describe("lamb.object_checking", function () {
             });
 
             it("should accept integers as keys and accept array-like objects", function () {
-                var o = {"1": "a", "2": "b"};
+                var o = {1: "a", 2: "b"};
                 var arr = [1, 2, 3, 4];
                 var s = "abcd";
 
@@ -106,7 +108,7 @@ describe("lamb.object_checking", function () {
             });
 
             it("should consider only defined indexes in sparse arrays", function () {
-                var arr = [1, , 3];
+                var arr = [1, , 3]; // eslint-disable-line no-sparse-arrays
 
                 expect(lamb.hasOwn(arr, 1)).toBe(false);
                 expect(lamb.hasOwnKey(1)(arr)).toBe(false);
@@ -120,8 +122,8 @@ describe("lamb.object_checking", function () {
                     expect(lamb.hasOwnKey(key)(testObj)).toBe(true);
                 });
 
-                expect(lamb.hasOwn({"undefined": void 0})).toBe(true);
-                expect(lamb.hasOwnKey()({"undefined": void 0})).toBe(true);
+                expect(lamb.hasOwn({undefined: void 0})).toBe(true);
+                expect(lamb.hasOwnKey()({undefined: void 0})).toBe(true);
             });
 
             it("should throw an exception if called without the data argument", function () {
@@ -150,9 +152,9 @@ describe("lamb.object_checking", function () {
 
     describe("hasKeyValue", function () {
         var persons = [
-            {"name": "Jane", "surname": "Doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "Mario", "surname": "Rossi"}
+            {name: "Jane", surname: "Doe"},
+            {name: "John", surname: "Doe"},
+            {name: "Mario", surname: "Rossi"}
         ];
 
         var isDoe = lamb.hasKeyValue("surname", "Doe");
@@ -168,7 +170,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should be able to check for `undefined` values in existing keys", function () {
-            var obj = {"a": void 0, "b": 5};
+            var obj = {a: void 0, b: 5};
 
             expect(lamb.hasKeyValue("a", void 0)(obj)).toBe(true);
             expect(lamb.hasKeyValue("a")(obj)).toBe(true);
@@ -187,7 +189,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should accept integers as keys and accept array-like objects", function () {
-            var o = {"1": "a", "2": "b"};
+            var o = {1: "a", 2: "b"};
             var arr = [1, 2, 3, 4];
             var s = "abcd";
 
@@ -197,8 +199,10 @@ describe("lamb.object_checking", function () {
         });
 
         it("should consider only defined indexes in sparse arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.hasKeyValue("1", void 0)([1, , 3])).toBe(false);
             expect(lamb.hasKeyValue("-2", void 0)([1, , 3])).toBe(false);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should convert other values for the `key` parameter to string", function () {
@@ -209,10 +213,11 @@ describe("lamb.object_checking", function () {
 
             nonStrings.forEach(function (key) {
                 var value = nonStringsAsStrings.indexOf(String(key));
+
                 expect(lamb.hasKeyValue(key, value)(testObj)).toBe(true);
             });
 
-            expect(lamb.hasKeyValue()({"undefined": void 0})).toBe(true);
+            expect(lamb.hasKeyValue()({undefined: void 0})).toBe(true);
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -234,12 +239,23 @@ describe("lamb.object_checking", function () {
     });
 
     describe("hasPathValue", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {
+            a: 2,
+            b: {
+                a: 3,
+                b: [4, 5],
+                c: "foo",
+                e: {a: 45, b: void 0}
+            },
+            "c.d": {"e.f": 6},
+            c: {a: -0, b: NaN}
+        };
+
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
-        Object.defineProperty(obj, "e", {value : 10});
-        obj.f = Object.create({}, {g: {value : 20}});
+        Object.defineProperty(obj, "e", {value: 10});
+        obj.f = Object.create({}, {g: {value: 20}});
 
         it("should verify if the given path points to the desired value", function () {
             expect(lamb.hasPathValue("a", 2)(obj)).toBe(true);
@@ -298,11 +314,13 @@ describe("lamb.object_checking", function () {
         });
 
         it("should be able to verify values nested in arrays", function () {
-            var o = {data: [
-                {id: 1, value: 10},
-                {id: 2, value: 20},
-                {id: 3, value: 30}
-            ]};
+            var o = {
+                data: [
+                    {id: 1, value: 10},
+                    {id: 2, value: 20},
+                    {id: 3, value: 30}
+                ]
+            };
 
             expect(lamb.hasPathValue("data.1.value", 20)(o)).toBe(true);
             expect(lamb.hasPathValue("data.-1.value", 30)(o)).toBe(true);
@@ -310,6 +328,7 @@ describe("lamb.object_checking", function () {
 
         it("should give priority to object keys over array-like indexes when a negative index is encountered", function () {
             var o = {a: ["abc", new String("def"), "ghi"]};
+
             o.a["-1"] = "foo";
             o.a[1]["-2"] = "bar";
             Object.defineProperty(o.a, "-2", {value: 99});
@@ -327,7 +346,7 @@ describe("lamb.object_checking", function () {
         it("should accept integers as paths containing a single key", function () {
             expect(lamb.hasPathValue(1, 2)([1, 2])).toBe(true);
             expect(lamb.hasPathValue(-1, 2)([1, 2])).toBe(true);
-            expect(lamb.hasPathValue(1, "a")({"1": "a"})).toBe(true);
+            expect(lamb.hasPathValue(1, "a")({1: "a"})).toBe(true);
         });
 
         it("should convert other values for the `path` parameter to string", function () {
@@ -336,10 +355,11 @@ describe("lamb.object_checking", function () {
 
             nonStrings.forEach(function (key) {
                 var value = values[nonStringsAsStrings.indexOf(String(key))];
+
                 expect(lamb.hasPathValue(key, value, "_")(testObj)).toBe(true);
             });
 
-            var fooObj = {a: 2, "1": {"5": 3}};
+            var fooObj = {a: 2, 1: {5: 3}};
 
             expect(lamb.hasPathValue(1.5, 3)(fooObj)).toBe(true);
         });
@@ -354,7 +374,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should convert to object every other value", function () {
-            wannabeEmptyObjects.map(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.hasPathValue("a", 99)(value)).toBe(false);
             });
 
@@ -364,10 +384,10 @@ describe("lamb.object_checking", function () {
 
     describe("keySatisfies", function () {
         var users = [
-            {"name": "Jane", "age": 12, active: false},
-            {"name": "John", "age": 40, active: false},
-            {"name": "Mario", "age": 18, active: true},
-            {"name": "Paolo", "age": 15, active: true}
+            {name: "Jane", age: 12, active: false},
+            {name: "John", age: 40, active: false},
+            {name: "Mario", age: 18, active: true},
+            {name: "Paolo", age: 15, active: true}
         ];
 
         var isValue = lamb.curry(lamb.is);
@@ -382,6 +402,7 @@ describe("lamb.object_checking", function () {
             var isGreaterThan17 = function (n) {
                 expect(arguments.length).toBe(1);
                 expect(n).toBeUndefined();
+
                 return n > 17;
             };
 
@@ -411,7 +432,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should accept integers as keys and accept array-like objects", function () {
-            var o = {"1": "a", "2": "b"};
+            var o = {1: "a", 2: "b"};
             var arr = [1, 2, 3, 4];
             var s = "abcd";
 
@@ -421,8 +442,10 @@ describe("lamb.object_checking", function () {
         });
 
         it("should pass an `undefined` value to the predicate for unassigned or deleted indexes in sparse arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.keySatisfies(lamb.isUndefined, "1")([1, , 3])).toBe(true);
             expect(lamb.keySatisfies(lamb.isUndefined, "-2")([1, , 3])).toBe(true);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should convert other values for the `key` parameter to string", function () {
@@ -437,7 +460,7 @@ describe("lamb.object_checking", function () {
                 expect(lamb.keySatisfies(isValue(value), key)(testObj)).toBe(true);
             });
 
-            expect(lamb.keySatisfies(isValue(99))({"undefined": 99})).toBe(true);
+            expect(lamb.keySatisfies(isValue(99))({undefined: 99})).toBe(true);
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -469,12 +492,23 @@ describe("lamb.object_checking", function () {
     });
 
     describe("pathExists / pathExistsIn", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {
+            a: 2,
+            b: {
+                a: 3,
+                b: [4, 5],
+                c: "foo",
+                e: {a: 45, b: void 0}
+            },
+            "c.d": {"e.f": 6},
+            c: {a: -0, b: NaN}
+        };
+
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
-        Object.defineProperty(obj, "e", {value : 10});
-        obj.f = Object.create({}, {g: {value : 20}});
+        Object.defineProperty(obj, "e", {value: 10});
+        obj.f = Object.create({}, {g: {value: 20}});
 
         it("should verify if the provided path exists in the given object", function () {
             expect(lamb.pathExists("a")(obj)).toBe(true);
@@ -542,11 +576,13 @@ describe("lamb.object_checking", function () {
         });
 
         it("should be able to check objects nested in arrays", function () {
-            var o = {data: [
-                {id: 1, value: 10},
-                {id: 2, value: 20},
-                {id: 3, value: 30}
-            ]};
+            var o = {
+                data: [
+                    {id: 1, value: 10},
+                    {id: 2, value: 20},
+                    {id: 3, value: 30}
+                ]
+            };
 
             expect(lamb.pathExists("data.1.value")(o)).toBe(true);
             expect(lamb.pathExists("data.-1.value")(o)).toBe(true);
@@ -561,6 +597,7 @@ describe("lamb.object_checking", function () {
 
         it("should give priority to object keys over array-like indexes when a negative index is encountered", function () {
             var o = {a: ["abc", new String("def"), "ghi"]};
+
             o.a["-1"] = "foo";
             o.a[1]["-2"] = "bar";
             Object.defineProperty(o.a, "-2", {value: 99});
@@ -585,11 +622,11 @@ describe("lamb.object_checking", function () {
         it("should accept integers as paths containing a single key", function () {
             expect(lamb.pathExists(1)([1, 2])).toBe(true);
             expect(lamb.pathExists(-1)([1, 2])).toBe(true);
-            expect(lamb.pathExists(1)({"1": "a"})).toBe(true);
+            expect(lamb.pathExists(1)({1: "a"})).toBe(true);
 
             expect(lamb.pathExistsIn([1, 2], 1)).toBe(true);
             expect(lamb.pathExistsIn([1, 2], -1)).toBe(true);
-            expect(lamb.pathExistsIn({"1": "a"}, 1)).toBe(true);
+            expect(lamb.pathExistsIn({1: "a"}, 1)).toBe(true);
         });
 
         it("should convert other values for the `path` parameter to string", function () {
@@ -601,7 +638,7 @@ describe("lamb.object_checking", function () {
                 expect(lamb.pathExistsIn(testObj, key, "_")).toBe(true);
             });
 
-            var fooObj = {a: 2, "1": {"5": 3}};
+            var fooObj = {a: 2, 1: {5: 3}};
 
             expect(lamb.pathExists(1.5)(fooObj)).toBe(true);
             expect(lamb.pathExistsIn(fooObj, 1.5)).toBe(true);
@@ -621,7 +658,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should convert to object every other value", function () {
-            wannabeEmptyObjects.map(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.pathExists("a")(value)).toBe(false);
                 expect(lamb.pathExistsIn(value, "a")).toBe(false);
             });
@@ -632,12 +669,23 @@ describe("lamb.object_checking", function () {
     });
 
     describe("pathSatisfies", function () {
-        var obj = {a: 2, b: {a: 3, b: [4, 5], c: "foo", e: {a: 45, b: void 0}}, "c.d" : {"e.f": 6}, c: {a: -0, b: NaN}};
+        var obj = {
+            a: 2,
+            b: {
+                a: 3,
+                b: [4, 5],
+                c: "foo",
+                e: {a: 45, b: void 0}
+            },
+            "c.d": {"e.f": 6},
+            c: {a: -0, b: NaN}
+        };
+
         obj.b.d = Array(3);
         obj.b.d[1] = 99;
 
-        Object.defineProperty(obj, "e", {value : 10});
-        obj.f = Object.create({}, {g: {value : 20}});
+        Object.defineProperty(obj, "e", {value: 10});
+        obj.f = Object.create({}, {g: {value: 20}});
 
         var isValue = lamb.curry(lamb.is);
         var isDefined = lamb.not(lamb.isUndefined);
@@ -652,14 +700,15 @@ describe("lamb.object_checking", function () {
         });
 
         it("should pass an `undefined` value to the predicate if the path doesn't exist", function () {
-            var isDefined = function (v) {
+            var isDefinedCheck = function (v) {
                 expect(arguments.length).toBe(1);
                 expect(v).toBeUndefined();
+
                 return !lamb.isUndefined(v);
             };
 
-            expect(lamb.pathSatisfies(isDefined, "a.z")(obj)).toBe(false);
-            expect(lamb.pathSatisfies(isDefined, "b.a.z")(obj)).toBe(false);
+            expect(lamb.pathSatisfies(isDefinedCheck, "a.z")(obj)).toBe(false);
+            expect(lamb.pathSatisfies(isDefinedCheck, "b.a.z")(obj)).toBe(false);
         });
 
         it("should apply the function's calling context to the predicate", function () {
@@ -693,16 +742,21 @@ describe("lamb.object_checking", function () {
         it("should pass an `undefined` value to the predicate for unassigned or deleted indexes in sparse arrays", function () {
             expect(lamb.pathSatisfies(lamb.isUndefined, "b.d.0")(obj)).toBe(true);
             expect(lamb.pathSatisfies(lamb.isUndefined, "b.d.-3")(obj)).toBe(true);
+
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.pathSatisfies(lamb.isUndefined, "1")([1, , 3])).toBe(true);
             expect(lamb.pathSatisfies(lamb.isUndefined, "-2")([1, , 3])).toBe(true);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should be able to check objects nested in arrays", function () {
-            var o = {data: [
-                {id: 1, value: 10},
-                {id: 2, value: 20},
-                {id: 3, value: 30}
-            ]};
+            var o = {
+                data: [
+                    {id: 1, value: 10},
+                    {id: 2, value: 20},
+                    {id: 3, value: 30}
+                ]
+            };
 
             expect(lamb.pathSatisfies(isValue(20), "data.1.value")(o)).toBe(true);
             expect(lamb.pathSatisfies(isValue(30), "data.-1.value")(o)).toBe(true);
@@ -710,6 +764,7 @@ describe("lamb.object_checking", function () {
 
         it("should give priority to object keys over array-like indexes when a negative index is encountered", function () {
             var o = {a: ["abc", new String("def"), "ghi"]};
+
             o.a["-1"] = "foo";
             o.a[1]["-2"] = "bar";
             Object.defineProperty(o.a, "-2", {value: 99});
@@ -727,7 +782,7 @@ describe("lamb.object_checking", function () {
         it("should accept integers as paths containing a single key", function () {
             expect(lamb.pathSatisfies(isValue(2), 1)([1, 2])).toBe(true);
             expect(lamb.pathSatisfies(isValue(2), -1)([1, 2])).toBe(true);
-            expect(lamb.pathSatisfies(isValue("a"), 1)({"1": "a"})).toBe(true);
+            expect(lamb.pathSatisfies(isValue("a"), 1)({1: "a"})).toBe(true);
         });
 
         it("should convert other values for the `path` parameter to string", function () {
@@ -738,7 +793,7 @@ describe("lamb.object_checking", function () {
                 expect(lamb.pathSatisfies(isValue(values[idx]), key, "_")(testObj)).toBe(true);
             });
 
-            var fooObj = {a: 2, "1": {"5": 3}};
+            var fooObj = {a: 2, 1: {5: 3}};
 
             expect(lamb.pathSatisfies(isValue(3), 1.5)(fooObj)).toBe(true);
         });
@@ -753,7 +808,7 @@ describe("lamb.object_checking", function () {
         });
 
         it("should convert to object every other value", function () {
-            wannabeEmptyObjects.map(function (value) {
+            wannabeEmptyObjects.forEach(function (value) {
                 expect(lamb.pathSatisfies(isDefined, "a")(value)).toBe(false);
             });
 
@@ -763,24 +818,40 @@ describe("lamb.object_checking", function () {
 
     describe("Object validation", function () {
         var persons = [
-            {"name": "Jane", "surname": "Doe", "age": 12, "city" : "New York", "email": "jane@doe", "login": {"user.name": "", "password" : "jane", "passwordConfirm": "janE"}},
-            {"name": "John", "surname": "Doe", "age": 40, "city" : "London", "email": "john@doe"},
-            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome", "email": "mario@rossi.it"},
-            {"name": "Paolo", "surname": "Bianchi", "age": 15, "city": "Amsterdam", "email": "paolo@bianchi.nl"}
+            {name: "Jane", surname: "Doe", age: 12, city: "New York", email: "jane@doe"},
+            {name: "John", surname: "Doe", age: 40, city: "London", email: "john@doe"},
+            {name: "Mario", surname: "Rossi", age: 18, city: "Rome", email: "mario@rossi.it"},
+            {name: "Paolo", surname: "Bianchi", age: 15, city: "Amsterdam", email: "paolo@bianchi.nl"}
         ];
+
+        persons[0].login = {"user.name": "", password: "jane", passwordConfirm: "janE"};
 
         var isAdult = function (age) { return age >= 18; };
         var isRequired = function (v) { return v.length > 0; };
         var isValidMail = function (mail) {
-            return /^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/.test(mail);
+            // eslint-disable-next-line max-len
+            return /^[A-Za-z0-9](([_.-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/.test(mail);
         };
         var isValidPassword = function (pwd) { return pwd.length > 5; };
 
         var mailCheck = lamb.checker(isValidMail, "Must have a valid mail", ["email"]);
         var ageCheck = lamb.checker(isAdult, "Must be at least 18 years old", ["age"]);
-        var pwdCheck = lamb.checker(isValidPassword, "Passwords must have at least six characters", ["login.password"]);
-        var userNameCheck = lamb.checker(isRequired, "The username is a required field", ["login/user.name"], "/");
-        var pwdConfirmCheck = lamb.checker(lamb.areSame, "Passwords don't match", ["login.password", "login.passwordConfirm"]);
+        var pwdCheck = lamb.checker(
+            isValidPassword,
+            "Passwords must have at least six characters",
+            ["login.password"]
+        );
+        var userNameCheck = lamb.checker(
+            isRequired,
+            "The username is a required field",
+            ["login/user.name"],
+            "/"
+        );
+        var pwdConfirmCheck = lamb.checker(
+            lamb.areSame,
+            "Passwords don't match",
+            ["login.password", "login.passwordConfirm"]
+        );
 
         describe("checker", function () {
             it("should build a function to validate the given properties of an object", function () {
@@ -789,12 +860,18 @@ describe("lamb.object_checking", function () {
             });
 
             it("should accept string paths as property names", function () {
-                expect(pwdCheck(persons[0])).toEqual(["Passwords must have at least six characters", ["login.password"]]);
-                expect(userNameCheck(persons[0])).toEqual(["The username is a required field", ["login/user.name"]]);
+                expect(pwdCheck(persons[0])).toEqual(
+                    ["Passwords must have at least six characters", ["login.password"]]
+                );
+                expect(userNameCheck(persons[0])).toEqual(
+                    ["The username is a required field", ["login/user.name"]]
+                );
             });
 
             it("should be possible to make a checker involving more than one property", function () {
-                expect(pwdConfirmCheck(persons[0])).toEqual(["Passwords don't match", ["login.password", "login.passwordConfirm"]]);
+                expect(pwdConfirmCheck(persons[0])).toEqual(
+                    ["Passwords don't match", ["login.password", "login.passwordConfirm"]]
+                );
             });
 
             it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {

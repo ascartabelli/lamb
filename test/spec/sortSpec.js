@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -9,30 +11,31 @@ var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 describe("lamb.sort", function () {
     var descSorter = lamb.sorterDesc();
 
-    beforeEach(function() {
+    beforeEach(function () {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
 
     describe("sort / sortWith", function () {
         var persons = [
-            {"name": "John", "surname" :"Doe"},
-            {"name": "Mario", "surname": "Rossi"},
-            {"name": "John", "surname" :"Moe"},
-            {"name": "Jane", "surname": "Foe"}
+            {name: "John", surname: "Doe"},
+            {name: "Mario", surname: "Rossi"},
+            {name: "John", surname: "Moe"},
+            {name: "Jane", surname: "Foe"}
         ];
 
         var personsByNameAsc = [
-            {"name": "Jane", "surname": "Foe"},
-            {"name": "John", "surname" :"Doe"},
-            {"name": "John", "surname" :"Moe"},
-            {"name": "Mario", "surname": "Rossi"}
+            {name: "Jane", surname: "Foe"},
+            {name: "John", surname: "Doe"},
+            {name: "John", surname: "Moe"},
+            {name: "Mario", surname: "Rossi"}
         ];
 
+        // eslint-disable-next-line id-length
         var personsByNameAscSurnameDesc = [
-            {"name": "Jane", "surname": "Foe"},
-            {"name": "John", "surname" :"Moe"},
-            {"name": "John", "surname" :"Doe"},
-            {"name": "Mario", "surname": "Rossi"}
+            {name: "Jane", surname: "Foe"},
+            {name: "John", surname: "Moe"},
+            {name: "John", surname: "Doe"},
+            {name: "Mario", surname: "Rossi"}
         ];
 
         var personsByNameReversed = personsByNameAsc.slice().reverse();
@@ -100,7 +103,9 @@ describe("lamb.sort", function () {
         });
 
         it("should treat values as strings if different types are received by the default comparer", function () {
-            expect(lamb.sort(mixed)).toEqual([[], -100, "1", 1, "10", "15", "20", NaN, NaN, false, null, null, {}, void 0]);
+            expect(lamb.sort(mixed)).toEqual([
+                [], -100, "1", 1, "10", "15", "20", NaN, NaN, false, null, null, {}, void 0
+            ]);
         });
 
         it("should be able to use custom comparers", function () {
@@ -141,7 +146,7 @@ describe("lamb.sort", function () {
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
-            var arr = ["b", , "c", void 0, "a"];
+            var arr = ["b", , "c", void 0, "a"]; // eslint-disable-line no-sparse-arrays
             var result = ["a", "b", "c", void 0, void 0];
 
             expect(lamb.sort(arr, String)).toEqual(result);
@@ -169,12 +174,13 @@ describe("lamb.sort", function () {
     });
 
     describe("sortedInsert", function () {
+        // eslint-disable-next-line id-length
         var personsByCaseInsensitiveNameAsc = [
-            {"name": "jane", "surname": "doe"},
-            {"name": "John", "surname": "Doe"},
-            {"name": "john", "surname": "doe"},
-            {"name": "John", "surname": "Moe"},
-            {"name": "Mario", "surname": "Rossi"}
+            {name: "jane", surname: "doe"},
+            {name: "John", surname: "Doe"},
+            {name: "john", surname: "doe"},
+            {name: "John", surname: "Moe"},
+            {name: "Mario", surname: "Rossi"}
         ];
 
         var toLowerCase = lamb.invoker("toLowerCase");
@@ -182,17 +188,17 @@ describe("lamb.sort", function () {
 
         it("should insert an element in a copy of a sorted array respecting the order", function () {
             var expectedResult = [
-                {"name": "jane", "surname": "doe"},
-                {"name": "John", "surname": "Doe"},
-                {"name": "john", "surname": "doe"},
-                {"name": "John", "surname": "Moe"},
-                {"name": "marco", "surname": "Rossi"},
-                {"name": "Mario", "surname": "Rossi"}
+                {name: "jane", surname: "doe"},
+                {name: "John", surname: "Doe"},
+                {name: "john", surname: "doe"},
+                {name: "John", surname: "Moe"},
+                {name: "marco", surname: "Rossi"},
+                {name: "Mario", surname: "Rossi"}
             ];
 
             var result = lamb.sortedInsert(
                 personsByCaseInsensitiveNameAsc,
-                {"name": "marco", "surname": "Rossi"},
+                {name: "marco", surname: "Rossi"},
                 lamb.sorter(getLowerCaseName)
             );
 
@@ -206,19 +212,19 @@ describe("lamb.sort", function () {
 
         it("should be able to insert an element in a multi-sorted array", function () {
             var expectedResult = [
-                {"name": "jane", "surname": "doe"},
-                {"name": "John", "surname": "Doe"},
-                {"name": "john", "surname": "doe"},
-                {"name": "John", "surname": "Foe"},
-                {"name": "John", "surname": "Moe"},
-                {"name": "Mario", "surname": "Rossi"}
+                {name: "jane", surname: "doe"},
+                {name: "John", surname: "Doe"},
+                {name: "john", surname: "doe"},
+                {name: "John", surname: "Foe"},
+                {name: "John", surname: "Moe"},
+                {name: "Mario", surname: "Rossi"}
             ];
 
             var getLowerCaseSurname = lamb.compose(toLowerCase, lamb.getKey("surname"));
 
             var result = lamb.sortedInsert(
                 personsByCaseInsensitiveNameAsc,
-                {"name": "John", "surname": "Foe"},
+                {name: "John", surname: "Foe"},
                 getLowerCaseName,
                 getLowerCaseSurname
             );
@@ -238,6 +244,7 @@ describe("lamb.sort", function () {
 
         it("should be able to insert values at the beginning and at the end of the array", function () {
             var arr = [1, 2, 3];
+
             expect(lamb.sortedInsert(arr, 0)).toEqual([0, 1, 2, 3]);
             expect(lamb.sortedInsert(arr, 4)).toEqual([1, 2, 3, 4]);
         });
@@ -278,6 +285,7 @@ describe("lamb.sort", function () {
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             var arr = ["a", "b", "c", , ,];
             var result = ["a", "b", "c", void 0, void 0, "z"];
 

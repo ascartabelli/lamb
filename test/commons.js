@@ -1,3 +1,6 @@
+/* eslint-disable strict */
+// we don't want strict mode to leak inside jasmine
+
 var lamb = require("../dist/lamb.js");
 var equalities = require("./custom_equalities.js");
 
@@ -5,9 +8,9 @@ var concat = lamb.generic(Array.prototype.concat);
 
 var coupleWithWrapper = function (values) {
     return values.reduce(function (result, value) {
-        var ctor = Object.getPrototypeOf(value).constructor;
+        var Ctor = Object.getPrototypeOf(value).constructor;
 
-        return result.concat(value, new ctor(value));
+        return result.concat(value, new Ctor(value));
     }, []);
 };
 
@@ -25,6 +28,11 @@ var numbersList = [-0.5, -0, 0, 0.5, -2.5, 2.5, 3];
 var numbers = coupleWithWrapper(numbersList);
 
 var objects = [Object.create(null), {}, {a: 1, b: 2}, argsObject];
+
+// discarding the first element in `objects` because you can't extract the
+// primitive value of `Object.create(null)` and it's not worth adding checks for it
+var objectsWithPrimitiveValue = objects.slice(1);
+
 var others = [function () {}, /foo/, NaN];
 
 var charStrings = coupleWithWrapper(["", "foo", "2a"]);
@@ -50,7 +58,7 @@ var wannabeNaNs = concat(
     "2a",
     others,
     booleans.map(wrapInArray),
-    objects.slice(1) // can't extract the primitive value of `Object.create(null)` and it's not worth adding checks for it
+    objectsWithPrimitiveValue
 );
 
 // values that will be transformed to zeroes (even negative zeroes) if casted to numbers
@@ -60,7 +68,7 @@ var zeroesAsNumbers = concat(
     others,
     booleans.slice(0, 2),
     charStrings,
-    objects.slice(1) // can't extract the primitive value of `Object.create(null)` and it's not worth adding checks for it
+    objectsWithPrimitiveValue
 );
 
 // values that will be transformed to zeroes (even negative zeroes) if casted to integers

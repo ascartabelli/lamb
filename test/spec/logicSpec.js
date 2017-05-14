@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -34,7 +36,11 @@ describe("lamb.logic", function () {
             return this.value > 0;
         }
     };
-    Foo.prototype.getIfPositiveOrGetSafe = lamb.condition(Foo.prototype.isPositive, Foo.prototype.getValue, Foo.prototype.getSafeValue);
+    Foo.prototype.getIfPositiveOrGetSafe = lamb.condition(
+        Foo.prototype.isPositive,
+        Foo.prototype.getValue,
+        Foo.prototype.getSafeValue
+    );
     Foo.prototype.getIfPositiveOrUndefined = lamb.case(Foo.prototype.isPositive, Foo.prototype.getValue);
     Foo.prototype.getWhenPositiveOrElse = lamb.when(Foo.prototype.isPositive, Foo.prototype.getValue);
     Foo.prototype.getUnlessIsPositiveOrElse = lamb.unless(Foo.prototype.isPositive, Foo.prototype.getValue);
@@ -55,6 +61,7 @@ describe("lamb.logic", function () {
             expect(filterAdapter({}, isEven)).toBeUndefined();
 
             var filterWithDefault = lamb.adapter(filterAdapter, lamb.always("Not implemented"));
+
             expect(filterWithDefault([1, 2, 3, 4, 5, 6], isEven)).toEqual([2, 4, 6]);
             expect(filterWithDefault("123456", isEven)).toBe("246");
             expect(filterWithDefault({}, isEven)).toBe("Not implemented");
@@ -62,6 +69,7 @@ describe("lamb.logic", function () {
 
         it("should not modify the functions' context", function () {
             var obj = {value: 5, getValue: lamb.adapter(Foo.prototype.getValue)};
+
             expect(obj.getValue()).toBe(5);
         });
 
@@ -84,11 +92,13 @@ describe("lamb.logic", function () {
     describe("allOf", function () {
         it("should return true if all the given predicates are satisfied", function () {
             var check = lamb.allOf(isEven, isGreaterThanTwo, isLessThanTen);
+
             expect([4, 6, 8].map(check)).toEqual([true, true, true]);
         });
 
         it("should return false if one the given predicates isn't satisfied", function () {
             var check = lamb.allOf(isEven, isGreaterThanTwo, isLessThanTen);
+
             expect([2, 3, 16].map(check)).toEqual([false, false, false]);
         });
 
@@ -121,11 +131,13 @@ describe("lamb.logic", function () {
     describe("anyOf", function () {
         it("should return true if at least one of the given predicates is satisfied", function () {
             var check = lamb.anyOf(isEven, isGreaterThanTwo, isLessThanTen);
+
             expect([33, 44, 5].map(check)).toEqual([true, true, true]);
         });
 
         it("should return false if none of the given predicates is satisfied", function () {
             var check = lamb.anyOf(isEven, isLessThanTen);
+
             expect([33, 35, 55].map(check)).toEqual([false, false, false]);
         });
 
@@ -238,7 +250,7 @@ describe("lamb.logic", function () {
             var condA = lamb.condition(satisfiedPredicate, lamb.list, lamb.always([]));
             var condB = lamb.condition(notSatisfiedPredicate, lamb.always([]), lamb.list);
             var caseA = lamb.case(satisfiedPredicate, lamb.list);
-            var caseB = lamb.case(notSatisfiedPredicate, lamb.always([]))
+            var caseB = lamb.case(notSatisfiedPredicate, lamb.always([]));
 
             expect(condA(1, 2, 3, 4)).toEqual([1, 2, 3, 4]);
             expect(condB(5, 6, 7)).toEqual([5, 6, 7]);

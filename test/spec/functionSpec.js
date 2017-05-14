@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -19,13 +21,13 @@ describe("lamb.function", function () {
         bar: function (a, b) {
             return (this.value + a) / b;
         }
-    }
+    };
 
     describe("application / apply / applyTo", function () {
         it("should apply the desired function to the given arguments", function () {
             expect(lamb.application(Math.max, [-1, 3, 2, 15, 7])).toBe(15);
             expect(lamb.apply(Math.max)([-1, 3, 2, 15, 7])).toBe(15);
-            expect(lamb.applyTo([-1, 3, 2, 15, 7])(Math.max)).toBe(15)
+            expect(lamb.applyTo([-1, 3, 2, 15, 7])(Math.max)).toBe(15);
         });
 
         it("should accept an array-like object as arguments for the function", function () {
@@ -136,6 +138,7 @@ describe("lamb.function", function () {
             };
 
             var obj = {values: [1, 2, 3], addValues: lamb.aritize(fn, 2)};
+
             obj.addValues(4, 5, 6, 7);
 
             expect(obj.values).toEqual([1, 2, 3, 4, 5]);
@@ -265,6 +268,7 @@ describe("lamb.function", function () {
             };
 
             var obj = {values: [1, 2, 3], addValues: lamb.binary(fn)};
+
             obj.addValues(4, 5, 6, 7);
 
             expect(obj.values).toEqual([1, 2, 3, 4, 5]);
@@ -546,6 +550,7 @@ describe("lamb.function", function () {
 
         it("should return a function that will execute the given function only if it stops being called for the specified timespan", function () {
             var debounced = lamb.debounce(testFn, 100);
+
             jasmine.clock().mockDate(new Date());
 
             debounced(1);
@@ -566,6 +571,7 @@ describe("lamb.function", function () {
         it("should return a function that applies its arguments to the original function in reverse order", function () {
             var appendTo = function (a, b) { return a + b; };
             var prependTo = lamb.flip(appendTo);
+
             expect(prependTo("foo", "bar")).toBe("barfoo");
         });
     });
@@ -640,6 +646,7 @@ describe("lamb.function", function () {
 
         it("should accept an empty string as a method name", function () {
             var obj = {"": function () { return 99; }};
+
             expect(lamb.invoker("")(obj)).toBe(99);
         });
 
@@ -706,6 +713,7 @@ describe("lamb.function", function () {
 
         it("should accept an empty string as a method name", function () {
             var obj = {"": function () { return 99; }};
+
             expect(lamb.invokerOn(obj)("")).toBe(99);
         });
 
@@ -821,6 +829,7 @@ describe("lamb.function", function () {
 
         it("should build a function that allows to tap into the arguments of the original one", function () {
             var getDataAmount = lamb.tapArgs(sum, [lamb.getKey("count"), lamb.getKey("length")]);
+
             expect(getDataAmount(someObject, someArrayData)).toBe(15);
             expect(sum.calls.count()).toBe(1);
             expect(sum.calls.argsFor(0)).toEqual([someObject.count, someArrayData.length]);
@@ -937,8 +946,8 @@ describe("lamb.function", function () {
             var fn = function () {
                 this.values.push(arguments[0]);
             };
-
             var obj = {values: [1, 2, 3], addValue: lamb.unary(fn)};
+
             obj.addValue(4);
 
             expect(obj.values).toEqual([1, 2, 3, 4]);

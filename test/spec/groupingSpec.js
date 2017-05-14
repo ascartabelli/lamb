@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -8,58 +10,58 @@ var wannabeEmptyArrays = commons.vars.wannabeEmptyArrays;
 
 describe("lamb.grouping", function () {
     var persons = [
-        {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
-        {"name": "John", "surname": "Doe", "age": 40, "city": "New York"},
-        {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
-        {"name": "Paolo", "surname": "Bianchi", "age": 15}
+        {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+        {name: "John", surname: "Doe", age: 40, city: "New York"},
+        {name: "Mario", surname: "Rossi", age: 18, city: "Rome"},
+        {name: "Paolo", surname: "Bianchi", age: 15}
     ];
 
     var personsCityCount = {
         "New York": 2,
-        "Rome": 1,
-        "undefined": 1
+        Rome: 1,
+        undefined: 1
     };
 
     var personsAgeGroupCount = {
-        "under20": 3,
-        "over20": 1
+        under20: 3,
+        over20: 1
     };
 
     var personsByAgeGroup = {
-        "under20": [
-            {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
-            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
-            {"name": "Paolo", "surname": "Bianchi", "age": 15}
+        under20: [
+            {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+            {name: "Mario", surname: "Rossi", age: 18, city: "Rome"},
+            {name: "Paolo", surname: "Bianchi", age: 15}
         ],
-        "over20": [
-            {"name": "John", "surname": "Doe", "age": 40, "city": "New York"}
+        over20: [
+            {name: "John", surname: "Doe", age: 40, city: "New York"}
         ]
     };
 
     var personsByCity = {
         "New York": [
-            {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
-            {"name": "John", "surname": "Doe", "age": 40, "city": "New York"}
+            {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+            {name: "John", surname: "Doe", age: 40, city: "New York"}
         ],
-        "Rome": [
-            {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"}
+        Rome: [
+            {name: "Mario", surname: "Rossi", age: 18, city: "Rome"}
         ],
-        "undefined": [
-            {"name": "Paolo", "surname": "Bianchi", "age": 15}
+        undefined: [
+            {name: "Paolo", surname: "Bianchi", age: 15}
         ]
     };
 
     var personsByAgeIndex = {
-        "12": {"name": "Jane", "surname": "Doe", "age": 12, "city": "New York"},
-        "15": {"name": "Paolo", "surname": "Bianchi", "age": 15},
-        "18": {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
-        "40": {"name": "John", "surname": "Doe", "age": 40, "city": "New York"}
+        12: {name: "Jane", surname: "Doe", age: 12, city: "New York"},
+        15: {name: "Paolo", surname: "Bianchi", age: 15},
+        18: {name: "Mario", surname: "Rossi", age: 18, city: "Rome"},
+        40: {name: "John", surname: "Doe", age: 40, city: "New York"}
     };
 
     var personsByCityIndex = {
-        "New York": {"name": "John", "surname": "Doe", "age": 40, "city": "New York"},
-        "Rome": {"name": "Mario", "surname": "Rossi", "age": 18, "city": "Rome"},
-        "undefined": {"name": "Paolo", "surname": "Bianchi", "age": 15}
+        "New York": {name: "John", surname: "Doe", age: 40, city: "New York"},
+        Rome: {name: "Mario", surname: "Rossi", age: 18, city: "Rome"},
+        undefined: {name: "Paolo", surname: "Bianchi", age: 15}
     };
 
     var getCity = lamb.getKey("city");
@@ -67,10 +69,11 @@ describe("lamb.grouping", function () {
     var splitByAgeGroup = function (person, idx, list) {
         expect(list).toBe(persons);
         expect(persons[idx]).toBe(person);
+
         return person.age > 20 ? "over20" : "under20";
     };
 
-    beforeEach(function() {
+    beforeEach(function () {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
 
@@ -83,7 +86,9 @@ describe("lamb.grouping", function () {
         });
 
         it("should work with array-like objects", function () {
-            var result = {"h": 1, "e": 1, "l": 3, "o": 2, " ": 1, "w": 1, "r": 1, "d": 1};
+            var result = {
+                h: 1, e: 1, l: 3, o: 2, " ": 1, w: 1, r: 1, d: 1
+            };
 
             expect(lamb.count("hello world", lamb.identity)).toEqual(result);
             expect(lamb.countBy(lamb.identity)("hello world")).toEqual(result);
@@ -100,8 +105,8 @@ describe("lamb.grouping", function () {
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
-            var arr = [1, , 3, void 0, 5];
-            var result = {"false": 3, "true": 2};
+            var arr = [1, , 3, void 0, 5]; // eslint-disable-line no-sparse-arrays
+            var result = {false: 3, true: 2};
 
             expect(lamb.count(arr, lamb.isUndefined)).toEqual(result);
             expect(lamb.countBy(lamb.isUndefined)(arr)).toEqual(result);
@@ -138,7 +143,7 @@ describe("lamb.grouping", function () {
         it("should work with array-like objects", function () {
             var evenAndOdd = function (n) { return n % 2 === 0 ? "even" : "odd"; };
             var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            var result = {"even": [2, 4, 6, 8, 10], "odd": [1, 3, 5, 7, 9]};
+            var result = {even: [2, 4, 6, 8, 10], odd: [1, 3, 5, 7, 9]};
             var argsTest = function () {
                 return lamb.group(arguments, evenAndOdd);
             };
@@ -147,8 +152,8 @@ describe("lamb.grouping", function () {
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
-            var arr = [1, , 3, void 0, 5];
-            var result = {"false": [1, 3, 5], "true": [void 0, void 0]};
+            var arr = [1, , 3, void 0, 5]; // eslint-disable-line no-sparse-arrays
+            var result = {false: [1, 3, 5], true: [void 0, void 0]};
 
             expect(lamb.group(arr, lamb.isUndefined)).toEqual(result);
             expect(lamb.groupBy(lamb.isUndefined)(arr)).toEqual(result);
@@ -189,6 +194,7 @@ describe("lamb.grouping", function () {
             var indexByAge = function (person, idx, list) {
                 expect(list).toBe(persons);
                 expect(persons[idx]).toBe(person);
+
                 return person.age;
             };
 
@@ -202,15 +208,17 @@ describe("lamb.grouping", function () {
         });
 
         it("should work with array-like objects", function () {
-            var result = {"h": "h", "e": "e", "l": "l", "o": "o", " ": " ", "w": "w", "r": "r", "d": "d"};
+            var result = {
+                h: "h", e: "e", l: "l", o: "o", " ": " ", w: "w", r: "r", d: "d"
+            };
 
             expect(lamb.index("hello world", lamb.identity)).toEqual(result);
             expect(lamb.indexBy(lamb.identity)("hello world")).toEqual(result);
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
-            var arr = [1, , 3, void 0, 5];
-            var result = {"0": 1, "1": void 0, "2": 3, "3": void 0, "4": 5};
+            var arr = [1, , 3, void 0, 5]; // eslint-disable-line no-sparse-arrays
+            var result = {0: 1, 1: void 0, 2: 3, 3: void 0, 4: 5};
 
             expect(lamb.index(arr, lamb.getArgAt(1))).toEqual(result);
             expect(lamb.indexBy(lamb.getArgAt(1))(arr)).toEqual(result);

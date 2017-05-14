@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -11,9 +13,13 @@ var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.array", function () {
     // to check "truthy" and "falsy" values returned by predicates
-    var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+    var isVowel = function (char, idx, s) {
+        expect(s[idx]).toBe(char);
 
-    beforeEach(function() {
+        return ~"aeiouAEIOU".indexOf(char);
+    };
+
+    beforeEach(function () {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
 
@@ -43,8 +49,10 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.appendTo([1, , , 4], 5)).toEqual([1, void 0, void 0, 4, 5]);
             expect(lamb.append(5)([1, , , 4])).toEqual([1, void 0, void 0, 4, 5]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should append an `undefined` value when the `value` parameter is missing", function () {
@@ -157,7 +165,7 @@ describe("lamb.array", function () {
         });
 
         it("should convert to integer the value received as `n`", function () {
-            var arr = [1, 2, 3, 4 , 5];
+            var arr = [1, 2, 3, 4, 5];
 
             zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.drop(value)(arr)).toEqual(arr);
@@ -165,8 +173,8 @@ describe("lamb.array", function () {
             });
 
             [[1], 1.5, true, "1"].forEach(function (value) {
-                expect(lamb.drop(value)(arr)).toEqual([2, 3, 4 , 5]);
-                expect(lamb.dropFrom(arr, value)).toEqual([2, 3, 4 , 5]);
+                expect(lamb.drop(value)(arr)).toEqual([2, 3, 4, 5]);
+                expect(lamb.dropFrom(arr, value)).toEqual([2, 3, 4, 5]);
             });
 
             expect(lamb.drop(new Date())(arr)).toEqual([]);
@@ -177,8 +185,10 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.dropFrom([1, , 3], 1)).toEqual([void 0, 3]);
             expect(lamb.drop(1)([1, , 3])).toEqual([void 0, 3]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument or without arguments at all", function () {
@@ -235,8 +245,10 @@ describe("lamb.array", function () {
         it("should always return dense arrays", function () {
             var dropWhileIsUndefined = lamb.dropWhile(lamb.isUndefined);
 
+            /* eslint-disable no-sparse-arrays */
             expect(dropWhileIsEven([2, 4, , , 5])).toEqual([void 0, void 0, 5]);
             expect(dropWhileIsUndefined([, , void 0, , void 0, 5, 6])).toEqual([5, 6]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -260,6 +272,7 @@ describe("lamb.array", function () {
             var double = function (n, idx, list) {
                 expect(list).toBe(arr);
                 expect(list[idx]).toBe(n);
+
                 return n * 2;
             };
             var arr = [1, 2, 3, 4, 5];
@@ -284,6 +297,7 @@ describe("lamb.array", function () {
             var fn = function (n, idx, list) {
                 expect(list).toBe(arr);
                 expect(list[idx]).toBe(n);
+
                 return n % 2 === 0 ? [n, n + 10] : n * 2;
             };
             var arr = [1, 2, 3, 4, 5];
@@ -304,10 +318,10 @@ describe("lamb.array", function () {
             expect(lamb.flatMapWith(splitString)(arr)).toEqual(result);
 
             var arr2 = ["foo", ["bar", ["baz"]]];
-            var result = ["foo", "bar", ["baz"]];
+            var result2 = ["foo", "bar", ["baz"]];
 
-            expect(lamb.flatMap(arr2, lamb.identity)).toEqual(result);
-            expect(lamb.flatMapWith(lamb.identity)(arr2)).toEqual(result);
+            expect(lamb.flatMap(arr2, lamb.identity)).toEqual(result2);
+            expect(lamb.flatMapWith(lamb.identity)(arr2)).toEqual(result2);
         });
 
         it("should work on array-like objects", function () {
@@ -320,8 +334,11 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
-            var fn = function (v) { return [, v,,]; };
+            /* eslint-disable comma-spacing, no-sparse-arrays */
+            var fn = function (v) { return [, v, ,]; };
             var arr = [1, , 3];
+            /* eslint-enable comma-spacing, no-sparse-arrays */
+
             var result = [void 0, 1, void 0, void 0, void 0, void 0, void 0, 3, void 0];
 
             expect(lamb.flatMap(arr, fn)).toEqual(result);
@@ -363,8 +380,9 @@ describe("lamb.array", function () {
         });
 
         it("shouldn't flatten an array that is a value in an object", function () {
-            var input = [["a", ["b", [{"c" : ["d"]}]]]];
-            expect(lamb.flatten(input)).toEqual(["a", "b", {"c" : ["d"]}]);
+            var input = [["a", ["b", [{c: ["d"]}]]]];
+
+            expect(lamb.flatten(input)).toEqual(["a", "b", {c: ["d"]}]);
         });
 
         it("should return an array copy of the source object if supplied with an array-like", function () {
@@ -372,6 +390,7 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            // eslint-disable-next-line no-sparse-arrays
             var arr = [1, [2, , 4], , [6, , [8, , 10]]];
             var result = [1, 2, void 0, 4, void 0, 6, void 0, 8, void 0, 10];
 
@@ -409,6 +428,7 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            // eslint-disable-next-line no-sparse-arrays
             expect(lamb.init([1, , 3, , 4])).toEqual([1, void 0, 3, void 0]);
             expect(lamb.init(Array(2))).toEqual([void 0]);
         });
@@ -483,13 +503,16 @@ describe("lamb.array", function () {
 
         it("should work with array-like objects", function () {
             var s = "12345";
+
             expect(lamb.insert(s, -2, "99")).toEqual(result1.map(String));
             expect(lamb.insertAt(3, "99")(s)).toEqual(result1.map(String));
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.insert([1, , 3, 5], 3, 4)).toEqual([1, void 0, 3, 4, 5]);
             expect(lamb.insertAt(3, 4)([1, , 3, 5])).toEqual([1, void 0, 3, 4, 5]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -539,8 +562,9 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.intersection(Array(2), Array(3))).toEqual([void 0]);
+            // eslint-disable-next-line no-sparse-arrays
             expect(lamb.intersection([1, , 3], [void 0, 3], [3, , 4])).toEqual([void 0, 3]);
+            expect(lamb.intersection(Array(2), Array(3))).toEqual([void 0]);
         });
 
         it("should return an empty array if called without arguments", function () {
@@ -562,10 +586,10 @@ describe("lamb.array", function () {
     describe("partition / partitionWith", function () {
         it("should split an array in two lists; one with the elements satisfying the predicate, the other with the remaining elements", function () {
             var persons = [
-                {"name": "Jane", "surname": "Doe", "active": false},
-                {"name": "John", "surname": "Doe", "active": true},
-                {"name": "Mario", "surname": "Rossi", "active": true},
-                {"name": "Paolo", "surname": "Bianchi", "active": false}
+                {name: "Jane", surname: "Doe", active: false},
+                {name: "John", surname: "Doe", active: true},
+                {name: "Mario", surname: "Rossi", active: true},
+                {name: "Paolo", surname: "Bianchi", active: false}
             ];
 
             var fooIsActive = function (el, idx, list) {
@@ -575,10 +599,13 @@ describe("lamb.array", function () {
                 return el.active;
             };
 
-            var result = [
-                [{"name": "John", "surname": "Doe", "active": true}, {"name": "Mario", "surname": "Rossi", "active": true}],
-                [{"name": "Jane", "surname": "Doe", "active": false}, {"name": "Paolo", "surname": "Bianchi", "active": false}]
-            ];
+            var result = [[
+                {name: "John", surname: "Doe", active: true},
+                {name: "Mario", surname: "Rossi", active: true}
+            ], [
+                {name: "Jane", surname: "Doe", active: false},
+                {name: "Paolo", surname: "Bianchi", active: false}
+            ]];
 
             expect(lamb.partition(persons, fooIsActive)).toEqual(result);
             expect(lamb.partitionWith(fooIsActive)(persons)).toEqual(result);
@@ -610,8 +637,10 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.partition([1, , 3, , 5], lamb.isUndefined)).toEqual([[void 0, void 0], [1, 3, 5]]);
-            expect(lamb.partitionWith(lamb.isUndefined)([1, , 3, , 5])).toEqual([[void 0, void 0], [1, 3, 5]]);
+            var sparseArr = [1, , 3, , 5]; // eslint-disable-line no-sparse-arrays
+
+            expect(lamb.partition(sparseArr, lamb.isUndefined)).toEqual([[void 0, void 0], [1, 3, 5]]);
+            expect(lamb.partitionWith(lamb.isUndefined)(sparseArr)).toEqual([[void 0, void 0], [1, 3, 5]]);
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -635,7 +664,6 @@ describe("lamb.array", function () {
             expect(function () { lamb.partitionWith(lamb.identity)(null); }).toThrow();
             expect(function () { lamb.partitionWith(lamb.identity)(void 0); }).toThrow();
         });
-
 
         it("should treat every other value as an empty array", function () {
             wannabeEmptyArrays.forEach(function (value) {
@@ -684,7 +712,7 @@ describe("lamb.array", function () {
         });
 
         it("should not skip deleted or unassigned indexes in the array-like and throw an exception", function () {
-            var a = [, {bar: 2}];
+            var a = [, {bar: 2}]; // eslint-disable-line no-sparse-arrays
 
             expect(function () { lamb.pluck(a, "bar"); }).toThrow();
             expect(function () { lamb.pluckKey("bar")(a); }).toThrow();
@@ -765,6 +793,8 @@ describe("lamb.array", function () {
             });
         });
 
+        /* eslint-disable no-sparse-arrays */
+
         it("should be able to remove non assigned indexes from sparse arrays", function () {
             expect(lamb.pullFrom([1, , 3, , 5], [void 0])).toEqual([1, 3, 5]);
             expect(lamb.pull([void 0])([1, , 3, , 5])).toEqual([1, 3, 5]);
@@ -781,6 +811,8 @@ describe("lamb.array", function () {
             expect(lamb.pull([1, , 1])([1, , 3, , 5])).toEqual([3, 5]);
             expect(lamb.pull([1, void 0, 1])([1, , 3, , 5])).toEqual([3, 5]);
         });
+
+        /* eslint-enable no-sparse-arrays */
 
         it("should throw an exception if called without arguments", function () {
             expect(lamb.pullFrom).toThrow();
@@ -812,7 +844,8 @@ describe("lamb.array", function () {
         });
 
         it("shouldn't flatten an array that is a value in an object", function () {
-            var input = ["a", "b", {"c" : ["d"]}];
+            var input = ["a", "b", {c: ["d"]}];
+
             expect(lamb.shallowFlatten(input)).toEqual(input);
         });
 
@@ -821,8 +854,10 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             var arr = [1, [2, , 4], , [6, , [8, , 10]]];
             var result = [1, 2, void 0, 4, void 0, 6, void 0, [8, , 10]];
+            /* eslint-enable no-sparse-arrays */
 
             expect(lamb.shallowFlatten(arr)).toEqual(result);
         });
@@ -858,6 +893,7 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             expect(lamb.tail([1, , 3, ,])).toEqual([void 0, 3, void 0]);
             expect(lamb.tail(Array(2))).toEqual([void 0]);
             expect(lamb.tail(Array(1))).toEqual([]);
@@ -908,7 +944,7 @@ describe("lamb.array", function () {
         });
 
         it("should convert to integer the value received as `n`", function () {
-            var arr = [1, 2, 3, 4 , 5];
+            var arr = [1, 2, 3, 4, 5];
 
             zeroesAsIntegers.forEach(function (value) {
                 expect(lamb.take(value)(arr)).toEqual([]);
@@ -928,8 +964,10 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.takeFrom([1, , 3], 2)).toEqual([1, void 0]);
             expect(lamb.take(2)([1, , 3])).toEqual([1, void 0]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument or without arguments at all", function () {
@@ -985,9 +1023,12 @@ describe("lamb.array", function () {
 
         it("should always return dense arrays", function () {
             var takeWhileIsUndefined = lamb.takeWhile(lamb.isUndefined);
+            var r = [void 0, void 0, void 0, void 0, void 0];
 
+            /* eslint-disable no-sparse-arrays */
+            expect(takeWhileIsUndefined([, , void 0, , void 0, 5, 6])).toEqual(r);
             expect(takeWhileIsEven([2, 4, , , 6])).toEqual([2, 4]);
-            expect(takeWhileIsUndefined([, , void 0, , void 0, 5, 6])).toEqual([void 0, void 0, void 0, void 0, void 0]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -1021,15 +1062,15 @@ describe("lamb.array", function () {
         var r2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, [2, 3]];
 
         var data = [
-            [{"id": "1", "name": "foo"}],
-            [{"id": "1", "name": "Foo"}, {"id": "2", "name": "bar"}, {"id": "3", "name": "baz"}],
-            [{"id": "2", "name": "Bar"}, {"id": "1", "name": "FOO"}]
+            [{id: "1", name: "foo"}],
+            [{id: "1", name: "Foo"}, {id: "2", name: "bar"}, {id: "3", name: "baz"}],
+            [{id: "2", name: "Bar"}, {id: "1", name: "FOO"}]
         ];
 
         var dataUnionById = [
-            {"id": "1", "name": "foo"},
-            {"id": "2", "name": "bar"},
-            {"id": "3", "name": "baz"}
+            {id: "1", name: "foo"},
+            {id: "2", name: "bar"},
+            {id: "3", name: "baz"}
         ];
 
         var unionByIdentity = lamb.unionBy(lamb.identity);
@@ -1068,11 +1109,13 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.union([1, , 3], [3, 5], [6, 7])).toEqual([1, void 0, 3, 5, 6, 7]);
             expect(lamb.union([1, , 3], [3, 5], [void 0, 7])).toEqual([1, void 0, 3, 5, 7]);
 
             expect(unionAsStrings([1, , 3], [3, 5], [6, 7])).toEqual([1, void 0, 3, 5, 6, 7]);
             expect(unionAsStrings([1, , 3], [3, 5], [void 0, 7])).toEqual([1, void 0, 3, 5, 7]);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
@@ -1097,18 +1140,18 @@ describe("lamb.array", function () {
 
     describe("uniques / uniquesBy", function () {
         var data = [
-            {"id": "1", "name": "foo"},
-            {"id": "1", "name": "Foo"},
-            {"id": "2", "name": "bar"},
-            {"id": "3", "name": "baz"},
-            {"id": "2", "name": "Bar"},
-            {"id": "1", "name": "FOO"}
+            {id: "1", name: "foo"},
+            {id: "1", name: "Foo"},
+            {id: "2", name: "bar"},
+            {id: "3", name: "baz"},
+            {id: "2", name: "Bar"},
+            {id: "1", name: "FOO"}
         ];
 
         var dataUniques = [
-            {"id": "1", "name": "foo"},
-            {"id": "2", "name": "bar"},
-            {"id": "3", "name": "baz"}
+            {id: "1", name: "foo"},
+            {id: "2", name: "bar"},
+            {id: "3", name: "baz"}
         ];
 
         var uniquesByIdentity = lamb.uniquesBy(lamb.identity);
@@ -1127,8 +1170,10 @@ describe("lamb.array", function () {
 
         describe("uniquesBy", function () {
             it("should use the provided iteratee to extract the values to compare", function () {
+                var chars = ["b", "A", "r", "B", "a", "z"];
+
+                expect(lamb.uniquesBy(lamb.invoker("toUpperCase"))(chars)).toEqual(["b", "A", "r", "z"]);
                 expect(lamb.uniquesBy(lamb.getKey("id"))(data)).toEqual(dataUniques);
-                expect(lamb.uniquesBy(lamb.invoker("toUpperCase"))(["b", "A", "r", "B", "a", "z"])).toEqual(["b", "A", "r", "z"]);
             });
 
             it("should build a function throwing an exception if the itereatee isn't a function or if is missing", function () {
@@ -1176,8 +1221,11 @@ describe("lamb.array", function () {
         });
 
         it("should always return dense arrays", function () {
+            /* eslint-disable no-sparse-arrays */
             var a1 = [1, , 1, 3];
             var a2 = [1, , 1, void 0, 3];
+            /* eslint-enable no-sparse-arrays */
+
             var r = [1, void 0, 3];
 
             expect(lamb.uniques(a1)).toEqual(r);
@@ -1228,6 +1276,7 @@ describe("lamb.array", function () {
             });
 
             it("should build dense arrays when sparse ones are received", function () {
+                // eslint-disable-next-line comma-spacing, no-sparse-arrays
                 expect(lamb.transpose([[1, , 3], [4, 5, void 0], [6, 7, ,]])).toEqual([
                     [1, 4, 6],
                     [void 0, 5, 7],
@@ -1307,6 +1356,7 @@ describe("lamb.array", function () {
         });
 
         it("should not skip deleted or unassigned indexes in sparse arrays", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             expect(lamb.zipWithIndex([1, , 3, ,])).toEqual([
                 [1, 0],
                 [void 0, 1],

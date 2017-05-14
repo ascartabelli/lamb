@@ -1,3 +1,5 @@
+"use strict";
+
 function isSparseArray (array) {
     return Array.isArray(array) && Object.keys(array).filter(function (v) {
         return String(v >>> 0) === v;
@@ -8,7 +10,7 @@ function isSparseArrayCheckNeeded (a, b) {
     return isSparseArray(a) && Array.isArray(b) || isSparseArray(b) && Array.isArray(a);
 }
 
-function sparseArrayEquality (a, b) {
+function sparseArrayEquality (a, b) { // eslint-disable-line consistent-return
     if (isSparseArrayCheckNeeded(a, b)) {
         var aLen = a.length;
 
@@ -28,6 +30,4 @@ function sparseArrayEquality (a, b) {
     }
 }
 
-module.exports = {
-    sparseArrayEquality: sparseArrayEquality
-};
+module.exports = {sparseArrayEquality: sparseArrayEquality};

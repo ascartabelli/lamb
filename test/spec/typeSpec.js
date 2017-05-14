@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -116,8 +118,9 @@ describe("lamb.type", function () {
     describe("type", function () {
         it("should extract the \"type tag\" from the given value", function () {
             var getArgsType = function () { return lamb.type(arguments); };
+
             expect(getArgsType()).toBe("Arguments");
-            expect(lamb.type(new getArgsType())).toBe("Object");
+            expect(lamb.type(new getArgsType())).toBe("Object"); // eslint-disable-line new-cap
             expect(lamb.type(void 0)).toBe("Undefined");
             expect(lamb.type(null)).toBe("Null");
             expect(lamb.type(NaN)).toBe("Number");

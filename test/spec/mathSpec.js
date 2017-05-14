@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -75,7 +77,7 @@ describe("lamb.math", function () {
                 expect(lamb.clampWithin(value, 98)(99)).toBe(98);
                 expect(lamb.clampWithin(98, value)(99)).toBe(99);
                 expect(lamb.clampWithin(100, value)(99)).toBe(100);
-            })
+            });
 
             expect(lamb.clamp(5, 10)).toBe(10);
             expect(lamb.clamp(-5, void 0, 10)).toBe(-5);
@@ -104,7 +106,9 @@ describe("lamb.math", function () {
                 return n + (list[idx - 1] || 0);
             };
 
-            expect(lamb.generate(1, 20, fibonacci)).toEqual([1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765]);
+            expect(lamb.generate(1, 20, fibonacci)).toEqual(
+                [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765]
+            );
         });
     });
 
@@ -284,8 +288,8 @@ describe("lamb.math", function () {
                 expect(lamb.range(-1, 1, value)).toEqual([-1, 0]);
             });
 
-            [[1.5], "1.5"].forEach(function (value) {
-                expect(lamb.range(0, 1.5, .5)).toEqual([0, 0.5, 1]);
+            [[.5], ".5"].forEach(function (value) {
+                expect(lamb.range(0, 1.5, value)).toEqual([0, 0.5, 1]);
             });
         });
 

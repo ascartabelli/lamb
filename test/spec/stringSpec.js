@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -43,8 +45,14 @@ describe("lamb.string", function () {
             var d = new Date();
             var dChar = String(d)[0];
             var values = [null, void 0, [7, 8], /foo/, 1, function () {}, NaN, true, d, {a: 2}];
-            var resultsA = ["nnfoo", "uufoo", "77foo", "//foo", "11foo", "fffoo", "NNfoo", "ttfoo", dChar + dChar + "foo", "[[foo"]
-            var resultsB = ["foonn", "foouu", "foo77", "foo//", "foo11", "fooff", "fooNN", "foott", "foo" + dChar + dChar, "foo[["];
+            var resultsA = [
+                "nnfoo", "uufoo", "77foo", "//foo", "11foo", "fffoo",
+                "NNfoo", "ttfoo", dChar + dChar + "foo", "[[foo"
+            ];
+            var resultsB = [
+                "foonn", "foouu", "foo77", "foo//", "foo11", "fooff",
+                "fooNN", "foott", "foo" + dChar + dChar, "foo[["
+            ];
 
             values.forEach(function (value, idx) {
                 expect(lamb.padLeft(source, value, 5)).toBe(resultsA[idx]);
@@ -64,8 +72,14 @@ describe("lamb.string", function () {
         it("should convert to string every other value passed as source", function () {
             var d = new Date();
             var values = [{a: 2}, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-            var resultsA = ["[object Object]", "----1,2", "--/foo/", "------1", "function () {}", "----NaN", "---true", String(d)];
-            var resultsB = ["[object Object]", "1,2----", "/foo/--", "1------", "function () {}", "NaN----", "true---", String(d)];
+            var resultsA = [
+                "[object Object]", "----1,2", "--/foo/", "------1",
+                "function () {}", "----NaN", "---true", String(d)
+            ];
+            var resultsB = [
+                "[object Object]", "1,2----", "/foo/--", "1------",
+                "function () {}", "NaN----", "true---", String(d)
+            ];
 
             values.forEach(function (value, idx) {
                 expect(lamb.padLeft(value, "-", 7)).toBe(resultsA[idx]);
@@ -121,7 +135,7 @@ describe("lamb.string", function () {
                 "function () {}function () {}function () {}",
                 "NaNNaNNaN",
                 "truetruetrue",
-                String(d)+String(d)+String(d)
+                String(d) + String(d) + String(d)
             ];
 
             values.forEach(function (value, idx) {
@@ -163,7 +177,7 @@ describe("lamb.string", function () {
                 "function  {}",
                 "NaN",
                 "true",
-                RegExp(d).source.replace(/[\+\(\)]/g, "")
+                RegExp(d).source.replace(/[+()]/g, "")
             ];
 
             values.forEach(function (value, idx) {
@@ -191,7 +205,7 @@ describe("lamb.string", function () {
                 /function \(\) \{\}/,
                 /NaN/,
                 /true/,
-                RegExp(String(d).replace(/([\+\(\)])/g, "\\$1"))
+                RegExp(String(d).replace(/([+()])/g, "\\$1"))
             ];
 
             values.forEach(function (value, idx) {

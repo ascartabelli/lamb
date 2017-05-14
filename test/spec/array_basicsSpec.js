@@ -1,3 +1,5 @@
+"use strict";
+
 var commons = require("../commons.js");
 
 var lamb = commons.lamb;
@@ -9,9 +11,13 @@ var zeroesAsIntegers = commons.vars.zeroesAsIntegers;
 
 describe("lamb.array_basics", function () {
     // to check "truthy" and "falsy" values returned by predicates
-    var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+    var isVowel = function (char, idx, s) {
+        expect(s[idx]).toBe(char);
 
-    beforeEach(function() {
+        return ~"aeiouAEIOU".indexOf(char);
+    };
+
+    beforeEach(function () {
         jasmine.addCustomEqualityTester(sparseArrayEquality);
     });
 
@@ -40,8 +46,10 @@ describe("lamb.array_basics", function () {
         });
 
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+            /* eslint-disable no-sparse-arrays */
             expect(lamb.contains(void 0)([1, , 3])).toBe(true);
             expect(lamb.isIn([1, , 3], void 0)).toBe(true);
+            /* eslint-enable no-sparse-arrays */
         });
 
         it("should throw an exception if called without the data argument or without arguments at all", function () {
@@ -99,7 +107,7 @@ describe("lamb.array_basics", function () {
             var isGreaterThan10 = jasmine.createSpy("isVowel").and.callFake(function (n) {
                 return n > 10;
             });
-            var arr = [12, 13, 9 , 15];
+            var arr = [12, 13, 9, 15];
 
             expect(lamb.everyIn(arr, isGreaterThan10)).toBe(false);
             expect(isGreaterThan10.calls.count()).toBe(3);
@@ -117,6 +125,7 @@ describe("lamb.array_basics", function () {
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var isDefined = lamb.not(lamb.isUndefined);
             var arr = Array(5);
+
             arr[2] = 99;
 
             expect(lamb.everyIn(arr, isDefined)).toBe(false);
@@ -125,12 +134,12 @@ describe("lamb.array_basics", function () {
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
             nonFunctions.forEach(function (value) {
-                expect(function () { lamb.everyIn(arr, value); }).toThrow();
-                expect(function () { lamb.every(value)(arr); }).toThrow();
+                expect(function () { lamb.everyIn(a1, value); }).toThrow();
+                expect(function () { lamb.every(value)(a1); }).toThrow();
             });
 
-            expect(function () { lamb.everyIn(arr); }).toThrow();
-            expect(function () { lamb.every()(arr); }).toThrow();
+            expect(function () { lamb.everyIn(a1); }).toThrow();
+            expect(function () { lamb.every()(a1); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {
@@ -178,7 +187,9 @@ describe("lamb.array_basics", function () {
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var sparseArr = Array(4);
+
             sparseArr[2] = 3;
+
             var isOdd = function (n) { return n % 2 !== 0; };
             var result = [void 0, void 0, 3, void 0];
 
@@ -192,8 +203,11 @@ describe("lamb.array_basics", function () {
         });
 
         it("should always return dense arrays", function () {
-            expect(lamb.filter([1, , , 4, void 0, 5], lamb.isUndefined)).toEqual([void 0, void 0, void 0]);
-            expect(lamb.filterWith(lamb.isUndefined)([1, , , 4, void 0, 5])).toEqual([void 0, void 0, void 0]);
+            // eslint-disable-next-line no-sparse-arrays
+            var sparseArr = [1, , , 4, void 0, 5];
+
+            expect(lamb.filter(sparseArr, lamb.isUndefined)).toEqual([void 0, void 0, void 0]);
+            expect(lamb.filterWith(lamb.isUndefined)(sparseArr)).toEqual([void 0, void 0, void 0]);
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -228,20 +242,13 @@ describe("lamb.array_basics", function () {
 
     describe("find / findWhere / findIndex / findIndexWhere", function () {
         var persons = [
-            {"name": "Jane", "surname": "Doe", "age": 12},
-            {"name": "John", "surname": "Doe", "age": 40},
-            {"name": "Mario", "surname": "Rossi", "age": 18},
-            {"name": "Paolo", "surname": "Bianchi", "age": 40}
+            {name: "Jane", surname: "Doe", age: 12},
+            {name: "John", surname: "Doe", age: 40},
+            {name: "Mario", surname: "Rossi", age: 18},
+            {name: "Paolo", surname: "Bianchi", age: 40}
         ];
 
         var testString = "Hello world";
-
-        var isVowel = function (char, idx, s) {
-            expect(s[idx]).toBe(char);
-
-            return ~"AEIOUaeiou".indexOf(char);
-        };
-
         var is40YO = lamb.hasKeyValue("age", 40);
         var is41YO = lamb.hasKeyValue("age", 41);
 
@@ -312,8 +319,10 @@ describe("lamb.array_basics", function () {
             });
 
             it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
+                /* eslint-disable no-sparse-arrays */
                 expect(lamb.findIndex([1, , 3], lamb.isUndefined)).toBe(1);
                 expect(lamb.findIndexWhere(lamb.isUndefined)([1, , 3])).toBe(1);
+                /* eslint-enable no-sparse-arrays */
             });
 
             it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -336,7 +345,6 @@ describe("lamb.array_basics", function () {
                 expect(function () { lamb.findIndex(void 0, is40YO); }).toThrow();
                 expect(function () { lamb.findIndexWhere(is40YO)(null); }).toThrow();
                 expect(function () { lamb.findIndexWhere(is40YO)(void 0); }).toThrow();
-
             });
 
             it("should treat every other value as an empty array", function () {
@@ -364,15 +372,16 @@ describe("lamb.array_basics", function () {
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var sparseArr = Array(3);
+
             sparseArr[1] = 3;
 
-            var fn = jasmine.createSpy("fn").and.callThrough();
+            var fnSpy = jasmine.createSpy().and.callThrough();
 
-            expect(lamb.forEach(sparseArr, fn)).toBeUndefined();
-            expect(fn.calls.count()).toBe(3);
-            expect(fn.calls.argsFor(0)).toEqual([void 0, 0, sparseArr]);
-            expect(fn.calls.argsFor(1)).toEqual([3, 1, sparseArr]);
-            expect(fn.calls.argsFor(2)).toEqual([void 0, 2, sparseArr]);
+            expect(lamb.forEach(sparseArr, fnSpy)).toBeUndefined();
+            expect(fnSpy.calls.count()).toBe(3);
+            expect(fnSpy.calls.argsFor(0)).toEqual([void 0, 0, sparseArr]);
+            expect(fnSpy.calls.argsFor(1)).toEqual([3, 1, sparseArr]);
+            expect(fnSpy.calls.argsFor(2)).toEqual([void 0, 2, sparseArr]);
         });
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
@@ -393,13 +402,13 @@ describe("lamb.array_basics", function () {
         });
 
         it("should treat every other value as an empty array", function () {
-            var fn = jasmine.createSpy("fn").and.callThrough();
+            var fnSpy = jasmine.createSpy().and.callThrough();
 
             wannabeEmptyArrays.forEach(function (value) {
-                expect(lamb.forEach(value, fn)).toBeUndefined();
+                expect(lamb.forEach(value, fnSpy)).toBeUndefined();
             });
 
-            expect(fn.calls.count()).toBe(0);
+            expect(fnSpy.calls.count()).toBe(0);
         });
     });
 
@@ -440,6 +449,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             var sparseArr = [, "foo", ,];
             var safeUpperCase = lamb.compose(lamb.invoker("toUpperCase"), String);
             var result = ["UNDEFINED", "FOO", "UNDEFINED"];
@@ -494,7 +504,10 @@ describe("lamb.array_basics", function () {
                 return prev - current;
             });
 
-            var prevValues = [5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4, 5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4];
+            var prevValues = [
+                5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4,
+                5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4
+            ];
 
             expect(lamb.reduceRight(arr, subtract)).toBe(-5);
             expect(lamb.reduceRight(arr, subtract, 0)).toBe(-15);
@@ -523,6 +536,7 @@ describe("lamb.array_basics", function () {
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var addSpy = jasmine.createSpy("sum").and.callFake(lamb.sum);
             var sparseArr = Array(3);
+
             sparseArr[1] = 3;
 
             expect(lamb.reduceRight(sparseArr, addSpy, 0)).toEqual(NaN);
@@ -583,7 +597,10 @@ describe("lamb.array_basics", function () {
                 return prev - current;
             });
 
-            var prevValues = [1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0, 1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0];
+            var prevValues = [
+                1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0,
+                1, -1, -4, -8, 0, -1, -3, -6, -10, 10, 9, 7, 4, 0
+            ];
 
             expect(lamb.reduce(arr, subtract)).toBe(-13);
             expect(lamb.reduce(arr, subtract, 0)).toBe(-15);
@@ -612,6 +629,7 @@ describe("lamb.array_basics", function () {
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var addSpy = jasmine.createSpy("sum").and.callFake(lamb.sum);
             var sparseArr = Array(3);
+
             sparseArr[1] = 3;
 
             expect(lamb.reduce(sparseArr, addSpy, 0)).toEqual(NaN);
@@ -667,6 +685,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should always return dense arrays", function () {
+            // eslint-disable-next-line no-sparse-arrays
             expect(lamb.reverse([1, , 3])).toEqual([3, void 0, 1]);
         });
 
@@ -879,6 +898,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should return an array with `undefined` values in place of unassigned or deleted indexes if a sparse array is received", function () {
+            // eslint-disable-next-line comma-spacing, no-sparse-arrays
             var aSparse = [, 1, 2, , 4, , ,]; // length === 7, same as aDense
             var aDense = [void 0, 1, 2, void 0, 4, void 0, void 0];
             var r1 = lamb.slice(aSparse, 0, aSparse.length);
@@ -892,10 +912,10 @@ describe("lamb.array_basics", function () {
 
         it("should try, as native `slice` does, to retrieve elements from objects with a `length` property, but it should always build dense arrays", function () {
             var objs = [
-                {length: 3, "0": 1, "1": 2, "2": 3},
-                {length: 3, "0": 1, "2": 3},
-                {length: "2", "0": 1, "1": 2, "2": 3},
-                {length: "-2", "0": 1, "1": 2, "2": 3}
+                {length: 3, 0: 1, 1: 2, 2: 3},
+                {length: 3, 0: 1, 2: 3},
+                {length: "2", 0: 1, 1: 2, 2: 3},
+                {length: "-2", 0: 1, 1: 2, 2: 3}
             ];
 
             var results = [ [2, 3], [void 0, 3], [2], [] ];
@@ -954,8 +974,6 @@ describe("lamb.array_basics", function () {
             return n % 2 === 0;
         };
 
-        var isVowel = function (char) { return ~"aeiou".indexOf(char); };
-
         it("should check if at least one element of an array satisfies the given predicate", function () {
             expect(lamb.someIn(a1, isEven)).toBe(true);
             expect(lamb.some(isEven)(a1)).toBe(true);
@@ -998,6 +1016,7 @@ describe("lamb.array_basics", function () {
 
         it("should not skip deleted or unassigned elements, unlike the native method", function () {
             var arr = Array(5);
+
             arr[2] = 99;
 
             expect(lamb.someIn(arr, lamb.isUndefined)).toBe(true);
@@ -1006,12 +1025,12 @@ describe("lamb.array_basics", function () {
 
         it("should throw an exception if the predicate isn't a function or is missing", function () {
             nonFunctions.forEach(function (value) {
-                expect(function () { lamb.someIn(arr, value); }).toThrow();
-                expect(function () { lamb.some(value)(arr); }).toThrow();
+                expect(function () { lamb.someIn(a1, value); }).toThrow();
+                expect(function () { lamb.some(value)(a1); }).toThrow();
             });
 
-            expect(function () { lamb.someIn(arr); }).toThrow();
-            expect(function () { lamb.some()(arr); }).toThrow();
+            expect(function () { lamb.someIn(a1); }).toThrow();
+            expect(function () { lamb.some()(a1); }).toThrow();
         });
 
         it("should throw an exception if called without the data argument", function () {

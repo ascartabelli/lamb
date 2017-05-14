@@ -1,4 +1,3 @@
-
 var fs = require("fs");
 var gulp = require("gulp");
 var pkg = require("./package.json");
@@ -33,7 +32,7 @@ function lint () {
     // isolated because of shelljs, again
     var eslint = require("gulp-eslint");
 
-    return gulp.src("./dist/lamb.js")
+    return gulp.src(["./dist/lamb.js", "./test/**"])
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
