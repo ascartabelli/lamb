@@ -34,20 +34,20 @@
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.54.0-alpha.1",
+  "version": "0.54.0-alpha.2",
   "devDependencies": {
-    "coveralls": "^2.13.0",
+    "coveralls": "^2.13.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^3.0.1",
+    "gulp-eslint": "^4.0.0",
     "gulp-footer": "^1.0.5",
     "gulp-header": "^1.8.8",
     "gulp-indent": "^1.0.1",
-    "gulp-istanbul": "^1.1.1",
+    "gulp-istanbul": "^1.1.2",
     "gulp-jasmine": "^2.4.2",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.12.0",
-    "gulp-uglify": "^2.1.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
     "plato": "^1.7.0"
   },
   "dependencies": {}
