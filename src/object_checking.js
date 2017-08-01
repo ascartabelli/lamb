@@ -31,6 +31,7 @@
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.validate|validate}, {@link module:lamb.validateWith|validateWith}
+ * @since 0.1.0
  * @param {Function} predicate - The predicate to test the object properties
  * @param {String} message - The error message
  * @param {String[]} keyPaths - The array of keys, or {@link module:lamb.getPathIn|paths}, to test.
@@ -65,6 +66,7 @@ function checker (predicate, message, keyPaths, pathSeparator) {
  * @see {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+ * @since 0.1.0
  * @param {Object} obj
  * @param {String} key
  * @returns {Boolean}
@@ -94,6 +96,7 @@ function has (obj, key) {
  * @see {@link module:lamb.has|has}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+ * @since 0.1.0
  * @param {String} key
  * @returns {Function}
  */
@@ -111,6 +114,7 @@ var hasKey = _curry2(has, true);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.hasPathValue|hasPathValue}
+ * @since 0.1.0
  * @param {String} key
  * @param {*} value
  * @returns {Function}
@@ -141,6 +145,7 @@ function hasKeyValue (key, value) {
  * @see {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+ * @since 0.1.0
  * @param {Object} obj
  * @param {String} key
  * @returns {Boolean}
@@ -164,6 +169,7 @@ var hasOwn = generic(_objectProto.hasOwnProperty);
  * @see {@link module:lamb.hasOwn|hasOwn}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+ * @since 0.1.0
  * @param {String} key
  * @returns {Function}
  */
@@ -199,6 +205,7 @@ var hasOwnKey = _curry2(hasOwn, true);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.hasKeyValue|hasKeyValue}
+ * @since 0.41.0
  * @param {String} path
  * @param {*} value
  * @param {String} [separator="."]
@@ -228,6 +235,7 @@ function hasPathValue (path, value, separator) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.pathSatisfies|pathSatisfies}
+ * @since 0.45.0
  * @param {Function} predicate
  * @param {String} key
  * @returns {Function}
@@ -266,6 +274,7 @@ function keySatisfies (predicate, key) {
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+ * @since 0.43.0
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {Function}
@@ -294,6 +303,7 @@ var pathExists = _makePartial3(pathExistsIn);
  * @see {@link module:lamb.pathExists|pathExists}
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+ * @since 0.43.0
  * @param {Object} obj
  * @param {String} path
  * @param {String} [separator="."]
@@ -326,6 +336,7 @@ function pathExistsIn (obj, path, separator) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.keySatisfies|keySatisfies}
+ * @since 0.45.0
  * @param {Function} predicate
  * @param {String} path
  * @param {String} [separator="."]
@@ -363,6 +374,7 @@ function pathSatisfies (predicate, path, separator) {
  * @category Object
  * @see {@link module:lamb.validateWith|validateWith}
  * @see {@link module:lamb.checker|checker}
+ * @since 0.1.0
  * @param {Object} obj
  * @param {Function[]} checkers
  * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
@@ -405,6 +417,7 @@ function validate (obj, checkers) {
  * @function
  * @see {@link module:lamb.validate|validate}
  * @see {@link module:lamb.checker|checker}
+ * @since 0.1.0
  * @param {Function[]} checkers
  * @returns {Function}
  */

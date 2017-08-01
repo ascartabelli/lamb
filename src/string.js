@@ -12,6 +12,7 @@
  * @memberof module:lamb
  * @category String
  * @see {@link module:lamb.padRight|padRight}
+ * @since 0.1.0
  * @param {String} source
  * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len
@@ -35,6 +36,7 @@ function padLeft (source, char, len) {
  * @memberof module:lamb
  * @category String
  * @see {@link module:lamb.padLeft|padLeft}
+ * @since 0.1.0
  * @param {String} source
  * @param {String} char - The padding char. If a string is passed only the first char is used.
  * @param {Number} len
@@ -57,6 +59,7 @@ function padRight (source, char, len) {
  *
  * @memberof module:lamb
  * @category String
+ * @since 0.1.0
  * @param {String} source
  * @param {Number} times
  * @returns {String}
@@ -79,6 +82,7 @@ function repeat (source, times) {
  *
  * @memberof module:lamb
  * @category String
+ * @since 0.1.0
  * @param {RegExp} pattern
  * @returns {Function}
  */

@@ -25,6 +25,7 @@
          * @alias @@lamb/placeholder
          * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
          * @see {@link module:lamb.asPartial|asPartial}
+         * @since 0.53.0
          * @type Object
          */
         "@@lamb/placeholder": {
@@ -42,6 +43,7 @@
          * @category Special properties
          * @alias @@lamb/version
          * @readonly
+         * @since 0.53.0
          * @type String
          */
         "@@lamb/version": {value: "0.54.0-alpha.5"}
@@ -74,6 +76,7 @@
      * @memberof module:lamb
      * @category Function
      * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
+     * @since 0.1.0
      * @param {*} value
      * @returns {Function}
      */
@@ -104,6 +107,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.pipe|pipe}
+     * @since 0.1.0
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -138,6 +142,7 @@
      * // the function will work with any array-like object
      * join("hello", "-") // => "h-e-l-l-o"
      *
+     * @since 0.1.0
      * @param {Function} method
      * @returns {Function}
      */
@@ -153,6 +158,7 @@
      * @memberof module:lamb
      * @category Function
      * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
+     * @since 0.1.0
      * @param {*} value
      * @returns {*} The value passed as parameter.
      */
@@ -186,6 +192,7 @@
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
+     * @since 0.1.0
      * @param {Function} fn
      * @param {Array} args
      * @returns {Function}
@@ -243,6 +250,7 @@
      * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
      * @param {Function} fn
      * @param {Array} args
+     * @since 0.52.0
      * @returns {Function}
      */
     function partialRight (fn, args) {
@@ -1228,6 +1236,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.isIn|isIn}
+     * @since 0.13.0
      * @param {*} value
      * @returns {Function}
      */
@@ -1267,6 +1276,7 @@
      * @function
      * @see {@link module:lamb.every|every}
      * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+     * @since 0.39.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {Boolean}
@@ -1290,6 +1300,7 @@
      * @function
      * @see {@link module:lamb.everyIn|everyIn}
      * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+     * @since 0.39.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -1312,6 +1323,7 @@
      * @see {@link module:lamb.filterWith|filterWith}
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
+     * @since 0.1.0
      * @returns {Array}
      */
     function filter (arrayLike, predicate) {
@@ -1341,6 +1353,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.filter|filter}
+     * @since 0.9.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -1364,6 +1377,7 @@
      * @category Array
      * @see {@link module:lamb.findWhere|findWhere}
      * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @since 0.7.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {*}
@@ -1392,6 +1406,7 @@
      * @category Array
      * @see {@link module:lamb.findIndexWhere|findIndexWhere}
      * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @since 0.7.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {Number}
@@ -1424,6 +1439,7 @@
      * @function
      * @see {@link module:lamb.findIndex|findIndex}
      * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @since 0.41.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -1444,6 +1460,7 @@
      * @function
      * @see {@link module:lamb.find|find}
      * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @since 0.41.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -1463,6 +1480,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @returns {Undefined}
@@ -1490,6 +1508,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.contains|contains}
+     * @since 0.13.0
      * @param {ArrayLike} arrayLike
      * @param {*} value
      * @returns {Boolean}
@@ -1516,6 +1535,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @since 0.1.0
      * @param {...*} value
      * @returns {Array}
      */
@@ -1534,6 +1554,7 @@
      * @category Array
      * @see {@link module:lamb.mapWith|mapWith}
      * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @returns {Array}
@@ -1563,6 +1584,7 @@
      * @function
      * @see {@link module:lamb.map|map}
      * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
+     * @since 0.1.0
      * @param {ListIteratorCallback} iteratee
      * @returns {function}
      */
@@ -1580,6 +1602,7 @@
      * @function
      * @see {@link module:lamb.reduceRight|reduceRight}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {AccumulatorCallback} accumulator
      * @param {*} [initialValue]
@@ -1596,6 +1619,7 @@
      * @function
      * @see {@link module:lamb.reduce|reduce}
      * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {AccumulatorCallback} accumulator
      * @param {*} [initialValue]
@@ -1619,6 +1643,7 @@
      * @function
      * @see {@link module:lamb.reduceWith|reduceWith}
      * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+     * @since 0.27.0
      * @param {AccumulatorCallback} accumulator
      * @param {*} [initialValue]
      * @returns {Function}
@@ -1641,6 +1666,7 @@
      * @function
      * @see {@link module:lamb.reduceRightWith|reduceRightWith}
      * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+     * @since 0.27.0
      * @param {AccumulatorCallback} accumulator
      * @param {*} [initialValue]
      * @returns {Function}
@@ -1658,6 +1684,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @since 0.19.0
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -1691,6 +1718,7 @@
      * @category Array
      * @see {@link module:lamb.sliceAt|sliceAt}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike - Any array like object.
      * @param {Number} start - Index at which to begin extraction.
      * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
@@ -1739,6 +1767,7 @@
      * @function
      * @see {@link module:lamb.slice|slice}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+     * @since 0.48.0
      * @param {Number} start - Index at which to begin extraction.
      * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
      * @returns {Function}
@@ -1776,6 +1805,7 @@
      * @function
      * @see {@link module:lamb.some|some}
      * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+     * @since 0.39.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {Boolean}
@@ -1799,6 +1829,7 @@
      * @function
      * @see {@link module:lamb.someIn|someIn}
      * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+     * @since 0.39.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -1857,6 +1888,7 @@
      * @category Logic
      * @see {@link module:lamb.case|case}
      * @see {@link module:lamb.invoker|invoker}
+     * @since 0.6.0
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -1894,6 +1926,7 @@
      * @memberof module:lamb
      * @category Logic
      * @see {@link module:lamb.anyOf|anyOf}
+     * @since 0.1.0
      * @param {...Function} predicate
      * @returns {Function}
      */
@@ -1931,6 +1964,7 @@
      * @memberof module:lamb
      * @category Logic
      * @see {@link module:lamb.allOf|allOf}
+     * @since 0.1.0
      * @param {...Function} predicate
      * @returns {Function}
      */
@@ -1972,6 +2006,7 @@
      * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
      * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+     * @since 0.50.0
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -2001,6 +2036,7 @@
      * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
      * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+     * @since 0.50.0
      * @param {*} a
      * @param {*} b
      * @returns {Boolean}
@@ -2025,6 +2061,7 @@
      * @alias case
      * @see {@link module:lamb.adapter|adapter}
      * @see {@link module:lamb.condition|condition}
+     * @since 0.51.0
      * @param {Function} predicate
      * @param {Function} fn
      * @returns {Function}
@@ -2053,6 +2090,7 @@
      * @category Logic
      * @see {@link module:lamb.unless|unless}
      * @see {@link module:lamb.when|when}
+     * @since 0.2.0
      * @param {Function} predicate
      * @param {Function} trueFn
      * @param {Function} falseFn
@@ -2087,6 +2125,7 @@
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+     * @since 0.50.0
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -2112,6 +2151,7 @@
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+     * @since 0.50.0
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -2152,6 +2192,7 @@
      * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
      * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+     * @since 0.1.0
      * @param {*} value
      * @returns {Function}
      */
@@ -2175,6 +2216,7 @@
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+     * @since 0.1.0
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
@@ -2199,6 +2241,7 @@
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+     * @since 0.1.0
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
@@ -2222,6 +2265,7 @@
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+     * @since 0.1.0
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
@@ -2246,6 +2290,7 @@
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
      * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+     * @since 0.1.0
      * @param {Number|String|Date|Boolean} value
      * @returns {Function}
      */
@@ -2283,6 +2328,7 @@
      * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
      * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
      * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+     * @since 0.1.0
      * @param {*} value
      * @returns {Function}
      */
@@ -2311,6 +2357,7 @@
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+     * @since 0.50.0
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -2336,6 +2383,7 @@
      * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
      * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
      * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+     * @since 0.50.0
      * @param {Number|String|Date|Boolean} a
      * @param {Number|String|Date|Boolean} b
      * @returns {Boolean}
@@ -2355,6 +2403,7 @@
      *
      * @memberof module:lamb
      * @category Logic
+     * @since 0.1.0
      * @param {Function} predicate
      * @returns {Function}
      */
@@ -2382,6 +2431,7 @@
      * @category Logic
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.when|when}
+     * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
      * @returns {Function}
@@ -2410,6 +2460,7 @@
      * @category Logic
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.unless|unless}
+     * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
      * @returns {Function}
@@ -2453,6 +2504,7 @@
      * @category Math
      * @function
      * @see {@link module:lamb.sum|sum}
+     * @since 0.1.0
      * @param {Number} a
      * @returns {Function}
      */
@@ -2475,6 +2527,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.clampWithin|clampWithin}
+     * @since 0.13.0
      * @param {Number} n
      * @param {Number} min
      * @param {Number} max
@@ -2508,6 +2561,7 @@
      * @category Math
      * @function
      * @see {@link module:lamb.clamp|clamp}
+     * @since 0.47.0
      * @param {Number} min
      * @param {Number} max
      * @returns {Function}
@@ -2527,6 +2581,7 @@
      * @category Math
      * @function
      * @see {@link module:lamb.subtract|subtract}
+     * @since 0.50.0
      * @param {Number} a
      * @returns {Function}
      */
@@ -2540,6 +2595,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.divideBy|divideBy}
+     * @since 0.1.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2561,6 +2617,7 @@
      * @category Math
      * @function
      * @see {@link module:lamb.divide|divide}
+     * @since 0.50.0
      * @param {Number} a
      * @returns {Function}
      */
@@ -2579,6 +2636,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.range|range}
+     * @since 0.21.0
      * @param {*} start - The starting value
      * @param {Number} len - The desired length for the sequence
      * @param {ListIteratorCallback} iteratee
@@ -2610,6 +2668,7 @@
      * @memberof module:lamb
      * @category Math
      * @alias isFinite
+     * @since 0.46.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2633,6 +2692,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.isSafeInteger|isSafeInteger}
+     * @since 0.46.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2662,6 +2722,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.isInteger|isInteger}
+     * @since 0.46.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2686,6 +2747,7 @@
      * @category Math
      * @see {@link module:lamb.remainder|remainder}
      * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @since 0.1.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2702,6 +2764,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.multiplyBy|multiplyBy}
+     * @since 0.1.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2721,6 +2784,7 @@
      * @category Math
      * @function
      * @see {@link module:lamb.multiply|multiply}
+     * @since 0.50.0
      * @param {Number} a
      * @returns {Function}
      */
@@ -2737,6 +2801,7 @@
      *
      * @memberof module:lamb
      * @category Math
+     * @since 0.1.0
      * @param {Number} min
      * @param {Number} max
      * @returns {Number}
@@ -2764,6 +2829,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.generate|generate}
+     * @since 0.1.0
      * @param {Number} start
      * @param {Number} limit
      * @param {Number} [step=1]
@@ -2803,6 +2869,7 @@
      * @category Math
      * @see {@link module:lamb.modulo|modulo}
      * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
+     * @since 0.1.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2819,6 +2886,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.deduct|deduct}
+     * @since 0.1.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2835,6 +2903,7 @@
      * @memberof module:lamb
      * @category Math
      * @see {@link module:lamb.add|add}
+     * @since 0.50.0
      * @param {Number} a
      * @param {Number} b
      * @returns {Number}
@@ -2887,6 +2956,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.isType|isType}
+     * @since 0.47.0
      * @param {*} constructor
      * @returns {Function}
      */
@@ -2909,6 +2979,7 @@
      * @category Type
      * @see {@link module:lamb.isNull|isNull}
      * @see {@link module:lamb.isUndefined|isUndefined}
+     * @since 0.1.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2926,6 +2997,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
+     * @since 0.1.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2944,6 +3016,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.type|type}
+     * @since 0.1.0
      * @param {String} typeName
      * @returns {Function}
      */
@@ -2963,6 +3036,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
+     * @since 0.1.0
      * @param {*} value
      * @returns {Boolean}
      */
@@ -2987,6 +3061,7 @@
      * @memberof module:lamb
      * @category Type
      * @see {@link module:lamb.isType|isType}
+     * @since 0.9.0
      * @param {*} value
      * @returns {String}
      */
@@ -3019,6 +3094,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @since 0.16.0
      * @see {@link module:lamb.getIndex|getIndex}
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
      * @param {Number} index
@@ -3038,6 +3114,7 @@
      * @category Object
      * @see {@link module:lamb.getKey|getKey}
      * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+     * @since 0.18.0
      * @param {Object} obj
      * @param {String} key
      * @returns {*}
@@ -3066,6 +3143,7 @@
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
      * @param {ArrayLike} arrayLike
      * @param {Number} index
+     * @since 0.23.0
      * @returns {*}
      */
     function getIndex (arrayLike, index) {
@@ -3091,6 +3169,7 @@
      * @function
      * @see {@link module:lamb.getIn|getIn}
      * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+     * @since 0.1.0
      * @param {String} key
      * @returns {Function}
      */
@@ -3120,6 +3199,7 @@
      * @function
      * @see {@link module:lamb.getPathIn|getPathIn}
      * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+     * @since 0.19.0
      * @param {String} path
      * @param {String} [separator="."]
      * @returns {Function}
@@ -3171,6 +3251,7 @@
      * @category Object
      * @see {@link module:lamb.getPath|getPath}
      * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+     * @since 0.19.0
      * @param {Object|ArrayLike} obj
      * @param {String} path
      * @param {String} [separator="."]
@@ -3193,6 +3274,7 @@
      * @function
      * @see {@link module:lamb.last|last}
      * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
+     * @since 0.16.0
      * @param {ArrayLike} arrayLike
      * @returns {*}
      */
@@ -3211,6 +3293,7 @@
      * @function
      * @see {@link module:lamb.head|head}
      * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
+     * @since 0.16.0
      * @param {ArrayLike} arrayLike
      * @returns {*}
      */
@@ -3237,6 +3320,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.setIndex|setIndex}
+     * @since 0.17.0
      * @param {Number} index
      * @param {*} value
      * @returns {Function}
@@ -3266,6 +3350,7 @@
      * @category Object
      * @see {@link module:lamb.setKey|setKey}
      * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+     * @since 0.18.0
      * @param {Object} source
      * @param {String} key
      * @param {*} value
@@ -3296,6 +3381,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.setAt|setAt}
+     * @since 0.23.0
      * @param {ArrayLike} arrayLike
      * @param {Number} index
      * @param {*} value
@@ -3322,6 +3408,7 @@
      * @function
      * @see {@link module:lamb.setIn|setIn}
      * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+     * @since 0.18.0
      * @param {String} key
      * @param {*} value
      * @returns {Function}
@@ -3342,6 +3429,7 @@
      * @category Object
      * @see {@link module:lamb.setPathIn|setPathIn}
      * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+     * @since 0.20.0
      * @param {String} path
      * @param {*} value
      * @param {String} [separator="."]
@@ -3397,6 +3485,7 @@
      * @category Object
      * @see {@link module:lamb.setPath|setPath}
      * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+     * @since 0.20.0
      * @param {Object|Array} source
      * @param {String} path
      * @param {*} value
@@ -3428,6 +3517,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.updateIndex|updateIndex}
+     * @since 0.22.0
      * @param {Number} index
      * @param {Function} updater
      * @returns {Function}
@@ -3460,6 +3550,7 @@
      * @category Object
      * @see {@link module:lamb.updateKey|updateKey}
      * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
+     * @since 0.22.0
      * @param {Object} source
      * @param {String} key
      * @param {Function} updater
@@ -3489,6 +3580,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.updateAt|updateAt}
+     * @since 0.23.0
      * @param {ArrayLike} arrayLike
      * @param {Number} index
      * @param {Function} updater
@@ -3513,6 +3605,7 @@
      * @function
      * @see {@link module:lamb.updateIn|updateIn}
      * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
+     * @since 0.22.0
      * @param {String} key
      * @param {Function} updater
      * @returns {Function}
@@ -3537,6 +3630,7 @@
      * @category Object
      * @see {@link module:lamb.updatePathIn|updatePathIn}
      * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+     * @since 0.24.0
      * @param {String} path
      * @param {Function} updater
      * @param {String} [separator="."]
@@ -3585,6 +3679,7 @@
      * @category Object
      * @see {@link module:lamb.updatePath|updatePath}
      * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+     * @since 0.24.0
      * @param {Object|Array} source
      * @param {String} path
      * @param {Function} updater
@@ -3637,6 +3732,7 @@
      * @function
      * @see {@link module:lamb.appendTo|appendTo}
      * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+     * @since 0.44.0
      * @param {*} value
      * @returns {Function}
      */
@@ -3654,6 +3750,7 @@
      * @category Array
      * @see {@link module:lamb.append|append}
      * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+     * @since 0.44.0
      * @param {ArrayLike} arrayLike
      * @param {*} value
      * @returns {Array}
@@ -3677,6 +3774,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @since 0.6.0
      * @param {ArrayLike} arrayLike
      * @param {ArrayLike} other
      * @returns {Array}
@@ -3700,6 +3798,7 @@
      * @memberof module:lamb
      * @category Array
      * @function
+     * @since 0.5.0
      * @see {@link module:lamb.dropFrom|dropFrom}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -3724,6 +3823,7 @@
      * @see {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @since 0.51.0
      * @param {ArrayLike} arrayLike
      * @param {Number} n
      * @returns {Array}
@@ -3747,6 +3847,7 @@
      * @see {@link module:lamb.takeWhile|takeWhile}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+     * @since 0.5.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -3770,6 +3871,7 @@
      * @category Array
      * @see {@link module:lamb.flatMapWith|flatMapWith}
      * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
+     * @since 0.1.0
      * @param {Array} array
      * @param {ListIteratorCallback} iteratee
      * @returns {Array}
@@ -3804,6 +3906,7 @@
      * @function
      * @see {@link module:lamb.flatMap|flatMap}
      * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
+     * @since 0.11.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -3821,6 +3924,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.shallowFlatten|shallowFlatten}
+     * @since 0.1.0
      * @param {Array} array
      * @returns {Array}
      */
@@ -3838,6 +3942,7 @@
      * @function
      * @see {@link module:lamb.tail|tail}
      * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+     * @since 0.16.0
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -3863,6 +3968,7 @@
      * @see {@link module:lamb.insertAt|insertAt}
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {Number} index
      * @param {*} element
@@ -3893,6 +3999,7 @@
      * @see {@link module:lamb.insert|insert}
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
+     * @since 0.27.0
      * @param {Number} index
      * @param {*} element
      * @returns {Function}
@@ -3913,6 +4020,7 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @since 0.5.0
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -3940,6 +4048,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.partitionWith|partitionWith}
+     * @since 0.11.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {Array<Array, Array>}
@@ -3982,6 +4091,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.partition|partition}
+     * @since 0.11.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -4010,6 +4120,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.pluckKey|pluckKey}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {String} key
      * @returns {Array}
@@ -4036,6 +4147,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.pluck|pluck}
+     * @since 0.12.0
      * @param {String} key
      * @returns {Function}
      */
@@ -4058,6 +4170,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.pullFrom|pullFrom}
+     * @since 0.45.0
      * @param {ArrayLike} values
      * @returns {Function}
      */
@@ -4075,6 +4188,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.pull|pull}
+     * @since 0.45.0
      * @param {ArrayLike} arrayLike
      * @param {ArrayLike} values
      * @returns {Array}
@@ -4097,6 +4211,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.flatten|flatten}
+     * @since 0.9.0
      * @param {Array} array
      * @returns {Array}
      */
@@ -4114,6 +4229,7 @@
      * @function
      * @see {@link module:lamb.init|init}
      * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+     * @since 0.16.0
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -4135,6 +4251,7 @@
      * @see {@link module:lamb.takeFrom|takeFrom}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @since 0.5.0
      * @param {Number} n
      * @returns {Function}
      */
@@ -4156,6 +4273,7 @@
      * @see {@link module:lamb.take|take}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @since 0.51.0
      * @param {ArrayLike} arrayLike
      * @param {Number} n
      * @returns {Array}
@@ -4179,6 +4297,7 @@
      * @see {@link module:lamb.dropWhile|dropWhile}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+     * @since 0.5.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
@@ -4212,6 +4331,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.zip|zip}
+     * @since 0.14.0
      * @param {ArrayLike<ArrayLike>} arrayLike
      * @returns {Array<Array>}
      */
@@ -4260,6 +4380,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.unionBy|unionBy}
+     * @since 0.5.0
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -4281,6 +4402,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.union|union}
+     * @since 0.51.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -4303,6 +4425,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.uniquesBy|uniquesBy}
+     * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @returns {Array}
      */
@@ -4332,6 +4455,7 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.uniques|uniques}
+     * @since 0.51.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -4375,6 +4499,7 @@
      * @function
      * @see {@link module:lamb.transpose|transpose} for the reverse operation
      * @see {@link module:lamb.zipWithIndex|zipWithIndex}
+     * @since 0.14.0
      * @param {...ArrayLike} arrayLike
      * @returns {Array<Array>}
      */
@@ -4389,6 +4514,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.zip|zip}
+     * @since 0.14.0
      * @param {ArrayLike} arrayLike
      * @returns {Array<Array<*, Number>>}
      */
@@ -4446,6 +4572,7 @@
      * @see {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+     * @since 0.21.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @returns {Object}
@@ -4475,6 +4602,7 @@
      * @see {@link module:lamb.count|count}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+     * @since 0.21.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -4533,6 +4661,7 @@
      * @see {@link module:lamb.groupBy|groupBy}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+     * @since 0.7.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @returns {Object}
@@ -4581,6 +4710,7 @@
      * @see {@link module:lamb.group|group}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+     * @since 0.7.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -4632,6 +4762,7 @@
      * @see {@link module:lamb.indexBy|indexBy}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
+     * @since 0.21.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} iteratee
      * @returns {Object}
@@ -4666,6 +4797,7 @@
      * @see {@link module:lamb.index|index}
      * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
      * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
+     * @since 0.21.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
      */
@@ -4735,6 +4867,7 @@
      * @category Array
      * @see {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+     * @since 0.15.0
      * @param {ArrayLike} arrayLike
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
      * @returns {Array}
@@ -4796,6 +4929,7 @@
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
      * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element
      * at a specific index
+     * @since 0.27.0
      * @param {ArrayLike} arrayLike
      * @param {*} element
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria
@@ -4835,6 +4969,7 @@
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorterDesc|sorterDesc}
+     * @since 0.1.0
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
      * simple value from a complex one. The function should evaluate the array element and supply the
      * value to be passed to the comparer.
@@ -4854,6 +4989,7 @@
      * @see {@link module:lamb.sortedInsert|sortedInsert}
      * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
      * @see {@link module:lamb.sorter|sorter}
+     * @since 0.15.0
      * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
      * simple value from a complex one. The function should evaluate the array element and supply the
      * value to be passed to the comparer.
@@ -4881,6 +5017,7 @@
      * @category Array
      * @see {@link module:lamb.sort|sort}
      * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+     * @since 0.15.0
      * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
      * @returns {Function}
      */
@@ -4906,6 +5043,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.apply|apply}, {@link module:lamb.applyTo|applyTo}
+     * @since 0.47.0
      * @param {Function} fn
      * @param {ArrayLike} args
      * @returns {*}
@@ -4926,6 +5064,7 @@
      * @category Function
      * @function
      * @see {@link module:lamb.application|application}, {@link module:lamb.applyTo|applyTo}
+     * @since 0.1.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -4945,6 +5084,7 @@
      * @category Function
      * @function
      * @see {@link module:lamb.application|application}, {@link module:lamb.apply|apply}
+     * @since 0.47.0
      * @param {ArrayLike} args
      * @returns {Function}
      */
@@ -4964,6 +5104,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.binary|binary}, {@link module:lamb.unary|unary} for common use cases shortcuts
+     * @since 0.1.0
      * @param {Function} fn
      * @param {Number} arity
      * @returns {Function}
@@ -5019,6 +5160,7 @@
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
+     * @since 0.36.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5038,6 +5180,7 @@
      * @category Function
      * @see {@link module:lamb.aritize|aritize}
      * @see {@link module:lamb.unary|unary}
+     * @since 0.10.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5070,6 +5213,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @since 0.35.0
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -5100,6 +5244,7 @@
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.asPartial|asPartial}
+     * @since 0.1.0
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5128,6 +5273,7 @@
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.asPartial|asPartial}
+     * @since 0.6.0
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5152,6 +5298,7 @@
      * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
      * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.asPartial|asPartial}
+     * @since 0.9.0
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5175,6 +5322,7 @@
      * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
      * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
      * @see {@link module:lamb.asPartial|asPartial}
+     * @since 0.9.0
      * @param {Function} fn
      * @param {Number} [arity=fn.length]
      * @returns {Function}
@@ -5202,6 +5350,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.throttle|throttle}
+     * @since 0.1.0
      * @param {Function} fn
      * @param {Number} timespan - Expressed in milliseconds
      * @returns {Function}
@@ -5229,6 +5378,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @since 0.1.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5258,6 +5408,7 @@
      *
      * @memberof module:lamb
      * @category Function
+     * @since 0.17.0
      * @param {Number} idx
      * @returns {Function}
      */
@@ -5292,6 +5443,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.invokerOn|invokerOn}
+     * @since 0.1.0
      * @param {String} methodName
      * @param {...*} [boundArg]
      * @returns {Function}
@@ -5316,6 +5468,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.invoker|invoker}
+     * @since 0.15.0
      * @param {Object} target
      * @returns {Function}
      */
@@ -5340,6 +5493,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.tapArgs|tapArgs}
+     * @since 0.3.0
      * @param {Function} fn
      * @param {ListIteratorCallback} mapper
      * @returns {Function}
@@ -5360,6 +5514,7 @@
      * @category Function
      * @function
      * @see {@link module:lamb.compose|compose}
+     * @since 0.1.0
      * @param {...Function} fn
      * @returns {Function}
      */
@@ -5379,6 +5534,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.mapArgs|mapArgs}
+     * @since 0.3.0
      * @param {Function} fn
      * @param {Function[]} tappers
      * @returns {Function}
@@ -5412,6 +5568,7 @@
      * @memberof module:lamb
      * @category Function
      * @see {@link module:lamb.debounce|debounce}
+     * @since 0.1.0
      * @param {Function} fn
      * @param {Number} timespan - Expressed in milliseconds.
      * @returns {Function}
@@ -5445,6 +5602,7 @@
      * @category Function
      * @see {@link module:lamb.aritize|aritize}
      * @see {@link module:lamb.binary|binary}
+     * @since 0.10.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5492,6 +5650,7 @@
      * @category Object
      * @function
      * @see {@link module:lamb.keys|keys}
+     * @since 0.12.0
      * @param {Object} obj
      * @returns {String[]}
      */
@@ -5509,6 +5668,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.ownPairs|ownPairs}, {@link module:lamb.pairs|pairs}
+     * @since 0.8.0
      * @param {Array<Array<String, *>>} pairsList
      * @returns {Object}
      */
@@ -5548,6 +5708,7 @@
      *
      * @memberof module:lamb
      * @category Object
+     * @since 0.8.0
      * @param {Object} obj
      * @returns {Object}
      */
@@ -5576,6 +5737,7 @@
      * @category Object
      * @function
      * @see {@link module:lamb.enumerables|enumerables}
+     * @since 0.25.1
      * @param {Object} obj
      * @returns {String[]}
      */
@@ -5596,6 +5758,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.tear|tear}, {@link module:lamb.tearOwn|tearOwn} for the reverse operation
+     * @since 0.8.0
      * @param {String[]} names
      * @param {ArrayLike} values
      * @returns {Object}
@@ -5625,6 +5788,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.mapValuesWith|mapValuesWith}
+     * @since 0.54.0
      * @param {Object} source
      * @param {ObjectIteratorCallback} fn
      * @returns {Object}
@@ -5660,6 +5824,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.mapValues|mapValues}
+     * @since 0.54.0
      * @function
      * @param {Function} fn
      * @returns {Function}
@@ -5682,6 +5847,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.mergeOwn|mergeOwn} to merge own properties only
+     * @since 0.10.0
      * @function
      * @param {...Object} source
      * @returns {Object}
@@ -5712,6 +5878,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.merge|merge} to merge all enumerable properties
+     * @since 0.12.0
      * @function
      * @param {...Object} source
      * @returns {Object}
@@ -5736,6 +5903,7 @@
      * @function
      * @see {@link module:lamb.pairs|pairs}
      * @see {@link module:lamb.fromPairs|fromPairs}
+     * @since 0.12.0
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
@@ -5757,6 +5925,7 @@
      * @category Object
      * @function
      * @see {@link module:lamb.values|values}
+     * @since 0.12.0
      * @param {Object} obj
      * @returns {Array}
      */
@@ -5774,6 +5943,7 @@
      * @function
      * @see {@link module:lamb.ownPairs|ownPairs}
      * @see {@link module:lamb.fromPairs|fromPairs}
+     * @since 0.8.0
      * @param {Object} obj
      * @returns {Array<Array<String, *>>}
      */
@@ -5792,6 +5962,7 @@
      * @category Object
      * @see {@link module:lamb.pickIf|pickIf}, {@link module:lamb.pickKeys|pickKeys}
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+     * @since 0.1.0
      * @param {Object} source
      * @param {String[]} whitelist
      * @returns {Object}
@@ -5825,6 +5996,7 @@
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
      * {@link module:lamb.skipIf|skipIf}
+     * @since 0.1.0
      * @param {ObjectIteratorCallback} predicate
      * @returns {Function}
      */
@@ -5879,6 +6051,7 @@
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
      * {@link module:lamb.skipIf|skipIf}
+     * @since 0.35.0
      * @param {String[]} whitelist
      * @returns {Function}
      */
@@ -5901,6 +6074,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.renameKeys|renameKeys}, {@link module:lamb.renameWith|renameWith}
+     * @since 0.26.0
      * @param {Object} source
      * @param {Object} keysMap
      * @returns {Object}
@@ -5952,6 +6126,7 @@
      * @category Object
      * @function
      * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameWith|renameWith}
+     * @since 0.26.0
      * @param {Object} keysMap
      * @returns {Function}
      */
@@ -5975,6 +6150,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameKeys|renameKeys}
+     * @since 0.26.0
      * @param {Function} fn
      * @returns {Function}
      */
@@ -5997,6 +6173,7 @@
      * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
      * {@link module:lamb.pickIf|pickIf}
+     * @since 0.1.0
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
@@ -6034,6 +6211,7 @@
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
      * {@link module:lamb.pickIf|pickIf}
+     * @since 0.1.0
      * @param {ObjectIteratorCallback} predicate
      * @returns {Function}
      */
@@ -6072,6 +6250,7 @@
      * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
      * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
      * {@link module:lamb.pickIf|pickIf}
+     * @since 0.35.0
      * @param {String[]} blacklist
      * @returns {Function}
      */
@@ -6090,6 +6269,7 @@
      * @function
      * @see {@link module:lamb.tearOwn|tearOwn}
      * @see {@link module:lamb.make|make} for the reverse operation
+     * @since 0.8.0
      * @param {Object} obj
      * @returns {Array<String[], Array>}
      */
@@ -6112,6 +6292,7 @@
      * @function
      * @see {@link module:lamb.tear|tear}
      * @see {@link module:lamb.make|make} for the reverse operation
+     * @since 0.12.0
      * @param {Object} obj
      * @returns {Array<String[], Array>}
      */
@@ -6129,6 +6310,7 @@
      * @category Object
      * @function
      * @see {@link module:lamb.ownValues|ownValues}
+     * @since 0.1.0
      * @param {Object} obj
      * @returns {Array}
      */
@@ -6192,6 +6374,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.validate|validate}, {@link module:lamb.validateWith|validateWith}
+     * @since 0.1.0
      * @param {Function} predicate - The predicate to test the object properties
      * @param {String} message - The error message
      * @param {String[]} keyPaths - The array of keys, or {@link module:lamb.getPathIn|paths}, to test.
@@ -6226,6 +6409,7 @@
      * @see {@link module:lamb.hasKey|hasKey}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+     * @since 0.1.0
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -6255,6 +6439,7 @@
      * @see {@link module:lamb.has|has}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+     * @since 0.1.0
      * @param {String} key
      * @returns {Function}
      */
@@ -6272,6 +6457,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.hasPathValue|hasPathValue}
+     * @since 0.1.0
      * @param {String} key
      * @param {*} value
      * @returns {Function}
@@ -6302,6 +6488,7 @@
      * @see {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+     * @since 0.1.0
      * @param {Object} obj
      * @param {String} key
      * @returns {Boolean}
@@ -6325,6 +6512,7 @@
      * @see {@link module:lamb.hasOwn|hasOwn}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
+     * @since 0.1.0
      * @param {String} key
      * @returns {Function}
      */
@@ -6360,6 +6548,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.hasKeyValue|hasKeyValue}
+     * @since 0.41.0
      * @param {String} path
      * @param {*} value
      * @param {String} [separator="."]
@@ -6389,6 +6578,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.pathSatisfies|pathSatisfies}
+     * @since 0.45.0
      * @param {Function} predicate
      * @param {String} key
      * @returns {Function}
@@ -6427,6 +6617,7 @@
      * @see {@link module:lamb.pathExistsIn|pathExistsIn}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @since 0.43.0
      * @param {String} path
      * @param {String} [separator="."]
      * @returns {Function}
@@ -6455,6 +6646,7 @@
      * @see {@link module:lamb.pathExists|pathExists}
      * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
      * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
+     * @since 0.43.0
      * @param {Object} obj
      * @param {String} path
      * @param {String} [separator="."]
@@ -6487,6 +6679,7 @@
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.keySatisfies|keySatisfies}
+     * @since 0.45.0
      * @param {Function} predicate
      * @param {String} path
      * @param {String} [separator="."]
@@ -6524,6 +6717,7 @@
      * @category Object
      * @see {@link module:lamb.validateWith|validateWith}
      * @see {@link module:lamb.checker|checker}
+     * @since 0.1.0
      * @param {Object} obj
      * @param {Function[]} checkers
      * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
@@ -6566,6 +6760,7 @@
      * @function
      * @see {@link module:lamb.validate|validate}
      * @see {@link module:lamb.checker|checker}
+     * @since 0.1.0
      * @param {Function[]} checkers
      * @returns {Function}
      */
@@ -6599,6 +6794,7 @@
      * @memberof module:lamb
      * @category String
      * @see {@link module:lamb.padRight|padRight}
+     * @since 0.1.0
      * @param {String} source
      * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len
@@ -6622,6 +6818,7 @@
      * @memberof module:lamb
      * @category String
      * @see {@link module:lamb.padLeft|padLeft}
+     * @since 0.1.0
      * @param {String} source
      * @param {String} char - The padding char. If a string is passed only the first char is used.
      * @param {Number} len
@@ -6644,6 +6841,7 @@
      *
      * @memberof module:lamb
      * @category String
+     * @since 0.1.0
      * @param {String} source
      * @param {Number} times
      * @returns {String}
@@ -6666,6 +6864,7 @@
      *
      * @memberof module:lamb
      * @category String
+     * @since 0.1.0
      * @param {RegExp} pattern
      * @returns {Function}
      */

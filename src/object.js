@@ -14,6 +14,7 @@
  * @category Object
  * @function
  * @see {@link module:lamb.keys|keys}
+ * @since 0.12.0
  * @param {Object} obj
  * @returns {String[]}
  */
@@ -31,6 +32,7 @@ var enumerables = _unsafeKeyListFrom(_safeEnumerables);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.ownPairs|ownPairs}, {@link module:lamb.pairs|pairs}
+ * @since 0.8.0
  * @param {Array<Array<String, *>>} pairsList
  * @returns {Object}
  */
@@ -70,6 +72,7 @@ function fromPairs (pairsList) {
  *
  * @memberof module:lamb
  * @category Object
+ * @since 0.8.0
  * @param {Object} obj
  * @returns {Object}
  */
@@ -98,6 +101,7 @@ function immutable (obj) {
  * @category Object
  * @function
  * @see {@link module:lamb.enumerables|enumerables}
+ * @since 0.25.1
  * @param {Object} obj
  * @returns {String[]}
  */
@@ -118,6 +122,7 @@ var keys = _unsafeKeyListFrom(_safeKeys);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.tear|tear}, {@link module:lamb.tearOwn|tearOwn} for the reverse operation
+ * @since 0.8.0
  * @param {String[]} names
  * @param {ArrayLike} values
  * @returns {Object}
@@ -147,6 +152,7 @@ function make (names, values) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.mapValuesWith|mapValuesWith}
+ * @since 0.54.0
  * @param {Object} source
  * @param {ObjectIteratorCallback} fn
  * @returns {Object}
@@ -182,6 +188,7 @@ function mapValues (source, fn) {
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.mapValues|mapValues}
+ * @since 0.54.0
  * @function
  * @param {Function} fn
  * @returns {Function}
@@ -204,6 +211,7 @@ var mapValuesWith = _curry2(mapValues, true);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.mergeOwn|mergeOwn} to merge own properties only
+ * @since 0.10.0
  * @function
  * @param {...Object} source
  * @returns {Object}
@@ -234,6 +242,7 @@ var merge = partial(_merge, [enumerables]);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.merge|merge} to merge all enumerable properties
+ * @since 0.12.0
  * @function
  * @param {...Object} source
  * @returns {Object}
@@ -258,6 +267,7 @@ var mergeOwn = partial(_merge, [keys]);
  * @function
  * @see {@link module:lamb.pairs|pairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
+ * @since 0.12.0
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
  */
@@ -279,6 +289,7 @@ var ownPairs = _pairsFrom(keys);
  * @category Object
  * @function
  * @see {@link module:lamb.values|values}
+ * @since 0.12.0
  * @param {Object} obj
  * @returns {Array}
  */
@@ -296,6 +307,7 @@ var ownValues = _valuesFrom(keys);
  * @function
  * @see {@link module:lamb.ownPairs|ownPairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
+ * @since 0.8.0
  * @param {Object} obj
  * @returns {Array<Array<String, *>>}
  */
@@ -314,6 +326,7 @@ var pairs = _pairsFrom(enumerables);
  * @category Object
  * @see {@link module:lamb.pickIf|pickIf}, {@link module:lamb.pickKeys|pickKeys}
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+ * @since 0.1.0
  * @param {Object} source
  * @param {String[]} whitelist
  * @returns {Object}
@@ -347,6 +360,7 @@ function pick (source, whitelist) {
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
  * {@link module:lamb.skipIf|skipIf}
+ * @since 0.1.0
  * @param {ObjectIteratorCallback} predicate
  * @returns {Function}
  */
@@ -401,6 +415,7 @@ function pickIf (predicate) {
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
  * {@link module:lamb.skipIf|skipIf}
+ * @since 0.35.0
  * @param {String[]} whitelist
  * @returns {Function}
  */
@@ -423,6 +438,7 @@ var pickKeys = _curry2(pick, true);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.renameKeys|renameKeys}, {@link module:lamb.renameWith|renameWith}
+ * @since 0.26.0
  * @param {Object} source
  * @param {Object} keysMap
  * @returns {Object}
@@ -474,6 +490,7 @@ function rename (source, keysMap) {
  * @category Object
  * @function
  * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameWith|renameWith}
+ * @since 0.26.0
  * @param {Object} keysMap
  * @returns {Function}
  */
@@ -497,6 +514,7 @@ var renameKeys = _curry2(rename, true);
  * @memberof module:lamb
  * @category Object
  * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameKeys|renameKeys}
+ * @since 0.26.0
  * @param {Function} fn
  * @returns {Function}
  */
@@ -519,6 +537,7 @@ function renameWith (fn) {
  * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
  * {@link module:lamb.pickIf|pickIf}
+ * @since 0.1.0
  * @param {Object} source
  * @param {String[]} blacklist
  * @returns {Object}
@@ -556,6 +575,7 @@ function skip (source, blacklist) {
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
  * {@link module:lamb.pickIf|pickIf}
+ * @since 0.1.0
  * @param {ObjectIteratorCallback} predicate
  * @returns {Function}
  */
@@ -594,6 +614,7 @@ var skipIf = compose(pickIf, not);
  * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
  * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
  * {@link module:lamb.pickIf|pickIf}
+ * @since 0.35.0
  * @param {String[]} blacklist
  * @returns {Function}
  */
@@ -612,6 +633,7 @@ var skipKeys = _curry2(skip, true);
  * @function
  * @see {@link module:lamb.tearOwn|tearOwn}
  * @see {@link module:lamb.make|make} for the reverse operation
+ * @since 0.8.0
  * @param {Object} obj
  * @returns {Array<String[], Array>}
  */
@@ -634,6 +656,7 @@ var tear = _tearFrom(enumerables);
  * @function
  * @see {@link module:lamb.tear|tear}
  * @see {@link module:lamb.make|make} for the reverse operation
+ * @since 0.12.0
  * @param {Object} obj
  * @returns {Array<String[], Array>}
  */
@@ -651,6 +674,7 @@ var tearOwn = _tearFrom(keys);
  * @category Object
  * @function
  * @see {@link module:lamb.ownValues|ownValues}
+ * @since 0.1.0
  * @param {Object} obj
  * @returns {Array}
  */

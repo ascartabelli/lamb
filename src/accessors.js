@@ -16,6 +16,7 @@
  * @memberof module:lamb
  * @category Array
  * @function
+ * @since 0.16.0
  * @see {@link module:lamb.getIndex|getIndex}
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
  * @param {Number} index
@@ -35,6 +36,7 @@ var getAt = _curry2(getIndex, true);
  * @category Object
  * @see {@link module:lamb.getKey|getKey}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+ * @since 0.18.0
  * @param {Object} obj
  * @param {String} key
  * @returns {*}
@@ -63,6 +65,7 @@ function getIn (obj, key) {
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
  * @param {ArrayLike} arrayLike
  * @param {Number} index
+ * @since 0.23.0
  * @returns {*}
  */
 function getIndex (arrayLike, index) {
@@ -88,6 +91,7 @@ function getIndex (arrayLike, index) {
  * @function
  * @see {@link module:lamb.getIn|getIn}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
+ * @since 0.1.0
  * @param {String} key
  * @returns {Function}
  */
@@ -117,6 +121,7 @@ var getKey = _curry2(getIn, true);
  * @function
  * @see {@link module:lamb.getPathIn|getPathIn}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+ * @since 0.19.0
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {Function}
@@ -168,6 +173,7 @@ var getPath = _makePartial3(getPathIn);
  * @category Object
  * @see {@link module:lamb.getPath|getPath}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
+ * @since 0.19.0
  * @param {Object|ArrayLike} obj
  * @param {String} path
  * @param {String} [separator="."]
@@ -190,6 +196,7 @@ function getPathIn (obj, path, separator) {
  * @function
  * @see {@link module:lamb.last|last}
  * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
+ * @since 0.16.0
  * @param {ArrayLike} arrayLike
  * @returns {*}
  */
@@ -208,6 +215,7 @@ var head = getAt(0);
  * @function
  * @see {@link module:lamb.head|head}
  * @see {@link module:lamb.getIndex|getIndex}, {@link module:lamb.getAt|getAt}
+ * @since 0.16.0
  * @param {ArrayLike} arrayLike
  * @returns {*}
  */
@@ -234,6 +242,7 @@ var last = getAt(-1);
  * @category Array
  * @function
  * @see {@link module:lamb.setIndex|setIndex}
+ * @since 0.17.0
  * @param {Number} index
  * @param {*} value
  * @returns {Function}
@@ -263,6 +272,7 @@ var setAt = _makePartial3(_setIndex);
  * @category Object
  * @see {@link module:lamb.setKey|setKey}
  * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+ * @since 0.18.0
  * @param {Object} source
  * @param {String} key
  * @param {*} value
@@ -293,6 +303,7 @@ function setIn (source, key, value) {
  * @category Array
  * @function
  * @see {@link module:lamb.setAt|setAt}
+ * @since 0.23.0
  * @param {ArrayLike} arrayLike
  * @param {Number} index
  * @param {*} value
@@ -319,6 +330,7 @@ var setIndex = aritize(_setIndex, 3);
  * @function
  * @see {@link module:lamb.setIn|setIn}
  * @see {@link module:lamb.setPath|setPath}, {@link module:lamb.setPathIn|setPathIn}
+ * @since 0.18.0
  * @param {String} key
  * @param {*} value
  * @returns {Function}
@@ -339,6 +351,7 @@ var setKey = _makePartial3(setIn);
  * @category Object
  * @see {@link module:lamb.setPathIn|setPathIn}
  * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+ * @since 0.20.0
  * @param {String} path
  * @param {*} value
  * @param {String} [separator="."]
@@ -394,6 +407,7 @@ function setPath (path, value, separator) {
  * @category Object
  * @see {@link module:lamb.setPath|setPath}
  * @see {@link module:lamb.setIn|setIn}, {@link module:lamb.setKey|setKey}
+ * @since 0.20.0
  * @param {Object|Array} source
  * @param {String} path
  * @param {*} value
@@ -425,6 +439,7 @@ function setPathIn (source, path, value, separator) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.updateIndex|updateIndex}
+ * @since 0.22.0
  * @param {Number} index
  * @param {Function} updater
  * @returns {Function}
@@ -457,6 +472,7 @@ function updateAt (index, updater) {
  * @category Object
  * @see {@link module:lamb.updateKey|updateKey}
  * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
+ * @since 0.22.0
  * @param {Object} source
  * @param {String} key
  * @param {Function} updater
@@ -486,6 +502,7 @@ function updateIn (source, key, updater) {
  * @category Array
  * @function
  * @see {@link module:lamb.updateAt|updateAt}
+ * @since 0.23.0
  * @param {ArrayLike} arrayLike
  * @param {Number} index
  * @param {Function} updater
@@ -510,6 +527,7 @@ var updateIndex = partial(_setIndex, [_, _, null, _]);
  * @function
  * @see {@link module:lamb.updateIn|updateIn}
  * @see {@link module:lamb.updatePath|updatePath}, {@link module:lamb.updatePathIn|updatePathIn}
+ * @since 0.22.0
  * @param {String} key
  * @param {Function} updater
  * @returns {Function}
@@ -534,6 +552,7 @@ var updateKey = _makePartial3(updateIn);
  * @category Object
  * @see {@link module:lamb.updatePathIn|updatePathIn}
  * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+ * @since 0.24.0
  * @param {String} path
  * @param {Function} updater
  * @param {String} [separator="."]
@@ -582,6 +601,7 @@ function updatePath (path, updater, separator) {
  * @category Object
  * @see {@link module:lamb.updatePath|updatePath}
  * @see {@link module:lamb.updateIn|updateIn}, {@link module:lamb.updateKey|updateKey}
+ * @since 0.24.0
  * @param {Object|Array} source
  * @param {String} path
  * @param {Function} updater

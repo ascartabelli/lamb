@@ -6,6 +6,7 @@
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.apply|apply}, {@link module:lamb.applyTo|applyTo}
+ * @since 0.47.0
  * @param {Function} fn
  * @param {ArrayLike} args
  * @returns {*}
@@ -26,6 +27,7 @@ function application (fn, args) {
  * @category Function
  * @function
  * @see {@link module:lamb.application|application}, {@link module:lamb.applyTo|applyTo}
+ * @since 0.1.0
  * @param {Function} fn
  * @returns {Function}
  */
@@ -45,6 +47,7 @@ var apply = _curry2(application);
  * @category Function
  * @function
  * @see {@link module:lamb.application|application}, {@link module:lamb.apply|apply}
+ * @since 0.47.0
  * @param {ArrayLike} args
  * @returns {Function}
  */
@@ -64,6 +67,7 @@ var applyTo = _curry2(application, true);
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.binary|binary}, {@link module:lamb.unary|unary} for common use cases shortcuts
+ * @since 0.1.0
  * @param {Function} fn
  * @param {Number} arity
  * @returns {Function}
@@ -119,6 +123,7 @@ function aritize (fn, arity) {
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
+ * @since 0.36.0
  * @param {Function} fn
  * @returns {Function}
  */
@@ -138,6 +143,7 @@ function asPartial (fn) {
  * @category Function
  * @see {@link module:lamb.aritize|aritize}
  * @see {@link module:lamb.unary|unary}
+ * @since 0.10.0
  * @param {Function} fn
  * @returns {Function}
  */
@@ -170,6 +176,7 @@ function binary (fn) {
  *
  * @memberof module:lamb
  * @category Function
+ * @since 0.35.0
  * @param {...Function} fn
  * @returns {Function}
  */
@@ -200,6 +207,7 @@ function collect () {
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.asPartial|asPartial}
+ * @since 0.1.0
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -228,6 +236,7 @@ function curry (fn, arity) {
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.asPartial|asPartial}
+ * @since 0.6.0
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -252,6 +261,7 @@ function curryable (fn, arity) {
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.asPartial|asPartial}
+ * @since 0.9.0
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -275,6 +285,7 @@ function curryableRight (fn, arity) {
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
  * @see {@link module:lamb.asPartial|asPartial}
+ * @since 0.9.0
  * @param {Function} fn
  * @param {Number} [arity=fn.length]
  * @returns {Function}
@@ -302,6 +313,7 @@ function curryRight (fn, arity) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.throttle|throttle}
+ * @since 0.1.0
  * @param {Function} fn
  * @param {Number} timespan - Expressed in milliseconds
  * @returns {Function}
@@ -329,6 +341,7 @@ function debounce (fn, timespan) {
  *
  * @memberof module:lamb
  * @category Function
+ * @since 0.1.0
  * @param {Function} fn
  * @returns {Function}
  */
@@ -358,6 +371,7 @@ function flip (fn) {
  *
  * @memberof module:lamb
  * @category Function
+ * @since 0.17.0
  * @param {Number} idx
  * @returns {Function}
  */
@@ -392,6 +406,7 @@ function getArgAt (idx) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.invokerOn|invokerOn}
+ * @since 0.1.0
  * @param {String} methodName
  * @param {...*} [boundArg]
  * @returns {Function}
@@ -416,6 +431,7 @@ function invoker (methodName) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.invoker|invoker}
+ * @since 0.15.0
  * @param {Object} target
  * @returns {Function}
  */
@@ -440,6 +456,7 @@ function invokerOn (target) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.tapArgs|tapArgs}
+ * @since 0.3.0
  * @param {Function} fn
  * @param {ListIteratorCallback} mapper
  * @returns {Function}
@@ -460,6 +477,7 @@ function mapArgs (fn, mapper) {
  * @category Function
  * @function
  * @see {@link module:lamb.compose|compose}
+ * @since 0.1.0
  * @param {...Function} fn
  * @returns {Function}
  */
@@ -479,6 +497,7 @@ var pipe = flip(compose);
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.mapArgs|mapArgs}
+ * @since 0.3.0
  * @param {Function} fn
  * @param {Function[]} tappers
  * @returns {Function}
@@ -512,6 +531,7 @@ function tapArgs (fn, tappers) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.debounce|debounce}
+ * @since 0.1.0
  * @param {Function} fn
  * @param {Number} timespan - Expressed in milliseconds.
  * @returns {Function}
@@ -545,6 +565,7 @@ function throttle (fn, timespan) {
  * @category Function
  * @see {@link module:lamb.aritize|aritize}
  * @see {@link module:lamb.binary|binary}
+ * @since 0.10.0
  * @param {Function} fn
  * @returns {Function}
  */

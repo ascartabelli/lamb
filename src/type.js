@@ -23,6 +23,7 @@
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.isType|isType}
+ * @since 0.47.0
  * @param {*} constructor
  * @returns {Function}
  */
@@ -45,6 +46,7 @@ function isInstanceOf (constructor) {
  * @category Type
  * @see {@link module:lamb.isNull|isNull}
  * @see {@link module:lamb.isUndefined|isUndefined}
+ * @since 0.1.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -62,6 +64,7 @@ function isNil (value) {
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.isNil|isNil} if you want to check for <code>undefined</code> too.
+ * @since 0.1.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -80,6 +83,7 @@ function isNull (value) {
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.type|type}
+ * @since 0.1.0
  * @param {String} typeName
  * @returns {Function}
  */
@@ -99,6 +103,7 @@ function isType (typeName) {
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.isNil|isNil} if you want to check for <code>null</code> too.
+ * @since 0.1.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -123,6 +128,7 @@ function isUndefined (value) {
  * @memberof module:lamb
  * @category Type
  * @see {@link module:lamb.isType|isType}
+ * @since 0.9.0
  * @param {*} value
  * @returns {String}
  */

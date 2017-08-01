@@ -18,6 +18,7 @@
  * @see {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+ * @since 0.21.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @returns {Object}
@@ -47,6 +48,7 @@ var count = _groupWith(function (a) {
  * @see {@link module:lamb.count|count}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+ * @since 0.21.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
@@ -105,6 +107,7 @@ var countBy = _curry2(count, true);
  * @see {@link module:lamb.groupBy|groupBy}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+ * @since 0.7.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @returns {Object}
@@ -153,6 +156,7 @@ var group = _groupWith(function (a, b) {
  * @see {@link module:lamb.group|group}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.index|index}, {@link module:lamb.indexBy|indexBy}
+ * @since 0.7.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
@@ -204,6 +208,7 @@ var groupBy = _curry2(group, true);
  * @see {@link module:lamb.indexBy|indexBy}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
+ * @since 0.21.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @returns {Object}
@@ -238,6 +243,7 @@ var index = _groupWith(function (a, b) {
  * @see {@link module:lamb.index|index}
  * @see {@link module:lamb.count|count}, {@link module:lamb.countBy|countBy}
  * @see {@link module:lamb.group|group}, {@link module:lamb.groupBy|groupBy}
+ * @since 0.21.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */

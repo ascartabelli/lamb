@@ -25,6 +25,7 @@
          * @alias @@lamb/placeholder
          * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
          * @see {@link module:lamb.asPartial|asPartial}
+         * @since 0.53.0
          * @type Object
          */
         "@@lamb/placeholder": {
@@ -42,6 +43,7 @@
          * @category Special properties
          * @alias @@lamb/version
          * @readonly
+         * @since 0.53.0
          * @type String
          */
         "@@lamb/version": {value: "<%= pkg.version %>"}

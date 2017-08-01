@@ -55,6 +55,7 @@
  * @category Array
  * @see {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+ * @since 0.15.0
  * @param {ArrayLike} arrayLike
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
  * @returns {Array}
@@ -116,6 +117,7 @@ function sort (arrayLike) {
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt} to insert the element
  * at a specific index
+ * @since 0.27.0
  * @param {ArrayLike} arrayLike
  * @param {*} element
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria
@@ -155,6 +157,7 @@ function sortedInsert (arrayLike, element) {
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorterDesc|sorterDesc}
+ * @since 0.1.0
  * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
  * simple value from a complex one. The function should evaluate the array element and supply the
  * value to be passed to the comparer.
@@ -174,6 +177,7 @@ var sorter = partial(_sorter, [_, false, _]);
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.sort|sort}, {@link module:lamb.sortWith|sortWith}
  * @see {@link module:lamb.sorter|sorter}
+ * @since 0.15.0
  * @param {Function} [reader={@link module:lamb.identity|identity}] A function meant to generate a
  * simple value from a complex one. The function should evaluate the array element and supply the
  * value to be passed to the comparer.
@@ -201,6 +205,7 @@ var sorterDesc = partial(_sorter, [_, true, _]);
  * @category Array
  * @see {@link module:lamb.sort|sort}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
+ * @since 0.15.0
  * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
  * @returns {Function}
  */

@@ -27,6 +27,7 @@
  * @category Logic
  * @see {@link module:lamb.case|case}
  * @see {@link module:lamb.invoker|invoker}
+ * @since 0.6.0
  * @param {...Function} fn
  * @returns {Function}
  */
@@ -64,6 +65,7 @@ function adapter () {
  * @memberof module:lamb
  * @category Logic
  * @see {@link module:lamb.anyOf|anyOf}
+ * @since 0.1.0
  * @param {...Function} predicate
  * @returns {Function}
  */
@@ -101,6 +103,7 @@ function allOf () {
  * @memberof module:lamb
  * @category Logic
  * @see {@link module:lamb.allOf|allOf}
+ * @since 0.1.0
  * @param {...Function} predicate
  * @returns {Function}
  */
@@ -142,6 +145,7 @@ function anyOf () {
  * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
  * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+ * @since 0.50.0
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}
@@ -171,6 +175,7 @@ function areSame (a, b) {
  * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
  * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+ * @since 0.50.0
  * @param {*} a
  * @param {*} b
  * @returns {Boolean}
@@ -195,6 +200,7 @@ function areSVZ (a, b) {
  * @alias case
  * @see {@link module:lamb.adapter|adapter}
  * @see {@link module:lamb.condition|condition}
+ * @since 0.51.0
  * @param {Function} predicate
  * @param {Function} fn
  * @returns {Function}
@@ -223,6 +229,7 @@ function case_ (predicate, fn) {
  * @category Logic
  * @see {@link module:lamb.unless|unless}
  * @see {@link module:lamb.when|when}
+ * @since 0.2.0
  * @param {Function} predicate
  * @param {Function} trueFn
  * @param {Function} falseFn
@@ -257,6 +264,7 @@ function condition (predicate, trueFn, falseFn) {
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @since 0.50.0
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -282,6 +290,7 @@ function gt (a, b) {
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
+ * @since 0.50.0
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -322,6 +331,7 @@ function gte (a, b) {
  * @see {@link module:lamb.areSVZ|areSVZ}, {@link module:lamb.isSVZ|isSVZ}
  * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+ * @since 0.1.0
  * @param {*} value
  * @returns {Function}
  */
@@ -345,6 +355,7 @@ var is = _curry2(areSame);
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @since 0.1.0
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
@@ -369,6 +380,7 @@ var isGT = _curry2(gt, true);
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
+ * @since 0.1.0
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
@@ -392,6 +404,7 @@ var isGTE = _curry2(gte, true);
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @since 0.1.0
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
@@ -416,6 +429,7 @@ var isLT = _curry2(lt, true);
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
  * @see {@link module:lamb.lt|lt}, {@link module:lamb.lte|lte}
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
+ * @since 0.1.0
  * @param {Number|String|Date|Boolean} value
  * @returns {Function}
  */
@@ -453,6 +467,7 @@ var isLTE = _curry2(lte, true);
  * @see {@link module:lamb.areSame|areSame}, {@link module:lamb.is|is}
  * @see [SameValue comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevalue}
  * @see [SameValueZero comparison]{@link https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluezero}
+ * @since 0.1.0
  * @param {*} value
  * @returns {Function}
  */
@@ -481,6 +496,7 @@ var isSVZ = _curry2(areSVZ);
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @since 0.50.0
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -506,6 +522,7 @@ function lt (a, b) {
  * @see {@link module:lamb.gt|gt}, {@link module:lamb.gte|gte}
  * @see {@link module:lamb.isLT|isLT}, {@link module:lamb.isLTE|isLTE}
  * @see {@link module:lamb.isGT|isGT}, {@link module:lamb.isGTE|isGTE}
+ * @since 0.50.0
  * @param {Number|String|Date|Boolean} a
  * @param {Number|String|Date|Boolean} b
  * @returns {Boolean}
@@ -525,6 +542,7 @@ function lte (a, b) {
  *
  * @memberof module:lamb
  * @category Logic
+ * @since 0.1.0
  * @param {Function} predicate
  * @returns {Function}
  */
@@ -552,6 +570,7 @@ function not (predicate) {
  * @category Logic
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.when|when}
+ * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
  * @returns {Function}
@@ -580,6 +599,7 @@ function unless (predicate, fn) {
  * @category Logic
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.unless|unless}
+ * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
  * @returns {Function}

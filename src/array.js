@@ -12,6 +12,7 @@
  * @function
  * @see {@link module:lamb.appendTo|appendTo}
  * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+ * @since 0.44.0
  * @param {*} value
  * @returns {Function}
  */
@@ -29,6 +30,7 @@ var append = _curry2(appendTo, true);
  * @category Array
  * @see {@link module:lamb.append|append}
  * @see {@link module:lamb.insert|insert}, {@link module:lamb.insertAt|insertAt}
+ * @since 0.44.0
  * @param {ArrayLike} arrayLike
  * @param {*} value
  * @returns {Array}
@@ -52,6 +54,7 @@ function appendTo (arrayLike, value) {
  *
  * @memberof module:lamb
  * @category Array
+ * @since 0.6.0
  * @param {ArrayLike} arrayLike
  * @param {ArrayLike} other
  * @returns {Array}
@@ -75,6 +78,7 @@ function difference (arrayLike, other) {
  * @memberof module:lamb
  * @category Array
  * @function
+ * @since 0.5.0
  * @see {@link module:lamb.dropFrom|dropFrom}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
@@ -99,6 +103,7 @@ var drop = _curry2(dropFrom, true);
  * @see {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @since 0.51.0
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
@@ -122,6 +127,7 @@ function dropFrom (arrayLike, n) {
  * @see {@link module:lamb.takeWhile|takeWhile}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+ * @since 0.5.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -145,6 +151,7 @@ function dropWhile (predicate) {
  * @category Array
  * @see {@link module:lamb.flatMapWith|flatMapWith}
  * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
+ * @since 0.1.0
  * @param {Array} array
  * @param {ListIteratorCallback} iteratee
  * @returns {Array}
@@ -179,6 +186,7 @@ function flatMap (array, iteratee) {
  * @function
  * @see {@link module:lamb.flatMap|flatMap}
  * @see {@link module:lamb.map|map}, {@link module:lamb.mapWith|mapWith}
+ * @since 0.11.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
@@ -196,6 +204,7 @@ var flatMapWith = _curry2(flatMap, true);
  * @category Array
  * @function
  * @see {@link module:lamb.shallowFlatten|shallowFlatten}
+ * @since 0.1.0
  * @param {Array} array
  * @returns {Array}
  */
@@ -213,6 +222,7 @@ var flatten = _makeArrayFlattener(true);
  * @function
  * @see {@link module:lamb.tail|tail}
  * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+ * @since 0.16.0
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -238,6 +248,7 @@ var init = partial(slice, [_, 0, -1]);
  * @see {@link module:lamb.insertAt|insertAt}
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {Number} index
  * @param {*} element
@@ -268,6 +279,7 @@ function insert (arrayLike, index, element) {
  * @see {@link module:lamb.insert|insert}
  * @see {@link module:lamb.sortedInsert|sortedInsert}
  * @see {@link module:lamb.append|append}, {@link module:lamb.appendTo|appendTo}
+ * @since 0.27.0
  * @param {Number} index
  * @param {*} element
  * @returns {Function}
@@ -288,6 +300,7 @@ var insertAt = _makePartial3(insert);
  *
  * @memberof module:lamb
  * @category Array
+ * @since 0.5.0
  * @param {...ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -315,6 +328,7 @@ function intersection () {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.partitionWith|partitionWith}
+ * @since 0.11.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @returns {Array<Array, Array>}
@@ -357,6 +371,7 @@ function partition (arrayLike, predicate) {
  * @category Array
  * @function
  * @see {@link module:lamb.partition|partition}
+ * @since 0.11.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -385,6 +400,7 @@ var partitionWith = _curry2(partition, true);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.pluckKey|pluckKey}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {String} key
  * @returns {Array}
@@ -411,6 +427,7 @@ function pluck (arrayLike, key) {
  * @category Array
  * @function
  * @see {@link module:lamb.pluck|pluck}
+ * @since 0.12.0
  * @param {String} key
  * @returns {Function}
  */
@@ -433,6 +450,7 @@ var pluckKey = compose(mapWith, getKey);
  * @category Array
  * @function
  * @see {@link module:lamb.pullFrom|pullFrom}
+ * @since 0.45.0
  * @param {ArrayLike} values
  * @returns {Function}
  */
@@ -450,6 +468,7 @@ var pull = _curry2(pullFrom, true);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.pull|pull}
+ * @since 0.45.0
  * @param {ArrayLike} arrayLike
  * @param {ArrayLike} values
  * @returns {Array}
@@ -472,6 +491,7 @@ function pullFrom (arrayLike, values) {
  * @category Array
  * @function
  * @see {@link module:lamb.flatten|flatten}
+ * @since 0.9.0
  * @param {Array} array
  * @returns {Array}
  */
@@ -489,6 +509,7 @@ var shallowFlatten = _makeArrayFlattener(false);
  * @function
  * @see {@link module:lamb.init|init}
  * @see {@link module:lamb.head|head}, {@link module:lamb.last|last}
+ * @since 0.16.0
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -510,6 +531,7 @@ var tail = drop(1);
  * @see {@link module:lamb.takeFrom|takeFrom}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @since 0.5.0
  * @param {Number} n
  * @returns {Function}
  */
@@ -531,6 +553,7 @@ var take = _curry2(takeFrom, true);
  * @see {@link module:lamb.take|take}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @since 0.51.0
  * @param {ArrayLike} arrayLike
  * @param {Number} n
  * @returns {Array}
@@ -554,6 +577,7 @@ function takeFrom (arrayLike, n) {
  * @see {@link module:lamb.dropWhile|dropWhile}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+ * @since 0.5.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -587,6 +611,7 @@ function takeWhile (predicate) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.zip|zip}
+ * @since 0.14.0
  * @param {ArrayLike<ArrayLike>} arrayLike
  * @returns {Array<Array>}
  */
@@ -635,6 +660,7 @@ function transpose (arrayLike) {
  * @category Array
  * @function
  * @see {@link module:lamb.unionBy|unionBy}
+ * @since 0.5.0
  * @param {...ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -656,6 +682,7 @@ var union = unionBy(identity);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.union|union}
+ * @since 0.51.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
@@ -678,6 +705,7 @@ function unionBy (iteratee) {
  * @category Array
  * @function
  * @see {@link module:lamb.uniquesBy|uniquesBy}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -707,6 +735,7 @@ var uniques = uniquesBy(identity);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.uniques|uniques}
+ * @since 0.51.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
  */
@@ -750,6 +779,7 @@ function uniquesBy (iteratee) {
  * @function
  * @see {@link module:lamb.transpose|transpose} for the reverse operation
  * @see {@link module:lamb.zipWithIndex|zipWithIndex}
+ * @since 0.14.0
  * @param {...ArrayLike} arrayLike
  * @returns {Array<Array>}
  */
@@ -764,6 +794,7 @@ var zip = compose(transpose, list);
  * @category Array
  * @function
  * @see {@link module:lamb.zip|zip}
+ * @since 0.14.0
  * @param {ArrayLike} arrayLike
  * @returns {Array<Array<*, Number>>}
  */

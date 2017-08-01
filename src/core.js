@@ -19,6 +19,7 @@
  * @memberof module:lamb
  * @category Function
  * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
+ * @since 0.1.0
  * @param {*} value
  * @returns {Function}
  */
@@ -49,6 +50,7 @@ function always (value) {
  * @memberof module:lamb
  * @category Function
  * @see {@link module:lamb.pipe|pipe}
+ * @since 0.1.0
  * @param {...Function} fn
  * @returns {Function}
  */
@@ -83,6 +85,7 @@ function compose () {
  * // the function will work with any array-like object
  * join("hello", "-") // => "h-e-l-l-o"
  *
+ * @since 0.1.0
  * @param {Function} method
  * @returns {Function}
  */
@@ -98,6 +101,7 @@ var generic = Function.bind.bind(Function.call);
  * @memberof module:lamb
  * @category Function
  * @see [SKI combinator calculus]{@link https://en.wikipedia.org/wiki/SKI_combinator_calculus}
+ * @since 0.1.0
  * @param {*} value
  * @returns {*} The value passed as parameter.
  */
@@ -131,6 +135,7 @@ function identity (value) {
  * @see {@link module:lamb.curry|curry}, {@link module:lamb.curryRight|curryRight}
  * @see {@link module:lamb.curryable|curryable}, {@link module:lamb.curryableRight|curryableRight}
  * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
+ * @since 0.1.0
  * @param {Function} fn
  * @param {Array} args
  * @returns {Function}
@@ -188,6 +193,7 @@ function partial (fn, args) {
  * @see {@link module:lamb.@@lamb/placeholder|@@lamb/placeholder}
  * @param {Function} fn
  * @param {Array} args
+ * @since 0.52.0
  * @returns {Function}
  */
 function partialRight (fn, args) {

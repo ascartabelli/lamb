@@ -12,6 +12,7 @@
  * @category Array
  * @function
  * @see {@link module:lamb.isIn|isIn}
+ * @since 0.13.0
  * @param {*} value
  * @returns {Function}
  */
@@ -51,6 +52,7 @@ var contains = _curry2(isIn, true);
  * @function
  * @see {@link module:lamb.every|every}
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+ * @since 0.39.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @returns {Boolean}
@@ -74,6 +76,7 @@ var everyIn = _makeArrayChecker(true);
  * @function
  * @see {@link module:lamb.everyIn|everyIn}
  * @see {@link module:lamb.some|some}, {@link module:lamb.someIn|someIn}
+ * @since 0.39.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -96,6 +99,7 @@ var every = _curry2(everyIn, true);
  * @see {@link module:lamb.filterWith|filterWith}
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
+ * @since 0.1.0
  * @returns {Array}
  */
 function filter (arrayLike, predicate) {
@@ -125,6 +129,7 @@ function filter (arrayLike, predicate) {
  * @category Array
  * @function
  * @see {@link module:lamb.filter|filter}
+ * @since 0.9.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -148,6 +153,7 @@ var filterWith = _curry2(filter, true);
  * @category Array
  * @see {@link module:lamb.findWhere|findWhere}
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+ * @since 0.7.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @returns {*}
@@ -176,6 +182,7 @@ function find (arrayLike, predicate) {
  * @category Array
  * @see {@link module:lamb.findIndexWhere|findIndexWhere}
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+ * @since 0.7.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @returns {Number}
@@ -208,6 +215,7 @@ function findIndex (arrayLike, predicate) {
  * @function
  * @see {@link module:lamb.findIndex|findIndex}
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+ * @since 0.41.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -228,6 +236,7 @@ var findIndexWhere = _curry2(findIndex, true);
  * @function
  * @see {@link module:lamb.find|find}
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+ * @since 0.41.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
@@ -247,6 +256,7 @@ var findWhere = _curry2(find, true);
  *
  * @memberof module:lamb
  * @category Array
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @returns {Undefined}
@@ -274,6 +284,7 @@ function forEach (arrayLike, iteratee) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.contains|contains}
+ * @since 0.13.0
  * @param {ArrayLike} arrayLike
  * @param {*} value
  * @returns {Boolean}
@@ -300,6 +311,7 @@ function isIn (arrayLike, value) {
  * @memberof module:lamb
  * @category Array
  * @function
+ * @since 0.1.0
  * @param {...*} value
  * @returns {Array}
  */
@@ -318,6 +330,7 @@ var list = _argsToArrayFrom(0);
  * @category Array
  * @see {@link module:lamb.mapWith|mapWith}
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} iteratee
  * @returns {Array}
@@ -347,6 +360,7 @@ function map (arrayLike, iteratee) {
  * @function
  * @see {@link module:lamb.map|map}
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
+ * @since 0.1.0
  * @param {ListIteratorCallback} iteratee
  * @returns {function}
  */
@@ -364,6 +378,7 @@ var mapWith = _curry2(map, true);
  * @function
  * @see {@link module:lamb.reduceRight|reduceRight}
  * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
@@ -380,6 +395,7 @@ var reduce = _makeReducer(1);
  * @function
  * @see {@link module:lamb.reduce|reduce}
  * @see {@link module:lamb.reduceWith|reduceWith}, {@link module:lamb.reduceRightWith|reduceRightWith}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
@@ -403,6 +419,7 @@ var reduceRight = _makeReducer(-1);
  * @function
  * @see {@link module:lamb.reduceWith|reduceWith}
  * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+ * @since 0.27.0
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
  * @returns {Function}
@@ -425,6 +442,7 @@ var reduceRightWith = _makePartial3(reduceRight, true);
  * @function
  * @see {@link module:lamb.reduceRightWith|reduceRightWith}
  * @see {@link module:lamb.reduce|reduce}, {@link module:lamb.reduce|reduceRight}
+ * @since 0.27.0
  * @param {AccumulatorCallback} accumulator
  * @param {*} [initialValue]
  * @returns {Function}
@@ -442,6 +460,7 @@ var reduceWith = _makePartial3(reduce, true);
  *
  * @memberof module:lamb
  * @category Array
+ * @since 0.19.0
  * @param {ArrayLike} arrayLike
  * @returns {Array}
  */
@@ -475,6 +494,7 @@ function reverse (arrayLike) {
  * @category Array
  * @see {@link module:lamb.sliceAt|sliceAt}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+ * @since 0.1.0
  * @param {ArrayLike} arrayLike - Any array like object.
  * @param {Number} start - Index at which to begin extraction.
  * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
@@ -523,6 +543,7 @@ function slice (arrayLike, start, end) {
  * @function
  * @see {@link module:lamb.slice|slice}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+ * @since 0.48.0
  * @param {Number} start - Index at which to begin extraction.
  * @param {Number} end - Index at which to end extraction. Extracts up to but not including end.
  * @returns {Function}
@@ -560,6 +581,7 @@ var sliceAt = _makePartial3(slice);
  * @function
  * @see {@link module:lamb.some|some}
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+ * @since 0.39.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate
  * @returns {Boolean}
@@ -583,6 +605,7 @@ var someIn = _makeArrayChecker(false);
  * @function
  * @see {@link module:lamb.someIn|someIn}
  * @see {@link module:lamb.every|every}, {@link module:lamb.everyIn|everyIn}
+ * @since 0.39.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */

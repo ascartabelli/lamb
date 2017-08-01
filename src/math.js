@@ -10,6 +10,7 @@
  * @category Math
  * @function
  * @see {@link module:lamb.sum|sum}
+ * @since 0.1.0
  * @param {Number} a
  * @returns {Function}
  */
@@ -32,6 +33,7 @@ var add = _curry2(sum, true);
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.clampWithin|clampWithin}
+ * @since 0.13.0
  * @param {Number} n
  * @param {Number} min
  * @param {Number} max
@@ -65,6 +67,7 @@ function clamp (n, min, max) {
  * @category Math
  * @function
  * @see {@link module:lamb.clamp|clamp}
+ * @since 0.47.0
  * @param {Number} min
  * @param {Number} max
  * @returns {Function}
@@ -84,6 +87,7 @@ var clampWithin = _makePartial3(clamp);
  * @category Math
  * @function
  * @see {@link module:lamb.subtract|subtract}
+ * @since 0.50.0
  * @param {Number} a
  * @returns {Function}
  */
@@ -97,6 +101,7 @@ var deduct = _curry2(subtract, true);
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.divideBy|divideBy}
+ * @since 0.1.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -118,6 +123,7 @@ function divide (a, b) {
  * @category Math
  * @function
  * @see {@link module:lamb.divide|divide}
+ * @since 0.50.0
  * @param {Number} a
  * @returns {Function}
  */
@@ -136,6 +142,7 @@ var divideBy = _curry2(divide, true);
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.range|range}
+ * @since 0.21.0
  * @param {*} start - The starting value
  * @param {Number} len - The desired length for the sequence
  * @param {ListIteratorCallback} iteratee
@@ -167,6 +174,7 @@ function generate (start, len, iteratee) {
  * @memberof module:lamb
  * @category Math
  * @alias isFinite
+ * @since 0.46.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -190,6 +198,7 @@ function isFinite_ (value) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.isSafeInteger|isSafeInteger}
+ * @since 0.46.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -219,6 +228,7 @@ function isInteger (value) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.isInteger|isInteger}
+ * @since 0.46.0
  * @param {*} value
  * @returns {Boolean}
  */
@@ -243,6 +253,7 @@ function isSafeInteger (value) {
  * @category Math
  * @see {@link module:lamb.remainder|remainder}
  * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
+ * @since 0.1.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -259,6 +270,7 @@ function modulo (a, b) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.multiplyBy|multiplyBy}
+ * @since 0.1.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -278,6 +290,7 @@ function multiply (a, b) {
  * @category Math
  * @function
  * @see {@link module:lamb.multiply|multiply}
+ * @since 0.50.0
  * @param {Number} a
  * @returns {Function}
  */
@@ -294,6 +307,7 @@ var multiplyBy = _curry2(multiply, true);
  *
  * @memberof module:lamb
  * @category Math
+ * @since 0.1.0
  * @param {Number} min
  * @param {Number} max
  * @returns {Number}
@@ -321,6 +335,7 @@ function randomInt (min, max) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.generate|generate}
+ * @since 0.1.0
  * @param {Number} start
  * @param {Number} limit
  * @param {Number} [step=1]
@@ -360,6 +375,7 @@ function range (start, limit, step) {
  * @category Math
  * @see {@link module:lamb.modulo|modulo}
  * @see [Modulo operation on Wikipedia]{@link http://en.wikipedia.org/wiki/Modulo_operation}
+ * @since 0.1.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -376,6 +392,7 @@ function remainder (a, b) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.deduct|deduct}
+ * @since 0.1.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
@@ -392,6 +409,7 @@ function subtract (a, b) {
  * @memberof module:lamb
  * @category Math
  * @see {@link module:lamb.add|add}
+ * @since 0.50.0
  * @param {Number} a
  * @param {Number} b
  * @returns {Number}
