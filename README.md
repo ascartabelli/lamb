@@ -45,15 +45,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.53.1/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.54.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.53.1/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.54.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.53.1/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.54.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -104,10 +104,14 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.54.0 - *2017/08/01***
+  - Added `mapValues` and `mapValuesWith`
+  - Added "@since" tags to doc comments
+  - Added linting for tests
+
 - **v0.53.1 - *2017/04/06***
   - **Fixed**: `hasKeyValue` was returning `true` for any existent property when searching for an `undefined` value
   - Updated object checking tests
-  - Updated dev dependencies
 
 - **v0.53.0 - *2017/03/30***
   - **API change**: unfilled placeholders in functions built with `asPartial` now assume an `undefined` value
@@ -136,15 +140,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **API change**: the `falseFn` parameter of `condition` is no longer optional
   - Added `case` to quickly build cases for `adapter`
   - Added `unionBy` and `uniquesBy`
-
-- **v0.50.0 - *2017/02/08***
-  - **API change**: renamed `is` to `areSame` and `isSVZ` to `areSVZ`. The old names are now used for curried version of those functions
-  - **API change**: removed `isNot`
-  - **API change**: renamed `isGT`, `isGTE`, `isLT` and `isLTE` to `gt`, `gte`, `lt`, `lte`. The old names are now used for right curried versions of these functions.
-  - **API change**: `compose` and `pipe` now build a function throwing an exception if they are called without arguments
-  - **API change**: renamed `add` to `sum`. `add` is now used as a curried version of `sum`.
-  - Added `deduct` as a right curried version of `subtract`
-  - Added `multiplyBy` as a curried version of `multiply`
-  - Added `divideBy` as a right curried version of `divide`
-  - Added optimized currying for functions with arity 2 and 3
-  - Performance improvement for `compose` and `pipe`

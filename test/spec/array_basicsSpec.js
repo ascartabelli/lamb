@@ -104,7 +104,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should stop calling the predicate as soon as a `false` value is returned", function () {
-            var isGreaterThan10 = jasmine.createSpy("isVowel").and.callFake(function (n) {
+            var isGreaterThan10 = jasmine.createSpy().and.callFake(function (n) {
                 return n > 10;
             });
             var arr = [12, 13, 9, 15];
@@ -996,7 +996,7 @@ describe("lamb.array_basics", function () {
         });
 
         it("should stop calling the predicate as soon as a `true` value is returned", function () {
-            var isGreaterThan10 = jasmine.createSpy("isVowel").and.callFake(function (n) {
+            var isGreaterThan10 = jasmine.createSpy().and.callFake(function (n) {
                 return n > 10;
             });
             var arr = [1, 3, 15, 10, 11];
