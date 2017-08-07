@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.54.0
+ * @version 0.55.0-alpha.1
  * @module lamb
  * @license MIT
  * @preserve
@@ -46,7 +46,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.54.0"}
+        "@@lamb/version": {value: "0.55.0-alpha.1"}
     });
 
     // prototype shortcuts

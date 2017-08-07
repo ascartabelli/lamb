@@ -44,6 +44,16 @@
                 }
             }
         ],
+        "padding-line-between-statements": [
+            "error",
+            {"blankLine": "always", "prev": "multiline-block-like", "next": "*"},
+            {"blankLine": "always", "prev": "*", "next": "multiline-block-like"},
+            {"blankLine": "always", "prev": "*", "next": "return"},
+            {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+            {"blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+            {"blankLine": "always", "prev": "directive", "next": "*"},
+            {"blankLine": "any", "prev": "directive", "next": "directive"}
+        ],
         "quote-props": [
             "error",
             "as-needed"

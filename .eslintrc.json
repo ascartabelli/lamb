@@ -136,11 +136,6 @@
             }
         ],
         "new-parens": "error",
-        "newline-after-var": [
-            "error",
-            "always"
-        ],
-        "newline-before-return": "error",
         "no-alert": "error",
         "no-array-constructor": "error",
         "no-caller": "error",
@@ -226,6 +221,16 @@
         "padded-blocks": [
             "error",
             "never"
+        ],
+        "padding-line-between-statements": [
+            "error",
+            {"blankLine": "always", "prev": "block-like", "next": "*"},
+            {"blankLine": "always", "prev": "*", "next": "block-like"},
+            {"blankLine": "always", "prev": "*", "next": "return"},
+            {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+            {"blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+            {"blankLine": "always", "prev": "directive", "next": "*"},
+            {"blankLine": "any", "prev": "directive", "next": "directive"}
         ],
         "quote-props": [
             "error",

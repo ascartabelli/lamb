@@ -16,6 +16,7 @@ describe("lamb.function", function () {
     function Foo (value) {
         this.value = value;
     }
+
     Foo.prototype = {
         value: 0,
         bar: function (a, b) {
