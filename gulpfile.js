@@ -2,6 +2,7 @@ var fs = require("fs");
 var gulp = require("gulp");
 var pkg = require("./package.json");
 var concat = require("gulp-concat");
+var eslint = require("gulp-eslint");
 var footer = require("gulp-footer");
 var header = require("gulp-header");
 var indent = require("gulp-indent");
@@ -29,20 +30,11 @@ var scripts = [
 ];
 
 function lint () {
-    // isolated because of shelljs, again
-    var eslint = require("gulp-eslint");
-
     return gulp.src(["./dist/lamb.js", "./test/**"])
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
 }
-
-gulp.task("analysis", function (done) {
-    // required here in an isolated task as plato loads jshint,
-    // which uses shelljs that pollutes the String.prototype
-    require("plato").inspect(scripts, "./plato_report", {title: "Lamb Analysis"}, function () {});
-});
 
 gulp.task("concat", function () {
     var intro = fs.readFileSync("./src/_intro.js", "utf8");
