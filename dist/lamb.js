@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.55.0-alpha.3
+ * @version 0.55.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -46,7 +46,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.55.0-alpha.3"}
+        "@@lamb/version": {value: "0.55.0-alpha.4"}
     });
 
     // prototype shortcuts
@@ -1021,6 +1021,7 @@
 
     /**
      * Sets, or creates, a property in a copy of the provided object to the desired value.
+     * @private
      * @param {Object} source
      * @param {String} key
      * @param {*} value
@@ -3141,9 +3142,9 @@
      * @category Array
      * @see {@link module:lamb.getAt|getAt}
      * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+     * @since 0.23.0
      * @param {ArrayLike} arrayLike
      * @param {Number} index
-     * @since 0.23.0
      * @returns {*}
      */
     function getIndex (arrayLike, index) {
@@ -3300,7 +3301,8 @@
     var last = getAt(-1);
 
     /**
-     * Builds a function that creates a copy of an array-like object with the given
+     * A curried version of {@link module:lamb.setIndex|setIndex} that builds
+     * a function that creates a copy of an array-like object with the given
      * index changed to the desired value.<br/>
      * If the index is not an integer or if it's out of bounds, the function
      * will return a copy of the original array.<br/>
@@ -3671,7 +3673,7 @@
      *     {value: 6, year: "2002"}
      * ]};
      *
-     * var newUser = _.updatePathIn(user, "scores.0.value", increment);
+     * var newUser = _.updatePathIn(user, "scores.0.value", inc);
      * // "newUser" holds:
      * // {id: 1, scores: [
      * //     {value: 3, year: "2000"},
@@ -3778,6 +3780,8 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.intersection|intersection}
+     * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
      * @since 0.6.0
      * @param {ArrayLike} arrayLike
      * @param {ArrayLike} other
@@ -4024,6 +4028,8 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @see {@link module:lamb.difference|difference}
+     * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
      * @since 0.5.0
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
@@ -4384,6 +4390,8 @@
      * @category Array
      * @function
      * @see {@link module:lamb.unionBy|unionBy}
+     * @see {@link module:lamb.difference|difference}
+     * @see {@link module:lamb.intersection|intersection}
      * @since 0.5.0
      * @param {...ArrayLike} arrayLike
      * @returns {Array}
@@ -4406,6 +4414,8 @@
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.union|union}
+     * @see {@link module:lamb.difference|difference}
+     * @see {@link module:lamb.intersection|intersection}
      * @since 0.51.0
      * @param {ListIteratorCallback} iteratee
      * @returns {Function}
@@ -5830,7 +5840,7 @@
      * @see {@link module:lamb.mapValues|mapValues}
      * @since 0.54.0
      * @function
-     * @param {Function} fn
+     * @param {ObjectIteratorCallback} fn
      * @returns {Function}
      */
     var mapValuesWith = _curry2(mapValues, true);

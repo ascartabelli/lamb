@@ -63,9 +63,9 @@ function getIn (obj, key) {
  * @category Array
  * @see {@link module:lamb.getAt|getAt}
  * @see {@link module:lamb.head|head} and {@link module:lamb.last|last} for common use cases shortcuts.
+ * @since 0.23.0
  * @param {ArrayLike} arrayLike
  * @param {Number} index
- * @since 0.23.0
  * @returns {*}
  */
 function getIndex (arrayLike, index) {
@@ -222,7 +222,8 @@ var head = getAt(0);
 var last = getAt(-1);
 
 /**
- * Builds a function that creates a copy of an array-like object with the given
+ * A curried version of {@link module:lamb.setIndex|setIndex} that builds
+ * a function that creates a copy of an array-like object with the given
  * index changed to the desired value.<br/>
  * If the index is not an integer or if it's out of bounds, the function
  * will return a copy of the original array.<br/>
@@ -593,7 +594,7 @@ function updatePath (path, updater, separator) {
  *     {value: 6, year: "2002"}
  * ]};
  *
- * var newUser = _.updatePathIn(user, "scores.0.value", increment);
+ * var newUser = _.updatePathIn(user, "scores.0.value", inc);
  * // "newUser" holds:
  * // {id: 1, scores: [
  * //     {value: 3, year: "2000"},

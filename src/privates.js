@@ -731,6 +731,7 @@ var _search = generic(_stringProto.search);
 
 /**
  * Sets, or creates, a property in a copy of the provided object to the desired value.
+ * @private
  * @param {Object} source
  * @param {String} key
  * @param {*} value

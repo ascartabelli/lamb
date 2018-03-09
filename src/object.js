@@ -190,7 +190,7 @@ function mapValues (source, fn) {
  * @see {@link module:lamb.mapValues|mapValues}
  * @since 0.54.0
  * @function
- * @param {Function} fn
+ * @param {ObjectIteratorCallback} fn
  * @returns {Function}
  */
 var mapValuesWith = _curry2(mapValues, true);

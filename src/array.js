@@ -54,6 +54,8 @@ function appendTo (arrayLike, value) {
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.intersection|intersection}
+ * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @since 0.6.0
  * @param {ArrayLike} arrayLike
  * @param {ArrayLike} other
@@ -300,6 +302,8 @@ var insertAt = _makePartial3(insert);
  *
  * @memberof module:lamb
  * @category Array
+ * @see {@link module:lamb.difference|difference}
+ * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @since 0.5.0
  * @param {...ArrayLike} arrayLike
  * @returns {Array}
@@ -660,6 +664,8 @@ function transpose (arrayLike) {
  * @category Array
  * @function
  * @see {@link module:lamb.unionBy|unionBy}
+ * @see {@link module:lamb.difference|difference}
+ * @see {@link module:lamb.intersection|intersection}
  * @since 0.5.0
  * @param {...ArrayLike} arrayLike
  * @returns {Array}
@@ -682,6 +688,8 @@ var union = unionBy(identity);
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.union|union}
+ * @see {@link module:lamb.difference|difference}
+ * @see {@link module:lamb.intersection|intersection}
  * @since 0.51.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
