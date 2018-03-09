@@ -45,15 +45,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.54.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.54.1/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.54.0/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lamb/0.54.1/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.54.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.54.1/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -104,6 +104,11 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.54.1 - *2018/03/09***
+  - **Fixed**: `setPath` and `updatePath` weren't returning unary functions, and further arguments would have overwritten the previous ones
+  - Updated doc comments
+  - Updated linting rules
+
 - **v0.54.0 - *2017/08/01***
   - Added `mapValues` and `mapValuesWith`
   - Added "@since" tags to doc comments
@@ -130,13 +135,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `partialRight`
   - `difference` and `intersection` are now correctly documented to work with array-like objects
   - Updated test and moved shared variables to an external file
-
-- **v0.51.0 - *2017/02/20***
-  - **API change**: removed the `iteratee` parameter from `uniques`
-  - **API change**: removed `fromIndex` parameter from `contains` and `isIn`
-  - **API change**: `tapArgs` isn't variadic anymore and accepts an array of "tappers" as the second parameter
-  - **API change**: renamed `drop` and `take` to `dropFrom` and `takeFrom`
-  - **API change**: renamed `dropN` and `takeN` to `drop` and `take`
-  - **API change**: the `falseFn` parameter of `condition` is no longer optional
-  - Added `case` to quickly build cases for `adapter`
-  - Added `unionBy` and `uniquesBy`
