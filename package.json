@@ -34,7 +34,7 @@
     "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.55.0-alpha.2",
+  "version": "0.55.0-alpha.3",
   "devDependencies": {
     "coveralls": "^3.0.0",
     "gulp": "^3.9.1",

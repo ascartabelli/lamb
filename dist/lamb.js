@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.55.0-alpha.1
+ * @version 0.55.0-alpha.3
  * @module lamb
  * @license MIT
  * @preserve
@@ -46,7 +46,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.55.0-alpha.1"}
+        "@@lamb/version": {value: "0.55.0-alpha.3"}
     });
 
     // prototype shortcuts
@@ -3436,7 +3436,9 @@
      * @returns {Function}
      */
     function setPath (path, value, separator) {
-        return partialRight(setPathIn, [path, value, separator]);
+        return function (source) {
+            return setPathIn(source, path, value, separator);
+        };
     }
 
     /**
@@ -3637,7 +3639,9 @@
      * @returns {Function}
      */
     function updatePath (path, updater, separator) {
-        return partialRight(updatePathIn, [path, updater, separator]);
+        return function (source) {
+            return updatePathIn(source, path, updater, separator);
+        };
     }
 
     /**

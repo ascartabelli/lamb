@@ -859,6 +859,21 @@ describe("lamb.accessors", function () {
                     expect(lamb.setPathIn(obj, "b.a.g", 99)).toEqual(r);
                 });
 
+                it("should ignore extra arguments passed to the built function in its partially applied form", function () {
+                    var r = lamb.setPath("b.c", "bar")(obj, {});
+
+                    expect(r).toEqual({
+                        a: 2,
+                        b: {
+                            a: {g: 10, h: 11},
+                            b: [4, 5],
+                            c: "bar",
+                            d: [, 55, ,] // eslint-disable-line comma-spacing, no-sparse-arrays
+                        },
+                        "c.d": {"e.f": 6}
+                    });
+                });
+
                 it("should allow custom separators", function () {
                     var r = lamb.setPath("c.d->e.f", 99, "->")(obj);
 
@@ -1231,6 +1246,21 @@ describe("lamb.accessors", function () {
                     expect(r.b.b).toBe(obj.b.b);
                     expect(r["c.d"]).toBe(obj["c.d"]);
                     expect(lamb.updatePathIn(obj, "b.a.g", double)).toEqual(r);
+                });
+
+                it("should ignore extra arguments passed to the built function in its partially applied form", function () {
+                    var r = lamb.updatePath("b.a.h", double)(obj, {});
+
+                    expect(r).toEqual({
+                        a: 2,
+                        b: {
+                            a: {g: 10, h: 22},
+                            b: [4, 5],
+                            c: "foo",
+                            d: [, 55, ,] // eslint-disable-line comma-spacing, no-sparse-arrays
+                        },
+                        "c.d": {"e.f": 6}
+                    });
                 });
 
                 it("should allow custom separators", function () {

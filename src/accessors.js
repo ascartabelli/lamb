@@ -358,7 +358,9 @@ var setKey = _makePartial3(setIn);
  * @returns {Function}
  */
 function setPath (path, value, separator) {
-    return partialRight(setPathIn, [path, value, separator]);
+    return function (source) {
+        return setPathIn(source, path, value, separator);
+    };
 }
 
 /**
@@ -559,7 +561,9 @@ var updateKey = _makePartial3(updateIn);
  * @returns {Function}
  */
 function updatePath (path, updater, separator) {
-    return partialRight(updatePathIn, [path, updater, separator]);
+    return function (source) {
+        return updatePathIn(source, path, updater, separator);
+    };
 }
 
 /**
