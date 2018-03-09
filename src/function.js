@@ -462,14 +462,14 @@ function invokerOn (target) {
  * @returns {Function}
  */
 function mapArgs (fn, mapper) {
-    return compose(apply(fn), mapWith(mapper), list);
+    return pipe([list, mapWith(mapper), apply(fn)]);
 }
 
 /**
  * Creates a pipeline of functions, where each function consumes the result of the previous one.
  * @example
  * var square = _.partial(Math.pow, [_, 2]);
- * var getMaxAndSquare = _.pipe(Math.max, square);
+ * var getMaxAndSquare = _.pipe([Math.max, square]);
  *
  * getMaxAndSquare(3, 5) // => 25
  *
@@ -478,10 +478,26 @@ function mapArgs (fn, mapper) {
  * @function
  * @see {@link module:lamb.compose|compose}
  * @since 0.1.0
- * @param {...Function} fn
+ * @param {Function[]} functions
  * @returns {Function}
  */
-var pipe = flip(compose);
+function pipe (functions) {
+    if (!Array.isArray(functions)) {
+        throw _makeTypeErrorFor(functions, "array");
+    }
+
+    var len = functions.length;
+
+    return len ? function () {
+        var result = functions[0].apply(this, arguments);
+
+        for (var i = 1; i < len; i++) {
+            result = functions[i].call(this, result);
+        }
+
+        return result;
+    } : identity;
+}
 
 /**
  * Builds a function that allows to "tap" into the arguments of the original one.

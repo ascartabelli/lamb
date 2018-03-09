@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.3
+ * @version 0.56.0-alpha.4
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.3"}
+        "@@lamb/version": {value: "0.56.0-alpha.4"}
     });
 
     // prototype shortcuts
@@ -86,7 +86,7 @@
 
     /**
      * Returns a function that is the composition of the functions given as parameters.
-     * Each function consumes the result of the function that follows.
+     * The first function consumes the result of the function that follows.
      * @example
      * var sayHi = function (name) { return "Hi, " + name; };
      * var capitalize = function (s) {
@@ -106,22 +106,13 @@
      * @category Function
      * @see {@link module:lamb.pipe|pipe}
      * @since 0.1.0
-     * @param {...Function} fn
+     * @param {Function} a
+     * @param {Function} b
      * @returns {Function}
      */
-    function compose () {
-        var functions = arguments;
-        var len = functions.length;
-
-        return len ? function () {
-            var idx = len - 1;
-            var result = functions[idx].apply(this, arguments);
-
-            while (idx--) {
-                result = functions[idx].call(this, result);
-            }
-
-            return result;
+    function compose (a, b) {
+        return arguments.length ? function () {
+            return a.call(this, b.apply(this, arguments));
         } : identity;
     }
 
@@ -4471,7 +4462,7 @@
      * @returns {Function}
      */
     function unionBy (iteratee) {
-        return compose(uniquesBy(iteratee), flatMapWith(drop(0)), list);
+        return pipe([list, flatMapWith(drop(0)), uniquesBy(iteratee)]);
     }
 
     /**
@@ -5559,14 +5550,14 @@
      * @returns {Function}
      */
     function mapArgs (fn, mapper) {
-        return compose(apply(fn), mapWith(mapper), list);
+        return pipe([list, mapWith(mapper), apply(fn)]);
     }
 
     /**
      * Creates a pipeline of functions, where each function consumes the result of the previous one.
      * @example
      * var square = _.partial(Math.pow, [_, 2]);
-     * var getMaxAndSquare = _.pipe(Math.max, square);
+     * var getMaxAndSquare = _.pipe([Math.max, square]);
      *
      * getMaxAndSquare(3, 5) // => 25
      *
@@ -5575,10 +5566,26 @@
      * @function
      * @see {@link module:lamb.compose|compose}
      * @since 0.1.0
-     * @param {...Function} fn
+     * @param {Function[]} functions
      * @returns {Function}
      */
-    var pipe = flip(compose);
+    function pipe (functions) {
+        if (!Array.isArray(functions)) {
+            throw _makeTypeErrorFor(functions, "array");
+        }
+
+        var len = functions.length;
+
+        return len ? function () {
+            var result = functions[0].apply(this, arguments);
+
+            for (var i = 1; i < len; i++) {
+                result = functions[i].call(this, result);
+            }
+
+            return result;
+        } : identity;
+    }
 
     /**
      * Builds a function that allows to "tap" into the arguments of the original one.

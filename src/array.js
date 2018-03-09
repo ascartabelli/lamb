@@ -739,7 +739,7 @@ var union = unionBy(identity);
  * @returns {Function}
  */
 function unionBy (iteratee) {
-    return compose(uniquesBy(iteratee), flatMapWith(drop(0)), list);
+    return pipe([list, flatMapWith(drop(0)), uniquesBy(iteratee)]);
 }
 
 /**
