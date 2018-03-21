@@ -49,7 +49,7 @@ Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsD
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/lamb/0.54.1/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.54.1/dist/lamb.min.js"></script>
 ```
 
 ```html

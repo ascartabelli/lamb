@@ -171,9 +171,8 @@ function generate (start, len, iteratee) {
  * _.isFinite(NaN) // => false
  * _.isFinite(null) // => false
  *
- * @memberof module:lamb
+ * @alias module:lamb.isFinite
  * @category Math
- * @alias isFinite
  * @since 0.46.0
  * @param {*} value
  * @returns {Boolean}

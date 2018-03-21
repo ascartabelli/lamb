@@ -1,7 +1,7 @@
 /**
  * Accepts a series of functions and builds a function that applies the received
  * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
- * Meant to work in sinergy with {@link module:lamb.case|case} and
+ * Meant to work in synergy with {@link module:lamb.case|case} and
  * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
@@ -16,7 +16,7 @@
  * filterAdapter("123456", isEven) // => "246"
  * filterAdapter({}, isEven) // => undefined
  *
- * // obviously it's composable
+ * // by its nature is composable
  * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
  *
  * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -188,18 +188,21 @@ function areSVZ (a, b) {
  * Builds a case for {@link module:lamb.adapter|adapter}.<br/>
  * The function will apply the received arguments to <code>fn</code> if the predicate is satisfied
  * with the same arguments, otherwise will return <code>undefined</code>.<br/>
- * See also {@link module:lamb.condition|condition} to build a condition with two branching functions.
+ * See also {@link module:lamb.condition|condition} to build a condition with two branching functions
+ * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
+ * is the identity function.
  * @example
  * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
  *
  * halveIfNumber(2) // => 1
  * halveIfNumber("2") // => undefined
  *
- * @memberof module:lamb
+ * @alias module:lamb.case
  * @category Logic
- * @alias case
  * @see {@link module:lamb.adapter|adapter}
  * @see {@link module:lamb.condition|condition}
+ * @see {@link module:lamb.unless|unless}
+ * @see {@link module:lamb.when|when}
  * @since 0.51.0
  * @param {Function} predicate
  * @param {Function} fn
@@ -229,6 +232,8 @@ function case_ (predicate, fn) {
  * @category Logic
  * @see {@link module:lamb.unless|unless}
  * @see {@link module:lamb.when|when}
+ * @see {@link module:lamb.adapter|adapter}
+ * @see {@link module:lamb.case|case}
  * @since 0.2.0
  * @param {Function} predicate
  * @param {Function} trueFn
@@ -570,6 +575,8 @@ function not (predicate) {
  * @category Logic
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.when|when}
+ * @see {@link module:lamb.adapter|adapter}
+ * @see {@link module:lamb.case|case}
  * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
@@ -599,6 +606,8 @@ function unless (predicate, fn) {
  * @category Logic
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.unless|unless}
+ * @see {@link module:lamb.adapter|adapter}
+ * @see {@link module:lamb.case|case}
  * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn

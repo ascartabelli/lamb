@@ -598,7 +598,7 @@ describe("lamb.function", function () {
                 expect(lamb.getArgAt(value)("a", "b", "c")).toBe("a");
             });
 
-            [[1], 1.5, true, "1"].forEach(function (value) {
+            [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                 expect(lamb.getArgAt(value)("a", "b", "c")).toBe("b");
             });
 

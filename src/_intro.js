@@ -20,9 +20,8 @@
          * The property is public so that you can make Lamb use your own placeholder, however
          * you can't change it at will or the partially applied functions you defined before the
          * change won't recognize the former placeholder.
-         * @memberof module:lamb
+         * @alias module:lamb.@@lamb/placeholder
          * @category Special properties
-         * @alias @@lamb/placeholder
          * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
          * @see {@link module:lamb.asPartial|asPartial}
          * @since 0.53.0
@@ -39,9 +38,8 @@
 
         /**
          * The current library version.
-         * @memberof module:lamb
+         * @alias module:lamb.@@lamb/version
          * @category Special properties
-         * @alias @@lamb/version
          * @readonly
          * @since 0.53.0
          * @type String

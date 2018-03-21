@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.55.0-alpha.1
+ * @version 0.55.0-alpha.2
  * @module lamb
  * @license MIT
  * @preserve
@@ -20,9 +20,8 @@
          * The property is public so that you can make Lamb use your own placeholder, however
          * you can't change it at will or the partially applied functions you defined before the
          * change won't recognize the former placeholder.
-         * @memberof module:lamb
+         * @alias module:lamb.@@lamb/placeholder
          * @category Special properties
-         * @alias @@lamb/placeholder
          * @see {@link module:lamb.partial|partial}, {@link module:lamb.partialRight|partialRight}
          * @see {@link module:lamb.asPartial|asPartial}
          * @since 0.53.0
@@ -39,14 +38,13 @@
 
         /**
          * The current library version.
-         * @memberof module:lamb
+         * @alias module:lamb.@@lamb/version
          * @category Special properties
-         * @alias @@lamb/version
          * @readonly
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.55.0-alpha.1"}
+        "@@lamb/version": {value: "0.55.0-alpha.2"}
     });
 
     // prototype shortcuts
@@ -1863,7 +1861,7 @@
     /**
      * Accepts a series of functions and builds a function that applies the received
      * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
-     * Meant to work in sinergy with {@link module:lamb.case|case} and
+     * Meant to work in synergy with {@link module:lamb.case|case} and
      * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
      * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
@@ -1878,7 +1876,7 @@
      * filterAdapter("123456", isEven) // => "246"
      * filterAdapter({}, isEven) // => undefined
      *
-     * // obviously it's composable
+     * // by its nature is composable
      * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
      *
      * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -2050,18 +2048,21 @@
      * Builds a case for {@link module:lamb.adapter|adapter}.<br/>
      * The function will apply the received arguments to <code>fn</code> if the predicate is satisfied
      * with the same arguments, otherwise will return <code>undefined</code>.<br/>
-     * See also {@link module:lamb.condition|condition} to build a condition with two branching functions.
+     * See also {@link module:lamb.condition|condition} to build a condition with two branching functions
+     * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
+     * is the identity function.
      * @example
      * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
      *
      * halveIfNumber(2) // => 1
      * halveIfNumber("2") // => undefined
      *
-     * @memberof module:lamb
+     * @alias module:lamb.case
      * @category Logic
-     * @alias case
      * @see {@link module:lamb.adapter|adapter}
      * @see {@link module:lamb.condition|condition}
+     * @see {@link module:lamb.unless|unless}
+     * @see {@link module:lamb.when|when}
      * @since 0.51.0
      * @param {Function} predicate
      * @param {Function} fn
@@ -2091,6 +2092,8 @@
      * @category Logic
      * @see {@link module:lamb.unless|unless}
      * @see {@link module:lamb.when|when}
+     * @see {@link module:lamb.adapter|adapter}
+     * @see {@link module:lamb.case|case}
      * @since 0.2.0
      * @param {Function} predicate
      * @param {Function} trueFn
@@ -2432,6 +2435,8 @@
      * @category Logic
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.when|when}
+     * @see {@link module:lamb.adapter|adapter}
+     * @see {@link module:lamb.case|case}
      * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
@@ -2461,6 +2466,8 @@
      * @category Logic
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.unless|unless}
+     * @see {@link module:lamb.adapter|adapter}
+     * @see {@link module:lamb.case|case}
      * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
@@ -2666,9 +2673,8 @@
      * _.isFinite(NaN) // => false
      * _.isFinite(null) // => false
      *
-     * @memberof module:lamb
+     * @alias module:lamb.isFinite
      * @category Math
-     * @alias isFinite
      * @since 0.46.0
      * @param {*} value
      * @returns {Boolean}

@@ -172,7 +172,7 @@ describe("lamb.array", function () {
                 expect(lamb.dropFrom(arr, value)).toEqual(arr);
             });
 
-            [[1], 1.5, true, "1"].forEach(function (value) {
+            [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                 expect(lamb.drop(value)(arr)).toEqual([2, 3, 4, 5]);
                 expect(lamb.dropFrom(arr, value)).toEqual([2, 3, 4, 5]);
             });
@@ -841,7 +841,7 @@ describe("lamb.array", function () {
             expect(arr).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
         });
 
-        it("should rotate the vakues of the array by the desired amount", function () {
+        it("should rotate the values of the array by the desired amount", function () {
             var r1 = [10, 1, 2, 3, 4, 5, 6, 7, 8, 9];
             var r2 = [7, 8, 9, 10, 1, 2, 3, 4, 5, 6];
 
@@ -876,7 +876,7 @@ describe("lamb.array", function () {
             var d = new Date();
             var r1 = [10, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-            [[1], 1.5, true, "1"].forEach(function (value) {
+            [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                 expect(lamb.rotate(arr, value)).toEqual(r1);
                 expect(lamb.rotateBy(value)(arr)).toEqual(r1);
             });
@@ -1047,7 +1047,7 @@ describe("lamb.array", function () {
                 expect(lamb.takeFrom(arr, value)).toEqual([]);
             });
 
-            [[1], 1.5, true, "1"].forEach(function (value) {
+            [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                 expect(lamb.take(value)(arr)).toEqual([1]);
                 expect(lamb.takeFrom(arr, value)).toEqual([1]);
             });

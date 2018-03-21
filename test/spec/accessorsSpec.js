@@ -77,7 +77,7 @@ describe("lamb.accessors", function () {
                     expect(lamb.getAt(value)(arr)).toBe(arr[0]);
                 });
 
-                [[1], 1.5, true, "1"].forEach(function (value) {
+                [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                     expect(lamb.getIndex(arr, value)).toBe(arr[1]);
                     expect(lamb.getAt(value)(arr)).toBe(arr[1]);
                 });
@@ -176,7 +176,7 @@ describe("lamb.accessors", function () {
                     expect(lamb.setAt(value, 99)(arr)).toEqual(r1);
                 });
 
-                [[1], 1.5, true, "1"].forEach(function (value) {
+                [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                     expect(lamb.setIndex(arr, value, 99)).toEqual(r2);
                     expect(lamb.setAt(value, 99)(arr)).toEqual(r2);
                 });
@@ -280,7 +280,7 @@ describe("lamb.accessors", function () {
                     expect(lamb.updateAt(value, fn99)(arr)).toEqual(r1);
                 });
 
-                [[1], 1.5, true, "1"].forEach(function (value) {
+                [[1], 1.5, 1.25, 1.75, true, "1"].forEach(function (value) {
                     expect(lamb.updateIndex(arr, value, fn99)).toEqual(r2);
                     expect(lamb.updateAt(value, fn99)(arr)).toEqual(r2);
                 });
