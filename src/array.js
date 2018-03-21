@@ -484,6 +484,50 @@ function pullFrom (arrayLike, values) {
 }
 
 /**
+ * Returns a copy of the given array-like with the element rotated by the desired amount.
+ * Negative indexes are allowed.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ *
+ * _.rotate(arr, 3) // => [3, 4, 5, 1, 2]
+ * _.rotate(arr, -3) // => [4, 5, 1, 2, 3]
+ * _.rotate(arr, 11) // => [5, 1, 2, 3, 4]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @see {@link module:lamb.rotateBy|rotateBy}
+ * @since 0.55.0
+ * @param {ArrayLike} arrayLike
+ * @param {Number} amount
+ * @returns {Array}
+ */
+function rotate (arrayLike, amount) {
+    var len = arrayLike.length;
+    var shift = amount % len;
+
+    return slice(arrayLike, -shift, len).concat(slice(arrayLike, 0, -shift));
+}
+
+/**
+ * A curried version of {@link module:lamb.rotate|rotate}.<br/>
+ * Uses the given amount to build a function expecting the array to rotate by that amount.
+ * @example
+ * var arr = [1, 2, 3, 4, 5];
+ * var rotateByTwo = _.rotateBy(2);
+ *
+ * rotateByTwo(arr) // => [4, 5, 1, 2, 3]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.rotate|rotate}
+ * @since 0.55.0
+ * @param {Number} amount
+ * @returns {Function}
+ */
+var rotateBy = _curry2(rotate, true);
+
+/**
  * Flattens the "first level" of an array.
  * @example <caption>Showing the difference with <code>flatten</code>:</caption>
  * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
@@ -827,6 +871,8 @@ lamb.pluck = pluck;
 lamb.pluckKey = pluckKey;
 lamb.pull = pull;
 lamb.pullFrom = pullFrom;
+lamb.rotate = rotate;
+lamb.rotateBy = rotateBy;
 lamb.shallowFlatten = shallowFlatten;
 lamb.tail = tail;
 lamb.take = take;
