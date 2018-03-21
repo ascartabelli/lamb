@@ -45,15 +45,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.54.1/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.55.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.54.1/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.55.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.54.1/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.55.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -104,6 +104,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.55.0 - *2018/03/21***
+  - **Fully compatible with versions down to 0.53.x**
+  - Added `rotate` and `rotateBy`
+  - Updated link to jsDelivr
+  - Fixed and updated doc comments and tests
+
 - **v0.54.1 - *2018/03/09***
   - **Fixed**: `setPath` and `updatePath` weren't returning unary functions, and further arguments would have overwritten the previous ones
   - Updated doc comments
@@ -124,14 +130,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **API change**: `difference` is now a binary function and returns a result without duplicates
   - Changed the name of the property holding the library's version
   - Added the possibility to use custom placeholders in partial application
-
-- **v0.52.0 - *2017/03/17***
-  - **API change**: `partial` is no longer variadic and accepts a function and an array of arguments instead
-  - **API change**: `getArgAt` and all array accessors now convert their index parameter to integer
-  - **API change**: reverted change made in v0.50.0 about `compose` and `pipe`: now they return again the `identity` function if called without arguments
-  - **API change**: `merge` and `mergeOwn` now throw for `nil` values and convert to object everything else as before
-  - **API change**: `intersection` now return an empty array if called without parameters
-  - **Fixed**: `transpose` and `zip` now correctly throw when `nil` values, preceded by empty array-likes, are encountered
-  - Added `partialRight`
-  - `difference` and `intersection` are now correctly documented to work with array-like objects
-  - Updated test and moved shared variables to an external file
