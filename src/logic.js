@@ -51,12 +51,12 @@ function adapter () {
 }
 
 /**
- * Accepts a series of predicates and builds a new one that returns true if they are all satisfied
- * by the same arguments. The functions in the series will be applied one at a time until a
+ * Accepts an array of predicates and builds a new one that returns true if they are all satisfied
+ * by the same arguments. The functions in the array will be applied one at a time until a
  * <code>false</code> value is produced, which is returned immediately.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
- * var isPositiveEven = _.allOf(isEven, _.isGT(0));
+ * var isPositiveEven = _.allOf([isEven, _.isGT(0)]);
  *
  * isPositiveEven(-2) // => false
  * isPositiveEven(11) // => false
@@ -64,28 +64,17 @@ function adapter () {
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.anyOf|anyOf}
  * @since 0.1.0
- * @param {...Function} predicate
+ * @param {Function[]} predicates
  * @returns {Function}
  */
-function allOf () {
-    var predicates = list.apply(null, arguments);
-
-    return function () {
-        for (var i = 0, len = predicates.length; i < len; i++) {
-            if (!predicates[i].apply(this, arguments)) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-}
+var allOf = _checkPredicates(true);
 
 /**
- * Accepts a series of predicates and builds a new one that returns true if at least one of them is
- * satisfied by the received arguments. The functions in the series will be applied one at a time
+ * Accepts an array of predicates and builds a new one that returns true if at least one of them is
+ * satisfied by the received arguments. The functions in the array will be applied one at a time
  * until a <code>true</code> value is produced, which is returned immediately.
  * @example
  * var users = [
@@ -94,7 +83,7 @@ function allOf () {
  *     {id: 3, name: "Mario", group: "admin"}
  * ];
  * var isInGroup = _.partial(_.hasKeyValue, ["group"]);
- * var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
+ * var isSuperUser = _.anyOf([isInGroup("admin"), isInGroup("root")]);
  *
  * isSuperUser(users[0]) // => false
  * isSuperUser(users[1]) // => true
@@ -102,24 +91,13 @@ function allOf () {
  *
  * @memberof module:lamb
  * @category Logic
+ * @function
  * @see {@link module:lamb.allOf|allOf}
  * @since 0.1.0
- * @param {...Function} predicate
+ * @param {Function[]} predicates
  * @returns {Function}
  */
-function anyOf () {
-    var predicates = list.apply(null, arguments);
-
-    return function () {
-        for (var i = 0, len = predicates.length; i < len; i++) {
-            if (predicates[i].apply(this, arguments)) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-}
+var anyOf = _checkPredicates(false);
 
 /**
  * Verifies that the two supplied values are the same value using the "SameValue" comparison.<br/>
