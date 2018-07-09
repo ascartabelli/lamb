@@ -165,23 +165,25 @@ function binary (fn) {
  *     surname: "Doe",
  *     scores: [2, 4, 7]
  * };
- * var getIDAndLastScore = _.collect(_.getKey("id"), _.getPath("scores.-1"));
+ * var getIDAndLastScore = _.collect([_.getKey("id"), _.getPath("scores.-1")]);
  *
  * getIDAndLastScore(user) // => ["jdoe", 7]
  *
  * @example
- * var minAndMax = _.collect(Math.min, Math.max);
+ * var minAndMax = _.collect([Math.min, Math.max]);
  *
  * minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]
  *
  * @memberof module:lamb
  * @category Function
  * @since 0.35.0
- * @param {...Function} fn
+ * @param {Function[]} functions
  * @returns {Function}
  */
-function collect () {
-    var functions = list.apply(null, arguments);
+function collect (functions) {
+    if (!Array.isArray(functions)) {
+        throw _makeTypeErrorFor(functions, "array");
+    }
 
     return function () {
         return map(functions, applyTo(arguments));
