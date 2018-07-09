@@ -794,19 +794,13 @@ var uniques = uniquesBy(identity);
 function uniquesBy (iteratee) {
     return function (arrayLike) {
         var result = [];
-        var len = arrayLike.length;
 
-        for (var i = 0, seen = [], hasNaN = false, value; i < len; i++) {
+        for (var i = 0, len = arrayLike.length, seen = [], value; i < len; i++) {
             value = iteratee(arrayLike[i], i, arrayLike);
 
-            if (value === value) { // eslint-disable-line no-self-compare
-                if (seen.indexOf(value) === -1) {
-                    seen[seen.length] = value;
-                    result[result.length] = arrayLike[i];
-                }
-            } else if (!hasNaN) {
-                hasNaN = true;
-                result[result.length] = arrayLike[i];
+            if (!isIn(seen, value)) {
+                seen.push(value);
+                result.push(arrayLike[i]);
             }
         }
 
