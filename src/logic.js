@@ -7,17 +7,17 @@
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var filterString = _.compose(_.invoker("join", ""), _.filter);
- * var filterAdapter = _.adapter(
+ * var filterAdapter = _.adapter([
  *     _.invoker("filter"),
  *     _.case(_.isType("String"), filterString)
- * );
+ * ]);
  *
  * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
  * filterAdapter("123456", isEven) // => "246"
  * filterAdapter({}, isEven) // => undefined
  *
  * // by its nature is composable
- * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
+ * var filterWithDefault = _.adapter([filterAdapter, _.always("Not implemented")]);
  *
  * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
  * filterWithDefault("123456", isEven) // => "246"
@@ -28,11 +28,13 @@
  * @see {@link module:lamb.case|case}
  * @see {@link module:lamb.invoker|invoker}
  * @since 0.6.0
- * @param {...Function} fn
+ * @param {Function[]} functions
  * @returns {Function}
  */
-function adapter () {
-    var functions = list.apply(null, arguments);
+function adapter (functions) {
+    if (!Array.isArray(functions)) {
+        throw _makeTypeErrorFor(functions, "array");
+    }
 
     return function () {
         var len = functions.length;

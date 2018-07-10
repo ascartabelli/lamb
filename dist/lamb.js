@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.6
+ * @version 0.56.0-alpha.7
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.6"}
+        "@@lamb/version": {value: "0.56.0-alpha.7"}
     });
 
     // prototype shortcuts
@@ -1888,17 +1888,17 @@
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var filterString = _.compose(_.invoker("join", ""), _.filter);
-     * var filterAdapter = _.adapter(
+     * var filterAdapter = _.adapter([
      *     _.invoker("filter"),
      *     _.case(_.isType("String"), filterString)
-     * );
+     * ]);
      *
      * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
      * filterAdapter("123456", isEven) // => "246"
      * filterAdapter({}, isEven) // => undefined
      *
      * // by its nature is composable
-     * var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
+     * var filterWithDefault = _.adapter([filterAdapter, _.always("Not implemented")]);
      *
      * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
      * filterWithDefault("123456", isEven) // => "246"
@@ -1909,11 +1909,13 @@
      * @see {@link module:lamb.case|case}
      * @see {@link module:lamb.invoker|invoker}
      * @since 0.6.0
-     * @param {...Function} fn
+     * @param {Function[]} functions
      * @returns {Function}
      */
-    function adapter () {
-        var functions = list.apply(null, arguments);
+    function adapter (functions) {
+        if (!Array.isArray(functions)) {
+            throw _makeTypeErrorFor(functions, "array");
+        }
 
         return function () {
             var len = functions.length;
@@ -4650,7 +4652,7 @@
      *     {"name": "Mario", "city": "Rome"},
      *     {"name": "Paolo"}
      * ];
-     * var getCityOrUnknown = _.adapter(_.getKey("city"), _.always("Unknown"));
+     * var getCityOrUnknown = _.adapter([_.getKey("city"), _.always("Unknown")]);
      * var countByCity = _.countBy(getCityOrUnknown);
      *
      * countByCity(persons) // => {"New York": 2, "Rome": 1, "Unknown": 1}
@@ -4696,7 +4698,7 @@
      *
      * @example <caption>Adding a custom value for missing keys:</caption>
      *
-     * var getCityOrUnknown = _.adapter(getCity, _.always("Unknown"));
+     * var getCityOrUnknown = _.adapter([getCity, _.always("Unknown")]);
      *
      * var personsByCity = _.group(persons, getCityOrUnknown);
      *

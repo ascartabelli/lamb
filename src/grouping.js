@@ -37,7 +37,7 @@ var count = _groupWith(function (a) {
  *     {"name": "Mario", "city": "Rome"},
  *     {"name": "Paolo"}
  * ];
- * var getCityOrUnknown = _.adapter(_.getKey("city"), _.always("Unknown"));
+ * var getCityOrUnknown = _.adapter([_.getKey("city"), _.always("Unknown")]);
  * var countByCity = _.countBy(getCityOrUnknown);
  *
  * countByCity(persons) // => {"New York": 2, "Rome": 1, "Unknown": 1}
@@ -83,7 +83,7 @@ var countBy = _curry2(count, true);
  *
  * @example <caption>Adding a custom value for missing keys:</caption>
  *
- * var getCityOrUnknown = _.adapter(getCity, _.always("Unknown"));
+ * var getCityOrUnknown = _.adapter([getCity, _.always("Unknown")]);
  *
  * var personsByCity = _.group(persons, getCityOrUnknown);
  *
