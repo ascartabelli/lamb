@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.7
+ * @version 0.56.0-alpha.8
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.7"}
+        "@@lamb/version": {value: "0.56.0-alpha.8"}
     });
 
     // prototype shortcuts
@@ -4022,7 +4022,8 @@
     var insertAt = _makePartial3(insert);
 
     /**
-     * Returns an array of every unique item that is included in all given arrays or array-like objects.<br/>
+     * Returns an array of every unique item that is included in all two given arrays
+     * or array-like objects.<br/>
      * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
      * @example
      * var a1 = [1, 2, 3, 4];
@@ -4038,19 +4039,21 @@
      * @see {@link module:lamb.difference|difference}
      * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
      * @since 0.5.0
-     * @param {...ArrayLike} arrayLike
+     * @param {ArrayLike} a
+     * @param {ArrayLike} b
      * @returns {Array}
      */
-    function intersection () {
-        if (arguments.length === 0) {
-            return [];
+    function intersection (a, b) {
+        var result = [];
+        var lenA = a.length;
+
+        if (lenA && b.length) {
+            for (var i = 0; i < lenA; i++) {
+                !isIn(result, a[i]) && isIn(b, a[i]) && result.push(a[i]);
+            }
         }
 
-        var rest = _argsTail.apply(null, arguments);
-
-        return filter(uniques(arguments[0]), function (item) {
-            return everyIn(rest, contains(item));
-        });
+        return result;
     }
 
     /**
