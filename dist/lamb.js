@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.8
+ * @version 0.56.0-alpha.9
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.8"}
+        "@@lamb/version": {value: "0.56.0-alpha.9"}
     });
 
     // prototype shortcuts
@@ -4429,7 +4429,7 @@
     }
 
     /**
-     * Returns a list of every unique element present in the given array-like objects.<br/>
+     * Returns a list of every unique element present in the two given array-like objects.<br/>
      * Uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}
      * to test the equality of values.<br/>
      * When two values are considered equal, the first occurence will be the one included
@@ -4437,8 +4437,8 @@
      * See also {@link module:lamb.unionBy|unionBy} if you need to transform the values before
      * the comparison or if you have to extract them from complex ones.
      * @example
-     * _.union([1, 2, 3, 2], [3, 4], [1, 5]) // => [1, 2, 3, 4, 5]
-     * _.union("abc", "bcd", "cde") // => ["a", "b", "c", "d", "e"]
+     * _.union([1, 2, 3, 2], [2, 3, 4]) // => [1, 2, 3, 4]
+     * _.union("abc", "bcd") // => ["a", "b", "c", "d"]
      *
      * @memberof module:lamb
      * @category Array
@@ -4447,19 +4447,20 @@
      * @see {@link module:lamb.difference|difference}
      * @see {@link module:lamb.intersection|intersection}
      * @since 0.5.0
-     * @param {...ArrayLike} arrayLike
+     * @param {ArrayLike} a
+     * @param {ArrayLike} b
      * @returns {Array}
      */
     var union = unionBy(identity);
 
     /**
-     * Using the provided iteratee, builds a function that will return an array of the unique elements
-     * in the provided array-like objects.<br/>
+     * Using the provided iteratee to transform values, builds a function that will
+     * return an array of the unique elements  in the two provided array-like objects.<br/>
      * Uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}
      * to test the equality of values.<br/>
      * When two values are considered equal, the first occurence will be the one included
      * in the result array.<br/>
-     * See also {@link module:lamb.union|union} if you don't need to transform the values.
+     * See also {@link module:lamb.union|union} if you don't need to compare transformed values.
      * @example
      * var unionByFloor = _.unionBy(Math.floor);
      *
@@ -4475,7 +4476,7 @@
      * @returns {Function}
      */
     function unionBy (iteratee) {
-        return pipe([list, flatMapWith(drop(0)), uniquesBy(iteratee)]);
+        return pipe([binary(list), flatMapWith(drop(0)), uniquesBy(iteratee)]);
     }
 
     /**
