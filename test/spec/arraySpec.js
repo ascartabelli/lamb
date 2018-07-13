@@ -1403,6 +1403,7 @@ describe("lamb.array", function () {
         var r1 = [[1], [2], [3], [4]];
         var r2 = [[1, 5], [2, 6], [3, 7]];
         var r3 = [[1, 5, 8], [2, 6, 9]];
+        var r4 = [[5, 8], [6, 9]];
 
         describe("transpose", function () {
             it("should transpose a matrix", function () {
@@ -1430,10 +1431,6 @@ describe("lamb.array", function () {
                 ]);
             });
 
-            it("should throw an exception when called without arguments", function () {
-                expect(lamb.transpose).toThrow();
-            });
-
             it("should throw an exception when a value in the array-like is `nil`", function () {
                 expect(function () { lamb.transpose([null, [1, 2, 3]]); }).toThrow();
                 expect(function () { lamb.transpose([[1, 2, 3], null]); }).toThrow();
@@ -1451,11 +1448,9 @@ describe("lamb.array", function () {
 
         describe("zip", function () {
             it("should pair items with the same index in the received lists", function () {
-                expect(lamb.zip([])).toEqual([]);
-                expect(lamb.zip(a1)).toEqual(r1);
                 expect(lamb.zip(a1, a2)).toEqual(r2);
-                expect(lamb.zip(a1, a2, a3)).toEqual(r3);
-                expect(lamb.zip(a1, NaN)).toEqual([]);
+                expect(lamb.zip(a2, a3)).toEqual(r4);
+                expect(lamb.zip([], a1)).toEqual([]);
             });
 
             it("should work with array-like objects", function () {
@@ -1463,11 +1458,7 @@ describe("lamb.array", function () {
             });
 
             it("should build dense arrays when sparse ones are received", function () {
-                expect(lamb.zip(a2, a3, Array(4))).toEqual([[5, 8, void 0], [6, 9, void 0]]);
-            });
-
-            it("should return an empty array when called without arguments", function () {
-                expect(lamb.zip()).toEqual([]);
+                expect(lamb.zip(a2, Array(4))).toEqual([[5, void 0], [6, void 0], [7, void 0]]);
             });
         });
 
@@ -1480,6 +1471,9 @@ describe("lamb.array", function () {
             expect(function () { lamb.zip([1, 2], void 0); }).toThrow();
             expect(function () { lamb.zip([], null); }).toThrow();
             expect(function () { lamb.zip([], void 0); }).toThrow();
+
+            expect(lamb.transpose).toThrow();
+            expect(lamb.zip).toThrow();
         });
 
         it("should treat every other value as an empty array", function () {

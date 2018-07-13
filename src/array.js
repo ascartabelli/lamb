@@ -813,27 +813,29 @@ function uniquesBy (iteratee) {
 }
 
 /**
- * Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
+ * Builds a list of arrays out of the two given array-like objects by pairing items with
+ * the same index.<br/>
  * The received array-like objects will be truncated to the shortest length.
  * @example
  * _.zip(
  *     ["a", "b", "c"],
- *     [1, 2, 3],
- *     [true, false, true]
- * ) // => [["a", 1, true], ["b", 2, false], ["c", 3, true]]
+ *     [1, 2, 3]
+ * ) // => [["a", 1], ["b", 2], ["c", 3]]
  *
  * _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]
  *
  * @memberof module:lamb
  * @category Array
- * @function
  * @see {@link module:lamb.transpose|transpose} for the reverse operation
  * @see {@link module:lamb.zipWithIndex|zipWithIndex}
  * @since 0.14.0
- * @param {...ArrayLike} arrayLike
+ * @param {ArrayLike} a
+ * @param {ArrayLike} b
  * @returns {Array<Array>}
  */
-var zip = compose(transpose, list);
+function zip (a, b) {
+    return transpose([a, b]);
+}
 
 /**
  * "{@link module:lamb.zip|Zips}" an array-like object by pairing its values with their index.
