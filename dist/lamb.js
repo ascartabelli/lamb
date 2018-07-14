@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.10
+ * @version 0.56.0-alpha.11
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.10"}
+        "@@lamb/version": {value: "0.56.0-alpha.11"}
     });
 
     // prototype shortcuts
@@ -960,11 +960,12 @@
      * Merges the received objects using the provided function to retrieve their keys.
      * @private
      * @param {Function} getKeys
-     * @param {...Object} source
-     * @returns {Object}
+     * @param {Object} a
+     * @param {Object} b
+     * @returns {Function}
      */
-    function _merge (getKeys) {
-        return reduce(_argsTail.apply(null, arguments), function (result, source) {
+    function _merge (getKeys, a, b) {
+        return reduce([a, b], function (result, source) {
             forEach(getKeys(source), function (key) {
                 result[key] = source[key];
             });
@@ -3570,7 +3571,7 @@
     function updateIn (source, key, updater) {
         return _isEnumerable(source, key) ?
             _setIn(source, key, updater(source[key])) :
-            _merge(enumerables, source);
+            _merge(enumerables, source, {});
     }
 
     /**
@@ -3706,7 +3707,7 @@
         if (pathInfo.isValid) {
             return _setPathIn(source, parts, updater(pathInfo.target));
         } else {
-            return Array.isArray(source) ? slice(source, 0, source.length) : _merge(enumerables, source);
+            return Array.isArray(source) ? slice(source, 0, source.length) : _merge(enumerables, source, {});
         }
     }
 
@@ -5918,23 +5919,25 @@
 
     /**
      * Merges the enumerable properties of the provided sources into a new object.<br/>
-     * In case of key homonymy each source has precedence over the previous one.
+     * In case of key homonymy the last source has precedence over the first.
      * @example
-     * _.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}
+     * _.merge({a: 1, b: 3}, {b: 5, c: 4}) // => {a: 1, b: 5, c: 4}
      *
      * @example <caption>Array-like objects will be transformed to objects with numbers as keys:</caption>
      * _.merge([1, 2], {a: 2}) // => {"0": 1, "1": 2, a: 2}
      * _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
      * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
-     * _.merge({a: 2}, 99, NaN) // => {a: 2}
+     * _.merge({a: 2}, 99) // => {a: 2}
+     * _.merge({a: 2}, NaN) // => {a: 2}
      *
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.mergeOwn|mergeOwn} to merge own properties only
      * @since 0.10.0
      * @function
-     * @param {...Object} source
+     * @param {Object} a
+     * @param {Object} b
      * @returns {Object}
      */
     var merge = partial(_merge, [enumerables]);
@@ -5958,14 +5961,16 @@
      * _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}
      *
      * @example <caption>Every other non-nil value will be treated as an empty object:</caption>
-     * _.mergeOwn({a: 2}, 99, NaN) // => {a: 2}
+     * _.mergeOwn({a: 2}, 99) // => {a: 2}
+     * _.mergeOwn({a: 2}, NaN) // => {a: 2}
      *
      * @memberof module:lamb
      * @category Object
      * @see {@link module:lamb.merge|merge} to merge all enumerable properties
      * @since 0.12.0
      * @function
-     * @param {...Object} source
+     * @param {Object} a
+     * @param {Object} b
      * @returns {Object}
      */
     var mergeOwn = partial(_merge, [keys]);

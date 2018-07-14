@@ -619,7 +619,7 @@ describe("lamb.accessors", function () {
                     var testObj = lamb.make(nonStringsAsStrings, values);
 
                     nonStrings.forEach(function (key) {
-                        var expected = lamb.merge(testObj);
+                        var expected = lamb.merge(testObj, {});
 
                         expected[String(key)] = 99;
 
@@ -735,7 +735,7 @@ describe("lamb.accessors", function () {
                     var testObj = lamb.make(nonStringsAsStrings, values);
 
                     nonStrings.forEach(function (key) {
-                        var expected = lamb.merge(testObj);
+                        var expected = lamb.merge(testObj, {});
 
                         expected[String(key)] = 99;
 
@@ -1148,7 +1148,7 @@ describe("lamb.accessors", function () {
                     var testObj = lamb.make(nonStringsAsStrings, values);
 
                     nonStrings.forEach(function (key) {
-                        var expected = lamb.merge(testObj);
+                        var expected = lamb.merge(testObj, {});
 
                         expected[String(key)] = 99;
 
@@ -1515,7 +1515,7 @@ describe("lamb.accessors", function () {
                     var testObj = lamb.make(nonStringsAsStrings, values);
 
                     nonStrings.forEach(function (key) {
-                        var expected = lamb.merge(testObj);
+                        var expected = lamb.merge(testObj, {});
 
                         expected[String(key)] = 99;
 

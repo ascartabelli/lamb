@@ -399,14 +399,9 @@ describe("lamb.object", function () {
             expect(lamb.mergeOwn("foo", {a: 2})).toEqual({0: "f", 1: "o", 2: "o", a: 2});
         });
 
-        it("should handle key homonymy by giving to each source precedence over the previous ones", function () {
-            expect(lamb.merge({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
-            expect(lamb.mergeOwn({a: 1}, {b: 3, c: 4}, {b: 5})).toEqual({a: 1, b: 5, c: 4});
-        });
-
-        it("should return an empty object if called without arguments", function () {
-            expect(lamb.merge()).toEqual({});
-            expect(lamb.mergeOwn()).toEqual({});
+        it("should handle key homonymy by giving the last source precedence over the first one", function () {
+            expect(lamb.merge({a: 1, b: 3}, {b: 5, c: 4})).toEqual({a: 1, b: 5, c: 4});
+            expect(lamb.mergeOwn({a: 1, b: 3}, {b: 5, c: 4})).toEqual({a: 1, b: 5, c: 4});
         });
 
         it("should throw an exception if called with `nil` values", function () {
@@ -419,6 +414,9 @@ describe("lamb.object", function () {
             expect(function () { lamb.mergeOwn(null, {a: 2}); }).toThrow();
             expect(function () { lamb.mergeOwn({a: 2}, void 0); }).toThrow();
             expect(function () { lamb.mergeOwn(void 0, {a: 2}); }).toThrow();
+
+            expect(lamb.merge).toThrow();
+            expect(lamb.mergeOwn).toThrow();
         });
 
         it("should consider other values as empty objects", function () {
