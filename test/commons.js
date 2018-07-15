@@ -46,7 +46,7 @@ var arraysCastableToNumber = concat(
 );
 
 // values expected to be converted to empty objects
-var wannabeEmptyObjects = concat(booleans, others, numbers, new Date());
+var wannabeEmptyObjects = concat(booleans, others, numbers, new Date(), "");
 
 // values expected to be converted to empty arrays
 var wannabeEmptyArrays = concat(wannabeEmptyObjects, objects);

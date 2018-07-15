@@ -56,6 +56,7 @@ function appendTo (arrayLike, value) {
  * @category Array
  * @see {@link module:lamb.intersection|intersection}
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
+ * @see {@link module:lamb.pull|pull}, {@link module:lamb.pullFrom|pullFrom}
  * @since 0.6.0
  * @param {ArrayLike} arrayLike
  * @param {ArrayLike} other
@@ -445,7 +446,9 @@ var pluckKey = compose(mapWith, getKey);
  * a list of values to build a function waiting for an array-like object.<br/>
  * The new function will create an array copy of the array-like without
  * the specified values.<br/>
- * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
+ * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
+ * See examples in {@link module:lamb.pullFrom|pullFrom} about the
+ * relationship with {@link module:lamb.difference|difference}.
  * @example
  * var scores = [40, 20, 30, 10];
  * var newScores = [30, 10];
@@ -457,6 +460,7 @@ var pluckKey = compose(mapWith, getKey);
  * @category Array
  * @function
  * @see {@link module:lamb.pullFrom|pullFrom}
+ * @see {@link module:lamb.difference|difference}
  * @since 0.45.0
  * @param {ArrayLike} values
  * @returns {Function}
@@ -472,9 +476,17 @@ var pull = _curry2(pullFrom, true);
  *
  * _.pullFrom(arr, [2, 5]) // => [1, 3, 4]
  *
+ * @example <caption>It's not the same as {@link module:lamb.difference|difference}:</caption>
+ *
+ * var arr = [1,1,2,3,4,4,5];
+ *
+ * _.pullFrom(arr, [1, 2]) // => [3, 4, 4, 5]
+ * _.difference(arr, [1, 2]) // => [3, 4, 5]
+ *
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.pull|pull}
+ * @see {@link module:lamb.difference|difference}
  * @since 0.45.0
  * @param {ArrayLike} arrayLike
  * @param {ArrayLike} values

@@ -1,7 +1,7 @@
 /**
  * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
  * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
- * @version 0.56.0-alpha.11
+ * @version 0.56.0-alpha.12
  * @module lamb
  * @license MIT
  * @preserve
@@ -44,7 +44,7 @@
          * @since 0.53.0
          * @type String
          */
-        "@@lamb/version": {value: "0.56.0-alpha.11"}
+        "@@lamb/version": {value: "0.56.0-alpha.12"}
     });
 
     // prototype shortcuts
@@ -3790,6 +3790,7 @@
      * @category Array
      * @see {@link module:lamb.intersection|intersection}
      * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
+     * @see {@link module:lamb.pull|pull}, {@link module:lamb.pullFrom|pullFrom}
      * @since 0.6.0
      * @param {ArrayLike} arrayLike
      * @param {ArrayLike} other
@@ -4179,7 +4180,9 @@
      * a list of values to build a function waiting for an array-like object.<br/>
      * The new function will create an array copy of the array-like without
      * the specified values.<br/>
-     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
+     * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
+     * See examples in {@link module:lamb.pullFrom|pullFrom} about the
+     * relationship with {@link module:lamb.difference|difference}.
      * @example
      * var scores = [40, 20, 30, 10];
      * var newScores = [30, 10];
@@ -4191,6 +4194,7 @@
      * @category Array
      * @function
      * @see {@link module:lamb.pullFrom|pullFrom}
+     * @see {@link module:lamb.difference|difference}
      * @since 0.45.0
      * @param {ArrayLike} values
      * @returns {Function}
@@ -4206,9 +4210,17 @@
      *
      * _.pullFrom(arr, [2, 5]) // => [1, 3, 4]
      *
+     * @example <caption>It's not the same as {@link module:lamb.difference|difference}:</caption>
+     *
+     * var arr = [1,1,2,3,4,4,5];
+     *
+     * _.pullFrom(arr, [1, 2]) // => [3, 4, 4, 5]
+     * _.difference(arr, [1, 2]) // => [3, 4, 5]
+     *
      * @memberof module:lamb
      * @category Array
      * @see {@link module:lamb.pull|pull}
+     * @see {@link module:lamb.difference|difference}
      * @since 0.45.0
      * @param {ArrayLike} arrayLike
      * @param {ArrayLike} values
@@ -5466,15 +5478,15 @@
      * The resulting function will return <code>undefined</code> if no arguments are
      * passed or if the index is out of bounds.
      * @example
-     * var getFirstArg = getArgAt(0);
-     * var getLastArg = getArgAt(-1);
+     * var getFirstArg = _.getArgAt(0);
+     * var getLastArg = _.getArgAt(-1);
      *
      * getFirstArg(1, 2, 3) // => 1
      * getLastArg(1, 2, 3) // => 3
      *
-     * getArgAt()(1, 2, 3) // => undefined
-     * getArgAt(6)(1, 2, 3) // => undefined
-     * getArgAt(1)() // => undefined
+     * _.getArgAt()(1, 2, 3) // => undefined
+     * _.getArgAt(6)(1, 2, 3) // => undefined
+     * _.getArgAt(1)() // => undefined
      *
      * @memberof module:lamb
      * @category Function
@@ -6450,7 +6462,7 @@
      *     }
      * };
      * var pwdMatch = _.checker(
-     *     _.is,
+     *     _.areSame,
      *     "Passwords don't match",
      *     ["login.password", "login.passwordConfirm"]
      * );

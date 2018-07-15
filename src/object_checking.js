@@ -17,7 +17,7 @@
  *     }
  * };
  * var pwdMatch = _.checker(
- *     _.is,
+ *     _.areSame,
  *     "Passwords don't match",
  *     ["login.password", "login.passwordConfirm"]
  * );

@@ -361,15 +361,15 @@ function flip (fn) {
  * The resulting function will return <code>undefined</code> if no arguments are
  * passed or if the index is out of bounds.
  * @example
- * var getFirstArg = getArgAt(0);
- * var getLastArg = getArgAt(-1);
+ * var getFirstArg = _.getArgAt(0);
+ * var getLastArg = _.getArgAt(-1);
  *
  * getFirstArg(1, 2, 3) // => 1
  * getLastArg(1, 2, 3) // => 3
  *
- * getArgAt()(1, 2, 3) // => undefined
- * getArgAt(6)(1, 2, 3) // => undefined
- * getArgAt(1)() // => undefined
+ * _.getArgAt()(1, 2, 3) // => undefined
+ * _.getArgAt(6)(1, 2, 3) // => undefined
+ * _.getArgAt(1)() // => undefined
  *
  * @memberof module:lamb
  * @category Function

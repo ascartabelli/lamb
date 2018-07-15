@@ -496,7 +496,7 @@ describe("lamb.array_basics", function () {
             expect(arr).toEqual([1, 2, 3, 4, 5]);
         });
 
-        it("should fold the provided array with the given accumulator function starting from the last element", function () {
+        it("should fold or reduce the provided array with the given accumulator function starting from the last element", function () {
             var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
                 expect(list).toBe(arr);
                 expect(list[idx]).toBe(current);
@@ -589,7 +589,7 @@ describe("lamb.array_basics", function () {
             expect(arr).toEqual([1, 2, 3, 4, 5]);
         });
 
-        it("should fold the provided array with the given accumulator function starting from the first element", function () {
+        it("should fold or reduce the provided array with the given accumulator function starting from the first element", function () {
             var subtract = jasmine.createSpy("subtract").and.callFake(function (prev, current, idx, list) {
                 expect(list).toBe(arr);
                 expect(list[idx]).toBe(current);
