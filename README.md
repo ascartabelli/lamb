@@ -45,15 +45,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.55.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.56.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.55.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.56.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.55.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.56.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -104,6 +104,11 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.56.0 - *2018/07/15***
+  - **API change**: `compose`, `intersection`, `merge`, `mergeOwn`, `union` and `zip` are now binary functions, and so are functions built with `unionBy`.
+  - **API change**: `adapter`, `allOf`, `anyOf`, `collect` and `pipe` now accept an array of functions
+  - Updated doc comments and tests
+
 - **v0.55.0 - *2018/03/21***
   - **Fully compatible with versions down to 0.53.x**
   - Added `rotate` and `rotateBy`
@@ -123,10 +128,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
 - **v0.53.1 - *2017/04/06***
   - **Fixed**: `hasKeyValue` was returning `true` for any existent property when searching for an `undefined` value
   - Updated object checking tests
-
-- **v0.53.0 - *2017/03/30***
-  - **API change**: unfilled placeholders in functions built with `asPartial` now assume an `undefined` value
-  - **API change**: `range` now converts to number its parameters and will return an empty array if the specified range is invalid
-  - **API change**: `difference` is now a binary function and returns a result without duplicates
-  - Changed the name of the property holding the library's version
-  - Added the possibility to use custom placeholders in partial application
