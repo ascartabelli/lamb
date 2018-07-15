@@ -9,13 +9,13 @@ var assignTo = _.curry(function (target, source) {
 });
 
 var parseCSSValue = function (cssProperty) {
-    return _.compose(parseFloat, _.getKey(cssProperty), getComputedStyle);
+    return _.pipe([getComputedStyle, _.getKey(cssProperty), parseFloat]);
 };
 var parseHeight = parseCSSValue("height");
 var parsePaddingTop = parseCSSValue("paddingTop");
 var parseClientHeight = _.compose(
     _.reduceWith(_.sum),
-    _.collect(parseHeight, parsePaddingTop, parseCSSValue("paddingBottom"))
+    _.collect([parseHeight, parsePaddingTop, parseCSSValue("paddingBottom")])
 );
 
 /* ------------------------------------------------------------------- */
@@ -73,11 +73,11 @@ function onLoad () {
         }
     };
 
-    var updateNavCloneWidth = _.compose(
-        setNavCloneStyle,
+    var updateNavCloneWidth = _.pipe([
+        _.always(getComputedStyle(nav)),
         _.pickKeys(["width"]),
-        _.always(getComputedStyle(nav))
-    );
+        setNavCloneStyle
+    ]);
 
     setNavCloneStyle({
         display: "none",

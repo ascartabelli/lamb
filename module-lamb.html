@@ -14,8 +14,8 @@
     <meta name="application-name" content="Lamb" />
     <meta name="msapplication-config" content="images/icons/browserconfig.xml?v=1.0" />
     <meta name="theme-color" content="#57a3d5" />
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css?1521635309438" />
-    <link type="text/css" rel="stylesheet" href="styles/lamb-light.css?1521635309438" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css?1531649985434" />
+    <link type="text/css" rel="stylesheet" href="styles/lamb-light.css?1531649985434" />
 </head>
 
 <body>
@@ -66,7 +66,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.55.0</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>0.56.0</li></ul></dd>
     
 
     
@@ -329,7 +329,7 @@ change won't recognize the former placeholder.
 
     
 
-    <h4 class="name" id="adapter"><span class="type-signature"></span>adapter<span class="signature">(&hellip;fn)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="adapter"><span class="type-signature"></span>adapter<span class="signature">(functions)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Logic">Logic</a></span>
 
@@ -368,8 +368,6 @@ to mimic conditional logic or pattern matching, and also to build polymorphic fu
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -382,28 +380,18 @@ to mimic conditional logic or pattern matching, and also to build polymorphic fu
 
         <tr>
             
-                <td class="name"><code>fn</code></td>
+                <td class="name"><code>functions</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="types.html#function">function</a></span>
+<span class="param-type"><a href="types.html#Array">Array</a>.&lt;function()></span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
             
 
             
@@ -452,7 +440,7 @@ to mimic conditional logic or pattern matching, and also to build polymorphic fu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1894">lamb.js, line 1894</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1916">lamb.js, line 1916</a>
     </li></ul></dd>
     
 
@@ -501,17 +489,17 @@ to mimic conditional logic or pattern matching, and also to build polymorphic fu
     
     <pre class="javascript"><code>var isEven = function (n) { return n % 2 === 0; };
 var filterString = _.compose(_.invoker("join", ""), _.filter);
-var filterAdapter = _.adapter(
+var filterAdapter = _.adapter([
     _.invoker("filter"),
     _.case(_.isType("String"), filterString)
-);
+]);
 
 filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
 filterAdapter("123456", isEven) // => "246"
 filterAdapter({}, isEven) // => undefined
 
 // by its nature is composable
-var filterWithDefault = _.adapter(filterAdapter, _.always("Not implemented"));
+var filterWithDefault = _.adapter([filterAdapter, _.always("Not implemented")]);
 
 filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
 filterWithDefault("123456", isEven) // => "246"
@@ -631,7 +619,7 @@ filterWithDefault({}, isEven) // => "Not implemented"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2519">lamb.js, line 2519</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2521">lamb.js, line 2521</a>
     </li></ul></dd>
     
 
@@ -688,7 +676,7 @@ _.add5(-2) // => 3</code></pre>
 
     
 
-    <h4 class="name" id="allOf"><span class="type-signature"></span>allOf<span class="signature">(&hellip;predicate)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="allOf"><span class="type-signature"></span>allOf<span class="signature">(predicates)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Logic">Logic</a></span>
 
@@ -699,8 +687,8 @@ _.add5(-2) // => 3</code></pre>
 
 
 <div class="description">
-    Accepts a series of predicates and builds a new one that returns true if they are all satisfied
-by the same arguments. The functions in the series will be applied one at a time until a
+    Accepts an array of predicates and builds a new one that returns true if they are all satisfied
+by the same arguments. The functions in the array will be applied one at a time until a
 <code>false</code> value is produced, which is returned immediately.
 </div>
 
@@ -725,8 +713,6 @@ by the same arguments. The functions in the series will be applied one at a time
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -739,28 +725,18 @@ by the same arguments. The functions in the series will be applied one at a time
 
         <tr>
             
-                <td class="name"><code>predicate</code></td>
+                <td class="name"><code>predicates</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="types.html#function">function</a></span>
+<span class="param-type"><a href="types.html#Array">Array</a>.&lt;function()></span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
             
 
             
@@ -809,7 +785,7 @@ by the same arguments. The functions in the series will be applied one at a time
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1932">lamb.js, line 1932</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1957">lamb.js, line 1957</a>
     </li></ul></dd>
     
 
@@ -855,7 +831,7 @@ by the same arguments. The functions in the series will be applied one at a time
     <h5>Example</h5>
     
     <pre class="javascript"><code>var isEven = function (n) { return n % 2 === 0; };
-var isPositiveEven = _.allOf(isEven, _.isGT(0));
+var isPositiveEven = _.allOf([isEven, _.isGT(0)]);
 
 isPositiveEven(-2) // => false
 isPositiveEven(11) // => false
@@ -1041,7 +1017,7 @@ alwaysFoo() === foo // => true</code></pre>
 
     
 
-    <h4 class="name" id="anyOf"><span class="type-signature"></span>anyOf<span class="signature">(&hellip;predicate)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="anyOf"><span class="type-signature"></span>anyOf<span class="signature">(predicates)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Logic">Logic</a></span>
 
@@ -1052,8 +1028,8 @@ alwaysFoo() === foo // => true</code></pre>
 
 
 <div class="description">
-    Accepts a series of predicates and builds a new one that returns true if at least one of them is
-satisfied by the received arguments. The functions in the series will be applied one at a time
+    Accepts an array of predicates and builds a new one that returns true if at least one of them is
+satisfied by the received arguments. The functions in the array will be applied one at a time
 until a <code>true</code> value is produced, which is returned immediately.
 </div>
 
@@ -1078,8 +1054,6 @@ until a <code>true</code> value is produced, which is returned immediately.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -1092,28 +1066,18 @@ until a <code>true</code> value is produced, which is returned immediately.
 
         <tr>
             
-                <td class="name"><code>predicate</code></td>
+                <td class="name"><code>predicates</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="types.html#function">function</a></span>
+<span class="param-type"><a href="types.html#Array">Array</a>.&lt;function()></span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
             
 
             
@@ -1162,7 +1126,7 @@ until a <code>true</code> value is produced, which is returned immediately.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1970">lamb.js, line 1970</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1984">lamb.js, line 1984</a>
     </li></ul></dd>
     
 
@@ -1213,7 +1177,7 @@ until a <code>true</code> value is produced, which is returned immediately.
     {id: 3, name: "Mario", group: "admin"}
 ];
 var isInGroup = _.partial(_.hasKeyValue, ["group"]);
-var isSuperUser = _.anyOf(isInGroup("admin"), isInGroup("root"));
+var isSuperUser = _.anyOf([isInGroup("admin"), isInGroup("root")]);
 
 isSuperUser(users[0]) // => false
 isSuperUser(users[1]) // => true
@@ -1334,7 +1298,7 @@ to build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3751">lamb.js, line 3751</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3753">lamb.js, line 3753</a>
     </li></ul></dd>
     
 
@@ -1523,7 +1487,7 @@ _.append([5])(arr) // => [1, 2, 3, 4, [5]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3770">lamb.js, line 3770</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3772">lamb.js, line 3772</a>
     </li></ul></dd>
     
 
@@ -1712,7 +1676,7 @@ _.appendTo(arr, [5]) // => [1, 2, 3, 4, [5]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5117">lamb.js, line 5117</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5131">lamb.js, line 5131</a>
     </li></ul></dd>
     
 
@@ -1874,7 +1838,7 @@ to apply and builds a function waiting for the arguments array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5137">lamb.js, line 5137</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5151">lamb.js, line 5151</a>
     </li></ul></dd>
     
 
@@ -2038,7 +2002,7 @@ object to use as arguments and builds a function waiting for the target of the a
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5157">lamb.js, line 5157</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5171">lamb.js, line 5171</a>
     </li></ul></dd>
     
 
@@ -2233,7 +2197,7 @@ comparison.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2013">lamb.js, line 2013</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2015">lamb.js, line 2015</a>
     </li></ul></dd>
     
 
@@ -2433,7 +2397,7 @@ See also <a href="module-lamb.html#isSVZ">isSVZ</a> for a curried version buildi
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2043">lamb.js, line 2043</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2045">lamb.js, line 2045</a>
     </li></ul></dd>
     
 
@@ -2631,7 +2595,7 @@ pass a negative arity.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5178">lamb.js, line 5178</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5192">lamb.js, line 5192</a>
     </li></ul></dd>
     
 
@@ -2807,7 +2771,7 @@ hasn't been entirely consumed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5233">lamb.js, line 5233</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5247">lamb.js, line 5247</a>
     </li></ul></dd>
     
 
@@ -2996,7 +2960,7 @@ exposed for convenience.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5253">lamb.js, line 5253</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5267">lamb.js, line 5267</a>
     </li></ul></dd>
     
 
@@ -3188,7 +3152,7 @@ is the identity function.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2071">lamb.js, line 2071</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2073">lamb.js, line 2073</a>
     </li></ul></dd>
     
 
@@ -3489,7 +3453,7 @@ multiple <code>checker</code>s and combine them with <a href="module-lamb.html#v
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6451">lamb.js, line 6451</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6487">lamb.js, line 6487</a>
     </li></ul></dd>
     
 
@@ -3549,7 +3513,7 @@ multiple <code>checker</code>s and combine them with <a href="module-lamb.html#v
     }
 };
 var pwdMatch = _.checker(
-    _.is,
+    _.areSame,
     "Passwords don't match",
     ["login.password", "login.passwordConfirm"]
 );
@@ -3723,7 +3687,7 @@ than <code>max</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2544">lamb.js, line 2544</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2546">lamb.js, line 2546</a>
     </li></ul></dd>
     
 
@@ -3914,7 +3878,7 @@ and a <code>max</code> value, that builds a function waiting for the number to c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2577">lamb.js, line 2577</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2579">lamb.js, line 2579</a>
     </li></ul></dd>
     
 
@@ -3974,7 +3938,7 @@ _.clampWithin(20, 15)(10) // => NaN</code></pre>
 
     
 
-    <h4 class="name" id="collect"><span class="type-signature"></span>collect<span class="signature">(&hellip;fn)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="collect"><span class="type-signature"></span>collect<span class="signature">(functions)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -4012,8 +3976,6 @@ The collected results will be returned in an array.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -4026,28 +3988,18 @@ The collected results will be returned in an array.
 
         <tr>
             
-                <td class="name"><code>fn</code></td>
+                <td class="name"><code>functions</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="types.html#function">function</a></span>
+<span class="param-type"><a href="types.html#Array">Array</a>.&lt;function()></span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
             
 
             
@@ -4096,7 +4048,7 @@ The collected results will be returned in an array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5286">lamb.js, line 5286</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5300">lamb.js, line 5300</a>
     </li></ul></dd>
     
 
@@ -4140,11 +4092,11 @@ The collected results will be returned in an array.
     surname: "Doe",
     scores: [2, 4, 7]
 };
-var getIDAndLastScore = _.collect(_.getKey("id"), _.getPath("scores.-1"));
+var getIDAndLastScore = _.collect([_.getKey("id"), _.getPath("scores.-1")]);
 
 getIDAndLastScore(user) // => ["jdoe", 7]</code></pre>
 
-    <pre class="javascript"><code>var minAndMax = _.collect(Math.min, Math.max);
+    <pre class="javascript"><code>var minAndMax = _.collect([Math.min, Math.max]);
 
 minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]</code></pre>
 
@@ -4155,7 +4107,7 @@ minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]</code></pre>
 
     
 
-    <h4 class="name" id="compose"><span class="type-signature"></span>compose<span class="signature">(&hellip;fn)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="compose"><span class="type-signature"></span>compose<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -4167,7 +4119,7 @@ minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]</code></pre>
 
 <div class="description">
     Returns a function that is the composition of the functions given as parameters.
-Each function consumes the result of the function that follows.
+The first function consumes the result of the function that follows.
 </div>
 
 
@@ -4191,8 +4143,6 @@ Each function consumes the result of the function that follows.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -4205,7 +4155,7 @@ Each function consumes the result of the function that follows.
 
         <tr>
             
-                <td class="name"><code>fn</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -4218,15 +4168,28 @@ Each function consumes the result of the function that follows.
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#function">function</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -4275,7 +4238,7 @@ Each function consumes the result of the function that follows.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L112">lamb.js, line 112</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L113">lamb.js, line 113</a>
     </li></ul></dd>
     
 
@@ -4499,7 +4462,7 @@ shortcuts to common use cases.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2103">lamb.js, line 2103</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2105">lamb.js, line 2105</a>
     </li></ul></dd>
     
 
@@ -4673,7 +4636,7 @@ See also <a href="module-lamb.html#isIn">isIn</a> for an uncurried version.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1242">lamb.js, line 1242</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1264">lamb.js, line 1264</a>
     </li></ul></dd>
     
 
@@ -4860,7 +4823,7 @@ containsNaN([0, 1, 2, 3, NaN]) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4646">lamb.js, line 4646</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4660">lamb.js, line 4660</a>
     </li></ul></dd>
     
 
@@ -5034,7 +4997,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4675">lamb.js, line 4675</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4689">lamb.js, line 4689</a>
     </li></ul></dd>
     
 
@@ -5089,7 +5052,7 @@ build a function expecting the array-like object to act upon.
     {"name": "Mario", "city": "Rome"},
     {"name": "Paolo"}
 ];
-var getCityOrUnknown = _.adapter(_.getKey("city"), _.always("Unknown"));
+var getCityOrUnknown = _.adapter([_.getKey("city"), _.always("Unknown")]);
 var countByCity = _.countBy(getCityOrUnknown);
 
 countByCity(persons) // => {"New York": 2, "Rome": 1, "Unknown": 1}</code></pre>
@@ -5267,7 +5230,7 @@ for right currying.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5318">lamb.js, line 5318</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5334">lamb.js, line 5334</a>
     </li></ul></dd>
     
 
@@ -5497,7 +5460,7 @@ for right currying.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5347">lamb.js, line 5347</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5363">lamb.js, line 5363</a>
     </li></ul></dd>
     
 
@@ -5724,7 +5687,7 @@ collectFourElements(2, 3)(4, 5) // => [2, 3, 4, 5]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5372">lamb.js, line 5372</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5388">lamb.js, line 5388</a>
     </li></ul></dd>
     
 
@@ -5951,7 +5914,7 @@ collectFourElements(2, 3)(4, 5) // => [5, 4, 3, 2]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5396">lamb.js, line 5396</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5412">lamb.js, line 5412</a>
     </li></ul></dd>
     
 
@@ -6148,7 +6111,7 @@ happens immediately.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5424">lamb.js, line 5424</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5440">lamb.js, line 5440</a>
     </li></ul></dd>
     
 
@@ -6320,7 +6283,7 @@ subtrahend to build a function waiting for the minuend.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2596">lamb.js, line 2596</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2598">lamb.js, line 2598</a>
     </li></ul></dd>
     
 
@@ -6509,7 +6472,7 @@ array-like objects. To determine uniqueness the function uses the
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3796">lamb.js, line 3796</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3799">lamb.js, line 3799</a>
     </li></ul></dd>
     
 
@@ -6522,6 +6485,8 @@ array-like objects. To determine uniqueness the function uses the
             <li><a href="module-lamb.html#intersection">intersection</a></li>
         
             <li><a href="module-lamb.html#union">union</a>, <a href="module-lamb.html#unionBy">unionBy</a></li>
+        
+            <li><a href="module-lamb.html#pull">pull</a>, <a href="module-lamb.html#pullFrom">pullFrom</a></li>
         </ul>
     </dd>
     
@@ -6701,7 +6666,7 @@ _.difference(a1, a3) // => []</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2611">lamb.js, line 2611</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2613">lamb.js, line 2613</a>
     </li></ul></dd>
     
 
@@ -6863,7 +6828,7 @@ build a function waiting for the dividend.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2632">lamb.js, line 2632</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2634">lamb.js, line 2634</a>
     </li></ul></dd>
     
 
@@ -7030,7 +6995,7 @@ negative <code>n</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3822">lamb.js, line 3822</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3825">lamb.js, line 3825</a>
     </li></ul></dd>
     
 
@@ -7222,7 +7187,7 @@ Note that, being this only a shortcut for a specific use case of <a href="module
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3845">lamb.js, line 3845</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3848">lamb.js, line 3848</a>
     </li></ul></dd>
     
 
@@ -7392,7 +7357,7 @@ from an array or array-like object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3868">lamb.js, line 3868</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3871">lamb.js, line 3871</a>
     </li></ul></dd>
     
 
@@ -7561,7 +7526,7 @@ dropWhileIsEven([2, 4, 7, 8]) // => [7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5723">lamb.js, line 5723</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5755">lamb.js, line 5755</a>
     </li></ul></dd>
     
 
@@ -7732,7 +7697,7 @@ to build a function waiting for the array-like to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1306">lamb.js, line 1306</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1328">lamb.js, line 1328</a>
     </li></ul></dd>
     
 
@@ -7930,7 +7895,7 @@ this function won't skip deleted or unassigned indexes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1283">lamb.js, line 1283</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1305">lamb.js, line 1305</a>
     </li></ul></dd>
     
 
@@ -8137,7 +8102,7 @@ Note that unlike the native array method this function doesn't skip unassigned o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1328">lamb.js, line 1328</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1350">lamb.js, line 1350</a>
     </li></ul></dd>
     
 
@@ -8304,7 +8269,7 @@ to build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1359">lamb.js, line 1359</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1381">lamb.js, line 1381</a>
     </li></ul></dd>
     
 
@@ -8495,7 +8460,7 @@ the search is successful. Returns <code>undefined</code> otherwise.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1384">lamb.js, line 1384</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1406">lamb.js, line 1406</a>
     </li></ul></dd>
     
 
@@ -8690,7 +8655,7 @@ index if the search is successful. Returns <code>-1</code> otherwise.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1413">lamb.js, line 1413</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1435">lamb.js, line 1435</a>
     </li></ul></dd>
     
 
@@ -8862,7 +8827,7 @@ to build a function expecting the array-like object to search.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1445">lamb.js, line 1445</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1467">lamb.js, line 1467</a>
     </li></ul></dd>
     
 
@@ -9030,7 +8995,7 @@ to search.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1466">lamb.js, line 1466</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1488">lamb.js, line 1488</a>
     </li></ul></dd>
     
 
@@ -9221,7 +9186,7 @@ be concatenated, rather than pushed, to the final result.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3893">lamb.js, line 3893</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3896">lamb.js, line 3896</a>
     </li></ul></dd>
     
 
@@ -9391,7 +9356,7 @@ to build a function expecting the array to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3927">lamb.js, line 3927</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3930">lamb.js, line 3930</a>
     </li></ul></dd>
     
 
@@ -9557,7 +9522,7 @@ wordsToCharArray(["foo", "bar"]) // => ["f", "o", "o", "b", "a", "r"]</code></pr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3945">lamb.js, line 3945</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3948">lamb.js, line 3948</a>
     </li></ul></dd>
     
 
@@ -9723,7 +9688,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5451">lamb.js, line 5451</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5467">lamb.js, line 5467</a>
     </li></ul></dd>
     
 
@@ -9902,7 +9867,7 @@ Note that unlike the native array method this function doesn't skip unassigned o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1487">lamb.js, line 1487</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1509">lamb.js, line 1509</a>
     </li></ul></dd>
     
 
@@ -10066,7 +10031,7 @@ In case of duplicate keys the last key / value pair is used.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5741">lamb.js, line 5741</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5773">lamb.js, line 5773</a>
     </li></ul></dd>
     
 
@@ -10276,7 +10241,7 @@ The values being iterated, and received by the iteratee, are the results generat
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2653">lamb.js, line 2653</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2655">lamb.js, line 2655</a>
     </li></ul></dd>
     
 
@@ -10449,7 +10414,7 @@ Thanks for this *beautiful* one-liner (never liked your "unbind" naming choice, 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L147">lamb.js, line 147</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L138">lamb.js, line 138</a>
     </li></ul></dd>
     
 
@@ -10611,7 +10576,7 @@ passed or if the index is out of bounds.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5481">lamb.js, line 5481</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5497">lamb.js, line 5497</a>
     </li></ul></dd>
     
 
@@ -10649,15 +10614,15 @@ passed or if the index is out of bounds.
 
     <h5>Example</h5>
     
-    <pre class="javascript"><code>var getFirstArg = getArgAt(0);
-var getLastArg = getArgAt(-1);
+    <pre class="javascript"><code>var getFirstArg = _.getArgAt(0);
+var getLastArg = _.getArgAt(-1);
 
 getFirstArg(1, 2, 3) // => 1
 getLastArg(1, 2, 3) // => 3
 
-getArgAt()(1, 2, 3) // => undefined
-getArgAt(6)(1, 2, 3) // => undefined
-getArgAt(1)() // => undefined</code></pre>
+_.getArgAt()(1, 2, 3) // => undefined
+_.getArgAt(6)(1, 2, 3) // => undefined
+_.getArgAt(1)() // => undefined</code></pre>
 
 
 
@@ -10774,7 +10739,7 @@ to build a function expecting the array-like object holding the element we want 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3110">lamb.js, line 3110</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3112">lamb.js, line 3112</a>
     </li></ul></dd>
     
 
@@ -10970,7 +10935,7 @@ _.getAt(-3)("foo") // => "f"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3129">lamb.js, line 3129</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3131">lamb.js, line 3131</a>
     </li></ul></dd>
     
 
@@ -11165,7 +11130,7 @@ for any other value.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3156">lamb.js, line 3156</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3158">lamb.js, line 3158</a>
     </li></ul></dd>
     
 
@@ -11333,7 +11298,7 @@ the property.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3183">lamb.js, line 3183</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3185">lamb.js, line 3185</a>
     </li></ul></dd>
     
 
@@ -11557,7 +11522,7 @@ path and separator, expecting the object to act upon.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3214">lamb.js, line 3214</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3216">lamb.js, line 3216</a>
     </li></ul></dd>
     
 
@@ -11831,7 +11796,7 @@ the last example explains this particular case.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3267">lamb.js, line 3267</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3269">lamb.js, line 3269</a>
     </li></ul></dd>
     
 
@@ -12051,7 +12016,7 @@ criterion to generate keys and values.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4735">lamb.js, line 4735</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4749">lamb.js, line 4749</a>
     </li></ul></dd>
     
 
@@ -12125,7 +12090,7 @@ var personsByCity = _.group(persons, getCity);
 
         <p class="code-caption">Adding a custom value for missing keys:</p>
     
-    <pre class="javascript"><code>var getCityOrUnknown = _.adapter(getCity, _.always("Unknown"));
+    <pre class="javascript"><code>var getCityOrUnknown = _.adapter([getCity, _.always("Unknown")]);
 
 var personsByCity = _.group(persons, getCityOrUnknown);
 
@@ -12258,7 +12223,7 @@ to build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4783">lamb.js, line 4783</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4797">lamb.js, line 4797</a>
     </li></ul></dd>
     
 
@@ -12487,7 +12452,7 @@ Wraps the native <code>&gt;</code> operator within a function.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2137">lamb.js, line 2137</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2139">lamb.js, line 2139</a>
     </li></ul></dd>
     
 
@@ -12708,7 +12673,7 @@ Regarding equality, beware that this is simply a wrapper for the native
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2163">lamb.js, line 2163</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2165">lamb.js, line 2165</a>
     </li></ul></dd>
     
 
@@ -12902,7 +12867,7 @@ _.gte(-0, 0) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6483">lamb.js, line 6483</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6519">lamb.js, line 6519</a>
     </li></ul></dd>
     
 
@@ -13077,7 +13042,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6512">lamb.js, line 6512</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6548">lamb.js, line 6548</a>
     </li></ul></dd>
     
 
@@ -13271,7 +13236,7 @@ The value check is made with the <a href="module-lamb.html#areSVZ">"SameValueZer
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6531">lamb.js, line 6531</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6567">lamb.js, line 6567</a>
     </li></ul></dd>
     
 
@@ -13459,7 +13424,7 @@ the prototype chain.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6562">lamb.js, line 6562</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6598">lamb.js, line 6598</a>
     </li></ul></dd>
     
 
@@ -13635,7 +13600,7 @@ Returns a function expecting the object to check against the given key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6585">lamb.js, line 6585</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6621">lamb.js, line 6621</a>
     </li></ul></dd>
     
 
@@ -13897,7 +13862,7 @@ Note that the function will check even non-enumerable properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6623">lamb.js, line 6623</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6659">lamb.js, line 6659</a>
     </li></ul></dd>
     
 
@@ -14079,7 +14044,7 @@ Just a common use case of <a href="module-lamb.html#getAt">getAt</a> exposed for
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3288">lamb.js, line 3288</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3290">lamb.js, line 3290</a>
     </li></ul></dd>
     
 
@@ -14244,7 +14209,7 @@ _.head([]) // => undefined</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L163">lamb.js, line 163</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L154">lamb.js, line 154</a>
     </li></ul></dd>
     
 
@@ -14414,7 +14379,7 @@ depending on the environment and the <a href="https://developer.mozilla.org/en-U
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5781">lamb.js, line 5781</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5813">lamb.js, line 5813</a>
     </li></ul></dd>
     
 
@@ -14610,7 +14575,7 @@ duplicate keys, otherwise only the last evaluated element will be in the result.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4836">lamb.js, line 4836</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4850">lamb.js, line 4850</a>
     </li></ul></dd>
     
 
@@ -14809,7 +14774,7 @@ to build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4870">lamb.js, line 4870</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4884">lamb.js, line 4884</a>
     </li></ul></dd>
     
 
@@ -14988,7 +14953,7 @@ var indexedUsers = indexByID(users);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3963">lamb.js, line 3963</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3966">lamb.js, line 3966</a>
     </li></ul></dd>
     
 
@@ -15204,7 +15169,7 @@ the element will be inserted at the start of the resulting array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3991">lamb.js, line 3991</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3994">lamb.js, line 3994</a>
     </li></ul></dd>
     
 
@@ -15398,7 +15363,7 @@ expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4021">lamb.js, line 4021</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4024">lamb.js, line 4024</a>
     </li></ul></dd>
     
 
@@ -15461,7 +15426,7 @@ _.insertAt(-10, 99)(arr) // => [99, 1, 2, 3, 4, 5]</code></pre>
 
     
 
-    <h4 class="name" id="intersection"><span class="type-signature"></span>intersection<span class="signature">(&hellip;arrayLike)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>}</span>
+    <h4 class="name" id="intersection"><span class="type-signature"></span>intersection<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>}</span>
 
 <span class="category-label"><a href="#cat-Array">Array</a></span>
 
@@ -15472,7 +15437,8 @@ _.insertAt(-10, 99)(arr) // => [99, 1, 2, 3, 4, 5]</code></pre>
 
 
 <div class="description">
-    Returns an array of every unique item that is included in all given arrays or array-like objects.<br/>
+    Returns an array of every unique item that is included in all two given arrays
+or array-like objects.<br/>
 Note that this function uses the <a href="module-lamb.html#areSVZ">"SameValueZero" comparison</a>.
 </div>
 
@@ -15497,8 +15463,6 @@ Note that this function uses the <a href="module-lamb.html#areSVZ">"SameValueZer
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -15511,7 +15475,7 @@ Note that this function uses the <a href="module-lamb.html#areSVZ">"SameValueZer
 
         <tr>
             
-                <td class="name"><code>arrayLike</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -15524,15 +15488,28 @@ Note that this function uses the <a href="module-lamb.html#areSVZ">"SameValueZer
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#ArrayLike">ArrayLike</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -15581,7 +15558,7 @@ Note that this function uses the <a href="module-lamb.html#areSVZ">"SameValueZer
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4043">lamb.js, line 4043</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4048">lamb.js, line 4048</a>
     </li></ul></dd>
     
 
@@ -15804,7 +15781,7 @@ See also <a href="module-lamb.html#generic">generic</a> to create functions out 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5517">lamb.js, line 5517</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5533">lamb.js, line 5533</a>
     </li></ul></dd>
     
 
@@ -15979,7 +15956,7 @@ function will return <code>undefined</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5541">lamb.js, line 5541</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5557">lamb.js, line 5557</a>
     </li></ul></dd>
     
 
@@ -16150,7 +16127,7 @@ to perform a "SameValueZero" comparison.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2203">lamb.js, line 2203</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2205">lamb.js, line 2205</a>
     </li></ul></dd>
     
 
@@ -16334,7 +16311,7 @@ but with a difference: it will return <code>true</code> even for Number object's
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2682">lamb.js, line 2682</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2684">lamb.js, line 2684</a>
     </li></ul></dd>
     
 
@@ -16505,7 +16482,7 @@ is greater than the one received by the predicate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2227">lamb.js, line 2227</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2229">lamb.js, line 2229</a>
     </li></ul></dd>
     
 
@@ -16687,7 +16664,7 @@ is greater than or equal to the one received by the predicate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2252">lamb.js, line 2252</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2254">lamb.js, line 2254</a>
     </li></ul></dd>
     
 
@@ -16885,7 +16862,7 @@ See also <a href="module-lamb.html#contains">contains</a> for a curried version 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1515">lamb.js, line 1515</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1537">lamb.js, line 1537</a>
     </li></ul></dd>
     
 
@@ -17056,7 +17033,7 @@ Wraps in a convenient way the native
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2970">lamb.js, line 2970</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2972">lamb.js, line 2972</a>
     </li></ul></dd>
     
 
@@ -17232,7 +17209,7 @@ but with a difference: it will return <code>true</code> even for Number object's
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2706">lamb.js, line 2706</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2708">lamb.js, line 2708</a>
     </li></ul></dd>
     
 
@@ -17410,7 +17387,7 @@ is less than the one received by the predicate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2276">lamb.js, line 2276</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2278">lamb.js, line 2278</a>
     </li></ul></dd>
     
 
@@ -17592,7 +17569,7 @@ is less than or equal to the one received by the predicate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2301">lamb.js, line 2301</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2303">lamb.js, line 2303</a>
     </li></ul></dd>
     
 
@@ -17764,7 +17741,7 @@ isNegativeOrZero(-3) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2993">lamb.js, line 2993</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2995">lamb.js, line 2995</a>
     </li></ul></dd>
     
 
@@ -17931,7 +17908,7 @@ _.isNil() // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3011">lamb.js, line 3011</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3013">lamb.js, line 3013</a>
     </li></ul></dd>
     
 
@@ -18099,7 +18076,7 @@ but with a difference: it will return <code>true</code> even for Number object's
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2736">lamb.js, line 2736</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2738">lamb.js, line 2738</a>
     </li></ul></dd>
     
 
@@ -18274,7 +18251,7 @@ to perform a "SameValue" comparison.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2339">lamb.js, line 2339</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2341">lamb.js, line 2341</a>
     </li></ul></dd>
     
 
@@ -18456,7 +18433,7 @@ isReallyNaN("foo") // => false</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3030">lamb.js, line 3030</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3032">lamb.js, line 3032</a>
     </li></ul></dd>
     
 
@@ -18620,7 +18597,7 @@ isString(new String("Hi")) // => true</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3050">lamb.js, line 3050</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3052">lamb.js, line 3052</a>
     </li></ul></dd>
     
 
@@ -18788,7 +18765,7 @@ object for any value but <code>null</code> and <code>undefined</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5810">lamb.js, line 5810</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5842">lamb.js, line 5842</a>
     </li></ul></dd>
     
 
@@ -18982,7 +18959,7 @@ on an object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6652">lamb.js, line 6652</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6688">lamb.js, line 6688</a>
     </li></ul></dd>
     
 
@@ -19151,7 +19128,7 @@ Just a common use case of <a href="module-lamb.html#getAt">getAt</a> exposed for
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3307">lamb.js, line 3307</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3309">lamb.js, line 3309</a>
     </li></ul></dd>
     
 
@@ -19329,7 +19306,7 @@ Behaves like ES6's <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1541">lamb.js, line 1541</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1563">lamb.js, line 1563</a>
     </li></ul></dd>
     
 
@@ -19525,7 +19502,7 @@ Wraps the native <code>&lt;</code> operator within a function.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2369">lamb.js, line 2369</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2371">lamb.js, line 2371</a>
     </li></ul></dd>
     
 
@@ -19746,7 +19723,7 @@ Regarding equality, beware that this is simply a wrapper for the native
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2395">lamb.js, line 2395</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2397">lamb.js, line 2397</a>
     </li></ul></dd>
     
 
@@ -19944,7 +19921,7 @@ If more values than keys are supplied, the extra values will be ignored.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5832">lamb.js, line 5832</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5864">lamb.js, line 5864</a>
     </li></ul></dd>
     
 
@@ -20133,7 +20110,7 @@ Note that unlike the native array method this function doesn't skip unassigned o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1561">lamb.js, line 1561</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1583">lamb.js, line 1583</a>
     </li></ul></dd>
     
 
@@ -20322,7 +20299,7 @@ to the original one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5567">lamb.js, line 5567</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5583">lamb.js, line 5583</a>
     </li></ul></dd>
     
 
@@ -20515,7 +20492,7 @@ to all enumerable properties of the source one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5862">lamb.js, line 5862</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5894">lamb.js, line 5894</a>
     </li></ul></dd>
     
 
@@ -20683,7 +20660,7 @@ object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5898">lamb.js, line 5898</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5930">lamb.js, line 5930</a>
     </li></ul></dd>
     
 
@@ -20852,7 +20829,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1590">lamb.js, line 1590</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1612">lamb.js, line 1612</a>
     </li></ul></dd>
     
 
@@ -20911,7 +20888,7 @@ getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]</code></pre>
 
     
 
-    <h4 class="name" id="merge"><span class="type-signature"></span>merge<span class="signature">(&hellip;source)</span><span class="type-signature"> &rarr; {<a href="types.html#Object">Object</a>}</span>
+    <h4 class="name" id="merge"><span class="type-signature"></span>merge<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#Object">Object</a>}</span>
 
 <span class="category-label"><a href="#cat-Object">Object</a></span>
 
@@ -20923,7 +20900,7 @@ getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]</code></pre>
 
 <div class="description">
     Merges the enumerable properties of the provided sources into a new object.<br/>
-In case of key homonymy each source has precedence over the previous one.
+In case of key homonymy the last source has precedence over the first.
 </div>
 
 
@@ -20947,8 +20924,6 @@ In case of key homonymy each source has precedence over the previous one.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -20961,7 +20936,7 @@ In case of key homonymy each source has precedence over the previous one.
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -20974,15 +20949,28 @@ In case of key homonymy each source has precedence over the previous one.
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#Object">Object</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -21031,7 +21019,7 @@ In case of key homonymy each source has precedence over the previous one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5921">lamb.js, line 5921</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5955">lamb.js, line 5955</a>
     </li></ul></dd>
     
 
@@ -21076,7 +21064,7 @@ In case of key homonymy each source has precedence over the previous one.
 
     <h5>Examples</h5>
     
-    <pre class="javascript"><code>_.merge({a: 1}, {b: 3, c: 4}, {b: 5}) // => {a: 1, b: 5, c: 4}</code></pre>
+    <pre class="javascript"><code>_.merge({a: 1, b: 3}, {b: 5, c: 4}) // => {a: 1, b: 5, c: 4}</code></pre>
 
         <p class="code-caption">Array-like objects will be transformed to objects with numbers as keys:</p>
     
@@ -21085,7 +21073,8 @@ _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}</code></pre>
 
         <p class="code-caption">Every other non-nil value will be treated as an empty object:</p>
     
-    <pre class="javascript"><code>_.merge({a: 2}, 99, NaN) // => {a: 2}</code></pre>
+    <pre class="javascript"><code>_.merge({a: 2}, 99) // => {a: 2}
+_.merge({a: 2}, NaN) // => {a: 2}</code></pre>
 
 
 
@@ -21094,7 +21083,7 @@ _.merge("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}</code></pre>
 
     
 
-    <h4 class="name" id="mergeOwn"><span class="type-signature"></span>mergeOwn<span class="signature">(&hellip;source)</span><span class="type-signature"> &rarr; {<a href="types.html#Object">Object</a>}</span>
+    <h4 class="name" id="mergeOwn"><span class="type-signature"></span>mergeOwn<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#Object">Object</a>}</span>
 
 <span class="category-label"><a href="#cat-Object">Object</a></span>
 
@@ -21130,8 +21119,6 @@ sources are taken into account.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -21144,7 +21131,7 @@ sources are taken into account.
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -21157,15 +21144,28 @@ sources are taken into account.
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#Object">Object</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -21214,7 +21214,7 @@ sources are taken into account.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5952">lamb.js, line 5952</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5988">lamb.js, line 5988</a>
     </li></ul></dd>
     
 
@@ -21278,7 +21278,8 @@ _.mergeOwn("foo", {a: 2}) // => {"0": "f", "1": "o", "2": "o", a: 2}</code></pre
 
         <p class="code-caption">Every other non-nil value will be treated as an empty object:</p>
     
-    <pre class="javascript"><code>_.mergeOwn({a: 2}, 99, NaN) // => {a: 2}</code></pre>
+    <pre class="javascript"><code>_.mergeOwn({a: 2}, 99) // => {a: 2}
+_.mergeOwn({a: 2}, NaN) // => {a: 2}</code></pre>
 
 
 
@@ -21421,7 +21422,7 @@ a truncated one, hence the sign of the dividend is not kept, unlike the
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2762">lamb.js, line 2762</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2764">lamb.js, line 2764</a>
     </li></ul></dd>
     
 
@@ -21611,7 +21612,7 @@ _.remainder(-5, 3) // => -2</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2779">lamb.js, line 2779</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2781">lamb.js, line 2781</a>
     </li></ul></dd>
     
 
@@ -21772,7 +21773,7 @@ _.remainder(-5, 3) // => -2</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2798">lamb.js, line 2798</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2800">lamb.js, line 2800</a>
     </li></ul></dd>
     
 
@@ -21935,7 +21936,7 @@ double(5) // => 10</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2414">lamb.js, line 2414</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2416">lamb.js, line 2416</a>
     </li></ul></dd>
     
 
@@ -22095,7 +22096,7 @@ See also <a href="module-lamb.html#fromPairs">fromPairs</a> for the reverse oper
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5976">lamb.js, line 5976</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6012">lamb.js, line 6012</a>
     </li></ul></dd>
     
 
@@ -22267,7 +22268,7 @@ taken into account.<br/>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5998">lamb.js, line 5998</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6034">lamb.js, line 6034</a>
     </li></ul></dd>
     
 
@@ -22482,7 +22483,7 @@ _.ownValues(foo) // => [3]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6869">lamb.js, line 6869</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6905">lamb.js, line 6905</a>
     </li></ul></dd>
     
 
@@ -22695,7 +22696,7 @@ _.padLeft("", "-", 5) // => "-----"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6893">lamb.js, line 6893</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6929">lamb.js, line 6929</a>
     </li></ul></dd>
     
 
@@ -22864,7 +22865,7 @@ properties and <a href="module-lamb.html#fromPairs">fromPairs</a> for the revers
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6016">lamb.js, line 6016</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6052">lamb.js, line 6052</a>
     </li></ul></dd>
     
 
@@ -23054,7 +23055,7 @@ You can use a custom placeholder by setting the
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L198">lamb.js, line 198</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L189">lamb.js, line 189</a>
     </li></ul></dd>
     
 
@@ -23259,7 +23260,7 @@ the resulting function.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L254">lamb.js, line 254</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L245">lamb.js, line 245</a>
     </li></ul></dd>
     
 
@@ -23466,7 +23467,7 @@ the others with the remaining elements.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4072">lamb.js, line 4072</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4078">lamb.js, line 4078</a>
     </li></ul></dd>
     
 
@@ -23631,7 +23632,7 @@ predicate to build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4114">lamb.js, line 4114</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4120">lamb.js, line 4120</a>
     </li></ul></dd>
     
 
@@ -23865,7 +23866,7 @@ Note that the function will check even non-enumerable properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6691">lamb.js, line 6691</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6727">lamb.js, line 6727</a>
     </li></ul></dd>
     
 
@@ -24136,7 +24137,7 @@ Note that the function will check even non-enumerable properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6721">lamb.js, line 6721</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6757">lamb.js, line 6757</a>
     </li></ul></dd>
     
 
@@ -24406,7 +24407,7 @@ be given to existing object keys.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6754">lamb.js, line 6754</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6790">lamb.js, line 6790</a>
     </li></ul></dd>
     
 
@@ -24602,7 +24603,7 @@ Non existent properties will be ignored.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6036">lamb.js, line 6036</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6072">lamb.js, line 6072</a>
     </li></ul></dd>
     
 
@@ -24770,7 +24771,7 @@ The properties satisfying the predicate will be included in the resulting object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6069">lamb.js, line 6069</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6105">lamb.js, line 6105</a>
     </li></ul></dd>
     
 
@@ -24938,7 +24939,7 @@ a function waiting for the object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6124">lamb.js, line 6124</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6160">lamb.js, line 6160</a>
     </li></ul></dd>
     
 
@@ -25017,7 +25018,7 @@ selectUserInfo(users) // =>
 
     
 
-    <h4 class="name" id="pipe"><span class="type-signature"></span>pipe<span class="signature">(&hellip;fn)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
+    <h4 class="name" id="pipe"><span class="type-signature"></span>pipe<span class="signature">(functions)</span><span class="type-signature"> &rarr; {<a href="types.html#function">function</a>}</span>
 
 <span class="category-label"><a href="#cat-Function">Function</a></span>
 
@@ -25052,8 +25053,6 @@ selectUserInfo(users) // =>
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -25066,28 +25065,18 @@ selectUserInfo(users) // =>
 
         <tr>
             
-                <td class="name"><code>fn</code></td>
+                <td class="name"><code>functions</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="types.html#function">function</a></span>
+<span class="param-type"><a href="types.html#Array">Array</a>.&lt;function()></span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
             
 
             
@@ -25136,7 +25125,7 @@ selectUserInfo(users) // =>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5587">lamb.js, line 5587</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5603">lamb.js, line 5603</a>
     </li></ul></dd>
     
 
@@ -25182,7 +25171,7 @@ selectUserInfo(users) // =>
     <h5>Example</h5>
     
     <pre class="javascript"><code>var square = _.partial(Math.pow, [_, 2]);
-var getMaxAndSquare = _.pipe(Math.max, square);
+var getMaxAndSquare = _.pipe([Math.max, square]);
 
 getMaxAndSquare(3, 5) // => 25</code></pre>
 
@@ -25323,7 +25312,7 @@ getMaxAndSquare(3, 5) // => 25</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4144">lamb.js, line 4144</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4150">lamb.js, line 4150</a>
     </li></ul></dd>
     
 
@@ -25500,7 +25489,7 @@ build a function waiting for the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4170">lamb.js, line 4170</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4176">lamb.js, line 4176</a>
     </li></ul></dd>
     
 
@@ -25577,7 +25566,9 @@ getAges(persons) // => [12, 40, 18, 15]</code></pre>
 a list of values to build a function waiting for an array-like object.<br/>
 The new function will create an array copy of the array-like without
 the specified values.<br/>
-The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZero" comparison</a>.
+The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZero" comparison</a>.<br/>
+See examples in <a href="module-lamb.html#pullFrom">pullFrom</a> about the
+relationship with <a href="module-lamb.html#difference">difference</a>.
 </div>
 
 
@@ -25673,7 +25664,7 @@ The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZ
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4193">lamb.js, line 4193</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4202">lamb.js, line 4202</a>
     </li></ul></dd>
     
 
@@ -25684,6 +25675,8 @@ The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZ
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#pullFrom">pullFrom</a></li>
+        
+            <li><a href="module-lamb.html#difference">difference</a></li>
         </ul>
     </dd>
     
@@ -25863,7 +25856,7 @@ The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZ
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4212">lamb.js, line 4212</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4229">lamb.js, line 4229</a>
     </li></ul></dd>
     
 
@@ -25874,6 +25867,8 @@ The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZ
     <dd class="tag-see">
         <ul>
             <li><a href="module-lamb.html#pull">pull</a></li>
+        
+            <li><a href="module-lamb.html#difference">difference</a></li>
         </ul>
     </dd>
     
@@ -25906,11 +25901,18 @@ The equality test is made with the <a href="module-lamb.html#areSVZ">"SameValueZ
     
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
     <pre class="javascript"><code>var arr = [1, 2, 3, 4, 5];
 
 _.pullFrom(arr, [2, 5]) // => [1, 3, 4]</code></pre>
+
+        <p class="code-caption">It's not the same as <a href="module-lamb.html#difference">difference</a>:</p>
+    
+    <pre class="javascript"><code>var arr = [1,1,2,3,4,4,5];
+
+_.pullFrom(arr, [1, 2]) // => [3, 4, 4, 5]
+_.difference(arr, [1, 2]) // => [3, 4, 5]</code></pre>
 
 
 
@@ -26052,7 +26054,7 @@ For example <code>randomInt(0.1, 1.2)</code> could be <code>2</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2816">lamb.js, line 2816</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2818">lamb.js, line 2818</a>
     </li></ul></dd>
     
 
@@ -26297,7 +26299,7 @@ but not including, <code>limit</code>, using the given <code>step</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2845">lamb.js, line 2845</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2847">lamb.js, line 2847</a>
     </li></ul></dd>
     
 
@@ -26545,7 +26547,7 @@ Note that unlike the native array method this function doesn't skip unassigned o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1610">lamb.js, line 1610</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1632">lamb.js, line 1632</a>
     </li></ul></dd>
     
 
@@ -26784,7 +26786,7 @@ Note that unlike the native array method this function doesn't skip unassigned o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1627">lamb.js, line 1627</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1649">lamb.js, line 1649</a>
     </li></ul></dd>
     
 
@@ -26987,7 +26989,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1650">lamb.js, line 1650</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1672">lamb.js, line 1672</a>
     </li></ul></dd>
     
 
@@ -27199,7 +27201,7 @@ build a function expecting the array-like object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1673">lamb.js, line 1673</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1695">lamb.js, line 1695</a>
     </li></ul></dd>
     
 
@@ -27391,7 +27393,7 @@ keeps the sign of the dividend and may lead to some unexpected results.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2884">lamb.js, line 2884</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2886">lamb.js, line 2886</a>
     </li></ul></dd>
     
 
@@ -27581,7 +27583,7 @@ indicated in the provided lookup table.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6148">lamb.js, line 6148</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6184">lamb.js, line 6184</a>
     </li></ul></dd>
     
 
@@ -27752,7 +27754,7 @@ _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}</code><
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6199">lamb.js, line 6199</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6235">lamb.js, line 6235</a>
     </li></ul></dd>
     
 
@@ -27929,7 +27931,7 @@ a function expecting the object whose keys we want to <a href="module-lamb.html#
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6223">lamb.js, line 6223</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6259">lamb.js, line 6259</a>
     </li></ul></dd>
     
 
@@ -28126,7 +28128,7 @@ but returns an empty string instead.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6915">lamb.js, line 6915</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6951">lamb.js, line 6951</a>
     </li></ul></dd>
     
 
@@ -28282,7 +28284,7 @@ _.repeat("Hello", 3) // => "HelloHelloHello"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1690">lamb.js, line 1690</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1712">lamb.js, line 1712</a>
     </li></ul></dd>
     
 
@@ -28464,7 +28466,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4236">lamb.js, line 4236</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4253">lamb.js, line 4253</a>
     </li></ul></dd>
     
 
@@ -28630,7 +28632,7 @@ Uses the given amount to build a function expecting the array to rotate by that 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4260">lamb.js, line 4260</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4277">lamb.js, line 4277</a>
     </li></ul></dd>
     
 
@@ -28822,7 +28824,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3336">lamb.js, line 3336</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3338">lamb.js, line 3338</a>
     </li></ul></dd>
     
 
@@ -29047,7 +29049,7 @@ of the <code>source</code>'s one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3367">lamb.js, line 3367</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3369">lamb.js, line 3369</a>
     </li></ul></dd>
     
 
@@ -29265,7 +29267,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3398">lamb.js, line 3398</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3400">lamb.js, line 3400</a>
     </li></ul></dd>
     
 
@@ -29457,7 +29459,7 @@ how the copy of the source object is made.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3424">lamb.js, line 3424</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3426">lamb.js, line 3426</a>
     </li></ul></dd>
     
 
@@ -29717,7 +29719,7 @@ See <a href="module-lamb.html#setPathIn">setPathIn</a> for more details and exam
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3446">lamb.js, line 3446</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3448">lamb.js, line 3448</a>
     </li></ul></dd>
     
 
@@ -30025,7 +30027,7 @@ use custom path separators.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3505">lamb.js, line 3505</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3507">lamb.js, line 3507</a>
     </li></ul></dd>
     
 
@@ -30216,7 +30218,7 @@ var newUser = _.setPathIn(user, "scores.0.value", 8);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4278">lamb.js, line 4278</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4295">lamb.js, line 4295</a>
     </li></ul></dd>
     
 
@@ -30405,7 +30407,7 @@ _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6247">lamb.js, line 6247</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6283">lamb.js, line 6283</a>
     </li></ul></dd>
     
 
@@ -30574,7 +30576,7 @@ The properties satisfying the predicate will be omitted in the resulting object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6284">lamb.js, line 6284</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6320">lamb.js, line 6320</a>
     </li></ul></dd>
     
 
@@ -30742,7 +30744,7 @@ a function waiting for the object to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6323">lamb.js, line 6323</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6359">lamb.js, line 6359</a>
     </li></ul></dd>
     
 
@@ -30980,7 +30982,7 @@ slice to the end of the array-like.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1726">lamb.js, line 1726</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1748">lamb.js, line 1748</a>
     </li></ul></dd>
     
 
@@ -31173,7 +31175,7 @@ slice to the end of the array-like.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1774">lamb.js, line 1774</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1796">lamb.js, line 1796</a>
     </li></ul></dd>
     
 
@@ -31342,7 +31344,7 @@ build a function waiting for the array-like to act upon.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1835">lamb.js, line 1835</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1857">lamb.js, line 1857</a>
     </li></ul></dd>
     
 
@@ -31538,7 +31540,7 @@ this function won't skip deleted or unassigned indexes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1812">lamb.js, line 1812</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L1834">lamb.js, line 1834</a>
     </li></ul></dd>
     
 
@@ -31786,7 +31788,7 @@ they will be compared as strings.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4941">lamb.js, line 4941</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4955">lamb.js, line 4955</a>
     </li></ul></dd>
     
 
@@ -32089,7 +32091,7 @@ used to sort the array.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5005">lamb.js, line 5005</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5019">lamb.js, line 5019</a>
     </li></ul></dd>
     
 
@@ -32347,7 +32349,7 @@ value to be passed to the comparer.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5045">lamb.js, line 5045</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5059">lamb.js, line 5059</a>
     </li></ul></dd>
     
 
@@ -32568,7 +32570,7 @@ value to be passed to the comparer.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5065">lamb.js, line 5065</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5079">lamb.js, line 5079</a>
     </li></ul></dd>
     
 
@@ -32759,7 +32761,7 @@ See <a href="module-lamb.html#sort">sort</a> for more examples.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5090">lamb.js, line 5090</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5104">lamb.js, line 5104</a>
     </li></ul></dd>
     
 
@@ -32948,7 +32950,7 @@ sortAsNumbers(weights) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2901">lamb.js, line 2901</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2903">lamb.js, line 2903</a>
     </li></ul></dd>
     
 
@@ -33132,7 +33134,7 @@ sortAsNumbers(weights) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2918">lamb.js, line 2918</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2920">lamb.js, line 2920</a>
     </li></ul></dd>
     
 
@@ -33293,7 +33295,7 @@ sortAsNumbers(weights) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4296">lamb.js, line 4296</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4313">lamb.js, line 4313</a>
     </li></ul></dd>
     
 
@@ -33461,7 +33463,7 @@ negative <code>n</code>.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4318">lamb.js, line 4318</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4335">lamb.js, line 4335</a>
     </li></ul></dd>
     
 
@@ -33653,7 +33655,7 @@ Note that, being this a shortcut for a common use case of <a href="module-lamb.h
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4341">lamb.js, line 4341</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4358">lamb.js, line 4358</a>
     </li></ul></dd>
     
 
@@ -33823,7 +33825,7 @@ an array or array-like object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4364">lamb.js, line 4364</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4381">lamb.js, line 4381</a>
     </li></ul></dd>
     
 
@@ -34017,7 +34019,7 @@ If a "tapper" isn't found the argument is passed as it is.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5608">lamb.js, line 5608</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5640">lamb.js, line 5640</a>
     </li></ul></dd>
     
 
@@ -34185,7 +34187,7 @@ object will be unharmed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6342">lamb.js, line 6342</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6378">lamb.js, line 6378</a>
     </li></ul></dd>
     
 
@@ -34349,7 +34351,7 @@ taken into account.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6365">lamb.js, line 6365</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6401">lamb.js, line 6401</a>
     </li></ul></dd>
     
 
@@ -34520,7 +34522,7 @@ _.tearOwn(foo) // => [["c"], [3]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6937">lamb.js, line 6937</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6973">lamb.js, line 6973</a>
     </li></ul></dd>
     
 
@@ -34702,7 +34704,7 @@ The first call in this case happens as soon as the function is invoked; see also
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5642">lamb.js, line 5642</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5674">lamb.js, line 5674</a>
     </li></ul></dd>
     
 
@@ -34870,7 +34872,7 @@ shortest length.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4398">lamb.js, line 4398</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4415">lamb.js, line 4415</a>
     </li></ul></dd>
     
 
@@ -35048,7 +35050,7 @@ _.transpose(zipped) // => [["a", "b", "c"], [1, 2, 3]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3075">lamb.js, line 3075</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3077">lamb.js, line 3077</a>
     </li></ul></dd>
     
 
@@ -35220,7 +35222,7 @@ exposed for convenience.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5675">lamb.js, line 5675</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L5707">lamb.js, line 5707</a>
     </li></ul></dd>
     
 
@@ -35278,7 +35280,7 @@ _.map(weights, _.unary(parseInt)) // => [2, 10, 1, 7]</code></pre>
 
     
 
-    <h4 class="name" id="union"><span class="type-signature"></span>union<span class="signature">(&hellip;arrayLike)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>}</span>
+    <h4 class="name" id="union"><span class="type-signature"></span>union<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>}</span>
 
 <span class="category-label"><a href="#cat-Array">Array</a></span>
 
@@ -35289,7 +35291,7 @@ _.map(weights, _.unary(parseInt)) // => [2, 10, 1, 7]</code></pre>
 
 
 <div class="description">
-    Returns a list of every unique element present in the given array-like objects.<br/>
+    Returns a list of every unique element present in the two given array-like objects.<br/>
 Uses the <a href="module-lamb.html#areSVZ">"SameValueZero" comparison</a>
 to test the equality of values.<br/>
 When two values are considered equal, the first occurence will be the one included
@@ -35319,8 +35321,6 @@ the comparison or if you have to extract them from complex ones.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -35333,7 +35333,7 @@ the comparison or if you have to extract them from complex ones.
 
         <tr>
             
-                <td class="name"><code>arrayLike</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -35346,15 +35346,28 @@ the comparison or if you have to extract them from complex ones.
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#ArrayLike">ArrayLike</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -35403,7 +35416,7 @@ the comparison or if you have to extract them from complex ones.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4449">lamb.js, line 4449</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4467">lamb.js, line 4467</a>
     </li></ul></dd>
     
 
@@ -35452,8 +35465,8 @@ the comparison or if you have to extract them from complex ones.
 
     <h5>Example</h5>
     
-    <pre class="javascript"><code>_.union([1, 2, 3, 2], [3, 4], [1, 5]) // => [1, 2, 3, 4, 5]
-_.union("abc", "bcd", "cde") // => ["a", "b", "c", "d", "e"]</code></pre>
+    <pre class="javascript"><code>_.union([1, 2, 3, 2], [2, 3, 4]) // => [1, 2, 3, 4]
+_.union("abc", "bcd") // => ["a", "b", "c", "d"]</code></pre>
 
 
 
@@ -35473,13 +35486,13 @@ _.union("abc", "bcd", "cde") // => ["a", "b", "c", "d", "e"]</code></pre>
 
 
 <div class="description">
-    Using the provided iteratee, builds a function that will return an array of the unique elements
-in the provided array-like objects.<br/>
+    Using the provided iteratee to transform values, builds a function that will
+return an array of the unique elements  in the two provided array-like objects.<br/>
 Uses the <a href="module-lamb.html#areSVZ">"SameValueZero" comparison</a>
 to test the equality of values.<br/>
 When two values are considered equal, the first occurence will be the one included
 in the result array.<br/>
-See also <a href="module-lamb.html#union">union</a> if you don't need to transform the values.
+See also <a href="module-lamb.html#union">union</a> if you don't need to compare transformed values.
 </div>
 
 
@@ -35575,7 +35588,7 @@ See also <a href="module-lamb.html#union">union</a> if you don't need to transfo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4473">lamb.js, line 4473</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4491">lamb.js, line 4491</a>
     </li></ul></dd>
     
 
@@ -35748,7 +35761,7 @@ the comparison or if you have to extract them from complex ones.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4496">lamb.js, line 4496</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4514">lamb.js, line 4514</a>
     </li></ul></dd>
     
 
@@ -35916,7 +35929,7 @@ comparison.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4526">lamb.js, line 4526</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4544">lamb.js, line 4544</a>
     </li></ul></dd>
     
 
@@ -36114,7 +36127,7 @@ where its <code>trueFn</code> parameter is the <a href="module-lamb.html#identit
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2445">lamb.js, line 2445</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2447">lamb.js, line 2447</a>
     </li></ul></dd>
     
 
@@ -36312,7 +36325,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3535">lamb.js, line 3535</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3537">lamb.js, line 3537</a>
     </li></ul></dd>
     
 
@@ -36528,7 +36541,7 @@ will delegate the "set action" to <a href="module-lamb.html#setIn">setIn</a>; a 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3569">lamb.js, line 3569</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3571">lamb.js, line 3571</a>
     </li></ul></dd>
     
 
@@ -36751,7 +36764,7 @@ Negative indexes are allowed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3599">lamb.js, line 3599</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3601">lamb.js, line 3601</a>
     </li></ul></dd>
     
 
@@ -36944,7 +36957,7 @@ will delegate the "set action" to <a href="module-lamb.html#setIn">setIn</a>; a 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3623">lamb.js, line 3623</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3625">lamb.js, line 3625</a>
     </li></ul></dd>
     
 
@@ -37206,7 +37219,7 @@ the priority will be given to existing, and enumerable, object keys.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3649">lamb.js, line 3649</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3651">lamb.js, line 3651</a>
     </li></ul></dd>
     
 
@@ -37506,7 +37519,7 @@ the priority will be given to existing, and enumerable, object keys.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3701">lamb.js, line 3701</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L3703">lamb.js, line 3703</a>
     </li></ul></dd>
     
 
@@ -37721,7 +37734,7 @@ var newUser = _.updatePathIn(user, "scores.0.value", inc);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6792">lamb.js, line 6792</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6828">lamb.js, line 6828</a>
     </li></ul></dd>
     
 
@@ -37905,7 +37918,7 @@ _.validate(user2, userCheckers) // =>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6833">lamb.js, line 6833</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6869">lamb.js, line 6869</a>
     </li></ul></dd>
     
 
@@ -38085,7 +38098,7 @@ See also <a href="module-lamb.html#ownValues">ownValues</a> to pick only from th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6383">lamb.js, line 6383</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L6419">lamb.js, line 6419</a>
     </li></ul></dd>
     
 
@@ -38276,7 +38289,7 @@ where its <code>falseFn</code> parameter is the <a href="module-lamb.html#identi
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2476">lamb.js, line 2476</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L2478">lamb.js, line 2478</a>
     </li></ul></dd>
     
 
@@ -38340,7 +38353,7 @@ halveIfEven(6) // => 3</code></pre>
 
     
 
-    <h4 class="name" id="zip"><span class="type-signature"></span>zip<span class="signature">(&hellip;arrayLike)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>.&lt;<a href="types.html#Array">Array</a>>}</span>
+    <h4 class="name" id="zip"><span class="type-signature"></span>zip<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="types.html#Array">Array</a>.&lt;<a href="types.html#Array">Array</a>>}</span>
 
 <span class="category-label"><a href="#cat-Array">Array</a></span>
 
@@ -38351,7 +38364,8 @@ halveIfEven(6) // => 3</code></pre>
 
 
 <div class="description">
-    Builds a list of arrays out of the given array-like objects by pairing items with the same index.<br/>
+    Builds a list of arrays out of the two given array-like objects by pairing items with
+the same index.<br/>
 The received array-like objects will be truncated to the shortest length.
 </div>
 
@@ -38376,8 +38390,6 @@ The received array-like objects will be truncated to the shortest length.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -38390,7 +38402,7 @@ The received array-like objects will be truncated to the shortest length.
 
         <tr>
             
-                <td class="name"><code>arrayLike</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -38403,15 +38415,28 @@ The received array-like objects will be truncated to the shortest length.
             </td>
 
             
-                <td class="attributes">
-                
 
-                
+            
 
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type"><a href="types.html#ArrayLike">ArrayLike</a></span>
+
+
+            
+            </td>
+
             
 
             
@@ -38460,7 +38485,7 @@ The received array-like objects will be truncated to the shortest length.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4570">lamb.js, line 4570</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4582">lamb.js, line 4582</a>
     </li></ul></dd>
     
 
@@ -38509,9 +38534,8 @@ The received array-like objects will be truncated to the shortest length.
     
     <pre class="javascript"><code>_.zip(
     ["a", "b", "c"],
-    [1, 2, 3],
-    [true, false, true]
-) // => [["a", 1, true], ["b", 2, false], ["c", 3, true]]
+    [1, 2, 3]
+) // => [["a", 1], ["b", 2], ["c", 3]]
 
 _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
 
@@ -38629,7 +38653,7 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4585">lamb.js, line 4585</a>
+        <a href="https://github.com/ascartabelli/lamb/blob/master/dist/lamb.js#L4599">lamb.js, line 4599</a>
     </li></ul></dd>
     
 
@@ -38692,7 +38716,7 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
 
 
     <footer>
-        Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Mar 21 2018 13:28:29 GMT+0100 (CET)
+        Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jul 15 2018 12:19:45 GMT+0200 (GMT+02:00)
     </footer>
 </div>
 
@@ -38714,8 +38738,8 @@ _.zip([1, 2, 3, 4], [5, 6, 7]) // => [[1, 5], [2, 6], [3, 7]]</code></pre>
 <!--[if lt IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 <![endif]-->
-<script src="scripts/highlight.pack.js?1521635309438"></script>
-<script src="scripts/lamb.min.js?1521635309438"></script>
-<script src="scripts/main.js?1521635309438"></script>
+<script src="scripts/highlight.pack.js?1531649985434"></script>
+<script src="scripts/lamb.min.js?1531649985434"></script>
+<script src="scripts/main.js?1531649985434"></script>
 </body>
 </html>
