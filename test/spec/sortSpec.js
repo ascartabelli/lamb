@@ -51,8 +51,8 @@ describe("lamb.sort", function () {
         var surnameDesc = lamb.sorterDesc(lamb.getKey("surname"));
 
         it("should build a sorted copy of the provided array-like object", function () {
-            var sortedNumbersA = lamb.sort(numbers, descSorter);
-            var sortedNumbersB = lamb.sortWith(descSorter)(numbers);
+            var sortedNumbersA = lamb.sort(numbers, [descSorter]);
+            var sortedNumbersB = lamb.sortWith([descSorter])(numbers);
             var numbersResult = [7, 6, 5, 4, 4, 4, 3, 2, 1, 0, -0];
 
             expect(sortedNumbersA).toEqual(numbersResult);
@@ -62,18 +62,18 @@ describe("lamb.sort", function () {
         });
 
         it("should perform a stable ascending sort", function () {
-            var myPersonsA = lamb.sort(persons, nameAsc);
-            var myPersonsB = lamb.sortWith(nameAsc)(persons);
+            var myPersonsA = lamb.sort(persons, [nameAsc]);
+            var myPersonsB = lamb.sortWith([nameAsc])(persons);
 
             expect(myPersonsA).toEqual(personsByNameAsc);
             expect(myPersonsB).toEqual(personsByNameAsc);
         });
 
         it("should perform descending sort as the reverse of an ascending one", function () {
-            var myPersonsA = lamb.sort(persons, nameDesc);
-            var myPersonsB = lamb.sortWith(nameDesc)(persons);
-            var mixedDescA = lamb.sort(mixed, lamb.sorterDesc(Number));
-            var mixedDescB = lamb.sortWith(lamb.sorterDesc(Number))(mixed);
+            var myPersonsA = lamb.sort(persons, [nameDesc]);
+            var myPersonsB = lamb.sortWith([nameDesc])(persons);
+            var mixedDescA = lamb.sort(mixed, [lamb.sorterDesc(Number)]);
+            var mixedDescB = lamb.sortWith([lamb.sorterDesc(Number)])(mixed);
 
             expect(myPersonsA).toEqual(personsByNameReversed);
             expect(myPersonsB).toEqual(personsByNameReversed);
@@ -82,8 +82,8 @@ describe("lamb.sort", function () {
         });
 
         it("should be able to perform multi sorting with the specified criteria", function () {
-            var myPersonsA = lamb.sort(persons, nameAsc, surnameDesc);
-            var myPersonsB = lamb.sortWith(nameAsc, surnameDesc)(persons);
+            var myPersonsA = lamb.sort(persons, [nameAsc, surnameDesc]);
+            var myPersonsB = lamb.sortWith([nameAsc, surnameDesc])(persons);
 
             expect(myPersonsA).toEqual(personsByNameAscSurnameDesc);
             expect(myPersonsB).toEqual(personsByNameAscSurnameDesc);
@@ -94,12 +94,12 @@ describe("lamb.sort", function () {
             var stringNumbersAsc = ["1", "2", "5", "10"];
             var mixedAsObject = [NaN, null, null, {}, void 0, NaN, -100, false, [], "1", 1, "10", "15", "20"];
 
-            expect(lamb.sort(stringNumbers, Number)).toEqual(stringNumbersAsc);
-            expect(lamb.sortWith(Number)(stringNumbers)).toEqual(stringNumbersAsc);
-            expect(lamb.sort(mixed, Number)).toEqual(mixedAsNumbersAsc);
-            expect(lamb.sortWith(Number)(mixed)).toEqual(mixedAsNumbersAsc);
-            expect(lamb.sort(mixed, Object)).toEqual(mixedAsObject);
-            expect(lamb.sortWith(Object)(mixed)).toEqual(mixedAsObject);
+            expect(lamb.sort(stringNumbers, [Number])).toEqual(stringNumbersAsc);
+            expect(lamb.sortWith([Number])(stringNumbers)).toEqual(stringNumbersAsc);
+            expect(lamb.sort(mixed, [Number])).toEqual(mixedAsNumbersAsc);
+            expect(lamb.sortWith([Number])(mixed)).toEqual(mixedAsNumbersAsc);
+            expect(lamb.sort(mixed, [Object])).toEqual(mixedAsObject);
+            expect(lamb.sortWith([Object])(mixed)).toEqual(mixedAsObject);
         });
 
         it("should treat values as strings if different types are received by the default comparer", function () {
@@ -115,10 +115,10 @@ describe("lamb.sort", function () {
             var charsAsc = ["a", "à", "b", "c", "e", "é", "è"];
             var charsDesc = charsAsc.concat().reverse();
 
-            expect(lamb.sort(chars, localeSorter)).toEqual(charsAsc);
-            expect(lamb.sortWith(localeSorter)(chars)).toEqual(charsAsc);
-            expect(lamb.sort(chars, localeSorterDesc)).toEqual(charsDesc);
-            expect(lamb.sortWith(localeSorterDesc)(chars)).toEqual(charsDesc);
+            expect(lamb.sort(chars, [localeSorter])).toEqual(charsAsc);
+            expect(lamb.sortWith([localeSorter])(chars)).toEqual(charsAsc);
+            expect(lamb.sort(chars, [localeSorterDesc])).toEqual(charsDesc);
+            expect(lamb.sortWith([localeSorterDesc])(chars)).toEqual(charsDesc);
         });
 
         it("should use a default ascending sorter if no sorters are supplied", function () {
@@ -133,9 +133,14 @@ describe("lamb.sort", function () {
             expect(lamb.sortWith()("cadb")).toEqual(stringResult);
         });
 
-        it("should build a default ascending sorter if any of the received criteria isn't a function or a Sorter", function () {
+        it("should use a default ascending sorter if the sorters parameter isn't an array or is an empty array", function () {
             var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
             var stringResult = ["a", "b", "c", "d"];
+
+            expect(lamb.sort(numbers, [])).toEqual(numbersResult);
+            expect(lamb.sortWith([])(numbers)).toEqual(numbersResult);
+            expect(lamb.sort("cadb", [])).toEqual(stringResult);
+            expect(lamb.sortWith([])("cadb")).toEqual(stringResult);
 
             nonFunctions.forEach(function (value) {
                 expect(lamb.sort(numbers, value)).toEqual(numbersResult);
@@ -145,12 +150,24 @@ describe("lamb.sort", function () {
             });
         });
 
+        it("should treat non-function values received as sorters as ascending sorters", function () {
+            var numbersResult = [-0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7];
+            var numbersResult2 = [7, 6, 5, 4, 4, 4, 3, 2, 1, -0, 0]; // a descending sort with zeroes swapped
+
+            nonFunctions.forEach(function (value) {
+                expect(lamb.sort(numbers, [value])).toEqual(numbersResult);
+                expect(lamb.sort(numbers, [descSorter, value])).toEqual(numbersResult2);
+                expect(lamb.sortWith([value])(numbers)).toEqual(numbersResult);
+                expect(lamb.sortWith([descSorter, value])(numbers)).toEqual(numbersResult2);
+            });
+        });
+
         it("should consider deleted or unassigned indexes in sparse arrays as `undefined` values", function () {
             var arr = ["b", , "c", void 0, "a"]; // eslint-disable-line no-sparse-arrays
             var result = ["a", "b", "c", void 0, void 0];
 
-            expect(lamb.sort(arr, String)).toEqual(result);
-            expect(lamb.sortWith(String)(arr)).toEqual(result);
+            expect(lamb.sort(arr, [String])).toEqual(result);
+            expect(lamb.sortWith([String])(arr)).toEqual(result);
         });
 
         it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
@@ -199,7 +216,7 @@ describe("lamb.sort", function () {
             var result = lamb.sortedInsert(
                 personsByCaseInsensitiveNameAsc,
                 {name: "marco", surname: "Rossi"},
-                lamb.sorter(getLowerCaseName)
+                [lamb.sorter(getLowerCaseName)]
             );
 
             expect(result).toEqual(expectedResult);
@@ -225,8 +242,7 @@ describe("lamb.sort", function () {
             var result = lamb.sortedInsert(
                 personsByCaseInsensitiveNameAsc,
                 {name: "John", surname: "Foe"},
-                getLowerCaseName,
-                getLowerCaseSurname
+                [getLowerCaseName, getLowerCaseSurname]
             );
 
             expect(result).toEqual(expectedResult);
@@ -238,8 +254,8 @@ describe("lamb.sort", function () {
         });
 
         it("should allow inserting in a descending sorted array", function () {
-            expect(lamb.sortedInsert([3, 2, 1], 1.5, descSorter)).toEqual([3, 2, 1.5, 1]);
-            expect(lamb.sortedInsert([3, 2, 1], 2, descSorter)).toEqual([3, 2, 2, 1]);
+            expect(lamb.sortedInsert([3, 2, 1], 1.5, [descSorter])).toEqual([3, 2, 1.5, 1]);
+            expect(lamb.sortedInsert([3, 2, 1], 2, [descSorter])).toEqual([3, 2, 2, 1]);
         });
 
         it("should be able to insert values at the beginning and at the end of the array", function () {
@@ -257,11 +273,11 @@ describe("lamb.sort", function () {
             var s = "abdefg";
             var result = ["a", "b", "c", "d", "e", "f", "g"];
 
-            expect(lamb.sortedInsert(s, "c", lamb.sorter())).toEqual(result);
+            expect(lamb.sortedInsert(s, "c", [lamb.sorter()])).toEqual(result);
         });
 
         it("should automatically build a default sorting criterion if supplied only with a reader", function () {
-            expect(lamb.sortedInsert([1, 2, 3], "2.5", Number)).toEqual([1, 2, "2.5", 3]);
+            expect(lamb.sortedInsert([1, 2, 3], "2.5", [Number])).toEqual([1, 2, "2.5", 3]);
         });
 
         it("should use a default ascending sorter if no sorters are supplied", function () {
@@ -270,7 +286,7 @@ describe("lamb.sort", function () {
 
         it("should use a default ascending sorter if any of the received criteria isn't a function or a Sorter", function () {
             nonFunctions.forEach(function (value) {
-                expect(lamb.sortedInsert([1, 2, 3], 2.5, value)).toEqual([1, 2, 2.5, 3]);
+                expect(lamb.sortedInsert([1, 2, 3], 2.5, [value])).toEqual([1, 2, 2.5, 3]);
             });
         });
 

@@ -597,7 +597,7 @@ var _makeArrayFlattener = _curry2(function (isDeep, array) {
  * @returns {Sorter[]}
  */
 function _makeCriteria (sorters) {
-    return sorters.length ? map(sorters, _makeCriterion) : [_sorter()];
+    return sorters && sorters.length ? map(sorters, _makeCriterion) : [_sorter()];
 }
 
 /**

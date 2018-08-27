@@ -16,7 +16,7 @@
  *     {"name": "Jane", "surname": "Foe"}
  * ];
  *
- * var personsByName = _.sort(persons, _.getKey("name"));
+ * var personsByName = _.sort(persons, [_.getKey("name")]);
  *
  * // personsByName holds:
  * // [
@@ -27,11 +27,10 @@
  * // ]
  *
  * @example <caption>Stable multi-sort:</caption>
- * var personsByNameAscSurnameDesc = _.sort(
- *     persons,
+ * var personsByNameAscSurnameDesc = _.sort(persons, [
  *     _.getKey("name"),
  *     _.sorterDesc(_.getKey("surname"))
- * );
+ * ]);
  *
  * // personsByNameAscSurnameDesc holds:
  * // [
@@ -45,11 +44,11 @@
  * var localeSorter = new Intl.Collator("it");
  * var chars = ["a", "è", "à", "é", "c", "b", "e"];
  *
- * _.sort(chars, localeSorter) // => ["a", "à", "b", "c", "e", "é", "è"]
+ * _.sort(chars, [localeSorter]) // => ["a", "à", "b", "c", "e", "é", "è"]
  *
  * var localeSorterDesc = _.sorterDesc(_.identity, localeSorter.compare);
  *
- * _.sort(chars, localeSorterDesc) // => ["è", "é", "e", "c", "b", "à", "a"]
+ * _.sort(chars, [localeSorterDesc]) // => ["è", "é", "e", "c", "b", "à", "a"]
  *
  * @memberof module:lamb
  * @category Array
@@ -57,11 +56,11 @@
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @since 0.15.0
  * @param {ArrayLike} arrayLike
- * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
+ * @param {Sorter[]|Function[]} [sorters=[{@link module:lamb.sorter|sorter()}]]
  * @returns {Array}
  */
-function sort (arrayLike) {
-    var criteria = _makeCriteria(_argsTail.apply(null, arguments));
+function sort (arrayLike, sorters) {
+    var criteria = _makeCriteria(sorters);
     var len = _toArrayLength(arrayLike.length);
     var result = Array(len);
 
@@ -120,22 +119,15 @@ function sort (arrayLike) {
  * @since 0.27.0
  * @param {ArrayLike} arrayLike
  * @param {*} element
- * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}] - The sorting criteria
+ * @param {Sorter[]|Function[]} [sorters=[{@link module:lamb.sorter|sorter()}]] - The sorting criteria
  * used to sort the array.
  * @returns {Array}
  */
-function sortedInsert (arrayLike, element) {
+function sortedInsert (arrayLike, element, sorters) {
     var result = slice(arrayLike, 0, arrayLike.length);
 
     if (arguments.length === 1) {
         return result;
-    }
-
-    var len = arguments.length - 2;
-    var sorters = Array(len);
-
-    for (var i = 0; i < len; i++) {
-        sorters[i] = arguments[i + 2];
     }
 
     var criteria = _makeCriteria(sorters);
@@ -196,26 +188,21 @@ var sorterDesc = partial(_sorter, [_, true, _]);
  * See {@link module:lamb.sort|sort} for more examples.
  *
  * @example
- * var sortAsNumbers = _.sortWith(parseFloat);
+ * var sortAsNumbers = _.sortWith([parseFloat]);
  * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  *
  * sortAsNumbers(weights) // => ["1 Kg", "2 Kg", "7 Kg", "10 Kg"]
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.sort|sort}
  * @see {@link module:lamb.sorter|sorter}, {@link module:lamb.sorterDesc|sorterDesc}
  * @since 0.15.0
- * @param {...(Sorter|Function)} [sorter={@link module:lamb.sorter|sorter()}]
+ * @param {Sorter[]|Function[]} [sorters=[{@link module:lamb.sorter|sorter()}]]
  * @returns {Function}
  */
-function sortWith () {
-    var sorters = list.apply(null, arguments);
-
-    return function (arrayLike) {
-        return sort.apply(null, [arrayLike].concat(sorters));
-    };
-}
+var sortWith = _curry2(sort, true);
 
 lamb.sort = sort;
 lamb.sortedInsert = sortedInsert;
