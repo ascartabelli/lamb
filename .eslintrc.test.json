@@ -3,6 +3,9 @@
         "jasmine" : true,
         "node": true
     },
+    "extends": [
+        ".eslintrc.json"
+    ],
     "rules": {
         "brace-style": [
             "error",

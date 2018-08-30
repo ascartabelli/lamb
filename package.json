@@ -33,13 +33,13 @@
   },
   "scripts": {
     "test": "gulp test",
-    "coveralls": "gulp coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coveralls": "gulp test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "tonicExample": "var _ = require('lamb');",
-  "version": "0.57.0-alpha.2",
+  "version": "0.57.0-alpha.3",
   "devDependencies": {
     "coveralls": "^3.0.2",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^5.0.0",
     "gulp-footer": "^2.0.1",

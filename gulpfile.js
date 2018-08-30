@@ -29,12 +29,7 @@ var scripts = [
     "./src/string.js"
 ];
 
-function lint () {
-    return gulp.src(["./dist/lamb.js", "./test/**"])
-        .pipe(eslint())
-        .pipe(eslint.format())
-        .pipe(eslint.failAfterError());
-}
+/* build */
 
 gulp.task("concat", function () {
     var intro = fs.readFileSync("./src/_intro.js", "utf8");
@@ -45,10 +40,56 @@ gulp.task("concat", function () {
         .pipe(indent({tabs: false, amount: 4}))
         .pipe(header(intro, {pkg: pkg}))
         .pipe(footer(outro, {pkg: pkg}))
-        .pipe(gulp.dest("./dist/"));
+        .pipe(gulp.dest("dist"));
 });
 
-gulp.task("coverage", ["concat"], function (cb) {
+gulp.task("minify", gulp.series(
+    "concat",
+    function () {
+        return gulp.src("dist/lamb.js")
+            .pipe(sourcemaps.init())
+            .pipe(uglify({
+                output: {comments: "some"}
+            }))
+            .pipe(rename({extname: ".min.js"}))
+            .pipe(sourcemaps.write("."))
+            .pipe(gulp.dest("dist"));
+    }
+));
+
+/* lint */
+
+function lintWith (settings) {
+    return function () {
+        return gulp.src(settings.inputs)
+            .pipe(eslint(settings.configPath))
+            .pipe(eslint.format())
+            .pipe(eslint.failAfterError());
+    }
+}
+
+gulp.task("lint:code", gulp.series("concat", lintWith({
+    configPath: ".eslintrc.json",
+    inputs: "./dist/lamb.js"
+})));
+
+gulp.task("lint:tests", lintWith({
+    configPath: ".eslintrc.test.json",
+    inputs: "./test/**"
+}));
+
+gulp.task("lint", gulp.series("lint:code", "lint:tests"));
+
+/* test */
+
+gulp.task("test", gulp.series("concat", function () {
+    return gulp.src("./test/spec/*.js")
+        .pipe(jasmine({
+            includeStackTrace: true
+        }));
+}));
+
+gulp.task("test:coverage", gulp.series("concat", function (cb) {
     gulp.src("./dist/lamb.js")
         .pipe(istanbul())
         .pipe(istanbul.hookRequire())
@@ -58,36 +99,20 @@ gulp.task("coverage", ["concat"], function (cb) {
                 .pipe(istanbul.writeReports())
                 .on("end", cb);
         });
-});
+}));
 
-gulp.task("lint", ["concat"], lint);
-
-gulp.task("minify", ["concat"], function () {
-    return gulp.src("./dist/lamb.js")
-        .pipe(sourcemaps.init())
-        .pipe(uglify({
-            output: {comments: "some"}
-        }))
-        .pipe(rename({extname: ".min.js"}))
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("./dist/"));
-});
-
-gulp.task("test", ["concat"], function () {
+gulp.task("test:verbose", gulp.series("concat", function () {
     return gulp.src("./test/spec/*.js")
         .pipe(jasmine({
-            includeStackTrace: true
+            includeStackTrace: true,
+            verbose: true
         }));
-});
+}));
 
-gulp.task("travis", ["concat", "minify", "test"], lint);
+/* travis */
 
-gulp.task("test-verbose", ["concat"], function () {
-    return gulp.src("./test/spec/*.js")
-        .pipe(jasmine({
-            verbose: true,
-            includeStackTrace: true
-        }));
-});
+gulp.task("travis", gulp.series("concat", "lint", "test", "minify"));
 
-gulp.task("default", ["concat", "minify", "coverage"], lint);
+/* default */
+
+gulp.task("default", gulp.series("concat", "lint", "test:coverage", "minify"));
