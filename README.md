@@ -24,8 +24,17 @@ Require it in node.js:
 var _ = require("lamb");
 ```
 
-It's useful to alias it to have a shorter symbol, like `_`, as I did above and throughout the documentation: it's cleaner and the
-`lamb` object itself can be used as a placeholder argument in [partial application](https://ascartabelli.github.io/lamb/module-lamb.html#partial).
+Since version 0.57.0, Lamb is splitted in ES modules and can take advantage of tree-shaking capabilities of module bundlers:
+
+```javascript
+import * as _ from "lamb";
+```
+
+You can also import only the functions you want to use:
+
+```javascript
+import { compose, map } from "lamb";
+```
 
 In a browser, simply include the version you want from the `dist` folder:
 

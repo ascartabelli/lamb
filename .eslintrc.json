@@ -1,12 +1,12 @@
 {
     "env": {
-        "amd": true,
         "browser": true,
         "node": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 5
+        "ecmaVersion": 5,
+        "sourceType": "module"
     },
     "root": true,
     "rules": {
@@ -209,6 +209,10 @@
                     "minProperties": 3
                 }
             }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
         ],
         "one-var": [
             "error",

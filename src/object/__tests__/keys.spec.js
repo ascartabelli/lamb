@@ -1,0 +1,39 @@
+import * as lamb from "../..";
+import { wannabeEmptyObjects } from "../../__tests__/commons";
+
+describe("keys", function () {
+    it("should build an array with all the enumerables own keys of an object", function () {
+        var baseFoo = Object.create({ a: 1 }, { b: { value: 2 } });
+        var foo = Object.create(baseFoo, {
+            c: { value: 3 },
+            d: { value: 4, enumerable: true }
+        });
+
+        expect(lamb.keys(foo)).toEqual(["d"]);
+    });
+
+    it("should work with arrays and array-like objects", function () {
+        expect(lamb.keys([1, 2, 3])).toEqual(["0", "1", "2"]);
+        expect(lamb.keys("abc")).toEqual(["0", "1", "2"]);
+    });
+
+    it("should retrieve only defined keys in sparse arrays", function () {
+        // eslint-disable-next-line comma-spacing, no-sparse-arrays
+        expect(lamb.keys([, 5, 6, ,])).toStrictEqual(["1", "2"]);
+    });
+
+    it("should throw an exception if called without arguments", function () {
+        expect(lamb.keys).toThrow();
+    });
+
+    it("should throw an exception if supplied with `null` or `undefined`", function () {
+        expect(function () { lamb.keys(null); }).toThrow();
+        expect(function () { lamb.keys(void 0); }).toThrow();
+    });
+
+    it("should consider other values as empty objects", function () {
+        wannabeEmptyObjects.forEach(function (value) {
+            expect(lamb.keys(value)).toEqual([]);
+        });
+    });
+});
