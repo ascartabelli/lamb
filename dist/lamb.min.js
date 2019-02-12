@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.57.0-rc.2
+* @version 0.57.0
 * @module lamb
 * @license MIT
 * @preserve

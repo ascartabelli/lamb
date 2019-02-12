@@ -54,15 +54,15 @@ The source map for the minified file is in the same `dist` folder.
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.56.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.57.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.56.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.57.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.56.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.57.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -113,6 +113,12 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.57.0 - *2019/02/12***
+  - Splitted the library into ES modules
+  - **API change**: `sort`, `sortWith` and `sortedInsert` now accept an array of sorters
+  - **API change**: removed `@@lamb/placeholder` property as now the placeholder is exported as `__`
+  - Switched to Jest as a test suite
+
 - **v0.56.0 - *2018/07/15***
   - **API change**: `compose`, `intersection`, `merge`, `mergeOwn`, `union` and `zip` are now binary functions, and so are functions built with `unionBy`.
   - **API change**: `adapter`, `allOf`, `anyOf`, `collect` and `pipe` now accept an array of functions
@@ -133,7 +139,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `mapValues` and `mapValuesWith`
   - Added "@since" tags to doc comments
   - Added linting for tests
-
-- **v0.53.1 - *2017/04/06***
-  - **Fixed**: `hasKeyValue` was returning `true` for any existent property when searching for an `undefined` value
-  - Updated object checking tests
