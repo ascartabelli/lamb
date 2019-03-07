@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.1
+* @version 0.58.0-alpha.2
 * @module lamb
 * @license MIT
 * @preserve
@@ -6374,9 +6374,9 @@
      * @returns {Object}
      */
     function updateIn (source, key, updater) {
-        return _isEnumerable(source, key) ?
-            _setIn(source, key, updater(source[key])) :
-            _merge(enumerables, source, {});
+        return _isEnumerable(source, key)
+            ? _setIn(source, key, updater(source[key]))
+            : _merge(enumerables, source, {});
     }
 
     /**

@@ -220,7 +220,11 @@
         ],
         "operator-linebreak": [
             "error",
-            "after"
+            "before", {
+                "overrides": {
+                    "=": "after"
+                }
+            }
         ],
         "padded-blocks": [
             "error",

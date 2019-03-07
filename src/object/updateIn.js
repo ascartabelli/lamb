@@ -32,9 +32,9 @@ import enumerables from "./enumerables";
  * @returns {Object}
  */
 function updateIn (source, key, updater) {
-    return _isEnumerable(source, key) ?
-        _setIn(source, key, updater(source[key])) :
-        _merge(enumerables, source, {});
+    return _isEnumerable(source, key)
+        ? _setIn(source, key, updater(source[key]))
+        : _merge(enumerables, source, {});
 }
 
 export default updateIn;
