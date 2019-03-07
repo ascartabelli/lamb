@@ -39,24 +39,37 @@
         "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
     },
     "babel": {
-        "env": { "test": { "presets": [["@babel/preset-env", { "targets": { "node": "current" } }]] } }
+        "env": {
+            "test": {
+                "presets": [
+                    [
+                        "@babel/preset-env",
+                        {
+                            "targets": {
+                                "node": "current"
+                            }
+                        }
+                    ]
+                ]
+            }
+        }
     },
     "jsdelivr": "dist/lamb.min.js",
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.57.0",
+    "version": "0.58.0-alpha.1",
     "devDependencies": {
-        "@babel/preset-env": "^7.3.1",
-        "coveralls": "^3.0.2",
+        "@babel/preset-env": "^7.3.4",
+        "coveralls": "^3.0.3",
         "gulp": "^4.0.0",
         "gulp-eslint": "^5.0.0",
         "gulp-jest": "^4.0.2",
         "gulp-rename": "^1.4.0",
-        "gulp-sourcemaps": "^2.6.4",
-        "gulp-uglify": "^3.0.1",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
         "jest-cli": "^24.1.0",
-        "rollup": "^1.1.2"
+        "rollup": "^1.5.0"
     },
     "dependencies": {}
 }

@@ -140,19 +140,3 @@ export {
     zeroesAsIntegers,
     zeroesAsNumbers
 };
-
-/*
-export nonStringsAsStrings;
-export nonArrayLikes;
-export nonFunctions;
-export nonNils;
-export nonNulls;
-export nonNumbers;
-export nonUndefineds;
-export valuesList;
-export wannabeEmptyArrays;
-export wannabeEmptyObjects;
-export wannabeNaNs;
-export zeroesAsIntegers;
-export zeroesAsNumber;
-*/

@@ -56,6 +56,8 @@ export { default as insert } from "./array/insert";
 export { default as insertAt } from "./array/insertAt";
 export { default as intersection } from "./array/intersection";
 export { default as isIn } from "./array/isIn";
+export { default as join } from "./array/join";
+export { default as joinWith } from "./array/joinWith";
 export { default as last } from "./array/last";
 export { default as list } from "./array/list";
 export { default as partition } from "./array/partition";

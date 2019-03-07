@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.57.0
+* @version 0.58.0-alpha.1
 * @module lamb
 * @license MIT
 * @preserve
@@ -1897,6 +1897,61 @@
 
         return result;
     }
+
+    /**
+     * Transforms an array-like object into a string by joining its elements with
+     * the given separator.<br/>
+     * Note that unlike the native method, this function won't convert
+     * <code>null</code> and <code>undefined</code> values in the array to empty
+     * strings and that the <code>separator</code> parameter isn't optional.<br/>
+     * See the examples about these differences.
+     * @example
+     * var words = ["foo", "bar", "baz"];
+     *
+     * _.join(words, "-") // => "foo-bar-baz"
+     *
+     * @example <caption>Showing the differences with the native array method:</caption>
+     * var mixed = [1, null, 2, undefined, 3, NaN, 4, 5];
+     * var numbers = [1, 2, 3];
+     *
+     * _.join(mixed, "-") // => "1-null-2-undefined-3-NaN-4-5"
+     * mixed.join("-") // => "1--2--3-NaN-4-5"
+     *
+     * _.join(numbers) // => "1undefined2undefined3"
+     * numbers.join() // => "1,2,3"
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.joinWith|joinWith}
+     * @since 0.58.0
+     * @param {ArrayLike} arrayLike
+     * @param {String} separator
+     * @returns {String}
+     */
+    function join (arrayLike, separator) {
+        return map(arrayLike, String).join(String(separator));
+    }
+
+    /**
+     * A curried version of {@link module:lamb.join|join} that accepts an optional
+     * separator and builds a function expecting the array-like object to act upon.<br/>
+     * Please refer to the description and examples of {@link module:lamb.join|join}
+     * to understand the differences with the native array method.
+     * @example
+     * var words = ["foo", "bar", "baz"];
+     * var joinWithDash = _.joinWith("-");
+     *
+     * joinWithDash(words) // => "foo-bar-baz"
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.join|join}
+     * @since 0.58.0
+     * @param {String} separator
+     * @returns {Function}
+     */
+    var joinWith = _curry2(join, true);
 
     /**
      * Retrieves the last element of an array-like object.<br/>
@@ -6774,6 +6829,8 @@
     exports.insertAt = insertAt;
     exports.intersection = intersection;
     exports.isIn = isIn;
+    exports.join = join;
+    exports.joinWith = joinWith;
     exports.last = last;
     exports.list = list;
     exports.partition = partition;
