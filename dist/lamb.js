@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.2
+* @version 0.58.0-alpha.4
 * @module lamb
 * @license MIT
 * @preserve
@@ -1281,6 +1281,39 @@
     var filterWith = _curry2(filter, true);
 
     /**
+     * Helper to create the {@link module:lamb.findIndex|findIndex} and
+     * {@link module:lamb.findLastIndex|findLastIndex} functions.
+     * @private
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @param {Boolean} fromLast
+     * @returns {Number}
+     */
+    function _findIndex (arrayLike, predicate, fromLast) {
+        var start;
+        var increment;
+        var len = arrayLike.length;
+        var result = -1;
+
+        if (fromLast) {
+            start = len - 1;
+            increment = -1;
+        } else {
+            start = 0;
+            increment = 1;
+        }
+
+        for (var i = start; i < len && i >= 0; i += increment) {
+            if (predicate(arrayLike[i], i, arrayLike)) {
+                result = i;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Searches for an element satisfying the predicate in the given array-like object and returns its
      * index if the search is successful. Returns <code>-1</code> otherwise.
      * @example
@@ -1298,22 +1331,16 @@
      * @category Array
      * @see {@link module:lamb.findIndexWhere|findIndexWhere}
      * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
      * @since 0.7.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
      * @returns {Number}
      */
     function findIndex (arrayLike, predicate) {
-        var result = -1;
-
-        for (var i = 0, len = arrayLike.length; i < len; i++) {
-            if (predicate(arrayLike[i], i, arrayLike)) {
-                result = i;
-                break;
-            }
-        }
-
-        return result;
+        return _findIndex(arrayLike, predicate, false);
     }
 
     /**
@@ -1334,6 +1361,9 @@
      * @category Array
      * @see {@link module:lamb.findWhere|findWhere}
      * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
      * @since 0.7.0
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
@@ -1344,6 +1374,138 @@
 
         return idx === -1 ? void 0 : arrayLike[idx];
     }
+
+    /**
+     * A curried version of {@link module:lamb.findIndex|findIndex} that uses the given predicate
+     * to build a function expecting the array-like object to search.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var findEvenIdx = _.findIndexWhere(isEven);
+     *
+     * findEvenIdx([1, 3, 4, 5, 6, 7]) // => 2
+     * findEvenIdx([1, 3, 5, 7]) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.findIndex|findIndex}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+     * @since 0.41.0
+     * @param {ListIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var findIndexWhere = _curry2(findIndex, true);
+
+    /**
+     * Searches for an element satisfying the predicate in the given array-like object starting from
+     * the end and returns its index if the search is successful. Returns <code>-1</code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.findLastIndex(persons, _.hasKeyValue("age", 40)) // => 3
+     * _.findLastIndex(persons, _.hasKeyValue("age", 41)) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @since 0.58.0
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @returns {Number}
+     */
+    function findLastIndex (arrayLike, predicate) {
+        return _findIndex(arrayLike, predicate, true);
+    }
+
+    /**
+     * Searches for an element satisfying the predicate in the given array-like object starting from the end
+     * and returns it if the search is successful. Returns <code>undefined</code> otherwise.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 40}
+     * ];
+     *
+     * _.findLast(persons, _.hasKeyValue("surname", "Doe")) // => {"name": "John", "surname": "Doe", "age": 40}
+     * _.findLast(persons, _.hasKeyValue("age", 41)) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @see {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @since 0.58.0
+     * @param {ArrayLike} arrayLike
+     * @param {ListIteratorCallback} predicate
+     * @returns {*}
+     */
+    function findLast (arrayLike, predicate) {
+        var idx = findLastIndex(arrayLike, predicate);
+
+        return idx === -1 ? void 0 : arrayLike[idx];
+    }
+
+    /**
+     * A curried version of {@link module:lamb.findLastIndex|findLastIndex} that uses the given predicate
+     * to build a function expecting the array-like object to search.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var findLastEvenIdx = _.findLastIndexWhere(isEven);
+     *
+     * findLastEvenIdx([1, 3, 4, 5, 6, 7]) // => 4
+     * findLastEvenIdx([1, 3, 5, 7]) // => -1
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.findLastIndex|findLastIndex}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @since 0.58.0
+     * @param {ListIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var findLastIndexWhere = _curry2(findLastIndex, true);
+
+    /**
+     * A curried version of {@link module:lamb.findLast|findLast} expecting the array-like object
+     * to search.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var findEven = _.findLastWhere(isEven);
+     *
+     * findEven([1, 3, 4, 5, 6, 7]) // => 6
+     * findEven([1, 3, 5, 7]) // => undefined
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
+     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
+     * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @since 0.58.0
+     * @param {ListIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var findLastWhere = _curry2(findLast, true);
 
     /**
      * A curried version of {@link module:lamb.find|find} expecting the array-like object
@@ -1360,32 +1522,14 @@
      * @function
      * @see {@link module:lamb.find|find}
      * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+     * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+     * @see {@link module:lamb.findLastIndex|findLastIndex},
+     *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
      * @since 0.41.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
     var findWhere = _curry2(find, true);
-
-    /**
-     * A curried version of {@link module:lamb.findIndex|findIndex} that uses the given predicate
-     * to build a function expecting the array-like object to search.
-     * @example
-     * var isEven = function (n) { return n % 2 === 0; };
-     * var findEvenIdx = _.findIndexWhere(isEven);
-     *
-     * findEvenIdx([1, 3, 4, 5, 7]) // => 2
-     * findEvenIdx([1, 3, 5, 7]) // => -1
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @function
-     * @see {@link module:lamb.findIndex|findIndex}
-     * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
-     * @since 0.41.0
-     * @param {ListIteratorCallback} predicate
-     * @returns {Function}
-     */
-    var findIndexWhere = _curry2(findIndex, true);
 
     /**
      * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
@@ -6812,8 +6956,12 @@
     exports.filterWith = filterWith;
     exports.find = find;
     exports.findIndex = findIndex;
-    exports.findWhere = findWhere;
     exports.findIndexWhere = findIndexWhere;
+    exports.findLast = findLast;
+    exports.findLastIndex = findLastIndex;
+    exports.findLastIndexWhere = findLastIndexWhere;
+    exports.findLastWhere = findLastWhere;
+    exports.findWhere = findWhere;
     exports.flatMap = flatMap;
     exports.flatMapWith = flatMapWith;
     exports.flatten = flatten;

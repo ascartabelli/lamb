@@ -18,6 +18,9 @@ import findIndex from "./findIndex";
  * @category Array
  * @see {@link module:lamb.findWhere|findWhere}
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+ * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+ * @see {@link module:lamb.findLastIndex|findLastIndex},
+ *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
  * @since 0.7.0
  * @param {ArrayLike} arrayLike
  * @param {ListIteratorCallback} predicate

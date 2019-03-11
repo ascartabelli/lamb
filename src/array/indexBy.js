@@ -1,5 +1,5 @@
 import _curry2 from "../privates/_curry2";
-import index from "./index";
+import index from "./index_";
 
 /**
  * A curried version of {@link module:lamb.index|index} that uses the provided iteratee

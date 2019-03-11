@@ -16,6 +16,9 @@ import find from "./find";
  * @function
  * @see {@link module:lamb.find|find}
  * @see {@link module:lamb.findIndex|findIndex}, {@link module:lamb.findIndexWhere|findIndexWhere}
+ * @see {@link module:lamb.findLast|findLast}, {@link module:lamb.findLastWhere|findLastWhere}
+ * @see {@link module:lamb.findLastIndex|findLastIndex},
+ *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
  * @since 0.41.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}

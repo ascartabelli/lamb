@@ -17,13 +17,19 @@ describe("find / findWhere / findIndex / findIndexWhere", function () {
     ];
 
     var testString = "Hello world";
+    var isNamedDoe = lamb.hasKeyValue("surname", "Doe");
+    var isNamedBianchi = lamb.hasKeyValue("surname", "Bianchi");
     var is40YO = lamb.hasKeyValue("age", 40);
     var is41YO = lamb.hasKeyValue("age", 41);
 
-    describe("find", function () {
+    describe("find / findWhere", function () {
         it("should find an element in an array-like object by using the given predicate", function () {
-            expect(lamb.find(persons, is40YO)).toEqual(persons[1]);
-            expect(lamb.findWhere(is40YO)(persons)).toEqual(persons[1]);
+            expect(lamb.find(persons, isNamedDoe)).toBe(persons[0]);
+            expect(lamb.find(persons, isNamedBianchi)).toBe(persons[3]);
+            expect(lamb.find(persons, is40YO)).toBe(persons[1]);
+            expect(lamb.findWhere(isNamedDoe)(persons)).toBe(persons[0]);
+            expect(lamb.findWhere(isNamedBianchi)(persons)).toBe(persons[3]);
+            expect(lamb.findWhere(is40YO)(persons)).toBe(persons[1]);
         });
 
         it("should return `undefined` if there is no element satisfying the predicate", function () {
@@ -68,9 +74,13 @@ describe("find / findWhere / findIndex / findIndexWhere", function () {
         });
     });
 
-    describe("findIndex", function () {
+    describe("findIndex / findIndexWhere", function () {
         it("should find the index of an element in an array-like object by using the given predicate", function () {
+            expect(lamb.findIndex(persons, isNamedDoe)).toBe(0);
+            expect(lamb.findIndex(persons, isNamedBianchi)).toBe(3);
             expect(lamb.findIndex(persons, is40YO)).toBe(1);
+            expect(lamb.findIndexWhere(isNamedDoe)(persons)).toBe(0);
+            expect(lamb.findIndexWhere(isNamedBianchi)(persons)).toBe(3);
             expect(lamb.findIndexWhere(is40YO)(persons)).toBe(1);
         });
 
