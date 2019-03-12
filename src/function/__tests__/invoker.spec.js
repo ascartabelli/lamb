@@ -1,5 +1,6 @@
 import * as lamb from "../..";
 import {
+    nonArrayLikes,
     nonStrings,
     nonStringsAsStrings,
     wannabeEmptyObjects
@@ -7,29 +8,39 @@ import {
 
 describe("invoker", function () {
     var slice = lamb.invoker("slice");
-    var tail = lamb.invoker("slice", 1);
+    var tail = lamb.invoker("slice", [1]);
     var arr = [1, 2, 3, 4, 5];
+    var s = "Hello world";
+    var maxSpy = jest.spyOn(Math, "max");
     var sliceSpy = jest.spyOn(arr, "slice");
 
     afterEach(function () {
+        maxSpy.mockClear();
         sliceSpy.mockClear();
     });
 
     it("should build a function that will invoke the desired method on the given object", function () {
-        var s = "foo bar";
-
+        expect(lamb.invoker("max")(Math, 1, 3, 2)).toBe(3);
         expect(slice(arr, 1, 3)).toEqual([2, 3]);
         expect(arr.slice).toHaveBeenCalledTimes(1);
         expect(arr.slice.mock.calls[0]).toEqual([1, 3]);
-        expect(slice(s, 1, 3)).toBe("oo");
+        expect(slice(s, 1, 3)).toBe("el");
     });
 
     it("should allow bound arguments", function () {
+        expect(lamb.invoker("max", [4, 7, 5])(Math, 1, 3, 2)).toBe(7);
         expect(tail(arr)).toEqual([2, 3, 4, 5]);
         expect(tail(arr, -1)).toEqual([2, 3, 4]);
         expect(arr.slice).toHaveBeenCalledTimes(2);
         expect(arr.slice.mock.calls[0]).toEqual([1]);
         expect(arr.slice.mock.calls[1]).toEqual([1, -1]);
+    });
+
+    it("should allow array-like objects as bound arguments", function () {
+        var obj = { method: lamb.list };
+        var callMethod = lamb.invoker("method", "abcde");
+
+        expect(callMethod(obj, "f")).toEqual(["a", "b", "c", "d", "e", "f"]);
     });
 
     it("should build a function returning `undefined` if the given method doesn't exist on the received object", function () {
@@ -53,6 +64,17 @@ describe("invoker", function () {
         });
 
         expect(lamb.invoker()(obj)).toBe("undefined");
+    });
+
+    it("should treat non-arrays values passed as bound arguments as empty arrays", function () {
+        nonArrayLikes.forEach(function (value, idx) {
+            var fn = lamb.invoker("max", value);
+
+            expect(fn(Math, 1, 3, 2)).toBe(3);
+            expect(maxSpy.mock.calls[idx]).toEqual([1, 3, 2]);
+        });
+
+        expect(maxSpy).toHaveBeenCalledTimes(nonArrayLikes.length);
     });
 
     it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", function () {

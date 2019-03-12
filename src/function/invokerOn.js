@@ -23,7 +23,7 @@ import _invoker from "../privates/_invoker";
  * @returns {Function}
  */
 function invokerOn (target) {
-    return partial(_invoker, [[], __, target]);
+    return partial(_invoker, [__, [], target]);
 }
 
 export default invokerOn;

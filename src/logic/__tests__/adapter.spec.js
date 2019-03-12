@@ -6,7 +6,7 @@ describe("adapter", function () {
     it("should accept an array of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
         var filterString = lamb.case(
             lamb.isType("String"),
-            lamb.compose(lamb.invoker("join", ""), lamb.filter)
+            lamb.compose(lamb.invoker("join", [""]), lamb.filter)
         );
         var filterAdapter = lamb.adapter([lamb.invoker("filter"), filterString]);
 

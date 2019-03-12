@@ -1,6 +1,5 @@
-import partial from "../core/partial";
-import _argsTail from "../privates/_argsTail";
 import _invoker from "../privates/_invoker";
+import partial from "../core/partial";
 
 /**
  * Builds a function that will invoke the given method name on any received object and
@@ -20,7 +19,7 @@ import _invoker from "../privates/_invoker";
  * polySlice("Hello world", 1, 3) // => "el"
  *
  * @example <caption>With bound arguments:</caption>
- * var substrFrom2 = _.invoker("substr", 2);
+ * var substrFrom2 = _.invoker("substr", [2]);
  * substrFrom2("Hello world") // => "llo world"
  * substrFrom2("Hello world", 5) // => "llo w"
  *
@@ -29,11 +28,11 @@ import _invoker from "../privates/_invoker";
  * @see {@link module:lamb.invokerOn|invokerOn}
  * @since 0.1.0
  * @param {String} methodName
- * @param {...*} [boundArg]
+ * @param {ArrayLike} [boundArgs=[]]
  * @returns {Function}
  */
-function invoker (methodName) {
-    return partial(_invoker, [_argsTail.apply(null, arguments), methodName]);
+function invoker (methodName, boundArgs) {
+    return partial(_invoker, [methodName, boundArgs]);
 }
 
 export default invoker;

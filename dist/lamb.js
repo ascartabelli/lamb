@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.4
+* @version 0.58.0-alpha.5
 * @module lamb
 * @license MIT
 * @preserve
@@ -3808,50 +3808,38 @@
     }
 
     /**
-     * Builds an array with the received arguments excluding the first one.<br/>
-     * To be used with the arguments object, which needs to be passed to the apply
-     * method of this function.
-     * @private
-     * @function
-     * @param {...*} value
-     * @returns {Array}
-     */
-    var _argsTail = _argsToArrayFrom(1);
-
-    /**
      * If a method with the given name exists on the target, applies it to the provided
      * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
      * The arguments for the method are built by concatenating the array of bound arguments,
-     * optionally received by {@link module:lamb.invoker|invoker}, with the final set of, also
-     * optional, <code>args</code>.
+     * received by {@link module:lamb.invoker|invoker}, with the final set of <code>args</code>,
+     * if present.
      * @private
-     * @param {Array} boundArgs
      * @param {String} methodName
+     * @param {Array} boundArgs
      * @param {Object} target
      * @param {...*} [args]
      * @returns {*}
      */
-    function _invoker (boundArgs, methodName, target) {
+    function _invoker (methodName, boundArgs, target) {
         var method = target[methodName];
 
         if (typeof method !== "function") {
             return void 0;
         }
 
-        var boundArgsLen = boundArgs.length;
-        var ofs = 3 - boundArgsLen;
-        var len = arguments.length - ofs;
-        var args = Array(len);
+        var boundArgsLen = boundArgs ? _toArrayLength(boundArgs.length) : 0;
+        var finalArgsLen = boundArgsLen + arguments.length - 3;
+        var finalArgs = Array(finalArgsLen);
 
         for (var i = 0; i < boundArgsLen; i++) {
-            args[i] = boundArgs[i];
+            finalArgs[i] = boundArgs[i];
         }
 
-        for (; i < len; i++) {
-            args[i] = arguments[i + ofs];
+        for (var ofs = 3 - i; i < finalArgsLen; i++) {
+            finalArgs[i] = arguments[i + ofs];
         }
 
-        return method.apply(target, args);
+        return method.apply(target, finalArgs);
     }
 
     /**
@@ -3872,7 +3860,7 @@
      * polySlice("Hello world", 1, 3) // => "el"
      *
      * @example <caption>With bound arguments:</caption>
-     * var substrFrom2 = _.invoker("substr", 2);
+     * var substrFrom2 = _.invoker("substr", [2]);
      * substrFrom2("Hello world") // => "llo world"
      * substrFrom2("Hello world", 5) // => "llo w"
      *
@@ -3881,11 +3869,11 @@
      * @see {@link module:lamb.invokerOn|invokerOn}
      * @since 0.1.0
      * @param {String} methodName
-     * @param {...*} [boundArg]
+     * @param {ArrayLike} [boundArgs=[]]
      * @returns {Function}
      */
-    function invoker (methodName) {
-        return partial(_invoker, [_argsTail.apply(null, arguments), methodName]);
+    function invoker (methodName, boundArgs) {
+        return partial(_invoker, [methodName, boundArgs]);
     }
 
     /**
@@ -3909,7 +3897,7 @@
      * @returns {Function}
      */
     function invokerOn (target) {
-        return partial(_invoker, [[], __, target]);
+        return partial(_invoker, [__, [], target]);
     }
 
     /**
@@ -4039,7 +4027,7 @@
      * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
-     * var filterString = _.compose(_.invoker("join", ""), _.filter);
+     * var filterString = _.compose(_.invoker("join", [""]), _.filter);
      * var filterAdapter = _.adapter([
      *     _.invoker("filter"),
      *     _.case(_.isType("String"), filterString)

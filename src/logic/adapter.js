@@ -9,7 +9,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
- * var filterString = _.compose(_.invoker("join", ""), _.filter);
+ * var filterString = _.compose(_.invoker("join", [""]), _.filter);
  * var filterAdapter = _.adapter([
  *     _.invoker("filter"),
  *     _.case(_.isType("String"), filterString)
