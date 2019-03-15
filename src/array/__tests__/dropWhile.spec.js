@@ -18,7 +18,7 @@ describe("dropWhile", function () {
 
     var dropWhileIsEven = lamb.dropWhile(isEven);
 
-    it("should build a function that drops the first n elements satisfying a predicate from an array or array-like object", function () {
+    it("should build a function that drops the first elements satisfying a predicate from an array or array-like object", function () {
         expect(dropWhileIsEven([])).toEqual([]);
         expect(dropWhileIsEven([2, 4, 6, 8])).toEqual([]);
         expect(dropWhileIsEven([2, 3, 4, 6, 8])).toEqual([3, 4, 6, 8]);

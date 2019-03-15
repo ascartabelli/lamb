@@ -18,6 +18,7 @@ import dropFrom from "./dropFrom";
  * @see {@link module:lamb.dropFrom|dropFrom}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
  * @param {Number} n
  * @returns {Function}
  */

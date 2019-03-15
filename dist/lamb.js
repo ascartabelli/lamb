@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.5
+* @version 0.58.0-alpha.6
 * @module lamb
 * @license MIT
 * @preserve
@@ -1101,6 +1101,7 @@
      * @see {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @since 0.51.0
      * @param {ArrayLike} arrayLike
      * @param {Number} n
@@ -1127,31 +1128,100 @@
      * @see {@link module:lamb.dropFrom|dropFrom}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @param {Number} n
      * @returns {Function}
      */
     var drop = _curry2(dropFrom, true);
 
     /**
-     * Gets the number of consecutive elements satisfying a predicate in an array-like object.
+     * Gets the index of the last element satisfying a predicate in an array-like object.
      * @private
      * @param {ArrayLike} arrayLike
      * @param {ListIteratorCallback} predicate
+     * @param {Boolean} fromLast
      * @returns {Number}
      */
-    function _getNumConsecutiveHits (arrayLike, predicate) {
-        var idx = 0;
+    function _getLastHitIndex (arrayLike, predicate, fromLast) {
+        var idx;
+        var increment;
         var len = arrayLike.length;
 
-        while (idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
-            idx++;
+        if (fromLast) {
+            idx = len - 1;
+            increment = -1;
+        } else {
+            idx = 0;
+            increment = 1;
+        }
+
+        while (idx >= 0 && idx < len && predicate(arrayLike[idx], idx, arrayLike)) {
+            idx += increment;
         }
 
         return idx;
     }
 
     /**
-     * Builds a function that drops the first <code>n</code> elements satisfying a predicate
+     * Helper to build the {@link module:lamb.takeWhile|takeWhile},
+     * {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropWhile|dropWhile} and
+     * {@link module:lamb.dropLastWhile|dropLastWhile} functions.
+     * @private
+     * @param {Boolean} isTake
+     * @param {Boolean} fromLast
+     * @returns {Function}
+     */
+    function _takeOrDropWhile (isTake, fromLast) {
+        return function (predicate) {
+            return function (arrayLike) {
+                var idxFrom;
+                var idxTo;
+                var lastHitIndex = _getLastHitIndex(arrayLike, predicate, fromLast);
+
+                if (isTake && fromLast) {
+                    idxFrom = lastHitIndex + 1;
+                    idxTo = arrayLike.length;
+                } else if (isTake) {
+                    idxFrom = 0;
+                    idxTo = lastHitIndex;
+                } else if (!isTake && fromLast) {
+                    idxFrom = 0;
+                    idxTo = lastHitIndex + 1;
+                } else {
+                    idxFrom = lastHitIndex;
+                    idxTo = arrayLike.length;
+                }
+
+                return slice(arrayLike, idxFrom, idxTo);
+            };
+        };
+    }
+
+    /**
+     * Builds a function that drops the last elements satisfying a predicate
+     * from an array or array-like object.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var dropLastWhileIsEven = _.dropLastWhile(isEven);
+     *
+     * dropLastWhileIsEven([2, 4, 6, 8]) // => []
+     * dropLastWhileIsEven([2, 4, 7, 8]) // => [2, 4, 7]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+     * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+     * @since 0.58.0
+     * @param {ListIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var dropLastWhile = _takeOrDropWhile(false, true);
+
+    /**
+     * Builds a function that drops the first elements satisfying a predicate
      * from an array or array-like object.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
@@ -1162,18 +1232,16 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.takeWhile|takeWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @since 0.5.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    function dropWhile (predicate) {
-        return function (arrayLike) {
-            return slice(arrayLike, _getNumConsecutiveHits(arrayLike, predicate), arrayLike.length);
-        };
-    }
+    var dropWhile = _takeOrDropWhile(false, false);
 
     /**
      * Helper to build the {@link module:lamb.everyIn|everyIn} or the
@@ -3047,6 +3115,7 @@
      * @see {@link module:lamb.take|take}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @since 0.51.0
      * @param {ArrayLike} arrayLike
      * @param {Number} n
@@ -3072,6 +3141,7 @@
      * @see {@link module:lamb.takeFrom|takeFrom}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @since 0.5.0
      * @param {Number} n
      * @returns {Function}
@@ -3079,7 +3149,30 @@
     var take = _curry2(takeFrom, true);
 
     /**
-     * Builds a function that takes the first <code>n</code> elements satisfying a predicate from
+     * Builds a function that takes the last elements satisfying a predicate
+     * from an array or array-like object.
+     * @example
+     * var isEven = function (n) { return n % 2 === 0; };
+     * var takeLastWhileIsEven = _.takeLastWhile(isEven);
+     *
+     * takeLastWhileIsEven([1, 3, 5, 7]) // => []
+     * takeLastWhileIsEven([2, 3, 6, 8]) // => [6, 8]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.dropLastWhile|dropLastWhile}
+     * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
+     * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
+     * @since 0.58.0
+     * @param {ListIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var takeLastWhile = _takeOrDropWhile(true, true);
+
+    /**
+     * Builds a function that takes the first elements satisfying a predicate from
      * an array or array-like object.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
@@ -3090,18 +3183,16 @@
      *
      * @memberof module:lamb
      * @category Array
+     * @function
      * @see {@link module:lamb.dropWhile|dropWhile}
+     * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
      * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
      * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
      * @since 0.5.0
      * @param {ListIteratorCallback} predicate
      * @returns {Function}
      */
-    function takeWhile (predicate) {
-        return function (arrayLike) {
-            return slice(arrayLike, 0, _getNumConsecutiveHits(arrayLike, predicate));
-        };
-    }
+    var takeWhile = _takeOrDropWhile(true, false);
 
     /**
      * Transposes a matrix. Can also be used to reverse a {@link module:lamb.zip|zip} operation.<br/>
@@ -6937,6 +7028,7 @@
     exports.difference = difference;
     exports.drop = drop;
     exports.dropFrom = dropFrom;
+    exports.dropLastWhile = dropLastWhile;
     exports.dropWhile = dropWhile;
     exports.every = every;
     exports.everyIn = everyIn;
@@ -6993,6 +7085,7 @@
     exports.tail = tail;
     exports.take = take;
     exports.takeFrom = takeFrom;
+    exports.takeLastWhile = takeLastWhile;
     exports.takeWhile = takeWhile;
     exports.transpose = transpose;
     exports.union = union;

@@ -1,8 +1,7 @@
-import _getNumConsecutiveHits from "../privates/_getNumConsecutiveHits";
-import slice from "../core/slice";
+import _takeOrDropWhile from "../privates/_takeOrDropWhile";
 
 /**
- * Builds a function that drops the first <code>n</code> elements satisfying a predicate
+ * Builds a function that drops the first elements satisfying a predicate
  * from an array or array-like object.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
@@ -13,17 +12,15 @@ import slice from "../core/slice";
  *
  * @memberof module:lamb
  * @category Array
+ * @function
  * @see {@link module:lamb.takeWhile|takeWhile}
+ * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
  * @see {@link module:lamb.dropFrom|dropFrom}, {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @since 0.5.0
  * @param {ListIteratorCallback} predicate
  * @returns {Function}
  */
-function dropWhile (predicate) {
-    return function (arrayLike) {
-        return slice(arrayLike, _getNumConsecutiveHits(arrayLike, predicate), arrayLike.length);
-    };
-}
+var dropWhile = _takeOrDropWhile(false, false);
 
 export default dropWhile;

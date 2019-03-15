@@ -17,7 +17,7 @@ describe("takeWhile", function () {
     };
     var takeWhileIsEven = lamb.takeWhile(isEven);
 
-    it("should build a function that takes the first n elements satisfying a predicate from an array or array-like object", function () {
+    it("should build a function that takes the first elements satisfying a predicate from an array or array-like object", function () {
         expect(takeWhileIsEven([])).toEqual([]);
         expect(takeWhileIsEven([1, 3, 5, 7])).toEqual([]);
         expect(takeWhileIsEven([2, 3, 4, 6, 8])).toEqual([2]);

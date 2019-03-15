@@ -16,6 +16,7 @@ import slice from "../core/slice";
  * @see {@link module:lamb.drop|drop}
  * @see {@link module:lamb.takeFrom|takeFrom}, {@link module:lamb.take|take}
  * @see {@link module:lamb.takeWhile|takeWhile}, {@link module:lamb.dropWhile|dropWhile}
+ * @see {@link module:lamb.takeLastWhile|takeLastWhile}, {@link module:lamb.dropLastWhile|dropLastWhile}
  * @since 0.51.0
  * @param {ArrayLike} arrayLike
  * @param {Number} n
