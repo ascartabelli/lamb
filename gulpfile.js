@@ -6,7 +6,7 @@ const jest = require("gulp-jest").default;
 const rename = require("gulp-rename");
 const rollup = require("rollup");
 const sourcemaps = require("gulp-sourcemaps");
-const uglify = require("gulp-uglify");
+const terser = require("gulp-terser");
 
 const jestBaseConfig = require("./jest.config");
 const pkg = require("./package.json");
@@ -18,9 +18,27 @@ const intro = [
     "* @version " + pkg.version,
     "* @module lamb",
     "* @license " + pkg.license,
-    "* @preserve",
     "*/"
 ].join("\n");
+
+const commonOptions = {
+    banner: intro,
+    exports: "named",
+    freeze: false,
+    name: "lamb",
+    sourcemap: false,
+    strict: true
+};
+
+const esOptions = Object.assign({}, commonOptions, {
+    file: "dist/lamb.esm.js",
+    format: "esm"
+});
+
+const umdOptions = Object.assign({}, commonOptions, {
+    file: "dist/lamb.js",
+    format: "umd"
+});
 
 /* env */
 
@@ -32,27 +50,20 @@ gulp.task("set-test-env", cb => {
 
 /* build */
 
-gulp.task("build", () => rollup
-    .rollup({ input: "src/index.js" })
-    .then(bundle => bundle.write({
-        banner: intro,
-        exports: "named",
-        file: "dist/lamb.js",
-        format: "umd",
-        freeze: false,
-        name: "lamb",
-        sourcemap: false,
-        strict: true
-    }))
-);
+const builder = opts => () => rollup.rollup({ input: "src/index.js" }).then(bundle => bundle.write(opts));
 
-gulp.task("minify", gulp.series("build", () => gulp.src("dist/lamb.js")
+const minifier = isES => () => gulp.src(`dist/lamb${isES ? ".esm" : ""}.js`)
     .pipe(sourcemaps.init())
-    .pipe(uglify({ output: { comments: "some" } }))
+    .pipe(terser({ mangle: { module: isES }, output: { comments: "some" } }))
     .pipe(rename({ extname: ".min.js" }))
     .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest("dist"))
-));
+    .pipe(gulp.dest("dist"));
+
+gulp.task("build:es", gulp.series(builder(esOptions), minifier(true)));
+
+gulp.task("build:umd", gulp.series(builder(umdOptions), minifier(false)));
+
+gulp.task("build", gulp.parallel("build:es", "build:umd"));
 
 /* lint */
 
