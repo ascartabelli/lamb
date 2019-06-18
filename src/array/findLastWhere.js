@@ -2,8 +2,8 @@ import _curry2 from "../privates/_curry2";
 import findLast from "./findLast";
 
 /**
- * A curried version of {@link module:lamb.findLast|findLast} expecting the array-like object
- * to search.
+ * A curried version of {@link module:lamb.findLast|findLast} that uses the given
+ * predicate to build a function expecting the array-like object to search.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var findEven = _.findLastWhere(isEven);

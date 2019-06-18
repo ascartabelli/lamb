@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.9
+* @version 0.58.0
 * @module lamb
 * @license MIT
 */
@@ -1553,8 +1553,8 @@
     var findLastIndexWhere = _curry2(findLastIndex, true);
 
     /**
-     * A curried version of {@link module:lamb.findLast|findLast} expecting the array-like object
-     * to search.
+     * A curried version of {@link module:lamb.findLast|findLast} that uses the given
+     * predicate to build a function expecting the array-like object to search.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var findEven = _.findLastWhere(isEven);
@@ -1577,8 +1577,8 @@
     var findLastWhere = _curry2(findLast, true);
 
     /**
-     * A curried version of {@link module:lamb.find|find} expecting the array-like object
-     * to search.
+     * A curried version of {@link module:lamb.find|find} that uses the given
+     * predicate to build a function expecting the array-like object to search.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var findEven = _.findWhere(isEven);
@@ -4121,7 +4121,7 @@
      * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
-     * var filterString = _.compose(_.invoker("join", [""]), _.filter);
+     * var filterString = _.compose(_.joinWith(""), _.filter);
      * var filterAdapter = _.adapter([
      *     _.invoker("filter"),
      *     _.case(_.isType("String"), filterString)

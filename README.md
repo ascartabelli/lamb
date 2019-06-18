@@ -51,18 +51,20 @@ or
 Doing so a `lamb` variable will be created in the global object.
 The source map for the minified file is in the same `dist` folder.
 
+Since version 0.58.0 there is also a one file ES modules build, always in the `dist` folder, named `lamb.esm.js` and its minified version `lamb.esm.min.js`.
+
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.57.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.58.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.57.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.58.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.57.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.58.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -113,6 +115,16 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.58.0 - *2019/06/18**
+  - Added one file ES modules build
+  - **API change**: `invoker` now accepts an array of bound arguments
+  - **API change**: benched `immutable` for the moment being
+  - Added `join` and `joinWith`
+  - Added `findLast`, `findLastWhere`, `findLastIndex`, `findLastIndexWhere`
+  - Added `dropLastWhile` and `takeLastWhile`
+  - Switched from uglify-js to terser
+  - Updated docs, linting and tests
+
 - **v0.57.0 - *2019/02/12***
   - Splitted the library into ES modules
   - **API change**: `sort`, `sortWith` and `sortedInsert` now accept an array of sorters
@@ -134,8 +146,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **Fixed**: `setPath` and `updatePath` weren't returning unary functions, and further arguments would have overwritten the previous ones
   - Updated doc comments
   - Updated linting rules
-
-- **v0.54.0 - *2017/08/01***
-  - Added `mapValues` and `mapValuesWith`
-  - Added "@since" tags to doc comments
-  - Added linting for tests

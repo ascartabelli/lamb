@@ -2,8 +2,8 @@ import _curry2 from "../privates/_curry2";
 import find from "./find";
 
 /**
- * A curried version of {@link module:lamb.find|find} expecting the array-like object
- * to search.
+ * A curried version of {@link module:lamb.find|find} that uses the given
+ * predicate to build a function expecting the array-like object to search.
  * @example
  * var isEven = function (n) { return n % 2 === 0; };
  * var findEven = _.findWhere(isEven);
