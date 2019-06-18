@@ -1,5 +1,7 @@
 import _toArrayLength from "../privates/_toArrayLength";
 
+/* eslint-disable jsdoc/require-returns-check */
+
 /**
  * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.

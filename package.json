@@ -41,7 +41,9 @@
     "babel": {
         "env": {
             "test": {
-                "presets": [["@babel/preset-env", { "targets": { "node": "current" } }]]
+                "presets": [
+                    ["@babel/preset-env", { "targets": { "node": "current" } }]
+                ]
             }
         }
     },
@@ -49,10 +51,11 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.58.0-alpha.7",
+    "version": "0.58.0-alpha.8",
     "devDependencies": {
         "@babel/preset-env": "^7.4.5",
         "coveralls": "^3.0.4",
+        "eslint-plugin-jsdoc": "^8.1.0",
         "gulp": "^4.0.2",
         "gulp-eslint": "^5.0.0",
         "gulp-jest": "^4.0.2",

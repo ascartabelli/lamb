@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.7
+* @version 0.58.0-alpha.8
 * @module lamb
 * @license MIT
 */
@@ -297,6 +297,8 @@
     function _toArrayLength (value) {
         return clamp(value, 0, MAX_ARRAY_LENGTH) >>> 0;
     }
+
+    /* eslint-disable jsdoc/require-returns-check */
 
     /**
      * Executes the provided <code>iteratee</code> for each element of the given array-like object.<br/>
@@ -3896,6 +3898,8 @@
             return arguments[_toNaturalIndex(idx, arguments.length)];
         };
     }
+
+    /* eslint-disable jsdoc/check-param-names */
 
     /**
      * If a method with the given name exists on the target, applies it to the provided

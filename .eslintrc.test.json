@@ -16,6 +16,7 @@
             "1tbs",
             {"allowSingleLine": true}
         ],
+        "jsdoc/require-jsdoc": 0,
         "max-len": [
             "error", {
                 "code": 110,
@@ -65,7 +66,6 @@
             "error",
             "as-needed"
         ],
-        "require-jsdoc": 0,
         "strict": [
             "error",
             "safe"

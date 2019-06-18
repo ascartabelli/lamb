@@ -8,7 +8,35 @@
         "ecmaVersion": 5,
         "sourceType": "module"
     },
+    "plugins": [
+        "jsdoc"
+    ],
     "root": true,
+    "settings": {
+        "jsdoc": {
+            "additionalTagNames": {
+                "customTags": ["category"]
+            },
+            "preferredTypes": {
+                "array": "Array",
+                "boolean": "Boolean",
+                "date": "Date",
+                "error": "Error",
+                "function": "Function",
+                "number": "Number",
+                "object": "Object",
+                "regexp": "RegExp",
+                "string": "String",
+                "undefined": "Undefined"
+            },
+            "tagNamePreference": {
+                "arg": "param",
+                "argument": "param",
+                "augments": "extends",
+                "return": "returns"
+            }
+        }
+    },
     "rules": {
         "array-callback-return": "error",
         "brace-style": [
@@ -67,6 +95,42 @@
             "error",
             4
         ],
+        "jsdoc/check-alignment": 2,
+        "jsdoc/check-examples": 0,
+        "jsdoc/check-indentation": 0,
+        "jsdoc/check-param-names": 2,
+        "jsdoc/check-syntax": 2,
+        "jsdoc/check-tag-names": 2,
+        "jsdoc/check-types": 2,
+        "jsdoc/implements-on-classes": 0,
+        "jsdoc/match-description": 0,
+        "jsdoc/newline-after-description": 0,
+        "jsdoc/no-types": 0,
+        "jsdoc/no-undefined-types": [
+            "error", {
+                "definedTypes": [
+                    "ArrayLike",
+                    "ListIteratorCallback",
+                    "ObjectIteratorCallback",
+                    "Sorter"
+                ],
+                "preferredTypesDefined": true
+            }
+        ],
+        "jsdoc/require-description": 0,
+        "jsdoc/require-description-complete-sentence": 0,
+        "jsdoc/require-example": 0,
+        "jsdoc/require-hyphen-before-param-description": 0,
+        "jsdoc/require-jsdoc": 2,
+        "jsdoc/require-param": 2,
+        "jsdoc/require-param-description": 0,
+        "jsdoc/require-param-name": 2,
+        "jsdoc/require-param-type": 2,
+        "jsdoc/require-returns": 2,
+        "jsdoc/require-returns-check": 2,
+        "jsdoc/require-returns-description": 0,
+        "jsdoc/require-returns-type": 2,
+        "jsdoc/valid-types": 0,
         "key-spacing": [
             "error", {
                 "afterColon": true,
@@ -249,15 +313,6 @@
             "double"
         ],
         "radix": "error",
-        "require-jsdoc": [
-            "error", {
-                "require": {
-                    "FunctionDeclaration": true,
-                    "MethodDefinition": true,
-                    "ClassDeclaration": true
-                }
-            }
-        ],
         "semi": [
             "error",
             "always"
@@ -298,30 +353,6 @@
         "strict": [
             "error",
             "function"
-        ],
-        "valid-jsdoc": [
-            "error", {
-                "prefer": {
-                    "arg": "param",
-                    "argument": "param",
-                    "return": "returns"
-                },
-                "preferType": {
-                    "array": "Array",
-                    "boolean": "Boolean",
-                    "date": "Date",
-                    "error": "Error",
-                    "function": "Function",
-                    "number": "Number",
-                    "object": "Object",
-                    "regexp": "RegExp",
-                    "string": "String"
-                },
-                "requireParamDescription": false,
-                "requireReturn": true,
-                "requireReturnDescription": false,
-                "requireReturnType": true
-            }
         ],
         "wrap-iife": [
             "error",

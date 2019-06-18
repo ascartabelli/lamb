@@ -1,5 +1,7 @@
 import _toArrayLength from "./_toArrayLength";
 
+/* eslint-disable jsdoc/check-param-names */
+
 /**
  * If a method with the given name exists on the target, applies it to the provided
  * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
