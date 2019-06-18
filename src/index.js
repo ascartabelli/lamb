@@ -179,7 +179,6 @@ export { default as hasOwn } from "./object/hasOwn";
 export { default as hasOwnKey } from "./object/hasOwnKey";
 export { default as hasKeyValue } from "./object/hasKeyValue";
 export { default as hasPathValue } from "./object/hasPathValue";
-export { default as immutable } from "./object/immutable";
 export { default as keys } from "./object/keys";
 export { default as keySatisfies } from "./object/keySatisfies";
 export { default as make } from "./object/make";

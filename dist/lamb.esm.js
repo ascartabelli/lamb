@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0-alpha.8
+* @version 0.58.0-alpha.9
 * @module lamb
 * @license MIT
 */
@@ -5494,64 +5494,6 @@ function hasPathValue (path, value, separator) {
 }
 
 /**
- * Makes an object immutable by recursively calling <code>Object.freeze</code>
- * on its members.
- * @private
- * @param {Object} obj
- * @param {Array} seen
- * @returns {Object} The obj parameter itself, not a copy.
- */
-function _immutable (obj, seen) {
-    if (seen.indexOf(obj) === -1) {
-        seen.push(Object.freeze(obj));
-
-        forEach(Object.getOwnPropertyNames(obj), function (key) {
-            var value = obj[key];
-
-            if (typeof value === "object" && !isNull(value)) {
-                _immutable(value, seen);
-            }
-        });
-    }
-
-    return obj;
-}
-
-/**
- * Makes an object immutable by recursively calling [Object.freeze]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze}
- * on its members.<br/>
- * Any attempt to extend or modify the object can throw a <code>TypeError</code> or fail silently,
- * depending on the environment and the [strict mode]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode} directive.
- * @example
- * var user = _.immutable({
- *     name: "John",
- *     surname: "Doe",
- *     login: {
- *         username: "jdoe",
- *         password: "abc123"
- *     },
- *     luckyNumbers: [13, 17]
- * });
- *
- * // All of these statements will fail and possibly
- * // throw a TypeError (see the function description)
- * user.name = "Joe";
- * delete user.name;
- * user.newProperty = [];
- * user.login.password = "foo";
- * user.luckyNumbers.push(-13);
- *
- * @memberof module:lamb
- * @category Object
- * @since 0.8.0
- * @param {Object} obj
- * @returns {Object}
- */
-function immutable (obj) {
-    return _immutable(obj, []);
-}
-
-/**
  * A null-safe version of <code>Object.keys</code>.
  * @private
  * @function
@@ -6994,4 +6936,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, immutable, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickKeys, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameKeys, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipKeys, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickKeys, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameKeys, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipKeys, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
