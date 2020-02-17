@@ -115,7 +115,7 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
-- **v0.58.0 - *2019/06/18**
+- **v0.58.0 - *2019/06/18***
   - Added one file ES modules build
   - **API change**: `invoker` now accepts an array of bound arguments
   - **API change**: benched `immutable` for the moment being

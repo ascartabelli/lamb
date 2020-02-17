@@ -6,7 +6,7 @@ import generic from "../core/generic";
  * @function
  * @param {String} s
  * @param {RegExp} pattern
- * @return {Number}
+ * @returns {Number}
  */
 var _search = generic(String.prototype.search);
 

@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0
+* @version 0.59.0-alpha.1
 * @module lamb
 * @license MIT
 */
@@ -9,7 +9,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = global || self, factory(global.lamb = {}));
-}(this, function (exports) { 'use strict';
+}(this, (function (exports) { 'use strict';
 
     /**
      * The placeholder object used in partial application.
@@ -501,7 +501,7 @@
      * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
      * @since 0.1.0
      * @param {ListIteratorCallback} iteratee
-     * @returns {function}
+     * @returns {Function}
      */
     var mapWith = _curry2(map, true);
 
@@ -6862,7 +6862,7 @@
      * @function
      * @param {String} s
      * @param {RegExp} pattern
-     * @return {Number}
+     * @returns {Number}
      */
     var _search = generic(String.prototype.search);
 
@@ -7152,4 +7152,4 @@
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));

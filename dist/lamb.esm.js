@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.58.0
+* @version 0.59.0-alpha.1
 * @module lamb
 * @license MIT
 */
@@ -495,7 +495,7 @@ function map (arrayLike, iteratee) {
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @since 0.1.0
  * @param {ListIteratorCallback} iteratee
- * @returns {function}
+ * @returns {Function}
  */
 var mapWith = _curry2(map, true);
 
@@ -6856,7 +6856,7 @@ function repeat (source, times) {
  * @function
  * @param {String} s
  * @param {RegExp} pattern
- * @return {Number}
+ * @returns {Number}
  */
 var _search = generic(String.prototype.search);
 

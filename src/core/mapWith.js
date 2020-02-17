@@ -17,7 +17,7 @@ import map from "./map";
  * @see {@link module:lamb.flatMap|flatMap}, {@link module:lamb.flatMapWith|flatMapWith}
  * @since 0.1.0
  * @param {ListIteratorCallback} iteratee
- * @returns {function}
+ * @returns {Function}
  */
 var mapWith = _curry2(map, true);
 
