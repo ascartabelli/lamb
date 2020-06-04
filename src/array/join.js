@@ -25,6 +25,7 @@ import map from "../core/map";
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.joinWith|joinWith}
+ * @see {@link module:lamb.split|split}, {@link module:lamb.splitBy|splitBy}
  * @since 0.58.0
  * @param {ArrayLike} arrayLike
  * @param {String} separator

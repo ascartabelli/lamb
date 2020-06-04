@@ -16,6 +16,7 @@ import join from "./join";
  * @category Array
  * @function
  * @see {@link module:lamb.join|join}
+ * @see {@link module:lamb.split|split}, {@link module:lamb.splitBy|splitBy}
  * @since 0.58.0
  * @param {String} separator
  * @returns {Function}

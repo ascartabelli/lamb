@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.1
+* @version 0.59.0-alpha.2
 * @module lamb
 * @license MIT
 */
@@ -2130,6 +2130,7 @@ function intersection (a, b) {
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.joinWith|joinWith}
+ * @see {@link module:lamb.split|split}, {@link module:lamb.splitBy|splitBy}
  * @since 0.58.0
  * @param {ArrayLike} arrayLike
  * @param {String} separator
@@ -2154,6 +2155,7 @@ function join (arrayLike, separator) {
  * @category Array
  * @function
  * @see {@link module:lamb.join|join}
+ * @see {@link module:lamb.split|split}, {@link module:lamb.splitBy|splitBy}
  * @since 0.58.0
  * @param {String} separator
  * @returns {Function}
@@ -6851,6 +6853,43 @@ function repeat (source, times) {
 }
 
 /**
+ * Splits a string into an array of substrings using the given separator.
+ * @example
+ * _.split("Jan,Feb,Mar,Apr,May", ",") // => ["Jan", "Feb", "Mar", "Apr", "May"]
+ * _.split("Jan, Feb , Mar,Apr,   May", /\s*,\s*‍/) // => ["Jan", "Feb", "Mar", "Apr", "May"]
+ *
+ * @memberof module:lamb
+ * @category String
+ * @function
+ * @see {@link module:lamb.splitBy|splitBy}
+ * @see {@link module:lamb.join|join}, {@link module:lamb.joinWith|joinWith}
+ * @since 0.59.0
+ * @param {String} source
+ * @param {String|RegExp} separator
+ * @returns {String[]}
+ */
+var split = binary(generic(String.prototype.split));
+
+/**
+ * A curried version of {@link module:lamb.split|split} that accepts
+ * a separator and builds a function expecting the string to split.
+ * @example
+ * var splitByCommma = _.splitBy(",");
+ *
+ * splitByCommma("Jan,Feb,Mar,Apr,May") // => ["Jan", "Feb", "Mar", "Apr", "May"]
+ *
+ * @memberof module:lamb
+ * @category String
+ * @function
+ * @see {@link module:lamb.split|split}
+ * @see {@link module:lamb.join|join}, {@link module:lamb.joinWith|joinWith}
+ * @since 0.59.0
+ * @param {String|RegExp} separator
+ * @returns {Function}
+ */
+var splitBy = _curry2(split, true);
+
+/**
  * A generic version of <code>String.prototype.search</code>
  * @private
  * @function
@@ -6936,4 +6975,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickKeys, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameKeys, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipKeys, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickKeys, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameKeys, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipKeys, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
