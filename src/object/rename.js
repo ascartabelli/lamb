@@ -1,47 +1,35 @@
-import enumerables from "./enumerables";
+import _curry2 from "../privates/_curry2";
+import renameIn from "./renameIn";
 
 /**
- * Creates a copy of the given object with its enumerable keys renamed as
- * indicated in the provided lookup table.
+ * A curried version of {@link module:lamb.renameIn|renameIn} expecting a
+ * <code>keysMap</code> to build a function waiting for the object to act upon.
  * @example
- * var person = {"firstName": "John", "lastName": "Doe"};
- * var keysMap = {"firstName": "name", "lastName": "surname"};
+ * var persons = [
+ *     {"firstName": "John", "lastName": "Doe"},
+ *     {"first_name": "Mario", "last_name": "Rossi"},
+ * ];
+ * var normalizeKeys = _.rename({
+ *     "firstName": "name",
+ *     "first_name": "name",
+ *     "lastName": "surname",
+ *     "last_name": "surname"
+ * });
  *
- * _.rename(person, keysMap) // => {"name": "John", "surname": "Doe"}
- *
- * @example <caption>It's safe using it to swap keys:</caption>
- * var keysMap = {"firstName": "lastName", "lastName": "firstName"};
- *
- * _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}
+ * _.map(persons, normalizeKeys) // =>
+ * // [
+ * //     {"name": "John", "surname": "Doe"},
+ * //     {"name": "Mario", "surname": "Rossi"}
+ * // ]
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.renameKeys|renameKeys}, {@link module:lamb.renameWith|renameWith}
+ * @function
+ * @see {@link module:lamb.renameIn|renameIn}, {@link module:lamb.renameWith|renameWith}
  * @since 0.26.0
- * @param {Object} source
  * @param {Object} keysMap
- * @returns {Object}
+ * @returns {Function}
  */
-function rename (source, keysMap) {
-    keysMap = Object(keysMap);
-    var result = {};
-    var oldKeys = enumerables(source);
-
-    for (var prop in keysMap) {
-        if (~oldKeys.indexOf(prop)) {
-            result[keysMap[prop]] = source[prop];
-        }
-    }
-
-    for (var i = 0, len = oldKeys.length, key; i < len; i++) {
-        key = oldKeys[i];
-
-        if (!(key in keysMap || key in result)) {
-            result[key] = source[key];
-        }
-    }
-
-    return result;
-}
+var rename = _curry2(renameIn, true);
 
 export default rename;

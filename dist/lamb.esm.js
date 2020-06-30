@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.4
+* @version 0.59.0-alpha.5
 * @module lamb
 * @license MIT
 */
@@ -6043,22 +6043,22 @@ function pickIf (predicate) {
  * var person = {"firstName": "John", "lastName": "Doe"};
  * var keysMap = {"firstName": "name", "lastName": "surname"};
  *
- * _.rename(person, keysMap) // => {"name": "John", "surname": "Doe"}
+ * _.renameIn(person, keysMap) // => {"name": "John", "surname": "Doe"}
  *
  * @example <caption>It's safe using it to swap keys:</caption>
  * var keysMap = {"firstName": "lastName", "lastName": "firstName"};
  *
- * _.rename(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}
+ * _.renameIn(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.renameKeys|renameKeys}, {@link module:lamb.renameWith|renameWith}
+ * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameWith|renameWith}
  * @since 0.26.0
  * @param {Object} source
  * @param {Object} keysMap
  * @returns {Object}
  */
-function rename (source, keysMap) {
+function renameIn (source, keysMap) {
     keysMap = Object(keysMap);
     var result = {};
     var oldKeys = enumerables(source);
@@ -6081,14 +6081,14 @@ function rename (source, keysMap) {
 }
 
 /**
- * A curried version of {@link module:lamb.rename|rename} expecting a
+ * A curried version of {@link module:lamb.renameIn|renameIn} expecting a
  * <code>keysMap</code> to build a function waiting for the object to act upon.
  * @example
  * var persons = [
  *     {"firstName": "John", "lastName": "Doe"},
  *     {"first_name": "Mario", "last_name": "Rossi"},
  * ];
- * var normalizeKeys = _.renameKeys({
+ * var normalizeKeys = _.rename({
  *     "firstName": "name",
  *     "first_name": "name",
  *     "lastName": "surname",
@@ -6104,16 +6104,16 @@ function rename (source, keysMap) {
  * @memberof module:lamb
  * @category Object
  * @function
- * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameWith|renameWith}
+ * @see {@link module:lamb.renameIn|renameIn}, {@link module:lamb.renameWith|renameWith}
  * @since 0.26.0
  * @param {Object} keysMap
  * @returns {Function}
  */
-var renameKeys = _curry2(rename, true);
+var rename = _curry2(renameIn, true);
 
 /**
  * Uses the provided function as a <code>keysMap</code> generator and returns
- * a function expecting the object whose keys we want to {@link module:lamb.rename|rename}.
+ * a function expecting the object whose keys we want to {@link module:lamb.renameIn|renameIn}.
  * @example
  * var person = {"NAME": "John", "SURNAME": "Doe"};
  * var arrayToLower = _.mapWith(_.invoker("toLowerCase"));
@@ -6128,14 +6128,14 @@ var renameKeys = _curry2(rename, true);
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.rename|rename}, {@link module:lamb.renameKeys|renameKeys}
+ * @see {@link module:lamb.renameIn|renameIn}, {@link module:lamb.rename|rename}
  * @since 0.26.0
  * @param {Function} fn
  * @returns {Function}
  */
 function renameWith (fn) {
     return function (source) {
-        return rename(source, fn(source));
+        return renameIn(source, fn(source));
     };
 }
 
@@ -6975,4 +6975,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameKeys, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };

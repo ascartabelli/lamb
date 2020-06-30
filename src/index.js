@@ -196,7 +196,7 @@ export { default as pick } from "./object/pick";
 export { default as pickIf } from "./object/pickIf";
 export { default as pickIn } from "./object/pickIn";
 export { default as rename } from "./object/rename";
-export { default as renameKeys } from "./object/renameKeys";
+export { default as renameIn } from "./object/renameIn";
 export { default as renameWith } from "./object/renameWith";
 export { default as setIn } from "./object/setIn";
 export { default as setKey } from "./object/setKey";
