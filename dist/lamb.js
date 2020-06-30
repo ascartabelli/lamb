@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.3
+* @version 0.59.0-alpha.4
 * @module lamb
 * @license MIT
 */
@@ -5940,19 +5940,19 @@
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
      *
-     * _.pick(user, ["name", "age"]) // => {"name": "john", "age": 30};
-     * _.pick(user, ["name", "email"]) // => {"name": "john"}
+     * _.pickIn(user, ["name", "age"]) // => {"name": "john", "age": 30};
+     * _.pickIn(user, ["name", "email"]) // => {"name": "john"}
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.pickIf|pickIf}, {@link module:lamb.pickKeys|pickKeys}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pickIf|pickIf}, {@link module:lamb.pick|pick}
+     * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skipIf|skipIf}
      * @since 0.1.0
      * @param {Object} source
      * @param {String[]} whitelist
      * @returns {Object}
      */
-    function pick (source, whitelist) {
+    function pickIn (source, whitelist) {
         var result = {};
 
         for (var i = 0, len = whitelist.length, key; i < len; i++) {
@@ -5967,6 +5967,45 @@
     }
 
     /**
+     * A curried version of {@link module:lamb.pickIn|pickIn}, expecting a whitelist of keys to build
+     * a function waiting for the object to act upon.
+     * @example
+     * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
+     * var getUserInfo = _.pick(["id", "active"]);
+     *
+     * getUserInfo(user) // => {id: 1, active: false}
+     *
+     * @example <caption>A useful composition with <code>mapWith</code>:</caption>
+     * var users = [
+     *     {id: 1, name: "Jane", surname: "Doe", active: false},
+     *     {id: 2, name: "John", surname: "Doe", active: true},
+     *     {id: 3, name: "Mario", surname: "Rossi", active: true},
+     *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
+     * ];
+     * var select = _.compose(_.mapWith, _.pick);
+     * var selectUserInfo = select(["id", "active"]);
+     *
+     * selectUserInfo(users) // =>
+     * // [
+     * //     {id: 1, active: false},
+     * //     {id: 2, active: true},
+     * //     {id: 3, active: true},
+     * //     {id: 4, active: false}
+     * // ]
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pickIf|pickIf}
+     * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skip|skip},
+     * {@link module:lamb.skipIf|skipIf}
+     * @since 0.35.0
+     * @param {String[]} whitelist
+     * @returns {Function}
+     */
+    var pick = _curry2(pickIn, true);
+
+    /**
      * Builds a function expecting an object whose enumerable properties will be checked
      * against the given predicate.<br/>
      * The properties satisfying the predicate will be included in the resulting object.
@@ -5978,8 +6017,8 @@
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+     * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick}
+     * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skip|skip},
      * {@link module:lamb.skipIf|skipIf}
      * @since 0.1.0
      * @param {ObjectIteratorCallback} predicate
@@ -6002,45 +6041,6 @@
             return result;
         };
     }
-
-    /**
-     * A curried version of {@link module:lamb.pick|pick}, expecting a whitelist of keys to build
-     * a function waiting for the object to act upon.
-     * @example
-     * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
-     * var getUserInfo = _.pickKeys(["id", "active"]);
-     *
-     * getUserInfo(user) // => {id: 1, active: false}
-     *
-     * @example <caption>A useful composition with <code>mapWith</code>:</caption>
-     * var users = [
-     *     {id: 1, name: "Jane", surname: "Doe", active: false},
-     *     {id: 2, name: "John", surname: "Doe", active: true},
-     *     {id: 3, name: "Mario", surname: "Rossi", active: true},
-     *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
-     * ];
-     * var select = _.compose(_.mapWith, _.pickKeys);
-     * var selectUserInfo = select(["id", "active"]);
-     *
-     * selectUserInfo(users) // =>
-     * // [
-     * //     {id: 1, active: false},
-     * //     {id: 2, active: true},
-     * //     {id: 3, active: true},
-     * //     {id: 4, active: false}
-     * // ]
-     *
-     * @memberof module:lamb
-     * @category Object
-     * @function
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickIf|pickIf}
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
-     * {@link module:lamb.skipIf|skipIf}
-     * @since 0.35.0
-     * @param {String[]} whitelist
-     * @returns {Function}
-     */
-    var pickKeys = _curry2(pick, true);
 
     /**
      * Creates a copy of the given object with its enumerable keys renamed as
@@ -6363,20 +6363,20 @@
      * @example
      * var user = {name: "john", surname: "doe", age: 30};
      *
-     * _.skip(user, ["name", "age"]) // => {surname: "doe"};
-     * _.skip(user, ["name", "email"]) // => {surname: "doe", age: 30};
+     * _.skipIn(user, ["name", "age"]) // => {surname: "doe"};
+     * _.skipIn(user, ["name", "email"]) // => {surname: "doe", age: 30};
      *
      * @memberof module:lamb
      * @category Object
-     * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick},
      * {@link module:lamb.pickIf|pickIf}
      * @since 0.1.0
      * @param {Object} source
      * @param {String[]} blacklist
      * @returns {Object}
      */
-    function skip (source, blacklist) {
+    function skipIn (source, blacklist) {
         if (isNil(source)) {
             throw _makeTypeErrorFor(source, "object");
         }
@@ -6394,33 +6394,11 @@
     }
 
     /**
-     * Builds a function expecting an object whose enumerable properties will be checked
-     * against the given predicate.<br/>
-     * The properties satisfying the predicate will be omitted in the resulting object.
-     * @example
-     * var user = {name: "john", surname: "doe", age: 30};
-     * var skipIfIstring = _.skipIf(_.isType("String"));
-     *
-     * skipIfIstring(user) // => {age: 30}
-     *
-     * @memberof module:lamb
-     * @category Object
-     * @function
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
-     * {@link module:lamb.pickIf|pickIf}
-     * @since 0.1.0
-     * @param {ObjectIteratorCallback} predicate
-     * @returns {Function}
-     */
-    var skipIf = compose(pickIf, not);
-
-    /**
-     * A curried version of {@link module:lamb.skip|skip}, expecting a blacklist of keys to build
+     * A curried version of {@link module:lamb.skipIn|skipIn}, expecting a blacklist of keys to build
      * a function waiting for the object to act upon.
      * @example
      * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
-     * var getUserInfo = _.skipKeys(["name", "surname"]);
+     * var getUserInfo = _.skip(["name", "surname"]);
      *
      * getUserInfo(user) // => {id: 1, active: false}
      *
@@ -6431,7 +6409,7 @@
      *     {id: 3, name: "Mario", surname: "Rossi", active: true},
      *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
      * ];
-     * var discard = _.compose(_.mapWith, _.skipKeys);
+     * var discard = _.compose(_.mapWith, _.skip);
      * var discardNames = discard(["name", "surname"]);
      *
      * discardNames(users) // =>
@@ -6445,14 +6423,36 @@
      * @memberof module:lamb
      * @category Object
      * @function
-     * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipIf|skipIf}
-     * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+     * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skipIf|skipIf}
+     * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick},
      * {@link module:lamb.pickIf|pickIf}
      * @since 0.35.0
      * @param {String[]} blacklist
      * @returns {Function}
      */
-    var skipKeys = _curry2(skip, true);
+    var skip = _curry2(skipIn, true);
+
+    /**
+     * Builds a function expecting an object whose enumerable properties will be checked
+     * against the given predicate.<br/>
+     * The properties satisfying the predicate will be omitted in the resulting object.
+     * @example
+     * var user = {name: "john", surname: "doe", age: 30};
+     * var skipIfIstring = _.skipIf(_.isType("String"));
+     *
+     * skipIfIstring(user) // => {age: 30}
+     *
+     * @memberof module:lamb
+     * @category Object
+     * @function
+     * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skip|skip}
+     * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick},
+     * {@link module:lamb.pickIf|pickIf}
+     * @since 0.1.0
+     * @param {ObjectIteratorCallback} predicate
+     * @returns {Function}
+     */
+    var skipIf = compose(pickIf, not);
 
     /**
      * Using the provided function to retrieve the keys of an object, builds
@@ -7117,7 +7117,7 @@
     exports.pathSatisfies = pathSatisfies;
     exports.pick = pick;
     exports.pickIf = pickIf;
-    exports.pickKeys = pickKeys;
+    exports.pickIn = pickIn;
     exports.pipe = pipe;
     exports.pluck = pluck;
     exports.pluckKey = pluckKey;
@@ -7146,7 +7146,7 @@
     exports.shallowFlatten = shallowFlatten;
     exports.skip = skip;
     exports.skipIf = skipIf;
-    exports.skipKeys = skipKeys;
+    exports.skipIn = skipIn;
     exports.slice = slice;
     exports.sliceAt = sliceAt;
     exports.some = some;

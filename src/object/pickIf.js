@@ -13,8 +13,8 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys}
- * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys},
+ * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick}
+ * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skip|skip},
  * {@link module:lamb.skipIf|skipIf}
  * @since 0.1.0
  * @param {ObjectIteratorCallback} predicate

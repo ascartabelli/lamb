@@ -15,8 +15,8 @@ import pickIf from "./pickIf";
  * @memberof module:lamb
  * @category Object
  * @function
- * @see {@link module:lamb.skip|skip}, {@link module:lamb.skipKeys|skipKeys}
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+ * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skip|skip}
+ * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick},
  * {@link module:lamb.pickIf|pickIf}
  * @since 0.1.0
  * @param {ObjectIteratorCallback} predicate

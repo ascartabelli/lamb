@@ -1,40 +1,43 @@
-import isNil from "../core/isNil";
-import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
-import make from "./make";
+import _curry2 from "../privates/_curry2";
+import skipIn from "./skipIn";
 
 /**
- * Returns a copy of the source object without the specified properties.
+ * A curried version of {@link module:lamb.skipIn|skipIn}, expecting a blacklist of keys to build
+ * a function waiting for the object to act upon.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
+ * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
+ * var getUserInfo = _.skip(["name", "surname"]);
  *
- * _.skip(user, ["name", "age"]) // => {surname: "doe"};
- * _.skip(user, ["name", "email"]) // => {surname: "doe", age: 30};
+ * getUserInfo(user) // => {id: 1, active: false}
+ *
+ * @example <caption>A useful composition with <code>mapWith</code>:</caption>
+ * var users = [
+ *     {id: 1, name: "Jane", surname: "Doe", active: false},
+ *     {id: 2, name: "John", surname: "Doe", active: true},
+ *     {id: 3, name: "Mario", surname: "Rossi", active: true},
+ *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
+ * ];
+ * var discard = _.compose(_.mapWith, _.skip);
+ * var discardNames = discard(["name", "surname"]);
+ *
+ * discardNames(users) // =>
+ * // [
+ * //     {id: 1, active: false},
+ * //     {id: 2, active: true},
+ * //     {id: 3, active: true},
+ * //     {id: 4, active: false}
+ * // ]
  *
  * @memberof module:lamb
  * @category Object
- * @see {@link module:lamb.skipKeys|skipKeys}, {@link module:lamb.skipIf|skipIf}
- * @see {@link module:lamb.pick|pick}, {@link module:lamb.pickKeys|pickKeys},
+ * @function
+ * @see {@link module:lamb.skipIn|skipIn}, {@link module:lamb.skipIf|skipIf}
+ * @see {@link module:lamb.pickIn|pickIn}, {@link module:lamb.pick|pick},
  * {@link module:lamb.pickIf|pickIf}
- * @since 0.1.0
- * @param {Object} source
+ * @since 0.35.0
  * @param {String[]} blacklist
- * @returns {Object}
+ * @returns {Function}
  */
-function skip (source, blacklist) {
-    if (isNil(source)) {
-        throw _makeTypeErrorFor(source, "object");
-    }
-
-    var result = {};
-    var props = make(blacklist, []);
-
-    for (var key in source) {
-        if (!(key in props)) {
-            result[key] = source[key];
-        }
-    }
-
-    return result;
-}
+var skip = _curry2(skipIn, true);
 
 export default skip;
