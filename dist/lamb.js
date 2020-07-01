@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.5
+* @version 0.59.0-alpha.6
 * @module lamb
 * @license MIT
 */
@@ -2332,6 +2332,30 @@
     var getKey = _curry2(getIn, true);
 
     /**
+     * A curried version of {@link module:lamb.pluckFrom|pluckFrom} expecting the key to retrieve to
+     * build a function waiting for the array-like object to act upon.
+     * @example
+     * var persons = [
+     *     {"name": "Jane", "surname": "Doe", "age": 12},
+     *     {"name": "John", "surname": "Doe", "age": 40},
+     *     {"name": "Mario", "surname": "Rossi", "age": 18},
+     *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
+     * ];
+     * var getAges = _.pluck("age");
+     *
+     * getAges(persons) // => [12, 40, 18, 15]
+     *
+     * @memberof module:lamb
+     * @category Array
+     * @function
+     * @see {@link module:lamb.pluckFrom|pluckFrom}
+     * @since 0.12.0
+     * @param {String} key
+     * @returns {Function}
+     */
+    var pluck = compose(mapWith, getKey);
+
+    /**
      * "Plucks" the values of the specified key from a list of objects.
      * @example
      * var persons = [
@@ -2341,7 +2365,7 @@
      *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
      * ];
      *
-     * _.pluck(persons, "age") // => [12, 40, 18, 15]
+     * _.pluckFrom(persons, "age") // => [12, 40, 18, 15]
      *
      * var lists = [
      *     [1, 2],
@@ -2349,43 +2373,19 @@
      *     [6]
      * ];
      *
-     * _.pluck(lists, "length") // => [2, 3, 1]
+     * _.pluckFrom(lists, "length") // => [2, 3, 1]
      *
      * @memberof module:lamb
      * @category Array
-     * @see {@link module:lamb.pluckKey|pluckKey}
+     * @see {@link module:lamb.pluck|pluck}
      * @since 0.1.0
      * @param {ArrayLike} arrayLike
      * @param {String} key
      * @returns {Array}
      */
-    function pluck (arrayLike, key) {
+    function pluckFrom (arrayLike, key) {
         return map(arrayLike, getKey(key));
     }
-
-    /**
-     * A curried version of {@link module:lamb.pluck|pluck} expecting the key to retrieve to
-     * build a function waiting for the array-like object to act upon.
-     * @example
-     * var persons = [
-     *     {"name": "Jane", "surname": "Doe", "age": 12},
-     *     {"name": "John", "surname": "Doe", "age": 40},
-     *     {"name": "Mario", "surname": "Rossi", "age": 18},
-     *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
-     * ];
-     * var getAges = _.pluckKey("age");
-     *
-     * getAges(persons) // => [12, 40, 18, 15]
-     *
-     * @memberof module:lamb
-     * @category Array
-     * @function
-     * @see {@link module:lamb.pluck|pluck}
-     * @since 0.12.0
-     * @param {String} key
-     * @returns {Function}
-     */
-    var pluckKey = compose(mapWith, getKey);
 
     /**
      * Creates an array copy of the given array-like object without the
@@ -7120,7 +7120,7 @@
     exports.pickIn = pickIn;
     exports.pipe = pipe;
     exports.pluck = pluck;
-    exports.pluckKey = pluckKey;
+    exports.pluckFrom = pluckFrom;
     exports.pull = pull;
     exports.pullFrom = pullFrom;
     exports.randomInt = randomInt;

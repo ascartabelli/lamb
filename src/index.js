@@ -68,7 +68,7 @@ export { default as list } from "./array/list";
 export { default as partition } from "./array/partition";
 export { default as partitionWith } from "./array/partitionWith";
 export { default as pluck } from "./array/pluck";
-export { default as pluckKey } from "./array/pluckKey";
+export { default as pluckFrom } from "./array/pluckFrom";
 export { default as pull } from "./array/pull";
 export { default as pullFrom } from "./array/pullFrom";
 export { default as reduceRight } from "./array/reduceRight";

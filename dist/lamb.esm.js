@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.5
+* @version 0.59.0-alpha.6
 * @module lamb
 * @license MIT
 */
@@ -2326,6 +2326,30 @@ function getIn (obj, key) {
 var getKey = _curry2(getIn, true);
 
 /**
+ * A curried version of {@link module:lamb.pluckFrom|pluckFrom} expecting the key to retrieve to
+ * build a function waiting for the array-like object to act upon.
+ * @example
+ * var persons = [
+ *     {"name": "Jane", "surname": "Doe", "age": 12},
+ *     {"name": "John", "surname": "Doe", "age": 40},
+ *     {"name": "Mario", "surname": "Rossi", "age": 18},
+ *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
+ * ];
+ * var getAges = _.pluck("age");
+ *
+ * getAges(persons) // => [12, 40, 18, 15]
+ *
+ * @memberof module:lamb
+ * @category Array
+ * @function
+ * @see {@link module:lamb.pluckFrom|pluckFrom}
+ * @since 0.12.0
+ * @param {String} key
+ * @returns {Function}
+ */
+var pluck = compose(mapWith, getKey);
+
+/**
  * "Plucks" the values of the specified key from a list of objects.
  * @example
  * var persons = [
@@ -2335,7 +2359,7 @@ var getKey = _curry2(getIn, true);
  *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
  * ];
  *
- * _.pluck(persons, "age") // => [12, 40, 18, 15]
+ * _.pluckFrom(persons, "age") // => [12, 40, 18, 15]
  *
  * var lists = [
  *     [1, 2],
@@ -2343,43 +2367,19 @@ var getKey = _curry2(getIn, true);
  *     [6]
  * ];
  *
- * _.pluck(lists, "length") // => [2, 3, 1]
+ * _.pluckFrom(lists, "length") // => [2, 3, 1]
  *
  * @memberof module:lamb
  * @category Array
- * @see {@link module:lamb.pluckKey|pluckKey}
+ * @see {@link module:lamb.pluck|pluck}
  * @since 0.1.0
  * @param {ArrayLike} arrayLike
  * @param {String} key
  * @returns {Array}
  */
-function pluck (arrayLike, key) {
+function pluckFrom (arrayLike, key) {
     return map(arrayLike, getKey(key));
 }
-
-/**
- * A curried version of {@link module:lamb.pluck|pluck} expecting the key to retrieve to
- * build a function waiting for the array-like object to act upon.
- * @example
- * var persons = [
- *     {"name": "Jane", "surname": "Doe", "age": 12},
- *     {"name": "John", "surname": "Doe", "age": 40},
- *     {"name": "Mario", "surname": "Rossi", "age": 18},
- *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
- * ];
- * var getAges = _.pluckKey("age");
- *
- * getAges(persons) // => [12, 40, 18, 15]
- *
- * @memberof module:lamb
- * @category Array
- * @function
- * @see {@link module:lamb.pluck|pluck}
- * @since 0.12.0
- * @param {String} key
- * @returns {Function}
- */
-var pluckKey = compose(mapWith, getKey);
 
 /**
  * Creates an array copy of the given array-like object without the
@@ -6975,4 +6975,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckKey, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckFrom, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
