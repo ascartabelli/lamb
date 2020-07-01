@@ -5,9 +5,9 @@ script:
   - gulp travis
 node_js:
   - "stable"
+  - "13"
+  - "12"
   - "11"
   - "10"
-  - "9"
-  - "8"
 after_script:
   - npm run coveralls

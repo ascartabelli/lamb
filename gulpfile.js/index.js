@@ -2,14 +2,14 @@
 
 const gulp = require("gulp");
 const eslint = require("gulp-eslint");
-const jest = require("gulp-jest").default;
+const jest = require("gulp-jest-acierto").default;
 const rename = require("gulp-rename");
 const rollup = require("rollup");
 const sourcemaps = require("gulp-sourcemaps");
 const terser = require("gulp-terser");
 
-const jestBaseConfig = require("./jest.config");
-const pkg = require("./package.json");
+const jestBaseConfig = require("../jest.config.cjs");
+const pkg = require("../package.json");
 
 const intro = [
     "/**",
