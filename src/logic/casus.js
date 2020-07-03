@@ -6,12 +6,12 @@
  * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
  * is the identity function.
  * @example
- * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
+ * var halveIfNumber = _.casus(_.isType("Number"), _.divideBy(2));
  *
  * halveIfNumber(2) // => 1
  * halveIfNumber("2") // => undefined
  *
- * @alias module:lamb.case
+ * @memberof module:lamb
  * @category Logic
  * @see {@link module:lamb.adapter|adapter}
  * @see {@link module:lamb.condition|condition}
@@ -22,10 +22,10 @@
  * @param {Function} fn
  * @returns {Function}
  */
-function case_ (predicate, fn) {
+function casus (predicate, fn) {
     return function () {
         return predicate.apply(this, arguments) ? fn.apply(this, arguments) : void 0;
     };
 }
 
-export default case_;
+export default casus;

@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.11
+* @version 0.59.0-alpha.12
 * @module lamb
 * @license MIT
 */
@@ -4118,7 +4118,7 @@
     /**
      * Accepts a series of functions and builds a function that applies the received
      * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
-     * Meant to work in synergy with {@link module:lamb.case|case} and
+     * Meant to work in synergy with {@link module:lamb.casus|casus} and
      * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
      * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
@@ -4126,7 +4126,7 @@
      * var filterString = _.compose(_.joinWith(""), _.filter);
      * var filterAdapter = _.adapter([
      *     _.invoker("filter"),
-     *     _.case(_.isType("String"), filterString)
+     *     _.casus(_.isType("String"), filterString)
      * ]);
      *
      * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -4142,7 +4142,7 @@
      *
      * @memberof module:lamb
      * @category Logic
-     * @see {@link module:lamb.case|case}
+     * @see {@link module:lamb.casus|casus}
      * @see {@link module:lamb.invoker|invoker}
      * @since 0.6.0
      * @param {Function[]} functions
@@ -4289,12 +4289,12 @@
      * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
      * is the identity function.
      * @example
-     * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
+     * var halveIfNumber = _.casus(_.isType("Number"), _.divideBy(2));
      *
      * halveIfNumber(2) // => 1
      * halveIfNumber("2") // => undefined
      *
-     * @alias module:lamb.case
+     * @memberof module:lamb
      * @category Logic
      * @see {@link module:lamb.adapter|adapter}
      * @see {@link module:lamb.condition|condition}
@@ -4305,7 +4305,7 @@
      * @param {Function} fn
      * @returns {Function}
      */
-    function case_ (predicate, fn) {
+    function casus (predicate, fn) {
         return function () {
             return predicate.apply(this, arguments) ? fn.apply(this, arguments) : void 0;
         };
@@ -4330,7 +4330,7 @@
      * @see {@link module:lamb.unless|unless}
      * @see {@link module:lamb.when|when}
      * @see {@link module:lamb.adapter|adapter}
-     * @see {@link module:lamb.case|case}
+     * @see {@link module:lamb.casus|casus}
      * @since 0.2.0
      * @param {Function} predicate
      * @param {Function} trueFn
@@ -4614,7 +4614,7 @@
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.when|when}
      * @see {@link module:lamb.adapter|adapter}
-     * @see {@link module:lamb.case|case}
+     * @see {@link module:lamb.casus|casus}
      * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
@@ -4645,7 +4645,7 @@
      * @see {@link module:lamb.condition|condition}
      * @see {@link module:lamb.unless|unless}
      * @see {@link module:lamb.adapter|adapter}
-     * @see {@link module:lamb.case|case}
+     * @see {@link module:lamb.casus|casus}
      * @since 0.42.0
      * @param {Function} predicate
      * @param {Function} fn
@@ -6997,7 +6997,7 @@
     exports.aritize = aritize;
     exports.asPartial = asPartial;
     exports.binary = binary;
-    exports.case = case_;
+    exports.casus = casus;
     exports.checker = checker;
     exports.clamp = clamp;
     exports.clampWithin = clampWithin;

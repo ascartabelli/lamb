@@ -4,7 +4,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
 /**
  * Accepts a series of functions and builds a function that applies the received
  * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
- * Meant to work in synergy with {@link module:lamb.case|case} and
+ * Meant to work in synergy with {@link module:lamb.casus|casus} and
  * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
@@ -12,7 +12,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * var filterString = _.compose(_.joinWith(""), _.filter);
  * var filterAdapter = _.adapter([
  *     _.invoker("filter"),
- *     _.case(_.isType("String"), filterString)
+ *     _.casus(_.isType("String"), filterString)
  * ]);
  *
  * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -28,7 +28,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  *
  * @memberof module:lamb
  * @category Logic
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @see {@link module:lamb.invoker|invoker}
  * @since 0.6.0
  * @param {Function[]} functions

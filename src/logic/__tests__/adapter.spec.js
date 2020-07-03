@@ -4,7 +4,7 @@ import { Foo, isEven } from "./_commons";
 
 describe("adapter", function () {
     it("should accept an array of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
-        var filterString = lamb.case(
+        var filterString = lamb.casus(
             lamb.isType("String"),
             lamb.compose(lamb.invoker("join", [""]), lamb.filter)
         );

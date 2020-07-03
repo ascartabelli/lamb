@@ -33,7 +33,7 @@ Foo.prototype.getIfPositiveOrGetSafe = lamb.condition(
     Foo.prototype.getValue,
     Foo.prototype.getSafeValue
 );
-Foo.prototype.getIfPositiveOrUndefined = lamb.case(Foo.prototype.isPositive, Foo.prototype.getValue);
+Foo.prototype.getIfPositiveOrUndefined = lamb.casus(Foo.prototype.isPositive, Foo.prototype.getValue);
 
 Foo.prototype.getWhenPositiveOrElse = lamb.when(Foo.prototype.isPositive, Foo.prototype.getValue);
 Foo.prototype.getUnlessIsPositiveOrElse = lamb.unless(Foo.prototype.isPositive, Foo.prototype.getValue);

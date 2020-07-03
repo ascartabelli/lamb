@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.11
+* @version 0.59.0-alpha.12
 * @module lamb
 * @license MIT
 */
@@ -4112,7 +4112,7 @@ function unary (fn) {
 /**
  * Accepts a series of functions and builds a function that applies the received
  * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
- * Meant to work in synergy with {@link module:lamb.case|case} and
+ * Meant to work in synergy with {@link module:lamb.casus|casus} and
  * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
@@ -4120,7 +4120,7 @@ function unary (fn) {
  * var filterString = _.compose(_.joinWith(""), _.filter);
  * var filterAdapter = _.adapter([
  *     _.invoker("filter"),
- *     _.case(_.isType("String"), filterString)
+ *     _.casus(_.isType("String"), filterString)
  * ]);
  *
  * filterAdapter([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
@@ -4136,7 +4136,7 @@ function unary (fn) {
  *
  * @memberof module:lamb
  * @category Logic
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @see {@link module:lamb.invoker|invoker}
  * @since 0.6.0
  * @param {Function[]} functions
@@ -4283,12 +4283,12 @@ function areSame (a, b) {
  * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
  * is the identity function.
  * @example
- * var halveIfNumber = _.case(_.isType("Number"), _.divideBy(2));
+ * var halveIfNumber = _.casus(_.isType("Number"), _.divideBy(2));
  *
  * halveIfNumber(2) // => 1
  * halveIfNumber("2") // => undefined
  *
- * @alias module:lamb.case
+ * @memberof module:lamb
  * @category Logic
  * @see {@link module:lamb.adapter|adapter}
  * @see {@link module:lamb.condition|condition}
@@ -4299,7 +4299,7 @@ function areSame (a, b) {
  * @param {Function} fn
  * @returns {Function}
  */
-function case_ (predicate, fn) {
+function casus (predicate, fn) {
     return function () {
         return predicate.apply(this, arguments) ? fn.apply(this, arguments) : void 0;
     };
@@ -4324,7 +4324,7 @@ function case_ (predicate, fn) {
  * @see {@link module:lamb.unless|unless}
  * @see {@link module:lamb.when|when}
  * @see {@link module:lamb.adapter|adapter}
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @since 0.2.0
  * @param {Function} predicate
  * @param {Function} trueFn
@@ -4608,7 +4608,7 @@ var isLTE = _curry2(lte, true);
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.when|when}
  * @see {@link module:lamb.adapter|adapter}
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
@@ -4639,7 +4639,7 @@ function unless (predicate, fn) {
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.unless|unless}
  * @see {@link module:lamb.adapter|adapter}
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
@@ -6975,4 +6975,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, case_ as case, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckFrom, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, casus, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoker, invokerOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckFrom, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };

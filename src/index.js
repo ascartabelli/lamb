@@ -130,7 +130,7 @@ export { default as adapter } from "./logic/adapter";
 export { default as allOf } from "./logic/allOf";
 export { default as anyOf } from "./logic/anyOf";
 export { default as areSame } from "./logic/areSame";
-export { default as case } from "./logic/case";
+export { default as casus } from "./logic/casus";
 export { default as condition } from "./logic/condition";
 export { default as gt } from "./logic/gt";
 export { default as gte } from "./logic/gte";

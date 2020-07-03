@@ -9,11 +9,11 @@ describe("case / condition", function () {
 
     describe("case", function () {
         it("should call the received function if the predicate is satisfied by the same arguments", function () {
-            expect(lamb.case(isGreaterThan5, halve)(10)).toBe(5);
+            expect(lamb.casus(isGreaterThan5, halve)(10)).toBe(5);
         });
 
         it("should build a function that returns `undefined` if the predicate isn't satisfied", function () {
-            expect(lamb.case(isGreaterThan5, halve)(3)).toBeUndefined();
+            expect(lamb.casus(isGreaterThan5, halve)(3)).toBeUndefined();
         });
     });
 
@@ -38,8 +38,8 @@ describe("case / condition", function () {
 
         var condA = lamb.condition(satisfiedPredicate, lamb.list, lamb.always([]));
         var condB = lamb.condition(notSatisfiedPredicate, lamb.always([]), lamb.list);
-        var caseA = lamb.case(satisfiedPredicate, lamb.list);
-        var caseB = lamb.case(notSatisfiedPredicate, lamb.always([]));
+        var caseA = lamb.casus(satisfiedPredicate, lamb.list);
+        var caseB = lamb.casus(notSatisfiedPredicate, lamb.always([]));
 
         expect(condA(1, 2, 3, 4)).toEqual([1, 2, 3, 4]);
         expect(condB(5, 6, 7)).toEqual([5, 6, 7]);
@@ -58,8 +58,8 @@ describe("case / condition", function () {
     it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
         var condA = lamb.condition(hasEvens, lamb.always("yes"), lamb.always("no"));
         var condB = lamb.condition(isVowel, lamb.always("yes"), lamb.always("no"));
-        var caseA = lamb.case(hasEvens, lamb.always("yes"));
-        var caseB = lamb.case(isVowel, lamb.always("yes"));
+        var caseA = lamb.casus(hasEvens, lamb.always("yes"));
+        var caseB = lamb.casus(isVowel, lamb.always("yes"));
 
         expect(condA([1, 2, 5, 7])).toBe("yes");
         expect(condA([1, 3, 5, 7])).toBe("no");
@@ -83,22 +83,22 @@ describe("case / condition", function () {
     it("should build a function throwing an exception if the predicate isn't a function", function () {
         nonFunctions.forEach(function (value) {
             expect(lamb.condition(value, lamb.always(99))).toThrow();
-            expect(lamb.case(value, lamb.always(99))).toThrow();
+            expect(lamb.casus(value, lamb.always(99))).toThrow();
         });
     });
 
     it("should build a function throwing an exception if `trueFn` isn't a function or is missing", function () {
         nonFunctions.forEach(function (value) {
             expect(lamb.condition(lamb.always(true), value, lamb.always(99))).toThrow();
-            expect(lamb.case(lamb.always(true), value)).toThrow();
+            expect(lamb.casus(lamb.always(true), value)).toThrow();
         });
 
         expect(lamb.condition(lamb.always(true))).toThrow();
-        expect(lamb.case(lamb.always(true))).toThrow();
+        expect(lamb.casus(lamb.always(true))).toThrow();
     });
 
     it("should build a function throwing an exception if called without arguments", function () {
         expect(lamb.condition()).toThrow();
-        expect(lamb.case()).toThrow();
+        expect(lamb.casus()).toThrow();
     });
 });

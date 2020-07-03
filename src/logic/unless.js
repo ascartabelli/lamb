@@ -17,7 +17,7 @@
  * @see {@link module:lamb.condition|condition}
  * @see {@link module:lamb.when|when}
  * @see {@link module:lamb.adapter|adapter}
- * @see {@link module:lamb.case|case}
+ * @see {@link module:lamb.casus|casus}
  * @since 0.42.0
  * @param {Function} predicate
  * @param {Function} fn
