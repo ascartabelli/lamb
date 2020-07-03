@@ -24,13 +24,12 @@
     ],
     "license": "MIT",
     "main": "./dist/lamb.js",
-    "module": "./dist/lamb.esm.js",
+    "module": "./dist/lamb.mjs",
     "exports": {
         "require": "./dist/lamb.js",
-        "import": "./dist/lamb.esm.js",
+        "import": "./dist/lamb.mjs",
         "default": "./dist/lamb.js"
     },
-    "type": "module",
     "name": "lamb",
     "repository": {
         "type": "git",
@@ -41,7 +40,6 @@
         "coverage": "gulp test:coverage",
         "lint": "gulp lint",
         "test": "gulp test",
-        "travis": "gulp travis",
         "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
     },
     "babel": {
@@ -64,7 +62,7 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.59.0-alpha.10",
+    "version": "0.59.0-alpha.11",
     "devDependencies": {
         "@babel/core": "^7.10.4",
         "@babel/preset-env": "^7.10.4",

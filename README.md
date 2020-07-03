@@ -51,7 +51,7 @@ or
 Doing so a `lamb` variable will be created in the global object.
 The source map for the minified file is in the same `dist` folder.
 
-Since version 0.58.0 there is also a one file ES modules build, always in the `dist` folder, named `lamb.esm.js` and its minified version `lamb.esm.min.js`.
+Since version 0.58.0 there is also a one file ES modules build, always in the `dist` folder, named `lamb.mjs` (previously `lamb.esm.js`) and its minified version `lamb.min.mjs` (previously `lamb.esm.min.js`).
 
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 

@@ -8,8 +8,8 @@ const rollup = require("rollup");
 const sourcemaps = require("gulp-sourcemaps");
 const terser = require("gulp-terser");
 
-const jestBaseConfig = require("../jest.config.cjs");
-const pkg = require("../package.json");
+const jestBaseConfig = require("./jest.config.js");
+const pkg = require("./package.json");
 
 const intro = [
     "/**",
@@ -31,7 +31,7 @@ const commonOptions = {
 };
 
 const esOptions = Object.assign({}, commonOptions, {
-    file: "dist/lamb.esm.js",
+    file: "dist/lamb.mjs",
     format: "esm"
 });
 
@@ -52,10 +52,10 @@ gulp.task("set-test-env", cb => {
 
 const builder = opts => () => rollup.rollup({ input: "src/index.js" }).then(bundle => bundle.write(opts));
 
-const minifier = isES => () => gulp.src(`dist/lamb${isES ? ".esm" : ""}.js`)
+const minifier = isES => () => gulp.src(`dist/lamb${isES ? ".mjs" : ".js"}`)
     .pipe(sourcemaps.init())
     .pipe(terser({ mangle: { module: isES }, output: { comments: "some" } }))
-    .pipe(rename({ extname: ".min.js" }))
+    .pipe(rename({ extname: isES ? ".min.mjs" : ".min.js" }))
     .pipe(sourcemaps.write("."))
     .pipe(gulp.dest("dist"));
 
