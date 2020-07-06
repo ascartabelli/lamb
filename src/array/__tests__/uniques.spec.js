@@ -36,7 +36,7 @@ describe("uniques / uniquesBy", function () {
         it("should use the provided iteratee to extract the values to compare", function () {
             var chars = ["b", "A", "r", "B", "a", "z"];
 
-            expect(lamb.uniquesBy(lamb.invoker("toUpperCase"))(chars)).toEqual(["b", "A", "r", "z"]);
+            expect(lamb.uniquesBy(lamb.invoke("toUpperCase"))(chars)).toEqual(["b", "A", "r", "z"]);
             expect(lamb.uniquesBy(lamb.getKey("id"))(data)).toEqual(dataUniques);
         });
 

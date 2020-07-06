@@ -1,4 +1,4 @@
-import _invoker from "../privates/_invoker";
+import _invoke from "../privates/_invoke";
 import partial from "../core/partial";
 
 /**
@@ -12,27 +12,27 @@ import partial from "../core/partial";
  * {@link module:lamb.adapter|adapter} without the need to check for the existence of the
  * desired method.<br/>
  * See also {@link module:lamb.generic|generic} to create functions out of object methods.
- * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
- * var polySlice = _.invoker("slice");
+ * @example <caption>Basic polymorphism with <code>invoke</code>:</caption>
+ * var polySlice = _.invoke("slice");
  *
  * polySlice([1, 2, 3, 4, 5], 1, 3) // => [2, 3]
  * polySlice("Hello world", 1, 3) // => "el"
  *
  * @example <caption>With bound arguments:</caption>
- * var substrFrom2 = _.invoker("substr", [2]);
+ * var substrFrom2 = _.invoke("substr", [2]);
  * substrFrom2("Hello world") // => "llo world"
  * substrFrom2("Hello world", 5) // => "llo w"
  *
  * @memberof module:lamb
  * @category Function
- * @see {@link module:lamb.invokerOn|invokerOn}
+ * @see {@link module:lamb.invokeOn|invokeOn}
  * @since 0.1.0
  * @param {String} methodName
  * @param {ArrayLike} [boundArgs=[]]
  * @returns {Function}
  */
-function invoker (methodName, boundArgs) {
-    return partial(_invoker, [methodName, boundArgs]);
+function invoke (methodName, boundArgs) {
+    return partial(_invoke, [methodName, boundArgs]);
 }
 
-export default invoker;
+export default invoke;

@@ -10,7 +10,7 @@ import _setIndex from "../privates/_setIndex";
  * Negative indexes are allowed.
  * @example
  * var arr = ["a", "b", "c"];
- * var toUpperCase = _.invoker("toUpperCase");
+ * var toUpperCase = _.invoke("toUpperCase");
  *
  * _.updateIndex(arr, 1, toUpperCase) // => ["a", "B", "c"]
  * _.updateIndex(arr, -1, toUpperCase) // => ["a", "b", "C"]

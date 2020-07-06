@@ -6,7 +6,7 @@ import _toArrayLength from "./_toArrayLength";
  * If a method with the given name exists on the target, applies it to the provided
  * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
  * The arguments for the method are built by concatenating the array of bound arguments,
- * received by {@link module:lamb.invoker|invoker}, with the final set of <code>args</code>,
+ * received by {@link module:lamb.invoke|invoke}, with the final set of <code>args</code>,
  * if present.
  * @private
  * @param {String} methodName
@@ -15,7 +15,7 @@ import _toArrayLength from "./_toArrayLength";
  * @param {...*} [args]
  * @returns {*}
  */
-function _invoker (methodName, boundArgs, target) {
+function _invoke (methodName, boundArgs, target) {
     var method = target[methodName];
 
     if (typeof method !== "function") {
@@ -37,4 +37,4 @@ function _invoker (methodName, boundArgs, target) {
     return method.apply(target, finalArgs);
 }
 
-export default _invoker;
+export default _invoke;

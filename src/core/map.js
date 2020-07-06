@@ -5,7 +5,7 @@ import _toArrayLength from "../privates/_toArrayLength";
  * received array-like object.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
- * _.map(["Joe", "Mario", "Jane"], _.invoker("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
+ * _.map(["Joe", "Mario", "Jane"], _.invoke("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
  *
  * _.map([4, 9, 16], Math.sqrt); // => [2, 3, 4]
  *

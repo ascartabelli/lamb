@@ -14,7 +14,7 @@ describe("sortedInsert", function () {
         { name: "Mario", surname: "Rossi" }
     ];
 
-    var toLowerCase = lamb.invoker("toLowerCase");
+    var toLowerCase = lamb.invoke("toLowerCase");
     var getLowerCaseName = lamb.compose(toLowerCase, lamb.getKey("name"));
 
     it("should insert an element in a copy of a sorted array respecting the order", function () {

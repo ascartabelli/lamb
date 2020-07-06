@@ -11,7 +11,7 @@ import enumerables from "./enumerables";
  * <code>source</code> is returned otherwise.
  * @example
  * var user = {name: "John", visits: 2};
- * var toUpperCase = _.invoker("toUpperCase");
+ * var toUpperCase = _.invoke("toUpperCase");
  *
  * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
  * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}

@@ -6,9 +6,9 @@ describe("adapter", function () {
     it("should accept an array of functions and build another function that calls them one by one until a non-undefined value is returned", function () {
         var filterString = lamb.casus(
             lamb.isType("String"),
-            lamb.compose(lamb.invoker("join", [""]), lamb.filter)
+            lamb.compose(lamb.invoke("join", [""]), lamb.filter)
         );
-        var filterAdapter = lamb.adapter([lamb.invoker("filter"), filterString]);
+        var filterAdapter = lamb.adapter([lamb.invoke("filter"), filterString]);
 
         expect(filterAdapter([1, 2, 3, 4, 5, 6], isEven)).toEqual([2, 4, 6]);
         expect(filterAdapter("123456", isEven)).toBe("246");

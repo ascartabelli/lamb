@@ -5,9 +5,9 @@ import {
     wannabeEmptyObjects
 } from "../../__tests__/commons";
 
-describe("invokerOn", function () {
+describe("invokeOn", function () {
     var arr = [1, 2, 3, 4, 5];
-    var callOnArr = lamb.invokerOn(arr);
+    var callOnArr = lamb.invokeOn(arr);
 
     var sliceSpy = jest.spyOn(arr, "slice");
     var joinSpy = jest.spyOn(arr, "join");
@@ -19,7 +19,7 @@ describe("invokerOn", function () {
 
     it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
         var s = "foo bar";
-        var callOnS = lamb.invokerOn(s);
+        var callOnS = lamb.invokeOn(s);
 
         expect(callOnArr("slice", 1, 3)).toEqual([2, 3]);
         expect(arr.slice).toHaveBeenCalledTimes(1);
@@ -40,12 +40,12 @@ describe("invokerOn", function () {
     it("should accept an empty string as a method name", function () {
         var obj = { "": function () { return 99; } };
 
-        expect(lamb.invokerOn(obj)("")).toBe(99);
+        expect(lamb.invokeOn(obj)("")).toBe(99);
     });
 
     it("should convert to string every value received as a method name", function () {
         var obj = {};
-        var callOnObj = lamb.invokerOn(obj);
+        var callOnObj = lamb.invokeOn(obj);
 
         nonStringsAsStrings.forEach(function (method, idx) {
             obj[method] = lamb.always(method);
@@ -57,14 +57,14 @@ describe("invokerOn", function () {
     });
 
     it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", function () {
-        expect(lamb.invokerOn(null)).toThrow();
-        expect(lamb.invokerOn(void 0)).toThrow();
-        expect(lamb.invokerOn()).toThrow();
+        expect(lamb.invokeOn(null)).toThrow();
+        expect(lamb.invokeOn(void 0)).toThrow();
+        expect(lamb.invokeOn()).toThrow();
     });
 
     it("should build a function that converts to object every other value", function () {
         wannabeEmptyObjects.forEach(function (value) {
-            expect(lamb.invokerOn(value)("someMethod")).toBeUndefined();
+            expect(lamb.invokeOn(value)("someMethod")).toBeUndefined();
         });
     });
 });

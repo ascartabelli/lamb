@@ -24,7 +24,7 @@ describe("renameIn / rename / renameWith", function () {
             var makeLowerKeysMap = jest.fn(function (source) {
                 var sourceKeys = lamb.keys(source);
 
-                return lamb.make(sourceKeys, sourceKeys.map(lamb.invoker("toLowerCase")));
+                return lamb.make(sourceKeys, sourceKeys.map(lamb.invoke("toLowerCase")));
             });
 
             expect(lamb.renameWith(makeLowerKeysMap)(person)).toEqual({ name: "John", surname: "Doe" });

@@ -18,7 +18,7 @@ import _makeCriteria from "../privates/_makeCriteria";
  * ];
  *
  * var getLowerCaseName = _.compose(
- *     _.invoker("toLowerCase"),
+ *     _.invoke("toLowerCase"),
  *     _.getKey("name")
  * );
  *

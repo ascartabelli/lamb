@@ -80,7 +80,7 @@ describe("updateIn / updateKey", function () {
 
     it("should check the validity of the destination key before trying to apply the received function to it", function () {
         var o = { a: 1 };
-        var toUpperCase = lamb.invoker("toUpperCase");
+        var toUpperCase = lamb.invoke("toUpperCase");
 
         expect(lamb.updateIn(o, "z", toUpperCase)).toEqual({ a: 1 });
         expect(lamb.updateKey("z", toUpperCase)(o)).toEqual({ a: 1 });

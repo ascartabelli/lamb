@@ -5,7 +5,7 @@ import renameIn from "./renameIn";
  * a function expecting the object whose keys we want to {@link module:lamb.renameIn|renameIn}.
  * @example
  * var person = {"NAME": "John", "SURNAME": "Doe"};
- * var arrayToLower = _.mapWith(_.invoker("toLowerCase"));
+ * var arrayToLower = _.mapWith(_.invoke("toLowerCase"));
  * var makeLowerKeysMap = function (source) {
  *     var sourceKeys = _.keys(source);
  *

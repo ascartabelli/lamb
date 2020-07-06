@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.12
+* @version 0.59.0-alpha.13
 * @module lamb
 * @license MIT
 */
@@ -461,7 +461,7 @@
      * received array-like object.<br/>
      * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
      * @example
-     * _.map(["Joe", "Mario", "Jane"], _.invoker("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
+     * _.map(["Joe", "Mario", "Jane"], _.invoke("toUpperCase")) // => ["JOE", "MARIO", "JANE"]
      *
      * _.map([4, 9, 16], Math.sqrt); // => [2, 3, 4]
      *
@@ -2972,7 +2972,7 @@
      * ];
      *
      * var getLowerCaseName = _.compose(
-     *     _.invoker("toLowerCase"),
+     *     _.invoke("toLowerCase"),
      *     _.getKey("name")
      * );
      *
@@ -3360,7 +3360,7 @@
      * Negative indexes are allowed.
      * @example
      * var arr = ["a", "b", "c"];
-     * var toUpperCase = _.invoker("toUpperCase");
+     * var toUpperCase = _.invoke("toUpperCase");
      *
      * _.updateAt(1, toUpperCase)(arr) // => ["a", "B", "c"]
      * _.updateAt(-1, toUpperCase)(arr) // => ["a", "b", "C"]
@@ -3388,7 +3388,7 @@
      * Negative indexes are allowed.
      * @example
      * var arr = ["a", "b", "c"];
-     * var toUpperCase = _.invoker("toUpperCase");
+     * var toUpperCase = _.invoke("toUpperCase");
      *
      * _.updateIndex(arr, 1, toUpperCase) // => ["a", "B", "c"]
      * _.updateIndex(arr, -1, toUpperCase) // => ["a", "b", "C"]
@@ -3907,7 +3907,7 @@
      * If a method with the given name exists on the target, applies it to the provided
      * arguments and returns the result. Returns <code>undefined</code> otherwise.<br/>
      * The arguments for the method are built by concatenating the array of bound arguments,
-     * received by {@link module:lamb.invoker|invoker}, with the final set of <code>args</code>,
+     * received by {@link module:lamb.invoke|invoke}, with the final set of <code>args</code>,
      * if present.
      * @private
      * @param {String} methodName
@@ -3916,7 +3916,7 @@
      * @param {...*} [args]
      * @returns {*}
      */
-    function _invoker (methodName, boundArgs, target) {
+    function _invoke (methodName, boundArgs, target) {
         var method = target[methodName];
 
         if (typeof method !== "function") {
@@ -3949,51 +3949,51 @@
      * {@link module:lamb.adapter|adapter} without the need to check for the existence of the
      * desired method.<br/>
      * See also {@link module:lamb.generic|generic} to create functions out of object methods.
-     * @example <caption>Basic polymorphism with <code>invoker</code>:</caption>
-     * var polySlice = _.invoker("slice");
+     * @example <caption>Basic polymorphism with <code>invoke</code>:</caption>
+     * var polySlice = _.invoke("slice");
      *
      * polySlice([1, 2, 3, 4, 5], 1, 3) // => [2, 3]
      * polySlice("Hello world", 1, 3) // => "el"
      *
      * @example <caption>With bound arguments:</caption>
-     * var substrFrom2 = _.invoker("substr", [2]);
+     * var substrFrom2 = _.invoke("substr", [2]);
      * substrFrom2("Hello world") // => "llo world"
      * substrFrom2("Hello world", 5) // => "llo w"
      *
      * @memberof module:lamb
      * @category Function
-     * @see {@link module:lamb.invokerOn|invokerOn}
+     * @see {@link module:lamb.invokeOn|invokeOn}
      * @since 0.1.0
      * @param {String} methodName
      * @param {ArrayLike} [boundArgs=[]]
      * @returns {Function}
      */
-    function invoker (methodName, boundArgs) {
-        return partial(_invoker, [methodName, boundArgs]);
+    function invoke (methodName, boundArgs) {
+        return partial(_invoke, [methodName, boundArgs]);
     }
 
     /**
      * Accepts an object and builds a function expecting a method name, and optionally arguments,
      * to call on such object.
-     * Like {@link module:lamb.invoker|invoker}, if no method with the given name is found the
+     * Like {@link module:lamb.invoke|invoke}, if no method with the given name is found the
      * function will return <code>undefined</code>.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var arr = [1, 2, 3, 4, 5];
-     * var invokerOnArr = _.invokerOn(arr);
+     * var invokeOnArr = _.invokeOn(arr);
      *
-     * invokerOnArr("filter", isEven) // => [2, 4]
-     * invokerOnArr("slice", 1, 3) // => [2, 3]
+     * invokeOnArr("filter", isEven) // => [2, 4]
+     * invokeOnArr("slice", 1, 3) // => [2, 3]
      *
      * @memberof module:lamb
      * @category Function
-     * @see {@link module:lamb.invoker|invoker}
+     * @see {@link module:lamb.invoke|invoke}
      * @since 0.15.0
      * @param {Object} target
      * @returns {Function}
      */
-    function invokerOn (target) {
-        return partial(_invoker, [__, [], target]);
+    function invokeOn (target) {
+        return partial(_invoke, [__, [], target]);
     }
 
     /**
@@ -4119,13 +4119,13 @@
      * Accepts a series of functions and builds a function that applies the received
      * arguments to each one and returns the first non-<code>undefined</code> value.<br/>
      * Meant to work in synergy with {@link module:lamb.casus|casus} and
-     * {@link module:lamb.invoker|invoker}, can be useful as a strategy pattern for functions,
+     * {@link module:lamb.invoke|invoke}, can be useful as a strategy pattern for functions,
      * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
      * @example
      * var isEven = function (n) { return n % 2 === 0; };
      * var filterString = _.compose(_.joinWith(""), _.filter);
      * var filterAdapter = _.adapter([
-     *     _.invoker("filter"),
+     *     _.invoke("filter"),
      *     _.casus(_.isType("String"), filterString)
      * ]);
      *
@@ -4143,7 +4143,7 @@
      * @memberof module:lamb
      * @category Logic
      * @see {@link module:lamb.casus|casus}
-     * @see {@link module:lamb.invoker|invoker}
+     * @see {@link module:lamb.invoke|invoke}
      * @since 0.6.0
      * @param {Function[]} functions
      * @returns {Function}
@@ -6122,7 +6122,7 @@
      * a function expecting the object whose keys we want to {@link module:lamb.renameIn|renameIn}.
      * @example
      * var person = {"NAME": "John", "SURNAME": "Doe"};
-     * var arrayToLower = _.mapWith(_.invoker("toLowerCase"));
+     * var arrayToLower = _.mapWith(_.invoke("toLowerCase"));
      * var makeLowerKeysMap = function (source) {
      *     var sourceKeys = _.keys(source);
      *
@@ -6523,7 +6523,7 @@
      * <code>source</code> is returned otherwise.
      * @example
      * var user = {name: "John", visits: 2};
-     * var toUpperCase = _.invoker("toUpperCase");
+     * var toUpperCase = _.invoke("toUpperCase");
      *
      * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
      * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}
@@ -7066,8 +7066,8 @@
     exports.insert = insert;
     exports.insertAt = insertAt;
     exports.intersection = intersection;
-    exports.invoker = invoker;
-    exports.invokerOn = invokerOn;
+    exports.invoke = invoke;
+    exports.invokeOn = invokeOn;
     exports.is = is;
     exports.isFinite = isFinite_;
     exports.isGT = isGT;

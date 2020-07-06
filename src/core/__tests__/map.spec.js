@@ -28,7 +28,7 @@ describe("map / mapWith", function () {
     it("should not skip deleted or unassigned elements, unlike the native method", function () {
         // eslint-disable-next-line comma-spacing, no-sparse-arrays
         var sparseArr = [, "foo", ,];
-        var safeUpperCase = lamb.compose(lamb.invoker("toUpperCase"), String);
+        var safeUpperCase = lamb.compose(lamb.invoke("toUpperCase"), String);
         var result = ["UNDEFINED", "FOO", "UNDEFINED"];
 
         expect(lamb.map(sparseArr, safeUpperCase)).toStrictArrayEqual(result);

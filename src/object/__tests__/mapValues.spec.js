@@ -50,7 +50,7 @@ describe("mapValues / mapValuesWith", function () {
         var r1 = { 0: 98, 1: 98, 2: 99 };
         var r2 = { 0: "A", 1: "B", 2: "C" };
 
-        var toUpperCase = lamb.invoker("toUpperCase");
+        var toUpperCase = lamb.invoke("toUpperCase");
 
         expect(lamb.mapValues(a, inc)).toEqual(r1);
         expect(lamb.mapValuesWith(inc)(a)).toEqual(r1);

@@ -35,7 +35,7 @@ describe("updatePath / updatePathIn", function () {
 
     var double = lamb.multiplyBy(2);
     var inc = lamb.add(1);
-    var toUpperCase = lamb.invoker("toUpperCase");
+    var toUpperCase = lamb.invoke("toUpperCase");
 
     afterEach(function () {
         expect(obj).toEqual(objCopy);
