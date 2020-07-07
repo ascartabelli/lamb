@@ -75,7 +75,7 @@ function onLoad () {
 
     var updateNavCloneWidth = _.pipe([
         _.always(getComputedStyle(nav)),
-        _.pickKeys(["width"]),
+        _.pick(["width"]),
         setNavCloneStyle
     ]);
 
