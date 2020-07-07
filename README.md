@@ -21,7 +21,7 @@ npm install lamb
 Require it in node.js:
 
 ```javascript
-var _ = require("lamb");
+const _ = require("lamb");
 ```
 
 Since version 0.57.0, Lamb is splitted in ES modules and can take advantage of tree-shaking capabilities of module bundlers:
@@ -56,15 +56,15 @@ Since version 0.58.0 there is also a one file ES modules build, always in the `d
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.58.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.59.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.58.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.59.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.58.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.59.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -115,6 +115,17 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.59.0 - *2020/07/07***
+  - Sorry for all the renaming, but I'm in the process of freezing the API and wanted to tackle some inconsistencies in naming choices.
+  - Updated to support Node.js ES modules (and renamed ES modules build to `lamb.mjs`)
+  - Added `split` and `splitBy`
+  - **API change**: renamed `pick` to `pickIn` and `pickKeys` to `pick`
+  - **API change**: renamed `rename` to `renameIn` and `renameKeys` to `rename`
+  - **API change**: renamed `pluck` to `pluckFrom` and `pluckKey` to `pluck`
+  - **API change**: renamed `case` to `casus` to avoid confusion and clashing with the switch statement's case
+  - **API change**: renamed `invoker` and `invokerOn` to `invoke` and `invokeOn`
+  - Fixed `.DS_STORE` file leaking again in the `dist` folder
+
 - **v0.58.0 - *2019/06/18***
   - Added one file ES modules build
   - **API change**: `invoker` now accepts an array of bound arguments
@@ -141,8 +152,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `rotate` and `rotateBy`
   - Updated link to jsDelivr
   - Fixed and updated doc comments and tests
-
-- **v0.54.1 - *2018/03/09***
-  - **Fixed**: `setPath` and `updatePath` weren't returning unary functions, and further arguments would have overwritten the previous ones
-  - Updated doc comments
-  - Updated linting rules

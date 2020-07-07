@@ -14,7 +14,7 @@ import findLast from "./findLast";
  * @memberof module:lamb
  * @category Array
  * @function
- * @see {@link module:lamb.findLastWhere|findLastWhere}
+ * @see {@link module:lamb.findLast|findLast}
  * @see {@link module:lamb.findLastIndex|findLastIndex},
  *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}

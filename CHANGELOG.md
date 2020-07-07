@@ -1,3 +1,14 @@
+- **v0.59.0 - *2020/07/07***
+  - Sorry for all the renaming, but I'm in the process of freezing the API and wanted to tackle some inconsistencies in naming choices.
+  - Updated to support Node.js ES modules (and renamed ES modules build to `lamb.mjs`)
+  - Added `split` and `splitBy`
+  - **API change**: renamed `pick` to `pickIn` and `pickKeys` to `pick`
+  - **API change**: renamed `rename` to `renameIn` and `renameKeys` to `rename`
+  - **API change**: renamed `pluck` to `pluckFrom` and `pluckKey` to `pluck`
+  - **API change**: renamed `case` to `casus` to avoid confusion and clashing with the switch statement's case
+  - **API change**: renamed `invoker` and `invokerOn` to `invoke` and `invokeOn`
+  - Fixed `.DS_STORE` file leaking again in the `dist` folder
+
 - **v0.58.0 - *2019/06/18***
   - Added one file ES modules build
   - **API change**: `invoker` now accepts an array of bound arguments

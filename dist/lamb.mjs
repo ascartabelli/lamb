@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.0-alpha.13
+* @version 0.59.0
 * @module lamb
 * @license MIT
 */
@@ -1559,7 +1559,7 @@ var findLastIndexWhere = _curry2(findLastIndex, true);
  * @memberof module:lamb
  * @category Array
  * @function
- * @see {@link module:lamb.findLastWhere|findLastWhere}
+ * @see {@link module:lamb.findLast|findLast}
  * @see {@link module:lamb.findLastIndex|findLastIndex},
  *      {@link module:lamb.findLastIndexWhere|findLastIndexWhere}
  * @see {@link module:lamb.find|find}, {@link module:lamb.findWhere|findWhere}
