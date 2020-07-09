@@ -5,7 +5,7 @@ import appendTo from "./appendTo";
  * A curried version of {@link module:lamb.appendTo|appendTo} that uses the value to append
  * to build a function expecting the array-like object to act upon.
  * @example
- * var arr = [1, 2, 3, 4];
+ * const arr = [1, 2, 3, 4];
  *
  * _.append(5)(arr) // => [1, 2, 3, 4, 5]
  * _.append([5])(arr) // => [1, 2, 3, 4, [5]]

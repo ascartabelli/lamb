@@ -5,8 +5,8 @@ import rotate from "./rotate";
  * A curried version of {@link module:lamb.rotate|rotate}.<br/>
  * Uses the given amount to build a function expecting the array to rotate by that amount.
  * @example
- * var arr = [1, 2, 3, 4, 5];
- * var rotateByTwo = _.rotateBy(2);
+ * const arr = [1, 2, 3, 4, 5];
+ * const rotateByTwo = _.rotateBy(2);
  *
  * rotateByTwo(arr) // => [4, 5, 1, 2, 3]
  *

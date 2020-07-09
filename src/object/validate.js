@@ -3,15 +3,15 @@ import reduce from "../core/reduce";
 /**
  * Validates an object with the given list of {@link module:lamb.checker|checker} functions.
  * @example
- * var hasContent = function (s) { return s.trim().length > 0; };
- * var userCheckers = [
+ * const hasContent = s => s.trim().length > 0;
+ * const userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
  *     _.checker(_.isGTE(18), "Must be at least 18 years old", ["age"])
  * ];
  *
- * var user1 = {name: "john", surname: "doe", age: 30};
- * var user2 = {name: "jane", surname: "", age: 15};
+ * const user1 = {name: "john", surname: "doe", age: 30};
+ * const user2 = {name: "jane", surname: "", age: 15};
  *
  * _.validate(user1, userCheckers) // => []
  * _.validate(user2, userCheckers) // =>

@@ -1,8 +1,8 @@
 /**
  * Returns a predicate that negates the given one.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var isOdd = _.not(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const isOdd = _.not(isEven);
  *
  * isOdd(5) // => true
  * isOdd(4) // => false

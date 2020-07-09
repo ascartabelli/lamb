@@ -3,7 +3,7 @@ import type from "../core/type";
 /**
  * Builds a predicate that expects a value to check against the specified type.
  * @example
- * var isString = _.isType("String");
+ * const isString = _.isType("String");
  *
  * isString("Hello") // => true
  * isString(new String("Hi")) // => true

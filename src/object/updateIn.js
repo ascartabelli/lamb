@@ -10,14 +10,14 @@ import enumerables from "./enumerables";
  * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
  * <code>source</code> is returned otherwise.
  * @example
- * var user = {name: "John", visits: 2};
- * var toUpperCase = _.invoke("toUpperCase");
+ * const user = {name: "John", visits: 2};
+ * const toUpperCase = _.invoke("toUpperCase");
  *
  * _.updateIn(user, "name", toUpperCase) // => {name: "JOHN", visits: 2}
  * _.updateIn(user, "surname", toUpperCase) // => {name: "John", visits: 2}
  *
  * @example <caption>Non-enumerable properties will be treated as non-existent:</caption>
- * var user = Object.create({name: "John"}, {visits: {value: 2}});
+ * const user = Object.create({name: "John"}, {visits: {value: 2}});
  *
  * _.updateIn(user, "visits", _.add(1)) // => {name: "John", visits: 2}
  *

@@ -6,7 +6,7 @@ import reduce from "./reduce";
  * provided <code>accumulator</code> and the optional <code>initialValue</code> to
  * build a function expecting the array-like object to act upon.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.reduceWith(_.sum)(arr) // => 15
  * _.reduceWith(_.subtract)(arr) // => -13

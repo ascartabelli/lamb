@@ -5,7 +5,7 @@ import _toPathParts from "../privates/_toPathParts";
  * Checks if the provided path exists in the given object.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     address: {

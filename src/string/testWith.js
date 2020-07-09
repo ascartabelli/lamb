@@ -3,7 +3,7 @@ import _search from "../privates/_search";
 /**
  * Builds a predicate expecting a string to test against the given regular expression pattern.
  * @example
- * var hasNumbersOnly = _.testWith(/^\d+$/);
+ * const hasNumbersOnly = _.testWith(/^\d+$/);
  *
  * hasNumbersOnly("123") // => true
  * hasNumbersOnly("123 Kg") // => false

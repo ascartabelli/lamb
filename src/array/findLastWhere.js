@@ -5,8 +5,8 @@ import findLast from "./findLast";
  * A curried version of {@link module:lamb.findLast|findLast} that uses the given
  * predicate to build a function expecting the array-like object to search.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var findEven = _.findLastWhere(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const findEven = _.findLastWhere(isEven);
  *
  * findEven([1, 3, 4, 5, 6, 7]) // => 6
  * findEven([1, 3, 5, 7]) // => undefined

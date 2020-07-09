@@ -4,7 +4,7 @@ import sum from "./sum";
 /**
  * A curried version of {@link module:lamb.sum|sum}.
  * @example
- * var add5 = _.add(5);
+ * const add5 = _.add(5);
  *
  * _.add5(4) // => 9
  * _.add5(-2) // => 3

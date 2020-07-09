@@ -6,7 +6,7 @@
  * and {@link module:lamb.unless|unless} and {@link module:lamb.when|when} where one of the branches
  * is the identity function.
  * @example
- * var halveIfNumber = _.casus(_.isType("Number"), _.divideBy(2));
+ * const halveIfNumber = _.casus(_.isType("Number"), _.divideBy(2));
  *
  * halveIfNumber(2) // => 1
  * halveIfNumber("2") // => undefined

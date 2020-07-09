@@ -3,8 +3,8 @@ var objectProtoToString = Object.prototype.toString;
 /**
  * Retrieves the "type tag" from the given value.
  * @example
- * var x = 5;
- * var y = new Number(5);
+ * const x = 5;
+ * const y = new Number(5);
  *
  * typeof x // => "number"
  * typeof y // => "object"

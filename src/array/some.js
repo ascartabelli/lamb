@@ -5,10 +5,10 @@ import someIn from "./someIn";
  * A curried version of {@link module:lamb.someIn|someIn} that uses the given predicate to
  * build a function waiting for the array-like to act upon.
  * @example
- * var data = [1, 3, 5, 6, 7, 8];
- * var isEven = function (n) { return n % 2 === 0; };
- * var containsEvens = _.some(isEven);
- * var containsStrings = _.some(_.isType("String"));
+ * const data = [1, 3, 5, 6, 7, 8];
+ * const isEven = n => n % 2 === 0;
+ * const containsEvens = _.some(isEven);
+ * const containsStrings = _.some(_.isType("String"));
  *
  * containsEvens(data) // => true
  * containsStrings(data) // => false

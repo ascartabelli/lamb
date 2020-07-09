@@ -7,17 +7,17 @@ import __ from "./__";
  * the resulting function.
  * @example
  * <caption>Explaining the difference with <code>partial</code>:</caption>
- * var f1 = _.partial(_.list, ["a", "b", "c"]);
- * var f2 = _.partialRight(_.list, ["a", "b", "c"]);
+ * const f1 = _.partial(_.list, ["a", "b", "c"]);
+ * const f2 = _.partialRight(_.list, ["a", "b", "c"]);
  *
  * f1("d", "e") // => ["a", "b", "c", "d", "e"]
  * f2("d", "e") // => ["d", "e", "a", "b", "c"]
  *
  * @example
  * <caption>Explaining placeholder substitutions:</caption>
- * var __ = _.__;
- * var f1 = _.partial(_.list, ["a", __, __, "d"]);
- * var f2 = _.partialRight(_.list, ["a", __, __, "d"]);
+ * const __ = _.__;
+ * const f1 = _.partial(_.list, ["a", __, __, "d"]);
+ * const f2 = _.partialRight(_.list, ["a", __, __, "d"]);
  *
  * f1("b", "c", "e") // => ["a", "b", "c", "d", "e"]
  * f2("b", "c", "e") // => ["b", "a", "c", "e", "d"]

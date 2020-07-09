@@ -4,13 +4,13 @@ import enumerables from "./enumerables";
  * Creates a copy of the given object with its enumerable keys renamed as
  * indicated in the provided lookup table.
  * @example
- * var person = {"firstName": "John", "lastName": "Doe"};
- * var keysMap = {"firstName": "name", "lastName": "surname"};
+ * const person = {"firstName": "John", "lastName": "Doe"};
+ * const keysMap = {"firstName": "name", "lastName": "surname"};
  *
  * _.renameIn(person, keysMap) // => {"name": "John", "surname": "Doe"}
  *
  * @example <caption>It's safe using it to swap keys:</caption>
- * var keysMap = {"firstName": "lastName", "lastName": "firstName"};
+ * const keysMap = {"firstName": "lastName", "lastName": "firstName"};
  *
  * _.renameIn(person, keysMap) // => {"lastName": "John", "firstName": "Doe"}
  *

@@ -9,21 +9,21 @@ import _makeArrayChecker from "../privates/_makeArrayChecker";
  * [Array.prototype.every]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every},
  * this function won't skip deleted or unassigned indexes.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "age": 12, active: true},
  *     {"name": "John", "age": 40, active: true},
  *     {"name": "Mario", "age": 17, active: true},
  *     {"name": "Paolo", "age": 15, active: true}
  * ];
- * var isAdult = _.keySatisfies(_.isGTE(18), "age");
- * var isActive = _.hasKeyValue("active", true);
+ * const isAdult = _.keySatisfies(_.isGTE(18), "age");
+ * const isActive = _.hasKeyValue("active", true);
  *
  * _.everyIn(persons, isAdult) // => false
  * _.everyIn(persons, isActive) // => true
  *
  * @example <caption>Showing the difference with <code>Array.prototype.every</code>:</caption>
- * var isDefined = _.not(_.isUndefined);
- * var arr = new Array(5);
+ * const isDefined = _.not(_.isUndefined);
+ * const arr = new Array(5);
  * arr[3] = 99;
  *
  * arr.every(isDefined) // => true

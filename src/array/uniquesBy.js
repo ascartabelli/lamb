@@ -10,14 +10,14 @@ import isIn from "./isIn";
  * See also {@link module:lamb.uniques|uniques} if you don't need to transform your values before the
  * comparison.
  * @example
- * var data  = [
+ * const data  = [
  *     {id: "1", name: "John"},
  *     {id: "4", name: "Jane"},
  *     {id: "5", name: "Joe"},
  *     {id: "1", name: "Mario"},
  *     {id: "5", name: "Paolo"},
  * ];
- * var uniquesById = _.uniquesBy(_.getKey("id"));
+ * const uniquesById = _.uniquesBy(_.getKey("id"));
  *
  * uniquesById(data) // => [{id: "1", name: "John"}, {id: "4", name: "Jane"}, {id: "5", name: "Joe"}]
  *

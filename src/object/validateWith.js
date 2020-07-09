@@ -5,16 +5,16 @@ import validate from "./validate";
  * A curried version of {@link module:lamb.validate|validate} accepting a list of
  * {@link module:lamb.checker|checkers} and returning a function expecting the object to validate.
  * @example
- * var hasContent = function (s) { return s.trim().length > 0; };
- * var userCheckers = [
+ * const hasContent = s => s.trim().length > 0;
+ * const userCheckers = [
  *     _.checker(hasContent, "Name is required", ["name"]),
  *     _.checker(hasContent, "Surname is required", ["surname"]),
  *     _.checker(_.isGTE(18), "Must be at least 18 years old", ["age"])
  * ];
- * var validateUser = _.validateWith(userCheckers);
+ * const validateUser = _.validateWith(userCheckers);
  *
- * var user1 = {name: "john", surname: "doe", age: 30};
- * var user2 = {name: "jane", surname: "", age: 15};
+ * const user1 = {name: "john", surname: "doe", age: 30};
+ * const user2 = {name: "jane", surname: "", age: 15};
  *
  * validateUser(user1) // => []
  * validateUser(user2) // =>

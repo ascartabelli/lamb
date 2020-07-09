@@ -8,8 +8,8 @@ import setIn from "./setIn";
  * Please refer to {@link module:lamb.setIn|setIn}'s description for explanations about
  * how the copy of the source object is made.
  * @example
- * var user = {name: "John", surname: "Doe", age: 30};
- * var setAgeTo40 = _.setKey("age", 40);
+ * const user = {name: "John", surname: "Doe", age: 30};
+ * const setAgeTo40 = _.setKey("age", 40);
  *
  * setAgeTo40(user) // => {name: "john", surname: "doe", age: 40}
  *

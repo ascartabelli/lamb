@@ -3,7 +3,7 @@ import _toArrayLength from "../privates/_toArrayLength";
 /**
  * Reverses a copy of the given array-like object.
  * @example
- * var arr = [1, 2, 3];
+ * const arr = [1, 2, 3];
  *
  * _.reverse(arr) // => [3, 2, 1];
  *

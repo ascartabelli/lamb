@@ -8,18 +8,18 @@ import applyTo from "./applyTo";
  * <code>collect</code>.<br/>
  * The collected results will be returned in an array.
  * @example
- * var user = {
+ * const user = {
  *     id: "jdoe",
  *     name: "John",
  *     surname: "Doe",
  *     scores: [2, 4, 7]
  * };
- * var getIDAndLastScore = _.collect([_.getKey("id"), _.getPath("scores.-1")]);
+ * const getIDAndLastScore = _.collect([_.getKey("id"), _.getPath("scores.-1")]);
  *
  * getIDAndLastScore(user) // => ["jdoe", 7]
  *
  * @example
- * var minAndMax = _.collect([Math.min, Math.max]);
+ * const minAndMax = _.collect([Math.min, Math.max]);
  *
  * minAndMax(3, 1, -2, 5, 4, -1) // => [-2, 5]
  *

@@ -5,7 +5,7 @@ import make from "./make";
 /**
  * Returns a copy of the source object without the specified properties.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
+ * const user = {name: "john", surname: "doe", age: 30};
  *
  * _.skipIn(user, ["name", "age"]) // => {surname: "doe"};
  * _.skipIn(user, ["name", "email"]) // => {surname: "doe", age: 30};

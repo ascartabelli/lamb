@@ -5,14 +5,14 @@ import count from "./count";
  * A curried version of {@link module:lamb.count|count} that uses the provided iteratee to
  * build a function expecting the array-like object to act upon.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "city": "New York"},
  *     {"name": "John", "city": "New York"},
  *     {"name": "Mario", "city": "Rome"},
  *     {"name": "Paolo"}
  * ];
- * var getCityOrUnknown = _.adapter([_.getKey("city"), _.always("Unknown")]);
- * var countByCity = _.countBy(getCityOrUnknown);
+ * const getCityOrUnknown = _.adapter([_.getKey("city"), _.always("Unknown")]);
+ * const countByCity = _.countBy(getCityOrUnknown);
  *
  * countByCity(persons) // => {"New York": 2, "Rome": 1, "Unknown": 1}
  *

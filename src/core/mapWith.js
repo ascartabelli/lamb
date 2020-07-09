@@ -5,8 +5,8 @@ import map from "./map";
  * A curried version of {@link module:lamb.map|map} that uses the provided iteratee to
  * build a function expecting the array-like object to act upon.
  * @example
- * var square = function (n) { return n * n; };
- * var getSquares = _.mapWith(square);
+ * const square = n => n ** 2;
+ * const getSquares = _.mapWith(square);
  *
  * getSquares([1, 2, 3, 4, 5]) // => [1, 4, 9, 16, 25]
  *

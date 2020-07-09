@@ -3,7 +3,7 @@ import _makeArrayFlattener from "../privates/_makeArrayFlattener";
 /**
  * Flattens the "first level" of an array.
  * @example <caption>Showing the difference with <code>flatten</code>:</caption>
- * var arr = [1, 2, [3, 4, [5, 6]], 7, 8];
+ * const arr = [1, 2, [3, 4, [5, 6]], 7, 8];
  *
  * _.flatten(arr) // => [1, 2, 3, 4, 5, 6, 7, 8]
  * _.shallowFlatten(arr) // => [1, 2, 3, 4, [5, 6], 7, 8]

@@ -6,8 +6,8 @@ import _toNaturalIndex from "../privates/_toNaturalIndex";
  * The resulting function will return <code>undefined</code> if no arguments are
  * passed or if the index is out of bounds.
  * @example
- * var getFirstArg = _.getArgAt(0);
- * var getLastArg = _.getArgAt(-1);
+ * const getFirstArg = _.getArgAt(0);
+ * const getLastArg = _.getArgAt(-1);
  *
  * getFirstArg(1, 2, 3) // => 1
  * getLastArg(1, 2, 3) // => 3

@@ -6,13 +6,13 @@ import getKey from "../object/getKey";
  * A curried version of {@link module:lamb.pluckFrom|pluckFrom} expecting the key to retrieve to
  * build a function waiting for the array-like object to act upon.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "surname": "Doe", "age": 12},
  *     {"name": "John", "surname": "Doe", "age": 40},
  *     {"name": "Mario", "surname": "Rossi", "age": 18},
  *     {"name": "Paolo", "surname": "Bianchi", "age": 15}
  * ];
- * var getAges = _.pluck("age");
+ * const getAges = _.pluck("age");
  *
  * getAges(persons) // => [12, 40, 18, 15]
  *

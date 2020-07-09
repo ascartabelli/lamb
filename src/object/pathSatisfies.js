@@ -8,15 +8,15 @@ import _toPathParts from "../privates/_toPathParts";
  * negative ones, to refer to array-like object indexes, but the priority will
  * be given to existing object keys.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     performance: {
  *         scores: [1, 5, 10]
  *     }
  * };
  *
- * var gotAnHighScore = _.pathSatisfies(_.contains(10), "performance.scores");
- * var hadAGoodStart = _.pathSatisfies(_.isGT(6), "performance.scores.0");
+ * const gotAnHighScore = _.pathSatisfies(_.contains(10), "performance.scores");
+ * const hadAGoodStart = _.pathSatisfies(_.isGT(6), "performance.scores.0");
  *
  * gotAnHighScore(user) // => true
  * hadAGoodStart(user) // => false

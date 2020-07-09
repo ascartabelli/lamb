@@ -4,17 +4,15 @@ import identity from "./identity";
  * Returns a function that is the composition of the functions given as parameters.
  * The first function consumes the result of the function that follows.
  * @example
- * var sayHi = function (name) { return "Hi, " + name; };
- * var capitalize = function (s) {
- *     return s[0].toUpperCase() + s.substr(1).toLowerCase();
- * };
- * var fixNameAndSayHi = _.compose(sayHi, capitalize);
+ * const sayHi = name => `Hi, ${name}`;
+ * const capitalize = s => s[0].toUpperCase() + s.substr(1).toLowerCase();
+ * const fixNameAndSayHi = _.compose(sayHi, capitalize);
  *
  * sayHi("bOb") // => "Hi, bOb"
  * fixNameAndSayHi("bOb") // "Hi, Bob"
  *
- * var users = [{name: "fred"}, {name: "bOb"}];
- * var sayHiToUser = _.compose(fixNameAndSayHi, _.getKey("name"));
+ * const users = [{name: "fred"}, {name: "bOb"}];
+ * const sayHiToUser = _.compose(fixNameAndSayHi, _.getKey("name"));
  *
  * _.map(users, sayHiToUser) // ["Hi, Fred", "Hi, Bob"]
  *

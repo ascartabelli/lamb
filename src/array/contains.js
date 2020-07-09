@@ -7,7 +7,7 @@ import isIn from "./isIn";
  * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
  * See also {@link module:lamb.isIn|isIn} for an uncurried version.
  * @example
- * var containsNaN = _.contains(NaN);
+ * const containsNaN = _.contains(NaN);
  *
  * containsNaN([0, 1, 2, 3, NaN]) // => true
  *

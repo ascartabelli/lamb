@@ -62,7 +62,7 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.59.0",
+    "version": "0.60.0-alpha.1",
     "devDependencies": {
         "@babel/core": "^7.10.4",
         "@babel/preset-env": "^7.10.4",

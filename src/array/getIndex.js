@@ -10,7 +10,7 @@ import _toNaturalIndex from "../privates/_toNaturalIndex";
  * <code>undefined</code> in place of an array-like object, but returns <code>undefined</code>
  * for any other value.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.getIndex(arr, 1) // => 2
  * _.getIndex(arr, -1) // => 5

@@ -7,14 +7,13 @@ import pipe from "./pipe";
  * Builds a function that allows to map over the received arguments before applying them
  * to the original one.
  * @example
- * var __ = _.__;
- * var sumArray = _.reduceWith(_.sum);
- * var sumArgs = _.compose(sumArray, _.list);
+ * const sumArray = _.reduceWith(_.sum);
+ * const sumArgs = _.compose(sumArray, _.list);
  *
  * sumArgs(1, 2, 3, 4, 5) // => 15
  *
- * var square = _.partial(Math.pow, [__, 2]);
- * var sumSquares = _.mapArgs(sumArgs, square);
+ * const square = n => n ** 2;
+ * const sumSquares = _.mapArgs(sumArgs, square);
  *
  * sumSquares(1, 2, 3, 4, 5) // => 55
  *

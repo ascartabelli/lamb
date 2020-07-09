@@ -14,8 +14,8 @@ import enumerables from "./enumerables";
  * Like the other "path" functions, negative indexes can be used to access array elements, but
  * the priority will be given to existing, and enumerable, object keys.
  * @example
- * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
- * var inc = _.add(1);
+ * const user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
+ * const inc = _.add(1);
  *
  * _.updatePathIn(user, "status.visits", inc) // => {id: 1, status: {scores: [2, 4, 6]}, visits: 1}
  *
@@ -26,19 +26,25 @@ import enumerables from "./enumerables";
  * _.updatePathIn(user, "status.scores.-1", inc) // => {id: 1, status: {scores: [2, 4, 7], visits: 0}}
  *
  * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
- * var user = {id: 1, scores: [
- *     {value: 2, year: "2000"},
- *     {value: 4, year: "2001"},
- *     {value: 6, year: "2002"}
- * ]};
+ * const user = {
+ *     id: 1,
+ *     scores: [
+ *         {value: 2, year: "2000"},
+ *         {value: 4, year: "2001"},
+ *         {value: 6, year: "2002"}
+ *     ]
+ * };
  *
- * var newUser = _.updatePathIn(user, "scores.0.value", inc);
+ * const newUser = _.updatePathIn(user, "scores.0.value", inc);
  * // "newUser" holds:
- * // {id: 1, scores: [
- * //     {value: 3, year: "2000"},
- * //     {value: 4, year: "2001"},
- * //     {value: 6, year: "2002"}
- * // ]}
+ * // {
+ * //     id: 1,
+ * //     scores: [
+ * //         {value: 3, year: "2000"},
+ * //         {value: 4, year: "2001"},
+ * //         {value: 6, year: "2002"}
+ * //     ]
+ * // }
  *
  * @memberof module:lamb
  * @category Object

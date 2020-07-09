@@ -5,7 +5,7 @@ import enumerables from "./enumerables";
  * Generates an array with the values of the enumerable properties of the given object.<br/>
  * See also {@link module:lamb.ownValues|ownValues} to pick only from the own properties of the object.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
+ * const user = {name: "john", surname: "doe", age: 30};
  *
  * _.values(user) // => ["john", "doe", 30]
  *

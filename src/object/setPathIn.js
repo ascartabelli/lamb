@@ -20,7 +20,7 @@ import _toPathParts from "../privates/_toPathParts";
  * Like {@link module:lamb.getPathIn|getPathIn} or {@link module:lamb.getPath|getPath} you can
  * use custom path separators.
  * @example
- * var user = {id: 1, status: {active : false, scores: [2, 4, 6]}};
+ * const user = {id: 1, status: {active : false, scores: [2, 4, 6]}};
  *
  * _.setPathIn(user, "status.active", true) // => {id: 1, status: {active : true, scores: [2, 4, 6]}}
  *
@@ -31,19 +31,25 @@ import _toPathParts from "../privates/_toPathParts";
  * _.setPathIn(user, "status.scores.-1", 8) // => {id: 1, status: {active : false, scores: [2, 4, 8]}}
  *
  * @example <caption>Arrays can also be part of the path and not necessarily its target:</caption>
- * var user = {id: 1, scores: [
- *     {value: 2, year: "2000"},
- *     {value: 4, year: "2001"},
- *     {value: 6, year: "2002"}
- * ]};
+ * const user = {
+ *     id: 1,
+ *     scores: [
+ *         {value: 2, year: "2000"},
+ *         {value: 4, year: "2001"},
+ *         {value: 6, year: "2002"}
+ *     ]
+ * };
  *
- * var newUser = _.setPathIn(user, "scores.0.value", 8);
+ * const newUser = _.setPathIn(user, "scores.0.value", 8);
  * // "newUser" holds:
- * // {id: 1, scores: [
- * //     {value: 8, year: "2000"},
- * //     {value: 4, year: "2001"},
- * //     {value: 6, year: "2002"}
- * // ]}
+ * // {
+ * //     id: 1,
+ * //     scores: [
+ * //         {value: 8, year: "2000"},
+ * //         {value: 4, year: "2001"},
+ * //         {value: 6, year: "2002"}
+ * //     ]
+ * // }
  *
  * @memberof module:lamb
  * @category Object

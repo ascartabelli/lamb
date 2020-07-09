@@ -5,8 +5,8 @@ import findIndex from "./findIndex";
  * A curried version of {@link module:lamb.findIndex|findIndex} that uses the given predicate
  * to build a function expecting the array-like object to search.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var findEvenIdx = _.findIndexWhere(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const findEvenIdx = _.findIndexWhere(isEven);
  *
  * findEvenIdx([1, 3, 4, 5, 6, 7]) // => 2
  * findEvenIdx([1, 3, 5, 7]) // => -1

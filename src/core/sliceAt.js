@@ -7,9 +7,9 @@ import slice from "./slice";
  * See also {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
  * slice to the end of the array-like.
  * @example
- * var arr = [1, 2, 3, 4, 5];
- * var s = "hello";
- * var dropFirstAndLast = _.sliceAt(1, -1);
+ * const arr = [1, 2, 3, 4, 5];
+ * const s = "hello";
+ * const dropFirstAndLast = _.sliceAt(1, -1);
  *
  * dropFirstAndLast(arr) // => [2, 3, 4]
  * dropFirstAndLast(s) // => ["e", "l", "l"]

@@ -6,14 +6,14 @@ import _groupWith from "../privates/_groupWith";
  * Should be used only when you're sure that your <code>iteratee</code> won't produce
  * duplicate keys, otherwise only the last evaluated element will be in the result.
  * @example
- * var users = [
+ * const users = [
  *     {id: 1, name: "John"},
  *     {id: 2, name: "Jane"},
  *     {id: 3, name: "Mario"},
  *     {id: 4, name: "John"}
  * ];
  *
- * var indexedUsers = _.index(users, _.getKey("id"));
+ * const indexedUsers = _.index(users, _.getKey("id"));
  *
  * // "indexedUsers" holds:
  * // {
@@ -24,14 +24,14 @@ import _groupWith from "../privates/_groupWith";
  * // }
  *
  * @example <caption>Result of an <code>iteratee</code> producing a duplicate key:</caption>
- * var users = [
+ * const users = [
  *     {id: 1, name: "John"},
  *     {id: 2, name: "Jane"},
  *     {id: 3, name: "Mario"},
  *     {id: 4, name: "John"}
  * ];
  *
- * var indexedUsers = _.index(users, _.getKey("name"));
+ * const indexedUsers = _.index(users, _.getKey("name"));
  *
  * // "indexedUsers" holds:
  * // {

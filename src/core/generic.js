@@ -6,7 +6,7 @@
  * @category Function
  * @function
  * @example
- * var join = _.generic(Array.prototype.join);
+ * const join = _.generic(Array.prototype.join);
  *
  * join([1, 2, 3, 4, 5], "-") // => "1-2-3-4-5"
  *

@@ -2,8 +2,8 @@
  * Verifies that the first given value is less than the second.<br/>
  * Wraps the native <code>&lt;</code> operator within a function.
  * @example
- * var pastDate = new Date(2010, 2, 12);
- * var today = new Date();
+ * const pastDate = new Date(2010, 2, 12);
+ * const today = new Date();
  *
  * _.lt(today, pastDate) // => false
  * _.lt(pastDate, today) // => true

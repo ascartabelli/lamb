@@ -4,8 +4,8 @@ import reduce from "../core/reduce";
  * Similar to {@link module:lamb.map|map}, but if the mapping function returns an array this will
  * be concatenated, rather than pushed, to the final result.
  * @example <caption>Showing the difference with <code>map</code>:</caption>
- * var words = ["foo", "bar"];
- * var toCharArray = function (s) { return s.split(""); };
+ * const words = ["foo", "bar"];
+ * const toCharArray = _.splitBy("");
  *
  * _.map(words, toCharArray) // => [["f", "o", "o"], ["b", "a", "r"]]
  * _.flatMap(words, toCharArray) // => ["f", "o", "o", "b", "a", "r"]

@@ -12,7 +12,7 @@ import getPathIn from "./getPathIn";
  * If you want to run the same single property check with multiple properties, you should build
  * multiple <code>checker</code>s and combine them with {@link module:lamb.validate|validate}.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     login: {
@@ -21,7 +21,7 @@ import getPathIn from "./getPathIn";
  *         passwordConfirm: "abc123"
  *     }
  * };
- * var pwdMatch = _.checker(
+ * const pwdMatch = _.checker(
  *     _.areSame,
  *     "Passwords don't match",
  *     ["login.password", "login.passwordConfirm"]
@@ -29,7 +29,7 @@ import getPathIn from "./getPathIn";
  *
  * pwdMatch(user) // => []
  *
- * var newUser = _.setPathIn(user, "login.passwordConfirm", "avc123");
+ * const newUser = _.setPathIn(user, "login.passwordConfirm", "avc123");
  *
  * pwdMatch(newUser) // => ["Passwords don't match", ["login.password", "login.passwordConfirm"]]
  *

@@ -5,7 +5,8 @@
  * @example
  * // example of wrong usage of the remainder
  * // (in this case the modulo operation should be used)
- * var isOdd = function (n) { return _.remainder(n, 2) === 1; };
+ * const isOdd = n => _.remainder(n, 2) === 1;
+ *
  * isOdd(-3) // => false as -3 % 2 === -1
  *
  * @memberof module:lamb

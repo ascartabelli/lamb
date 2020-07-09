@@ -5,7 +5,7 @@ import split from "./split";
  * A curried version of {@link module:lamb.split|split} that accepts
  * a separator and builds a function expecting the string to split.
  * @example
- * var splitByCommma = _.splitBy(",");
+ * const splitByCommma = _.splitBy(",");
  *
  * splitByCommma("Jan,Feb,Mar,Apr,May") // => ["Jan", "Feb", "Mar", "Apr", "May"]
  *

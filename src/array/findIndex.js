@@ -4,7 +4,7 @@ import _findIndex from "../privates/_findIndex";
  * Searches for an element satisfying the predicate in the given array-like object and returns its
  * index if the search is successful. Returns <code>-1</code> otherwise.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "surname": "Doe", "age": 12},
  *     {"name": "John", "surname": "Doe", "age": 40},
  *     {"name": "Mario", "surname": "Rossi", "age": 18},

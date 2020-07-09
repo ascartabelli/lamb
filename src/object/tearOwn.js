@@ -5,8 +5,8 @@ import keys from "./keys";
  * Same as {@link module:lamb.tear|tear}, but only the own properties of the object are
  * taken into account.
  * @example <caption>Showing the difference with <code>tear</code>:</caption>
- * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
- * var foo = Object.create(baseFoo, {
+ * const baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * const foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
  * });
  *

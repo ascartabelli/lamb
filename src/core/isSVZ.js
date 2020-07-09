@@ -9,10 +9,10 @@ import areSVZ from "./areSVZ";
  * See also {@link module:lamb.areSame|areSame} and {@link module:lamb.is|is}
  * to perform a "SameValue" comparison.
  * @example
- * var john = {name: "John", surname: "Doe"};
- * var isJohn = _.isSVZ(john);
- * var isZero = _.isSVZ(0);
- * var isReallyNaN = _.isSVZ(NaN);
+ * const john = {name: "John", surname: "Doe"};
+ * const isJohn = _.isSVZ(john);
+ * const isZero = _.isSVZ(0);
+ * const isReallyNaN = _.isSVZ(NaN);
  *
  * isJohn(john) // => true
  * isJohn({name: "John", surname: "Doe"}) // => false

@@ -5,7 +5,7 @@ import application from "./application";
  * A left-curried version of {@link module:lamb.application|application}. Expects the function
  * to apply and builds a function waiting for the arguments array.
  * @example
- * var arrayMax = _.apply(Math.max);
+ * const arrayMax = _.apply(Math.max);
  *
  * arrayMax([4, 5, 2, 6, 1]) // => 6
  *

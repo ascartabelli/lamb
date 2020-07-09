@@ -6,7 +6,7 @@ import gt from "./gt";
  * Accepts a value and builds a predicate that checks whether the value
  * is greater than the one received by the predicate.
  * @example
- * var isGreaterThan5 = _.isGT(5);
+ * const isGreaterThan5 = _.isGT(5);
  *
  * isGreaterThan5(3) // => false
  * isGreaterThan5(5) // => false

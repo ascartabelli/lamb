@@ -5,7 +5,7 @@ import insert from "./insert";
  * Builds a partial application of {@link module:lamb.insert|insert}
  * expecting the array-like object to act upon.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.insertAt(3, 99)(arr) // => [1, 2, 3, 99, 4, 5]
  * _.insertAt(-2, 99)(arr) // => [1, 2, 3, 99, 4, 5]

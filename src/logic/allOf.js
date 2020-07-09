@@ -5,8 +5,8 @@ import _checkPredicates from "../privates/_checkPredicates";
  * by the same arguments. The functions in the array will be applied one at a time until a
  * <code>false</code> value is produced, which is returned immediately.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var isPositiveEven = _.allOf([isEven, _.isGT(0)]);
+ * const isEven = n => n % 2 === 0;
+ * const isPositiveEven = _.allOf([isEven, _.isGT(0)]);
  *
  * isPositiveEven(-2) // => false
  * isPositiveEven(11) // => false

@@ -3,7 +3,7 @@
  * The first call in this case happens as soon as the function is invoked; see also
  * {@link module:lamb.debounce|debounce} for a different behaviour where the first call is delayed.
  * @example
- * var log = _.throttle(console.log.bind(console), 5000);
+ * const log = _.throttle(console.log.bind(console), 5000);
  *
  * log("Hi"); // console logs "Hi"
  * log("Hi again"); // nothing happens

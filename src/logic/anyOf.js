@@ -5,13 +5,13 @@ import _checkPredicates from "../privates/_checkPredicates";
  * satisfied by the received arguments. The functions in the array will be applied one at a time
  * until a <code>true</code> value is produced, which is returned immediately.
  * @example
- * var users = [
+ * const users = [
  *     {id: 1, name: "John", group: "guest"},
  *     {id: 2, name: "Jane", group: "root"},
  *     {id: 3, name: "Mario", group: "admin"}
  * ];
- * var isInGroup = _.partial(_.hasKeyValue, ["group"]);
- * var isSuperUser = _.anyOf([isInGroup("admin"), isInGroup("root")]);
+ * const isInGroup = _.partial(_.hasKeyValue, ["group"]);
+ * const isSuperUser = _.anyOf([isInGroup("admin"), isInGroup("root")]);
  *
  * isSuperUser(users[0]) // => false
  * isSuperUser(users[1]) // => true

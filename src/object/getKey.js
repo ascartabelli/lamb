@@ -6,9 +6,9 @@ import getIn from "./getIn";
  * Receives a property name and builds a function expecting the object from which we want to retrieve
  * the property.
  * @example
- * var user1 = {name: "john"};
- * var user2 = {name: "jane"};
- * var getName = _.getKey("name");
+ * const user1 = {name: "john"};
+ * const user2 = {name: "jane"};
+ * const getName = _.getKey("name");
  *
  * getName(user1) // => "john"
  * getName(user2) // => "jane"

@@ -5,20 +5,20 @@ import pickIn from "./pickIn";
  * A curried version of {@link module:lamb.pickIn|pickIn}, expecting a whitelist of keys to build
  * a function waiting for the object to act upon.
  * @example
- * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
- * var getUserInfo = _.pick(["id", "active"]);
+ * const user = {id: 1, name: "Jane", surname: "Doe", active: false};
+ * const getUserInfo = _.pick(["id", "active"]);
  *
  * getUserInfo(user) // => {id: 1, active: false}
  *
  * @example <caption>A useful composition with <code>mapWith</code>:</caption>
- * var users = [
+ * const users = [
  *     {id: 1, name: "Jane", surname: "Doe", active: false},
  *     {id: 2, name: "John", surname: "Doe", active: true},
  *     {id: 3, name: "Mario", surname: "Rossi", active: true},
  *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
  * ];
- * var select = _.compose(_.mapWith, _.pick);
- * var selectUserInfo = select(["id", "active"]);
+ * const select = _.compose(_.mapWith, _.pick);
+ * const selectUserInfo = select(["id", "active"]);
  *
  * selectUserInfo(users) // =>
  * // [

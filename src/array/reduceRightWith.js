@@ -6,7 +6,7 @@ import reduceRight from "./reduceRight";
  * provided <code>accumulator</code> and the optional <code>initialValue</code> to
  * build a function expecting the array-like object to act upon.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.reduceRightWith(_.sum)(arr) // => 15
  * _.reduceRightWith(_.subtract)(arr) // => -5

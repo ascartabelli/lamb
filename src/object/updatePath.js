@@ -9,8 +9,8 @@ import updatePathIn from "./updatePathIn";
  * Like the other "path" functions, negative indexes can be used to access array elements, but
  * the priority will be given to existing, and enumerable, object keys.
  * @example
- * var user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
- * var incrementScores = _.updatePath("status.scores", _.mapWith(_.add(1)))
+ * const user = {id: 1, status: {scores: [2, 4, 6], visits: 0}};
+ * const incrementScores = _.updatePath("status.scores", _.mapWith(_.add(1)))
  *
  * incrementScores(user) // => {id: 1, status: {scores: [3, 5, 7], visits: 0}}
  *

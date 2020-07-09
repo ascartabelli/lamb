@@ -3,7 +3,7 @@ import slice from "../core/slice";
 /**
  * Appends the given value at the end of a copy of the provided array-like object.
  * @example
- * var arr = [1, 2, 3, 4];
+ * const arr = [1, 2, 3, 4];
  *
  * _.appendTo(arr, 5) // => [1, 2, 3, 4, 5]
  * _.appendTo(arr, [5]) // => [1, 2, 3, 4, [5]]

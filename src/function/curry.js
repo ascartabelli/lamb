@@ -7,8 +7,8 @@ import _curry from "../privates/_curry";
  * Currying will start from the leftmost argument: use {@link module:lamb.curryRight|curryRight}
  * for right currying.
  * @example
- * var makeWithKeys = _.curry(_.make);
- * var makePerson = makeWithKeys(["name", "surname"]);
+ * const makeWithKeys = _.curry(_.make);
+ * const makePerson = makeWithKeys(["name", "surname"]);
  *
  * makePerson(["John", "Doe"]) // => {name: "John", surname: "Doe"};
  * makePerson(["Mario", "Rossi"]) // => {name: "Mario", surname: "Rossi"};

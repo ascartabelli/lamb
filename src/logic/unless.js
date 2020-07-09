@@ -6,8 +6,8 @@
  * It's a shortcut for a common use case of {@link module:lamb.condition|condition},
  * where its <code>trueFn</code> parameter is the [identity function]{@link module:lamb.identity}.
  * @example
- * var isEven = function (n) { return n % 2 === 0};
- * var halveUnlessIsEven = _.unless(isEven, _.divideBy(2));
+ * const isEven = n => n % 2 === 0;
+ * const halveUnlessIsEven = _.unless(isEven, _.divideBy(2));
  *
  * halveUnlessIsEven(5) // => 2.5
  * halveUnlessIsEven(6) // => 6

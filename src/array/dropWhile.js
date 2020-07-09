@@ -4,8 +4,8 @@ import _takeOrDropWhile from "../privates/_takeOrDropWhile";
  * Builds a function that drops the first elements satisfying a predicate
  * from an array or array-like object.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var dropWhileIsEven = _.dropWhile(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const dropWhileIsEven = _.dropWhile(isEven);
  *
  * dropWhileIsEven([2, 4, 6, 8]) // => []
  * dropWhileIsEven([2, 4, 7, 8]) // => [7, 8]

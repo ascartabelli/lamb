@@ -13,13 +13,14 @@ import partial from "../core/partial";
  * desired method.<br/>
  * See also {@link module:lamb.generic|generic} to create functions out of object methods.
  * @example <caption>Basic polymorphism with <code>invoke</code>:</caption>
- * var polySlice = _.invoke("slice");
+ * const polySlice = _.invoke("slice");
  *
  * polySlice([1, 2, 3, 4, 5], 1, 3) // => [2, 3]
  * polySlice("Hello world", 1, 3) // => "el"
  *
  * @example <caption>With bound arguments:</caption>
- * var substrFrom2 = _.invoke("substr", [2]);
+ * const substrFrom2 = _.invoke("substr", [2]);
+ *
  * substrFrom2("Hello world") // => "llo world"
  * substrFrom2("Hello world", 5) // => "llo w"
  *

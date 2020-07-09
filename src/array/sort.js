@@ -13,14 +13,14 @@ import _toArrayLength from "../privates/_toArrayLength";
  * they will be compared as strings.
  *
  * @example <caption>Stable sort:</caption>
- * var persons = [
+ * const persons = [
  *     {"name": "John", "surname" :"Doe"},
  *     {"name": "Mario", "surname": "Rossi"},
  *     {"name": "John", "surname" :"Moe"},
  *     {"name": "Jane", "surname": "Foe"}
  * ];
  *
- * var personsByName = _.sort(persons, [_.getKey("name")]);
+ * const personsByName = _.sort(persons, [_.getKey("name")]);
  *
  * // personsByName holds:
  * // [
@@ -31,7 +31,7 @@ import _toArrayLength from "../privates/_toArrayLength";
  * // ]
  *
  * @example <caption>Stable multi-sort:</caption>
- * var personsByNameAscSurnameDesc = _.sort(persons, [
+ * const personsByNameAscSurnameDesc = _.sort(persons, [
  *     _.getKey("name"),
  *     _.sorterDesc(_.getKey("surname"))
  * ]);
@@ -45,12 +45,12 @@ import _toArrayLength from "../privates/_toArrayLength";
  * // ]
  *
  * @example <caption>Using custom comparers:</caption>
- * var localeSorter = new Intl.Collator("it");
- * var chars = ["a", "è", "à", "é", "c", "b", "e"];
+ * const localeSorter = new Intl.Collator("it");
+ * const chars = ["a", "è", "à", "é", "c", "b", "e"];
  *
  * _.sort(chars, [localeSorter]) // => ["a", "à", "b", "c", "e", "é", "è"]
  *
- * var localeSorterDesc = _.sorterDesc(_.identity, localeSorter.compare);
+ * const localeSorterDesc = _.sorterDesc(_.identity, localeSorter.compare);
  *
  * _.sort(chars, [localeSorterDesc]) // => ["è", "é", "e", "c", "b", "à", "a"]
  *

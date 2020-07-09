@@ -4,14 +4,14 @@ import _groupWith from "../privates/_groupWith";
  * Transforms an array-like object into a lookup table using the provided iteratee as a grouping
  * criterion to generate keys and values.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "city": "New York"},
  *     {"name": "John", "city": "New York"},
  *     {"name": "Mario", "city": "Rome"},
  *     {"name": "Paolo"}
  * ];
- * var getCity = _.getKey("city");
- * var personsByCity = _.group(persons, getCity);
+ * const getCity = _.getKey("city");
+ * const personsByCity = _.group(persons, getCity);
  *
  * // "personsByCity" holds:
  * // {
@@ -29,9 +29,9 @@ import _groupWith from "../privates/_groupWith";
  *
  * @example <caption>Adding a custom value for missing keys:</caption>
  *
- * var getCityOrUnknown = _.adapter([getCity, _.always("Unknown")]);
+ * const getCityOrUnknown = _.adapter([getCity, _.always("Unknown")]);
  *
- * var personsByCity = _.group(persons, getCityOrUnknown);
+ * const personsByCity = _.group(persons, getCityOrUnknown);
  *
  * // "personsByCity" holds:
  * // {

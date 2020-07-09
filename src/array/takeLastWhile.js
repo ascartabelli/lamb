@@ -4,8 +4,8 @@ import _takeOrDropWhile from "../privates/_takeOrDropWhile";
  * Builds a function that takes the last elements satisfying a predicate
  * from an array or array-like object.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var takeLastWhileIsEven = _.takeLastWhile(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const takeLastWhileIsEven = _.takeLastWhile(isEven);
  *
  * takeLastWhileIsEven([1, 3, 5, 7]) // => []
  * takeLastWhileIsEven([2, 3, 6, 8]) // => [6, 8]

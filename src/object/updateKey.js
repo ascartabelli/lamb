@@ -8,8 +8,8 @@ import updateIn from "./updateIn";
  * will delegate the "set action" to {@link module:lamb.setIn|setIn}; a copy of the
  * <code>source</code> is returned otherwise.
  * @example
- * var user = {name: "John", visits: 2};
- * var incrementVisits = _.updateKey("visits", _.add(1));
+ * const user = {name: "John", visits: 2};
+ * const incrementVisits = _.updateKey("visits", _.add(1));
  *
  * incrementVisits(user) // => {name: "John", visits: 3}
  *

@@ -9,9 +9,9 @@ import uniques from "./uniques";
  * array-like objects. To determine uniqueness the function uses the
  * ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
- * var a1 = [1, 2, 1, 3, 4];
- * var a2 = [2, 4, 5, 6];
- * var a3 = [3, 4, 5, 2, 1];
+ * const a1 = [1, 2, 1, 3, 4];
+ * const a2 = [2, 4, 5, 6];
+ * const a3 = [3, 4, 5, 2, 1];
  *
  * _.difference(a1, a2) // => [1, 3]
  * _.difference(a2, a3) // => [6]

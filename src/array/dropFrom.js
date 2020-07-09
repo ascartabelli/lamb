@@ -5,7 +5,7 @@ import slice from "../core/slice";
  * Note that, being this only a shortcut for a specific use case of {@link module:lamb.slice|slice},
  * <code>n</code> can be a negative number.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.dropFrom(arr, 2) // => [3, 4, 5]
  * _.dropFrom(arr, -1) // => [5]

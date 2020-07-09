@@ -5,8 +5,8 @@ import application from "./application";
  * A right-curried version of {@link module:lamb.application|application}. Expects an array-like
  * object to use as arguments and builds a function waiting for the target of the application.
  * @example
- * var data = [3, 4];
- * var applyToData = _.applyTo(data);
+ * const data = [3, 4];
+ * const applyToData = _.applyTo(data);
  *
  * applyToData(_.sum) // => 7
  * applyToData(_.multiply) // => 12

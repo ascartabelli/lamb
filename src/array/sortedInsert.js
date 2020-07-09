@@ -11,18 +11,18 @@ import _makeCriteria from "../privates/_makeCriteria";
  * _.sortedInsert([4, 2, 1], 3, _.sorterDesc()) // => [4, 3, 2, 1]
  *
  * @example <caption>With complex values:</caption>
- * var persons = [
+ * const persons = [
  *     {"name": "jane", "surname": "doe"},
  *     {"name": "John", "surname": "Doe"},
  *     {"name": "Mario", "surname": "Rossi"}
  * ];
  *
- * var getLowerCaseName = _.compose(
+ * const getLowerCaseName = _.compose(
  *     _.invoke("toLowerCase"),
  *     _.getKey("name")
  * );
  *
- * var result = _.sortedInsert(
+ * const result = _.sortedInsert(
  *     persons,
  *     {"name": "marco", "surname": "Rossi"},
  *     getLowerCaseName

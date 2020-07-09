@@ -5,14 +5,14 @@ import index from "./index_";
  * A curried version of {@link module:lamb.index|index} that uses the provided iteratee
  * to build a function expecting the array-like object to act upon.
  * @example
- * var users = [
+ * const users = [
  *     {id: 1, name: "John"},
  *     {id: 2, name: "Jane"},
  *     {id: 3, name: "Mario"}
  * ];
- * var indexByID = _.indexBy(_.getKey("id"));
+ * const indexByID = _.indexBy(_.getKey("id"));
  *
- * var indexedUsers = indexByID(users);
+ * const indexedUsers = indexByID(users);
  *
  * // "indexedUsers" holds:
  * // {

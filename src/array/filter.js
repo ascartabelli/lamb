@@ -3,7 +3,7 @@
  * test.<br/>
  * Note that unlike the native array method this function doesn't skip unassigned or deleted indexes.
  * @example
- * var isLowerCase = function (s) { return s.toLowerCase() === s; };
+ * const isLowerCase = s => s.toLowerCase() === s;
  *
  * _.filter(["Foo", "bar", "baZ"], isLowerCase) // => ["bar"]
  *

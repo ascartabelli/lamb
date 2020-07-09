@@ -6,8 +6,8 @@ import mapValues from "./mapValues";
  * Expects a mapping function to build a new function waiting for the
  * object to act upon.
  * @example
- * var incValues = _.mapValuesWith(_.add(1));
- * var results = {
+ * const incValues = _.mapValuesWith(_.add(1));
+ * const results = {
  *     first: 10,
  *     second: 5,
  *     third: 3

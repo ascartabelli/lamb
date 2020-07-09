@@ -3,7 +3,7 @@
  * It's simply a shortcut for a common use case of {@link module:lamb.aritize|aritize},
  * exposed for convenience.
  * @example
- * var weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
+ * const weights = ["2 Kg", "10 Kg", "1 Kg", "7 Kg"];
  *
  * _.map(weights, _.unary(parseInt)) // => [2, 10, 1, 7]
  *

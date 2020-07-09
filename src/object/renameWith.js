@@ -4,14 +4,14 @@ import renameIn from "./renameIn";
  * Uses the provided function as a <code>keysMap</code> generator and returns
  * a function expecting the object whose keys we want to {@link module:lamb.renameIn|renameIn}.
  * @example
- * var person = {"NAME": "John", "SURNAME": "Doe"};
- * var arrayToLower = _.mapWith(_.invoke("toLowerCase"));
- * var makeLowerKeysMap = function (source) {
- *     var sourceKeys = _.keys(source);
+ * const person = {"NAME": "John", "SURNAME": "Doe"};
+ * const arrayToLower = _.mapWith(_.invoke("toLowerCase"));
+ * const makeLowerKeysMap = function (source) {
+ *     const sourceKeys = _.keys(source);
  *
  *     return _.make(sourceKeys, arrayToLower(sourceKeys));
  * };
- * var lowerKeysFor = _.renameWith(makeLowerKeysMap);
+ * const lowerKeysFor = _.renameWith(makeLowerKeysMap);
  *
  * lowerKeysFor(person) // => {"name": "John", "surname": "doe"};
  *

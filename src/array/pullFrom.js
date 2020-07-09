@@ -7,13 +7,13 @@ import isIn from "./isIn";
  * specified values.<br/>
  * The equality test is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.pullFrom(arr, [2, 5]) // => [1, 3, 4]
  *
  * @example <caption>It's not the same as {@link module:lamb.difference|difference}:</caption>
  *
- * var arr = [1,1,2,3,4,4,5];
+ * const arr = [1,1,2,3,4,4,5];
  *
  * _.pullFrom(arr, [1, 2]) // => [3, 4, 4, 5]
  * _.difference(arr, [1, 2]) // => [3, 4, 5]

@@ -5,20 +5,20 @@ import skipIn from "./skipIn";
  * A curried version of {@link module:lamb.skipIn|skipIn}, expecting a blacklist of keys to build
  * a function waiting for the object to act upon.
  * @example
- * var user = {id: 1, name: "Jane", surname: "Doe", active: false};
- * var getUserInfo = _.skip(["name", "surname"]);
+ * const user = {id: 1, name: "Jane", surname: "Doe", active: false};
+ * const getUserInfo = _.skip(["name", "surname"]);
  *
  * getUserInfo(user) // => {id: 1, active: false}
  *
  * @example <caption>A useful composition with <code>mapWith</code>:</caption>
- * var users = [
+ * const users = [
  *     {id: 1, name: "Jane", surname: "Doe", active: false},
  *     {id: 2, name: "John", surname: "Doe", active: true},
  *     {id: 3, name: "Mario", surname: "Rossi", active: true},
  *     {id: 4, name: "Paolo", surname: "Bianchi", active: false}
  * ];
- * var discard = _.compose(_.mapWith, _.skip);
- * var discardNames = discard(["name", "surname"]);
+ * const discard = _.compose(_.mapWith, _.skip);
+ * const discardNames = discard(["name", "surname"]);
  *
  * discardNames(users) // =>
  * // [

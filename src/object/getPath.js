@@ -5,7 +5,7 @@ import getPathIn from "./getPathIn";
  * Builds a partial application of {@link module:lamb.getPathIn|getPathIn} with the given
  * path and separator, expecting the object to act upon.<br/>
  * @example
- *  var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     login: {
@@ -14,8 +14,8 @@ import getPathIn from "./getPathIn";
  *     }
  * };
  *
- * var getPwd = _.getPath("login.password");
- * var getUsername = _.getPath("login/user.name", "/");
+ * const getPwd = _.getPath("login.password");
+ * const getUsername = _.getPath("login/user.name", "/");
  *
  * getPwd(user) // => "abc123";
  * getUsername(user) // => "jdoe"

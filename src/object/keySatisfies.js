@@ -2,11 +2,11 @@
  * Builds a predicate to check if the given key satisfies the desired condition
  * on an object.
  * @example
- * var users = [
+ * const users = [
  *     {name: "John", age: 25},
  *     {name: "Jane", age: 15},
  * ];
- * var isAdult = _.keySatisfies(_.isGTE(18), "age");
+ * const isAdult = _.keySatisfies(_.isGTE(18), "age");
  *
  * isAdult(users[0]) // => true
  * isAdult(users[1]) // => false

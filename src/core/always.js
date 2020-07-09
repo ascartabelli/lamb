@@ -2,7 +2,7 @@
  * Builds a function that returns a constant value.
  * It's actually the simplest form of the K combinator or Kestrel.
  * @example
- * var truth = _.always(true);
+ * const truth = _.always(true);
  *
  * truth() // => true
  * truth(false) // => true
@@ -10,8 +10,8 @@
  *
  * // the value being returned is actually the
  * // very same value passed to the function
- * var foo = {bar: "baz"};
- * var alwaysFoo = _.always(foo);
+ * const foo = {bar: "baz"};
+ * const alwaysFoo = _.always(foo);
  *
  * alwaysFoo() === foo // => true
  *

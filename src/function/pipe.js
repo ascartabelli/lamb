@@ -4,9 +4,8 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
 /**
  * Creates a pipeline of functions, where each function consumes the result of the previous one.
  * @example
- * var __ = _.__;
- * var square = _.partial(Math.pow, [__, 2]);
- * var getMaxAndSquare = _.pipe([Math.max, square]);
+ * const square = n => n ** 2;
+ * const getMaxAndSquare = _.pipe([Math.max, square]);
  *
  * getMaxAndSquare(3, 5) // => 25
  *

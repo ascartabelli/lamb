@@ -8,9 +8,9 @@ import _invoke from "../privates/_invoke";
  * Like {@link module:lamb.invoke|invoke}, if no method with the given name is found the
  * function will return <code>undefined</code>.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var arr = [1, 2, 3, 4, 5];
- * var invokeOnArr = _.invokeOn(arr);
+ * const isEven = n => n % 2 === 0;
+ * const arr = [1, 2, 3, 4, 5];
+ * const invokeOnArr = _.invokeOn(arr);
  *
  * invokeOnArr("filter", isEven) // => [2, 4]
  * invokeOnArr("slice", 1, 3) // => [2, 3]

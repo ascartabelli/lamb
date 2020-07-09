@@ -4,7 +4,7 @@ import multiply from "./multiply";
 /**
  * A curried version of {@link module:lamb.multiply|multiply}.
  * @example
- * var double = _.multiplyBy(2);
+ * const double = _.multiplyBy(2);
  *
  * double(5) // => 10
  *

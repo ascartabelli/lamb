@@ -6,12 +6,12 @@ import keys from "./keys";
  * Same as {@link module:lamb.merge|merge}, but only the own properties of the
  * sources are taken into account.
  * @example <caption>Showing the difference with <code>merge</code>:</caption>
- * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
- * var foo = Object.create(baseFoo, {
+ * const baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * const foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
  * });
  *
- * var bar = {d: 4};
+ * const bar = {d: 4};
  *
  * _.merge(foo, bar) // => {a: 1, b: 2, c: 3, d: 4}
  * _.mergeOwn(foo, bar) // => {c: 3, d: 4}

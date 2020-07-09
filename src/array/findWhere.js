@@ -5,8 +5,8 @@ import find from "./find";
  * A curried version of {@link module:lamb.find|find} that uses the given
  * predicate to build a function expecting the array-like object to search.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var findEven = _.findWhere(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const findEven = _.findWhere(isEven);
  *
  * findEven([1, 3, 4, 5, 7]) // => 4
  * findEven([1, 3, 5, 7]) // => undefined

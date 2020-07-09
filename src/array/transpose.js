@@ -18,7 +18,7 @@ import _toArrayLength from "../privates/_toArrayLength";
  * // ]
  *
  * @example <caption>Showing the relationship with <code>zip</code>:</caption>
- * var zipped = _.zip(["a", "b", "c"], [1, 2, 3]); // => [["a", 1], ["b", 2], ["c", 3]]
+ * const zipped = _.zip(["a", "b", "c"], [1, 2, 3]); // => [["a", 1], ["b", 2], ["c", 3]]
  *
  * _.transpose(zipped) // => [["a", "b", "c"], [1, 2, 3]]
  *

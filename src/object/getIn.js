@@ -1,7 +1,7 @@
 /**
  * Returns the value of the object property with the given key.
  * @example
- * var user = {name: "John"};
+ * const user = {name: "John"};
  *
  * _.getIn(user, "name") // => "John";
  * _.getIn(user, "surname") // => undefined

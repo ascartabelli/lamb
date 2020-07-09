@@ -8,7 +8,7 @@ import slice from "../core/slice";
  * Negative indexes are allowed; when a negative index is out of bounds
  * the element will be inserted at the start of the resulting array.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.insert(arr, 3, 99) // => [1, 2, 3, 99, 4, 5]
  * _.insert(arr, -2, 99) // => [1, 2, 3, 99, 4, 5]

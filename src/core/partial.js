@@ -4,15 +4,15 @@ import __ from "./__";
  * Builds a partially applied function.<br/>
  * The {@link module:lamb.__|__} object can be used as a placeholder for arguments.<br/>
  * @example
- * var __ = _.__;
- * var users = [
+ * const __ = _.__;
+ * const users = [
  *     {id: 1, name: "John", active: true, confirmedMail: true},
  *     {id: 2, name: "Jane", active: true, confirmedMail: false},
  *     {id: 3, name: "Mario", active: false, confirmedMail: false}
  * ];
- * var isKeyTrue = _.partial(_.hasKeyValue, [__, true]);
- * var isActive = isKeyTrue("active");
- * var hasConfirmedMail = isKeyTrue("confirmedMail");
+ * const isKeyTrue = _.partial(_.hasKeyValue, [__, true]);
+ * const isActive = isKeyTrue("active");
+ * const hasConfirmedMail = isKeyTrue("confirmedMail");
  *
  * _.map(users, isActive) // => [true, true, false]
  * _.map(users, hasConfirmedMail) // => [true, false, false]

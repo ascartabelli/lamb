@@ -9,8 +9,8 @@ import _setIndex from "../privates/_setIndex";
  * a copy of the original array.<br/>
  * Negative indexes are allowed.
  * @example
- * var arr = ["a", "b", "c"];
- * var toUpperCase = _.invoke("toUpperCase");
+ * const arr = ["a", "b", "c"];
+ * const toUpperCase = _.invoke("toUpperCase");
  *
  * _.updateIndex(arr, 1, toUpperCase) // => ["a", "B", "c"]
  * _.updateIndex(arr, -1, toUpperCase) // => ["a", "b", "C"]

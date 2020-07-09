@@ -2,9 +2,7 @@
  * Generates a sequence of values of the desired length with the provided iteratee.
  * The values being iterated, and received by the iteratee, are the results generated so far.
  * @example
- * var fibonacci = function (n, idx, results) {
- *     return n + (results[idx - 1] || 0);
- * };
+ * const fibonacci = (n, idx, results) => n + (results[idx - 1] || 0);
  *
  * _.generate(1, 10, fibonacci) // => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
  *

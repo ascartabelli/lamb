@@ -5,7 +5,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * Creates a new object by applying the given function
  * to all enumerable properties of the source one.
  * @example
- * var weights = {
+ * const weights = {
  *     john: "72.5 Kg",
  *     jane: "52.3 Kg"
  * };

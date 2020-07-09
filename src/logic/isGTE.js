@@ -6,7 +6,7 @@ import gte from "./gte";
  * Accepts a value and builds a predicate that checks whether the value
  * is greater than or equal to the one received by the predicate.
  * @example
- * var isPositiveOrZero = _.isGTE(0);
+ * const isPositiveOrZero = _.isGTE(0);
  *
  * isPositiveOrZero(-3) // => false
  * isPositiveOrZero(-0) // => true

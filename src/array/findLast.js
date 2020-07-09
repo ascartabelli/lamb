@@ -4,7 +4,7 @@ import findLastIndex from "./findLastIndex";
  * Searches for an element satisfying the predicate in the given array-like object starting from the end
  * and returns it if the search is successful. Returns <code>undefined</code> otherwise.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "surname": "Doe", "age": 12},
  *     {"name": "John", "surname": "Doe", "age": 40},
  *     {"name": "Mario", "surname": "Rossi", "age": 18},

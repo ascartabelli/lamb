@@ -5,17 +5,17 @@ import group from "./group";
  * A curried version of {@link module:lamb.group|group} that uses the provided iteratee
  * to build a function expecting the array-like object to act upon.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "age": 12},
  *     {"name": "John", "age": 40},
  *     {"name": "Mario", "age": 18},
  *     {"name": "Paolo", "age": 15}
  * ];
  *
- * var getAgeStatus = function (person) { return person.age > 20 ? "over 20" : "under 20"; };
- * var groupByAgeStatus = _.groupBy(getAgeStatus);
+ * const getAgeStatus = person => `${person.age > 20 ? "over" : "under"} 20`;
+ * const groupByAgeStatus = _.groupBy(getAgeStatus);
  *
- * var personsByAgeStatus = groupByAgeStatus(persons);
+ * const personsByAgeStatus = groupByAgeStatus(persons);
  *
  * // "personsByAgeStatus" holds:
  * // {

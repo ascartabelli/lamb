@@ -7,7 +7,7 @@ import dropFrom from "./dropFrom";
  * See the note and examples for {@link module:lamb.dropFrom|dropFrom} about passing a
  * negative <code>n</code>.
  * @example
- * var drop2 = _.drop(2);
+ * const drop2 = _.drop(2);
  *
  * drop2([1, 2, 3, 4, 5]) // => [3, 4, 5]
  *

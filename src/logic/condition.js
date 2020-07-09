@@ -6,8 +6,8 @@
  * See also {@link module:lamb.unless|unless} and {@link module:lamb.when|when} as they are
  * shortcuts to common use cases.
  * @example
- * var isEven = function (n) { return n % 2 === 0};
- * var halveEvenAndDoubleOdd = _.condition(isEven, _.divideBy(2), _.multiplyBy(2));
+ * const isEven = n => n % 2 === 0;
+ * const halveEvenAndDoubleOdd = _.condition(isEven, _.divideBy(2), _.multiplyBy(2));
  *
  * halveEvenAndDoubleOdd(5) // => 10
  * halveEvenAndDoubleOdd(6) // => 3

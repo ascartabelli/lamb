@@ -4,7 +4,7 @@ import has from "./has";
  * Returns an object containing only the specified properties of the given object.<br/>
  * Non existent properties will be ignored.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
+ * const user = {name: "john", surname: "doe", age: 30};
  *
  * _.pickIn(user, ["name", "age"]) // => {"name": "john", "age": 30};
  * _.pickIn(user, ["name", "email"]) // => {"name": "john"}

@@ -9,10 +9,10 @@ import areSame from "./areSame";
  * See also {@link module:lamb.areSVZ|areSVZ} and {@link module:lamb.isSVZ|isSVZ}
  * to perform a "SameValueZero" comparison.
  * @example
- * var john = {name: "John", surname: "Doe"};
- * var isJohn = _.is(john);
- * var isNegativeZero = _.is(-0);
- * var isReallyNaN = _.is(NaN);
+ * const john = {name: "John", surname: "Doe"};
+ * const isJohn = _.is(john);
+ * const isNegativeZero = _.is(-0);
+ * const isReallyNaN = _.is(NaN);
  *
  * isJohn(john) // => true
  * isJohn({name: "John", surname: "Doe"}) // => false

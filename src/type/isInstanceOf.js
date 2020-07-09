@@ -7,9 +7,9 @@
  * @example
  * function SomeObjA () {}
  *
- * var a = new SomeObjA();
- * var sObj = new String("foo");
- * var s = "foo";
+ * const a = new SomeObjA();
+ * const sObj = new String("foo");
+ * const s = "foo";
  *
  * _.isInstanceOf(Object)(a) // => true
  * _.isInstanceOf(SomeObjA)(a) // => true

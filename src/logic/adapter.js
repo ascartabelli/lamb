@@ -8,9 +8,9 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * {@link module:lamb.invoke|invoke}, can be useful as a strategy pattern for functions,
  * to mimic conditional logic or pattern matching, and also to build polymorphic functions.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var filterString = _.compose(_.joinWith(""), _.filter);
- * var filterAdapter = _.adapter([
+ * const isEven = n => n % 2 === 0;
+ * const filterString = _.compose(_.joinWith(""), _.filter);
+ * const filterAdapter = _.adapter([
  *     _.invoke("filter"),
  *     _.casus(_.isType("String"), filterString)
  * ]);
@@ -20,7 +20,7 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * filterAdapter({}, isEven) // => undefined
  *
  * // by its nature is composable
- * var filterWithDefault = _.adapter([filterAdapter, _.always("Not implemented")]);
+ * const filterWithDefault = _.adapter([filterAdapter, _.always("Not implemented")]);
  *
  * filterWithDefault([1, 2, 3, 4, 5, 6], isEven) // => [2, 4, 6]
  * filterWithDefault("123456", isEven) // => "246"

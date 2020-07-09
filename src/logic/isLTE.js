@@ -6,7 +6,7 @@ import lte from "./lte";
  * Accepts a value and builds a predicate that checks whether the value
  * is less than or equal to the one received by the predicate.
  * @example
- * var isNegativeOrZero = _.isLTE(0);
+ * const isNegativeOrZero = _.isLTE(0);
  *
  * isNegativeOrZero(5) // => false
  * isNegativeOrZero(-0) // => true

@@ -7,7 +7,7 @@ import _curry from "../privates/_curry";
  * Currying will start from the leftmost argument: use {@link module:lamb.curryableRight|curryableRight}
  * for right currying.
  * @example
- * var collectFourElements = _.curryable(_.list, 4);
+ * const collectFourElements = _.curryable(_.list, 4);
  *
  * collectFourElements(2)(3)(4)(5) // => [2, 3, 4, 5]
  * collectFourElements(2)(3, 4)(5) // => [2, 3, 4, 5]

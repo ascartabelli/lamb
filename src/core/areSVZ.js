@@ -5,7 +5,7 @@
  * See also {@link module:lamb.isSVZ|isSVZ} for a curried version building a predicate and
  * {@link module:lamb.areSame|areSame} and {@link module:lamb.is|is} to perform a "SameValue" comparison.
  * @example
- * var testObject = {};
+ * const testObject = {};
  *
  * _.areSVZ({}, testObject) // => false
  * _.areSVZ(testObject, testObject) // => true

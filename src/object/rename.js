@@ -5,11 +5,11 @@ import renameIn from "./renameIn";
  * A curried version of {@link module:lamb.renameIn|renameIn} expecting a
  * <code>keysMap</code> to build a function waiting for the object to act upon.
  * @example
- * var persons = [
+ * const persons = [
  *     {"firstName": "John", "lastName": "Doe"},
  *     {"first_name": "Mario", "last_name": "Rossi"},
  * ];
- * var normalizeKeys = _.rename({
+ * const normalizeKeys = _.rename({
  *     "firstName": "name",
  *     "first_name": "name",
  *     "lastName": "surname",

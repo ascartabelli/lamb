@@ -13,25 +13,21 @@ import _asPartial from "../privates/_asPartial";
  * optional parameters as you can decide to apply the function even if its arity
  * hasn't been entirely consumed.
  * @example <caption>Explaining the function's behaviour:</caption>
- * var __ = _.__;
- * var f = _.asPartial(function (a, b, c) {
- *     return a + b + c;
- * });
+ * const __ = _.__;
+ * const f = _.asPartial((a, b, c) => a + b + c);
  *
  * f(4, 3, 2) // => 9
  * f(4, __, 2)(3) // => 9
  * f(__, 3, __)(4, __)(2) // => 9
  *
  * @example <caption>Exploiting optional parameters:</caption>
- * var __ = _.__;
- * var f = _.asPartial(function (a, b, c) {
- *     return a + b + (c || 0);
- * });
+ * const __ = _.__;
+ * const f = _.asPartial((a, b, c) => a + b + (c || 0));
  *
- * var addFive = f(5, __);
+ * const addFive = f(5, __);
  * addFive(2) // => 7
  *
- * var addNine = addFive(4, __);
+ * const addNine = addFive(4, __);
  * addNine(11) // => 20
  *
  * @memberof module:lamb

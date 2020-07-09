@@ -5,8 +5,8 @@ import setPathIn from "./setPathIn";
  * object to act upon.<br/>
  * See {@link module:lamb.setPathIn|setPathIn} for more details and examples.
  * @example
- * var user = {id: 1, status: {active: false}};
- * var activate = _.setPath("status.active", true);
+ * const user = {id: 1, status: {active: false}};
+ * const activate = _.setPath("status.active", true);
  *
  * activate(user) // => {id: 1, status: {active: true}}
  *

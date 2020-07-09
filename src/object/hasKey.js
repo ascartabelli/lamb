@@ -5,9 +5,9 @@ import has from "./has";
  * Curried version of {@link module:lamb.has|has}.<br/>
  * Returns a function expecting the object to check against the given key.
  * @example
- * var user1 = {name: "john"};
- * var user2 = {};
- * var hasName = _.hasKey("name");
+ * const user1 = {name: "john"};
+ * const user2 = {};
+ * const hasName = _.hasKey("name");
  *
  * hasName(user1) // => true
  * hasName(user2) // => false

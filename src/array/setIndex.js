@@ -8,7 +8,7 @@ import aritize from "../function/aritize";
  * will return a copy of the original array.<br/>
  * Negative indexes are allowed.
  * @example
- * var arr = [1, 2, 3];
+ * const arr = [1, 2, 3];
  *
  * _.setIndex(arr, 1, 99) // => [1, 99, 3]
  * _.setIndex(arr, -1, 99) // => [1, 2, 99]

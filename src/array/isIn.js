@@ -6,7 +6,7 @@ import areSVZ from "../core/areSVZ";
  * check for <code>NaN</code>, but <code>0</code> and <code>-0</code> are the same value.<br/>
  * See also {@link module:lamb.contains|contains} for a curried version building a predicate.
  * @example
- * var numbers = [0, 1, 2, 3, NaN];
+ * const numbers = [0, 1, 2, 3, NaN];
  *
  * _.isIn(numbers, 1) // => true
  * _.isIn(numbers, 0) // => true

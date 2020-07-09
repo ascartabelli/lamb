@@ -6,7 +6,7 @@ import pathExistsIn from "./pathExistsIn";
  * path and the optional separator. The resulting function expects the object to check.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     address: {
@@ -15,9 +15,9 @@ import pathExistsIn from "./pathExistsIn";
  *     scores: [10, 20, 15]
  * };
  *
- * var hasCity = _.pathExists("address.city");
- * var hasCountry = _.pathExists("address.country");
- * var hasAtLeastThreeScores = _.pathExists("scores.2");
+ * const hasCity = _.pathExists("address.city");
+ * const hasCountry = _.pathExists("address.country");
+ * const hasAtLeastThreeScores = _.pathExists("scores.2");
  *
  * hasCity(user) // => true
  * hasCountry(user) // => false

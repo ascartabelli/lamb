@@ -7,8 +7,8 @@ import join from "./join";
  * Please refer to the description and examples of {@link module:lamb.join|join}
  * to understand the differences with the native array method.
  * @example
- * var words = ["foo", "bar", "baz"];
- * var joinWithDash = _.joinWith("-");
+ * const words = ["foo", "bar", "baz"];
+ * const joinWithDash = _.joinWith("-");
  *
  * joinWithDash(words) // => "foo-bar-baz"
  *

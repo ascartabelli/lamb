@@ -8,13 +8,13 @@ import map from "../core/map";
  * strings and that the <code>separator</code> parameter isn't optional.<br/>
  * See the examples about these differences.
  * @example
- * var words = ["foo", "bar", "baz"];
+ * const words = ["foo", "bar", "baz"];
  *
  * _.join(words, "-") // => "foo-bar-baz"
  *
  * @example <caption>Showing the differences with the native array method:</caption>
- * var mixed = [1, null, 2, undefined, 3, NaN, 4, 5];
- * var numbers = [1, 2, 3];
+ * const mixed = [1, null, 2, undefined, 3, NaN, 4, 5];
+ * const numbers = [1, 2, 3];
  *
  * _.join(mixed, "-") // => "1-null-2-undefined-3-NaN-4-5"
  * mixed.join("-") // => "1--2--3-NaN-4-5"

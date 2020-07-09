@@ -3,9 +3,9 @@
  * This allows to extract simple values from complex ones, transform arguments or simply intercept them.
  * If a "tapper" isn't found the argument is passed as it is.
  * @example
- * var someObject = {count: 5};
- * var someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
- * var getDataAmount = _.tapArgs(_.sum, [_.getKey("count"), _.getKey("length")]);
+ * const someObject = {count: 5};
+ * const someArrayData = [2, 3, 123, 5, 6, 7, 54, 65, 76, 0];
+ * const getDataAmount = _.tapArgs(_.sum, [_.getKey("count"), _.getKey("length")]);
  *
  * getDataAmount(someObject, someArrayData); // => 15
  *

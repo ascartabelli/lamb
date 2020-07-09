@@ -1,7 +1,7 @@
 /**
  * The I combinator. Any value passed to the function is simply returned as it is.
  * @example
- * var foo = {bar: "baz"};
+ * const foo = {bar: "baz"};
  *
  * _.identity(foo) === foo // true
  *

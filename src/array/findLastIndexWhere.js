@@ -5,8 +5,8 @@ import findLastIndex from "./findLastIndex";
  * A curried version of {@link module:lamb.findLastIndex|findLastIndex} that uses the given predicate
  * to build a function expecting the array-like object to search.
  * @example
- * var isEven = function (n) { return n % 2 === 0; };
- * var findLastEvenIdx = _.findLastIndexWhere(isEven);
+ * const isEven = n => n % 2 === 0;
+ * const findLastEvenIdx = _.findLastIndexWhere(isEven);
  *
  * findLastEvenIdx([1, 3, 4, 5, 6, 7]) // => 4
  * findLastEvenIdx([1, 3, 5, 7]) // => -1

@@ -10,7 +10,7 @@ import _toInteger from "../privates/_toInteger";
  * See {@link module:lamb.dropFrom|dropFrom} and {@link module:lamb.drop|drop} if you want a
  * slice to the end of the array-like.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.slice(arr, 0, 2) // => [1, 2]
  * _.slice(arr, 2, -1) // => [3, 4]

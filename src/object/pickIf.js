@@ -6,8 +6,8 @@ import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
  * against the given predicate.<br/>
  * The properties satisfying the predicate will be included in the resulting object.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
- * var pickIfIsString = _.pickIf(_.isType("String"));
+ * const user = {name: "john", surname: "doe", age: 30};
+ * const pickIfIsString = _.pickIf(_.isType("String"));
  *
  * pickIfIsString(user) // => {name: "john", surname: "doe"}
  *

@@ -3,8 +3,8 @@ import _curry from "../privates/_curry";
 /**
  * Same as {@link module:lamb.curry|curry}, but currying starts from the rightmost argument.
  * @example
- * var makeWithValues = _.curryRight(_.make);
- * var makeJohnDoe = makeWithValues(["John", "Doe"]);
+ * const makeWithValues = _.curryRight(_.make);
+ * const makeJohnDoe = makeWithValues(["John", "Doe"]);
  *
  * makeJohnDoe(["name", "surname"]) // => {name: "John", surname: "Doe"};
  * makeJohnDoe(["firstName", "lastName"]) // => {firstName: "John", lastName: "Doe"};

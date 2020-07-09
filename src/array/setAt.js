@@ -9,7 +9,7 @@ import _setIndex from "../privates/_setIndex";
  * will return a copy of the original array.<br/>
  * Negative indexes are allowed.
  * @example
- * var arr = [1, 2, 3, 4, 5];
+ * const arr = [1, 2, 3, 4, 5];
  *
  * _.setAt(2, 99)(arr) // => [1, 2, 99, 4, 5]
  * arr // => [1, 2, 3, 4, 5]

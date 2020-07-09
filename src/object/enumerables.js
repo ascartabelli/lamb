@@ -4,8 +4,8 @@ import _unsafeKeyListFrom from "../privates/_unsafeKeyListFrom";
 /**
  * Creates an array with all the enumerable properties of the given object.
  * @example <caption>Showing the difference with {@link module:lamb.keys|keys}:</caption>
- * var baseFoo = Object.create({a: 1}, {b: {value: 2}});
- * var foo = Object.create(baseFoo, {
+ * const baseFoo = Object.create({a: 1}, {b: {value: 2}});
+ * const foo = Object.create(baseFoo, {
  *     c: {value: 3},
  *     d: {value: 4, enumerable: true}
  * });

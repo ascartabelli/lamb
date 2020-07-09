@@ -7,7 +7,7 @@ import _toPathParts from "../privates/_toPathParts";
  * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     personal: {
@@ -21,9 +21,9 @@ import _toPathParts from "../privates/_toPathParts";
  *     ]
  * };
  *
- * var isMale = _.hasPathValue("personal.gender", "M");
- * var hasPassedFirstTest = _.hasPathValue("scores.0.passed", true);
- * var hasPassedLastTest = _.hasPathValue("scores.-1.passed", true);
+ * const isMale = _.hasPathValue("personal.gender", "M");
+ * const hasPassedFirstTest = _.hasPathValue("scores.0.passed", true);
+ * const hasPassedLastTest = _.hasPathValue("scores.-1.passed", true);
  *
  * isMale(user) // => true
  * hasPassedFirstTest(user) // => false

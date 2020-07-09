@@ -14,7 +14,7 @@ import _setIn from "../privates/_setIn";
  * For example the prototype of the result will be <code>Object</code>'s regardless
  * of the <code>source</code>'s one.
  * @example
- * var user = {name: "John", surname: "Doe", age: 30};
+ * const user = {name: "John", surname: "Doe", age: 30};
  *
  * _.setIn(user, "name", "Jane") // => {name: "Jane", surname: "Doe", age: 30}
  * _.setIn(user, "gender", "male") // => {name: "John", surname: "Doe", age: 30, gender: "male"}

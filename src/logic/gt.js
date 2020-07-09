@@ -2,8 +2,8 @@
  * Verifies that the first given value is greater than the second.<br/>
  * Wraps the native <code>&gt;</code> operator within a function.
  * @example
- * var pastDate = new Date(2010, 2, 12);
- * var today = new Date();
+ * const pastDate = new Date(2010, 2, 12);
+ * const today = new Date();
  *
  * _.gt(today, pastDate) // => true
  * _.gt(pastDate, today) // => false

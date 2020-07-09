@@ -6,8 +6,8 @@ import keys from "./keys";
  * taken into account.<br/>
  * See also {@link module:lamb.fromPairs|fromPairs} for the reverse operation.
  * @example <caption>Showing the difference with <code>pairs</code>:</caption>
- * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
- * var foo = Object.create(baseFoo, {
+ * const baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * const foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
  * });
  *

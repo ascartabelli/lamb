@@ -3,13 +3,13 @@ import isUndefined from "../core/isUndefined";
 /**
  * Verifies the existence of a property in an object.
  * @example
- * var user1 = {name: "john"};
+ * const user1 = {name: "john"};
  *
  * _.has(user1, "name") // => true
  * _.has(user1, "surname") // => false
  * _.has(user1, "toString") // => true
  *
- * var user2 = Object.create(null);
+ * const user2 = Object.create(null);
  *
  * // not inherited through the prototype chain
  * _.has(user2, "toString") // => false

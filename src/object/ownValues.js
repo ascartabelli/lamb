@@ -5,8 +5,8 @@ import keys from "./keys";
  * Same as {@link module:lamb.values|values}, but only the own enumerable properties of the object are
  * taken into account.<br/>
  * @example <caption>Showing the difference with <code>values</code>:</caption>
- * var baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
- * var foo = Object.create(baseFoo, {
+ * const baseFoo = Object.create({a: 1}, {b: {value: 2, enumerable: true}, z: {value: 5}});
+ * const foo = Object.create(baseFoo, {
  *     c: {value: 3, enumerable: true}
  * });
  *

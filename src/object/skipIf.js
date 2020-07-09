@@ -7,8 +7,8 @@ import pickIf from "./pickIf";
  * against the given predicate.<br/>
  * The properties satisfying the predicate will be omitted in the resulting object.
  * @example
- * var user = {name: "john", surname: "doe", age: 30};
- * var skipIfIstring = _.skipIf(_.isType("String"));
+ * const user = {name: "john", surname: "doe", age: 30};
+ * const skipIfIstring = _.skipIf(_.isType("String"));
  *
  * skipIfIstring(user) // => {age: 30}
  *

@@ -5,8 +5,8 @@ import filter from "./filter";
  * A curried version of {@link module:lamb.filter|filter} that uses the given predicate
  * to build a function expecting the array-like object to act upon.
  * @example
- * var isLowerCase = function (s) { return s.toLowerCase() === s; };
- * var getLowerCaseEntries = _.filterWith(isLowerCase);
+ * const isLowerCase = s => s.toLowerCase() === s;
+ * const getLowerCaseEntries = _.filterWith(isLowerCase);
  *
  * getLowerCaseEntries(["Foo", "bar", "baZ"]) // => ["bar"]
  *

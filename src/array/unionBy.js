@@ -14,7 +14,7 @@ import uniquesBy from "./uniquesBy";
  * in the result array.<br/>
  * See also {@link module:lamb.union|union} if you don't need to compare transformed values.
  * @example
- * var unionByFloor = _.unionBy(Math.floor);
+ * const unionByFloor = _.unionBy(Math.floor);
  *
  * unionByFloor([2.8, 3.2, 1.5], [3.5, 1.2, 4]) // => [2.8, 3.2, 1.5, 4]
  *

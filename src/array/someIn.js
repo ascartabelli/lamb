@@ -7,20 +7,20 @@ import _makeArrayChecker from "../privates/_makeArrayChecker";
  * [Array.prototype.some]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some},
  * this function won't skip deleted or unassigned indexes.
  * @example
- * var persons = [
+ * const persons = [
  *     {"name": "Jane", "age": 12, active: false},
  *     {"name": "John", "age": 40, active: false},
  *     {"name": "Mario", "age": 17, active: false},
  *     {"name": "Paolo", "age": 15, active: false}
  * ];
- * var isAdult = _.keySatisfies(_.isGTE(18), "age");
- * var isActive = _.hasKeyValue("active", true);
+ * const isAdult = _.keySatisfies(_.isGTE(18), "age");
+ * const isActive = _.hasKeyValue("active", true);
  *
  * _.someIn(persons, isAdult) // => true
  * _.someIn(persons, isActive) // => false
  *
  * @example <caption>Showing the difference with <code>Array.prototype.some</code>:</caption>
- * var arr = new Array(5);
+ * const arr = new Array(5);
  * arr[3] = 99;
  *
  * arr.some(_.isUndefined) // => false

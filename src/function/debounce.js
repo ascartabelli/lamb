@@ -4,9 +4,9 @@
  * See also {@link module:lamb.throttle|throttle} for a different behaviour where the first call
  * happens immediately.
  * @example <caption>A common use case of <code>debounce</code> in a browser environment:</caption>
- * var updateLayout = function () {
+ * function updateLayout () {
  *     // some heavy DOM operations here
- * };
+ * }
  *
  * window.addEventListener("resize", _.debounce(updateLayout, 200), false);
  *

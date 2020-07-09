@@ -10,7 +10,7 @@ import areSVZ from "../core/areSVZ";
  * {@link module:lamb.areSVZ|areSVZ} and {@link module:lamb.isSVZ|isSVZ} to perform a "SameValueZero"
  * comparison.
  * @example
- * var testObject = {};
+ * const testObject = {};
  *
  * _.areSame({}, testObject) // => false
  * _.areSame(testObject, testObject) // => true

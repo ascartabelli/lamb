@@ -7,7 +7,7 @@ import takeFrom from "./takeFrom";
  * See the note and examples for {@link module:lamb.takeFrom|takeFrom} about passing a
  * negative <code>n</code>.
  * @example
- * var take2 = _.take(2);
+ * const take2 = _.take(2);
  *
  * take2([1, 2, 3, 4, 5]) // => [1, 2]
  *

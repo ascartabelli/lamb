@@ -9,7 +9,7 @@ import _toPathParts from "../privates/_toPathParts";
  * object indexes, but the priority will be given to existing object keys:
  * the last example explains this particular case.
  * @example
- * var user = {
+ * const user = {
  *     name: "John",
  *     surname: "Doe",
  *     login: {

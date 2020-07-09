@@ -4,7 +4,7 @@ import generic from "../core/generic";
  * Verifies if an object has the specified property and that the property isn't inherited through
  * the prototype chain.<br/>
  * @example <caption>Comparison with <code>has</code>:</caption>
- * var user = {name: "john"};
+ * const user = {name: "john"};
  *
  * _.has(user, "name") // => true
  * _.has(user, "surname") // => false

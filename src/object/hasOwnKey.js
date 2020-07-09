@@ -5,9 +5,9 @@ import hasOwn from "./hasOwn";
  * Curried version of {@link module:lamb.hasOwn|hasOwn}.<br/>
  * Returns a function expecting the object to check against the given key.
  * @example
- * var user = {name: "john"};
- * var hasOwnName = _.hasOwnKey("name");
- * var hasOwnToString = _.hasOwnToString("toString");
+ * const user = {name: "john"};
+ * const hasOwnName = _.hasOwnKey("name");
+ * const hasOwnToString = _.hasOwnToString("toString");
  *
  * hasOwnName(user) // => true
  * hasOwnToString(user) // => false

@@ -10,9 +10,9 @@ import pullFrom from "./pullFrom";
  * See examples in {@link module:lamb.pullFrom|pullFrom} about the
  * relationship with {@link module:lamb.difference|difference}.
  * @example
- * var scores = [40, 20, 30, 10];
- * var newScores = [30, 10];
- * var pullNewScores = _.pull(newScores);
+ * const scores = [40, 20, 30, 10];
+ * const newScores = [30, 10];
+ * const pullNewScores = _.pull(newScores);
  *
  * pullNewScores(scores) // => [40, 20]
  *

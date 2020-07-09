@@ -5,9 +5,9 @@ import isIn from "./isIn";
  * or array-like objects.<br/>
  * Note that this function uses the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.
  * @example
- * var a1 = [1, 2, 3, 4];
- * var a2 = [2, 5, 4, 2, 6];
- * var a3 = [5, 6, 7];
+ * const a1 = [1, 2, 3, 4];
+ * const a2 = [2, 5, 4, 2, 6];
+ * const a3 = [5, 6, 7];
  *
  * _.intersection(a1, a2) // => [2, 4]
  * _.intersection(a2, a3) // => [5, 6]

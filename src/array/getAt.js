@@ -5,7 +5,7 @@ import getIndex from "./getIndex";
  * A curried version of {@link module:lamb.getIndex|getIndex} that uses the provided index
  * to build a function expecting the array-like object holding the element we want to retrieve.
  * @example
- * var getFifthElement = _.getAt(4);
+ * const getFifthElement = _.getAt(4);
  *
  * getFifthElement([1, 2, 3, 4, 5]) // => 5
  * getFifthElement("foo bar") // => "b"

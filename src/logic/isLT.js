@@ -6,7 +6,7 @@ import lt from "./lt";
  * Accepts a value and builds a predicate that checks whether the value
  * is less than the one received by the predicate.
  * @example
- * var isLessThan5 = _.isLT(5);
+ * const isLessThan5 = _.isLT(5);
  *
  * isLessThan5(7) // => false
  * isLessThan5(5) // => false
