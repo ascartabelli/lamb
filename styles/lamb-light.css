@@ -9,6 +9,16 @@
     border-bottom: 1px dotted #aaa;
 }
 
+.hljs-function {
+    color: #369;
+    font-weight: bold;
+}
+
+.hljs-params {
+    color: #588abd;
+    font-weight: normal;
+}
+
 .hljs-comment,
 .hljs-quote {
     color: #998;
@@ -16,8 +26,7 @@
 }
 
 .hljs-keyword,
-.hljs-selector-tag,
-.hljs-subst {
+.hljs-selector-tag {
     color: #369;
     font-weight: bold;
 }
@@ -46,7 +55,7 @@
 }
 
 .hljs-subst {
-    font-weight: normal;
+    color: #5bc547;
 }
 
 .hljs-type,
