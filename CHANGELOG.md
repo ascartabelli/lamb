@@ -1,4 +1,4 @@
-- **v0.59.1 - *2020/07/17***
+- **v0.59.2 - *2020/07/17***
   - **Fully compatible with version 0.59.0**
   - Updated "exports" property in `package.json` to address the issue where some tools couldn't access the manifest file. See https://github.com/nodejs/node/issues/33460.
   - Got rid of ES5 in all examples
