@@ -26,6 +26,14 @@
     "main": "./dist/lamb.js",
     "module": "./dist/lamb.mjs",
     "exports": {
+        ".": {
+            "require": "./dist/lamb.js",
+            "import": "./dist/lamb.mjs",
+            "default": "./dist/lamb.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "exports": {
         "require": "./dist/lamb.js",
         "import": "./dist/lamb.mjs",
         "default": "./dist/lamb.js"
@@ -62,7 +70,7 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.60.0-alpha.1",
+    "version": "0.59.1-alpha.1",
     "devDependencies": {
         "@babel/core": "^7.10.4",
         "@babel/preset-env": "^7.10.4",
