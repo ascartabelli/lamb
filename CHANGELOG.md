@@ -1,8 +1,14 @@
+- **v0.59.1 - *2020/07/17***
+  - **Fully compatible with version 0.59.0**
+  - Updated "exports" property in `package.json` to address the issue where some tools couldn't access the manifest file. See https://github.com/nodejs/node/issues/33460.
+  - Got rid of ES5 in all examples
+
 - **v0.59.0 - *2020/07/07***
   - Sorry for all the renaming, but I'm in the process of freezing the API and wanted to tackle some inconsistencies in naming choices.
   - Updated to support Node.js ES modules (and renamed ES modules build to `lamb.mjs`)
   - Added `split` and `splitBy`
   - **API change**: renamed `pick` to `pickIn` and `pickKeys` to `pick`
+  - **API change**: renamed `skip` to `skipIn` and `skipKeys` to `skip`
   - **API change**: renamed `rename` to `renameIn` and `renameKeys` to `rename`
   - **API change**: renamed `pluck` to `pluckFrom` and `pluckKey` to `pluck`
   - **API change**: renamed `case` to `casus` to avoid confusion and clashing with the switch statement's case

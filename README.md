@@ -56,15 +56,15 @@ Since version 0.58.0 there is also a one file ES modules build, always in the `d
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.59.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.59.1/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.59.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.59.1/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.59.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.59.1/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -115,11 +115,17 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.59.1 - *2020/07/17***
+  - **Fully compatible with version 0.59.0**
+  - Updated "exports" property in `package.json` to address the issue where some tools couldn't access the manifest file. See https://github.com/nodejs/node/issues/33460.
+  - Got rid of ES5 in all examples
+
 - **v0.59.0 - *2020/07/07***
   - Sorry for all the renaming, but I'm in the process of freezing the API and wanted to tackle some inconsistencies in naming choices.
   - Updated to support Node.js ES modules (and renamed ES modules build to `lamb.mjs`)
   - Added `split` and `splitBy`
   - **API change**: renamed `pick` to `pickIn` and `pickKeys` to `pick`
+  - **API change**: renamed `skip` to `skipIn` and `skipKeys` to `skip`
   - **API change**: renamed `rename` to `renameIn` and `renameKeys` to `rename`
   - **API change**: renamed `pluck` to `pluckFrom` and `pluckKey` to `pluck`
   - **API change**: renamed `case` to `casus` to avoid confusion and clashing with the switch statement's case
@@ -146,9 +152,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **API change**: `compose`, `intersection`, `merge`, `mergeOwn`, `union` and `zip` are now binary functions, and so are functions built with `unionBy`.
   - **API change**: `adapter`, `allOf`, `anyOf`, `collect` and `pipe` now accept an array of functions
   - Updated doc comments and tests
-
-- **v0.55.0 - *2018/03/21***
-  - **Fully compatible with versions down to 0.53.x**
-  - Added `rotate` and `rotateBy`
-  - Updated link to jsDelivr
-  - Fixed and updated doc comments and tests
