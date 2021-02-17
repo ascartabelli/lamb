@@ -5,6 +5,7 @@ script:
   - gulp travis
 node_js:
   - "stable"
+  - "14"
   - "13"
   - "12"
   - "11"
