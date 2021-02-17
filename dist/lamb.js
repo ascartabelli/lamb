@@ -1,14 +1,14 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.2
+* @version 0.59.3-alpha.1
 * @module lamb
 * @license MIT
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = global || self, factory(global.lamb = {}));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.lamb = {}));
 }(this, (function (exports) { 'use strict';
 
     /**

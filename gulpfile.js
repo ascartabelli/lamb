@@ -5,6 +5,7 @@ const eslint = require("gulp-eslint");
 const jest = require("gulp-jest-acierto").default;
 const rename = require("gulp-rename");
 const rollup = require("rollup");
+const shell = require("gulp-shell");
 const sourcemaps = require("gulp-sourcemaps");
 const terser = require("gulp-terser");
 
@@ -59,11 +60,13 @@ const minifier = isES => () => gulp.src(`dist/lamb${isES ? ".mjs" : ".js"}`)
     .pipe(sourcemaps.write("."))
     .pipe(gulp.dest("dist"));
 
+gulp.task("bump", shell.task("bump package.json package-lock.json"));
+
 gulp.task("build:es", gulp.series(builder(esOptions), minifier(true)));
 
 gulp.task("build:umd", gulp.series(builder(umdOptions), minifier(false)));
 
-gulp.task("build", gulp.parallel("build:es", "build:umd"));
+gulp.task("build", gulp.series("bump", gulp.parallel("build:es", "build:umd")));
 
 /* lint */
 
