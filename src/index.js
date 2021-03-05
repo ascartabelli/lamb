@@ -155,6 +155,8 @@ export { default as generate } from "./math/generate";
 export { default as isFinite } from "./math/isFinite";
 export { default as isInteger } from "./math/isInteger";
 export { default as isSafeInteger } from "./math/isSafeInteger";
+export { default as mean } from "./math/mean";
+export { default as median } from "./math/median";
 export { default as modulo } from "./math/modulo";
 export { default as multiply } from "./math/multiply";
 export { default as multiplyBy } from "./math/multiplyBy";

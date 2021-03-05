@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.59.3-beta.1
+* @version 0.60.0-beta.3
 * @module lamb
 * @license MIT
 */
@@ -4862,6 +4862,59 @@
     }
 
     /**
+     * Calculates the [arithmetic mean]{@link https://en.wikipedia.org/wiki/Arithmetic_mean} of the given list of numbers.
+     * @example
+     * _.mean([1, 2, 3, 4, 5, 6, 7, 8, 9]) // => 5
+     * _.mean([]) // => NaN
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link module:lamb.median|median}
+     * @since 0.60.0
+     * @param {Number[]} numbers
+     * @returns {Number}
+     */
+    function mean (numbers) {
+        return reduce(numbers, function (r, n) {
+            return +n + r;
+        }, 0) / numbers.length;
+    }
+
+    /**
+     * Calculates the [median]{@link https://en.wikipedia.org/wiki/Median} of the given list of numbers.
+     * @example
+     * _.median([10, 2, 3, 1, 4, 5, 7]) // => 4
+     * _.median([]) // => NaN
+     *
+     * @memberof module:lamb
+     * @category Math
+     * @see {@link module:lamb.mean|mean}
+     * @since 0.60.0
+     * @param {Number[]} numbers
+     * @returns {Number}
+     */
+    function median (numbers) {
+        var len = numbers.length >>> 0;
+
+        if (len === 0) {
+            return NaN;
+        }
+
+        var result;
+        var sortedNumbers = map(numbers, Number).sort(subtract);
+
+        if (len % 2 === 0) {
+            var pivot = len / 2;
+
+            result = (sortedNumbers[pivot - 1] + sortedNumbers[pivot]) / 2;
+        } else {
+            result = sortedNumbers[(len - 1) / 2];
+        }
+
+        return result;
+    }
+
+    /**
      * Performs the modulo operation and should not be confused with the
      * {@link module:lamb.remainder|remainder}.
      * The function performs a floored division to calculate the result and not
@@ -7101,6 +7154,8 @@
     exports.mapValues = mapValues;
     exports.mapValuesWith = mapValuesWith;
     exports.mapWith = mapWith;
+    exports.mean = mean;
+    exports.median = median;
     exports.merge = merge;
     exports.mergeOwn = mergeOwn;
     exports.modulo = modulo;
