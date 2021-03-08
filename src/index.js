@@ -222,6 +222,7 @@ export { default as values } from "./object/values";
 export { default as padLeft } from "./string/padLeft";
 export { default as padRight } from "./string/padRight";
 export { default as repeat } from "./string/repeat";
+export { default as replace } from "./string/replace";
 export { default as split } from "./string/split";
 export { default as splitBy } from "./string/splitBy";
 export { default as testWith } from "./string/testWith";

@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.60.0-beta.3
+* @version 0.60.0-beta.4
 * @module lamb
 * @license MIT
 */
@@ -6910,6 +6910,27 @@ function repeat (source, times) {
 }
 
 /**
+ * Builds a partial application of [<code>String.prototype.replace</code>]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace}
+ * with the given needle and substitution.<br/>
+ * Please refer to MDN docs for more insights and examples.
+ * @example
+ * const htmlString = "<p>Lorem <strong class=\"foo bar\">ipsum dolor</strong> sit amet</p>";
+ * const stripHTML = _.replace(/<[^>]+>/g, "");
+ *
+ * stripHTML(htmlString) // => "Lorem ipsum dolor sit amet"
+ *
+ * @memberof module:lamb
+ * @category String
+ * @function
+ * @see [<code>String.prototype.replace</code>]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace} on MDN.
+ * @since 0.60.0
+ * @param {RegExp|String} needle
+ * @param {Function|String} sub
+ * @returns {Function} <code>(haystack: String) => String</code>
+ */
+var replace = _makePartial3(generic(String.prototype.replace));
+
+/**
  * Splits a string into an array of substrings using the given separator.
  * @example
  * _.split("Jan,Feb,Mar,Apr,May", ",") // => ["Jan", "Feb", "Mar", "Apr", "May"]
@@ -7032,4 +7053,4 @@ function isType (typeName) {
     };
 }
 
-export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, casus, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoke, invokeOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, mean, median, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckFrom, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };
+export { __, adapter, add, allOf, always, anyOf, append, appendTo, application, apply, applyTo, areSVZ, areSame, aritize, asPartial, binary, casus, checker, clamp, clampWithin, collect, compose, condition, contains, count, countBy, curry, curryRight, curryable, curryableRight, debounce, deduct, difference, divide, divideBy, drop, dropFrom, dropLastWhile, dropWhile, enumerables, every, everyIn, filter, filterWith, find, findIndex, findIndexWhere, findLast, findLastIndex, findLastIndexWhere, findLastWhere, findWhere, flatMap, flatMapWith, flatten, flip, forEach, fromPairs, generate, generic, getArgAt, getAt, getIn, getIndex, getKey, getPath, getPathIn, group, groupBy, gt, gte, has, hasKey, hasKeyValue, hasOwn, hasOwnKey, hasPathValue, head, identity, index, indexBy, init, insert, insertAt, intersection, invoke, invokeOn, is, isFinite_ as isFinite, isGT, isGTE, isIn, isInstanceOf, isInteger, isLT, isLTE, isNil, isNull, isSVZ, isSafeInteger, isType, isUndefined, join, joinWith, keySatisfies, keys, last, list, lt, lte, make, map, mapArgs, mapValues, mapValuesWith, mapWith, mean, median, merge, mergeOwn, modulo, multiply, multiplyBy, not, ownPairs, ownValues, padLeft, padRight, pairs, partial, partialRight, partition, partitionWith, pathExists, pathExistsIn, pathSatisfies, pick, pickIf, pickIn, pipe, pluck, pluckFrom, pull, pullFrom, randomInt, range, reduce, reduceRight, reduceRightWith, reduceWith, remainder, rename, renameIn, renameWith, repeat, replace, reverse, rotate, rotateBy, setAt, setIn, setIndex, setKey, setPath, setPathIn, shallowFlatten, skip, skipIf, skipIn, slice, sliceAt, some, someIn, sort, sortWith, sortedInsert, sorter, sorterDesc, split, splitBy, subtract, sum, tail, take, takeFrom, takeLastWhile, takeWhile, tapArgs, tear, tearOwn, testWith, throttle, transpose, type, unary, union, unionBy, uniques, uniquesBy, unless, updateAt, updateIn, updateIndex, updateKey, updatePath, updatePathIn, validate, validateWith, values, when, zip, zipWithIndex };

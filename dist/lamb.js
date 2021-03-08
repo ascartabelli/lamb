@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.60.0-beta.3
+* @version 0.60.0-beta.4
 * @module lamb
 * @license MIT
 */
@@ -6916,6 +6916,27 @@
     }
 
     /**
+     * Builds a partial application of [<code>String.prototype.replace</code>]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace}
+     * with the given needle and substitution.<br/>
+     * Please refer to MDN docs for more insights and examples.
+     * @example
+     * const htmlString = "<p>Lorem <strong class=\"foo bar\">ipsum dolor</strong> sit amet</p>";
+     * const stripHTML = _.replace(/<[^>]+>/g, "");
+     *
+     * stripHTML(htmlString) // => "Lorem ipsum dolor sit amet"
+     *
+     * @memberof module:lamb
+     * @category String
+     * @function
+     * @see [<code>String.prototype.replace</code>]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace} on MDN.
+     * @since 0.60.0
+     * @param {RegExp|String} needle
+     * @param {Function|String} sub
+     * @returns {Function} <code>(haystack: String) => String</code>
+     */
+    var replace = _makePartial3(generic(String.prototype.replace));
+
+    /**
      * Splits a string into an array of substrings using the given separator.
      * @example
      * _.split("Jan,Feb,Mar,Apr,May", ",") // => ["Jan", "Feb", "Mar", "Apr", "May"]
@@ -7193,6 +7214,7 @@
     exports.renameIn = renameIn;
     exports.renameWith = renameWith;
     exports.repeat = repeat;
+    exports.replace = replace;
     exports.reverse = reverse;
     exports.rotate = rotate;
     exports.rotateBy = rotateBy;
