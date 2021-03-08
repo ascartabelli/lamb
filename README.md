@@ -56,15 +56,15 @@ Since version 0.58.0 there is also a one file ES modules build, always in the `d
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.59.2/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.60.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.59.2/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.60.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.59.2/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.60.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -115,6 +115,10 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.60.0 - *2021/03/08***
+  - **Fully compatible with version 0.59.0**
+  - Added `mean`, `median` and `replace`
+
 - **v0.59.2 - *2020/07/17***
   - **Fully compatible with version 0.59.0**
   - Updated "exports" property in `package.json` to address the issue where some tools couldn't access the manifest file. See https://github.com/nodejs/node/issues/33460.
@@ -147,8 +151,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - **API change**: `sort`, `sortWith` and `sortedInsert` now accept an array of sorters
   - **API change**: removed `@@lamb/placeholder` property as now the placeholder is exported as `__`
   - Switched to Jest as a test suite
-
-- **v0.56.0 - *2018/07/15***
-  - **API change**: `compose`, `intersection`, `merge`, `mergeOwn`, `union` and `zip` are now binary functions, and so are functions built with `unionBy`.
-  - **API change**: `adapter`, `allOf`, `anyOf`, `collect` and `pipe` now accept an array of functions
-  - Updated doc comments and tests
