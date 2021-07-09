@@ -66,7 +66,9 @@ gulp.task("build:es", gulp.series(builder(esOptions), minifier(true)));
 
 gulp.task("build:umd", gulp.series(builder(umdOptions), minifier(false)));
 
-gulp.task("build", gulp.series("bump", gulp.parallel("build:es", "build:umd")));
+gulp.task("build", gulp.parallel("build:es", "build:umd"));
+
+gulp.task("dist", gulp.series("bump", "build"));
 
 /* lint */
 
@@ -102,13 +104,7 @@ gulp.task("test:coverage", testWith({ collectCoverage: true }));
 
 gulp.task("test:verbose", testWith({ verbose: true }));
 
-gulp.task("test:travis", testWith({ collectCoverage: true, maxWorkers: 4 }));
-
 gulp.task("test:watch", testWith({ watch: true }));
-
-/* travis */
-
-gulp.task("travis", gulp.series("lint", "test:travis"));
 
 /* default */
 

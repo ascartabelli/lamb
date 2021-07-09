@@ -1,0 +1,35 @@
+name: build
+
+on: ["push", "pull_request"]
+
+jobs:
+  lint-coverage-build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    name: Node ${{ matrix.node-version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Installing dev dependencies
+        run: npm ci
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Test and collect coverage
+        run: npm run coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Send coverage to coveralls.io
+        uses: coverallsapp/github-action@1.1.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

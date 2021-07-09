@@ -5,7 +5,7 @@
     },
     "description": "A lightweight, and docile, JavaScript library to help embracing functional programming.",
     "engines": {
-        "node": ">=4.0.0"
+        "node": ">=12.0.0"
     },
     "files": [
         "dist/lamb.*"
@@ -42,8 +42,7 @@
         "build": "gulp build",
         "coverage": "gulp test:coverage",
         "lint": "gulp lint",
-        "test": "gulp test",
-        "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+        "test": "gulp test"
     },
     "babel": {
         "env": {
@@ -65,22 +64,21 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.60.0",
+    "version": "0.61.0-beta.3",
     "devDependencies": {
-        "@babel/core": "^7.13.8",
-        "@babel/preset-env": "^7.13.9",
+        "@babel/core": "^7.16.0",
+        "@babel/preset-env": "^7.16.0",
         "@jsdevtools/version-bump-prompt": "^6.1.0",
-        "coveralls": "^3.1.0",
-        "eslint-plugin-jsdoc": "^32.2.0",
+        "eslint-plugin-jsdoc": "^37.0.3",
         "gulp": "^4.0.2",
         "gulp-eslint": "^6.0.0",
         "gulp-jest-acierto": "^4.0.3",
         "gulp-rename": "^2.0.0",
         "gulp-shell": "^0.8.0",
         "gulp-sourcemaps": "^3.0.0",
-        "gulp-terser": "^2.0.1",
-        "jest": "^26.6.3",
-        "rollup": "^2.40.0"
+        "gulp-terser": "^2.1.0",
+        "jest": "^27.3.1",
+        "rollup": "^2.59.0"
     },
     "dependencies": {}
 }

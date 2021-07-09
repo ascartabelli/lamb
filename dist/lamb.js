@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.60.0
+* @version 0.61.0-beta.3
 * @module lamb
 * @license MIT
 */
@@ -9,7 +9,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.lamb = {}));
-}(this, (function (exports) { 'use strict';
+})(this, (function (exports) { 'use strict';
 
     /**
      * The placeholder object used in partial application.
@@ -7274,4 +7274,4 @@
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
