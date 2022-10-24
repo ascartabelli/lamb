@@ -14,6 +14,5 @@ module.exports = {
     collectCoverageFrom: ["src/**/*.js", "!**/{__tests__,__mocks__}/**"],
     rootDir: ".",
     testRegex: "(/__tests__/.+\\.(test|spec))\\.js$",
-    testURL: "http://localhost:3000/",
     verbose: false
 };

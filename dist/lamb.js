@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.61.0-beta.3
+* @version 0.61.0-beta.4
 * @module lamb
 * @license MIT
 */
@@ -7271,7 +7271,5 @@
     exports.when = when;
     exports.zip = zip;
     exports.zipWithIndex = zipWithIndex;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
