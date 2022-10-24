@@ -86,6 +86,7 @@ export { default as sortedInsert } from "./array/sortedInsert";
 export { default as sorter } from "./array/sorter";
 export { default as sorterDesc } from "./array/sorterDesc";
 export { default as sortWith } from "./array/sortWith";
+export { default as symmetricDifference } from "./array/symmetricDifference";
 export { default as tail } from "./array/tail";
 export { default as take } from "./array/take";
 export { default as takeFrom } from "./array/takeFrom";

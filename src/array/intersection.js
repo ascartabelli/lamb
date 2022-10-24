@@ -16,6 +16,7 @@ import isIn from "./isIn";
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.difference|difference}
+ * @see {@link module:lamb.symmetricDifference|symmetricDifference}
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @since 0.5.0
  * @param {ArrayLike} a

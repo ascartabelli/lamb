@@ -19,6 +19,7 @@ import unionBy from "./unionBy";
  * @see {@link module:lamb.unionBy|unionBy}
  * @see {@link module:lamb.difference|difference}
  * @see {@link module:lamb.intersection|intersection}
+ * @see {@link module:lamb.symmetricDifference|symmetricDifference}
  * @since 0.5.0
  * @param {ArrayLike} a
  * @param {ArrayLike} b

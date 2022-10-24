@@ -20,6 +20,7 @@ import uniques from "./uniques";
  * @memberof module:lamb
  * @category Array
  * @see {@link module:lamb.intersection|intersection}
+ * @see {@link module:lamb.symmetricDifference|symmetricDifference}
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @see {@link module:lamb.pull|pull}, {@link module:lamb.pullFrom|pullFrom}
  * @since 0.6.0

@@ -23,6 +23,7 @@ import uniquesBy from "./uniquesBy";
  * @see {@link module:lamb.union|union}
  * @see {@link module:lamb.difference|difference}
  * @see {@link module:lamb.intersection|intersection}
+ * @see {@link module:lamb.symmetricDifference|symmetricDifference}
  * @since 0.51.0
  * @param {ListIteratorCallback} iteratee
  * @returns {Function}
