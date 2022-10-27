@@ -1,4 +1,4 @@
-import isIn from "./isIn";
+import _LookupHelper from "../privates/_LookupHelper";
 
 /**
  * Using the provided iteratee, builds a function that will return an array comprised of the
@@ -32,11 +32,11 @@ function uniquesBy (iteratee) {
     return function (arrayLike) {
         var result = [];
 
-        for (var i = 0, len = arrayLike.length, seen = [], value; i < len; i++) {
+        for (var i = 0, len = arrayLike.length, seen = new _LookupHelper(), value; i < len; i++) {
             value = iteratee(arrayLike[i], i, arrayLike);
 
-            if (!isIn(seen, value)) {
-                seen.push(value);
+            if (!seen.has(value)) {
+                seen.add(value);
                 result.push(arrayLike[i]);
             }
         }

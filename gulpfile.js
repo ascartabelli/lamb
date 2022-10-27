@@ -93,7 +93,7 @@ gulp.task("lint", gulp.series("lint:code", "lint:tests"));
 
 const testWith = extraSettings => gulp.series(
     "set-test-env",
-    async () => gulp.src("./src", { read: false }).pipe(
+    () => gulp.src("./src", { read: false }).pipe(
         jest(Object.assign({}, jestBaseConfig, extraSettings))
     )
 );
@@ -104,7 +104,12 @@ gulp.task("test:coverage", testWith({ collectCoverage: true }));
 
 gulp.task("test:verbose", testWith({ verbose: true }));
 
-gulp.task("test:watch", testWith({ watch: true }));
+gulp.task("test:watch", gulp.series(
+    "set-test-env",
+    async () => gulp.src("./src", { read: false }).pipe(
+        jest(Object.assign({}, jestBaseConfig, { watch: true }))
+    )
+));
 
 /* default */
 

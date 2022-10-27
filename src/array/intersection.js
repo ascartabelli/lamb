@@ -1,4 +1,4 @@
-import isIn from "./isIn";
+import _LookupHelper from "../privates/_LookupHelper";
 
 /**
  * Returns an array of every unique item that is included in all two given arrays
@@ -25,11 +25,18 @@ import isIn from "./isIn";
  */
 function intersection (a, b) {
     var result = [];
+    var resultLookup = new _LookupHelper();
+    var bLookup = new _LookupHelper(b);
     var lenA = a.length;
 
     if (lenA && b.length) {
-        for (var i = 0; i < lenA; i++) {
-            !isIn(result, a[i]) && isIn(b, a[i]) && result.push(a[i]);
+        for (var i = 0, v; i < lenA; i++) {
+            v = a[i];
+
+            if (!resultLookup.has(v) && bLookup.has(v)) {
+                resultLookup.add(v);
+                result.push(v);
+            }
         }
     }
 

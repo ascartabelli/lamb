@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.61.0-beta.6
+* @version 0.61.0-beta.8
 * @module lamb
 * @license MIT
 */
@@ -937,6 +937,72 @@
      */
     var countBy = _curry2(count, true);
 
+    var nativeSlice = generic(Array.prototype.slice);
+
+    /**
+     * Utility function to check whether the passed value is
+     * an Array or an "array-like" object.
+     * @private
+     * @param {*} target
+     * @returns {Boolean}
+     */
+    function _isArrayLike (target) {
+        var len = target ? target.length : NaN;
+
+        return Array.isArray(target) || len === 0 || (
+            typeof len === "number"
+                && len > 0
+                && (len - 1) in Object(target)
+        );
+    }
+
+    /**
+     * Helper object to have faster lookups if the environment
+     * supports Sets.
+     * @class
+     * @private
+     * @param {ArrayLike} [arrayLike]
+     */
+    function _LookupHelper (arrayLike) {
+        var hasNativeSet = typeof Set === "function";
+        var sourceElements = Array.isArray(arrayLike)
+            ? arrayLike
+            : _isArrayLike(arrayLike)
+                ? nativeSlice(arrayLike)
+                : [];
+
+        /* eslint-disable-next-line no-undef */
+        var sourceElementsSet = hasNativeSet ? new Set(sourceElements) : null;
+
+        this.add = function (value) {
+            if (hasNativeSet) {
+                sourceElementsSet.add(value);
+            } else {
+                sourceElements.push(value);
+            }
+
+            return this;
+        };
+
+        this.has = function (value) {
+            return hasNativeSet
+                ? sourceElementsSet.has(value)
+                : isIn(sourceElements, value);
+        };
+    }
+
+    /**
+     * Builds a TypeError stating that it's not possible to convert the given value to the
+     * desired type.
+     * @private
+     * @param {*} value
+     * @param {String} desiredType
+     * @returns {TypeError}
+     */
+    function _makeTypeErrorFor (value, desiredType) {
+        return new TypeError("Cannot convert " + type(value).toLowerCase() + " to " + desiredType);
+    }
+
     /**
      * Builds an array comprised of all values of the array-like object passing the <code>predicate</code>
      * test.<br/>
@@ -966,27 +1032,6 @@
         }
 
         return result;
-    }
-
-    /**
-     * Returns a predicate that negates the given one.
-     * @example
-     * const isEven = n => n % 2 === 0;
-     * const isOdd = _.not(isEven);
-     *
-     * isOdd(5) // => true
-     * isOdd(4) // => false
-     *
-     * @memberof module:lamb
-     * @category Logic
-     * @since 0.1.0
-     * @param {Function} predicate
-     * @returns {Function}
-     */
-    function not (predicate) {
-        return function () {
-            return !predicate.apply(this, arguments);
-        };
     }
 
     /**
@@ -1021,11 +1066,11 @@
         return function (arrayLike) {
             var result = [];
 
-            for (var i = 0, len = arrayLike.length, seen = [], value; i < len; i++) {
+            for (var i = 0, len = arrayLike.length, seen = new _LookupHelper(), value; i < len; i++) {
                 value = iteratee(arrayLike[i], i, arrayLike);
 
-                if (!isIn(seen, value)) {
-                    seen.push(value);
+                if (!seen.has(value)) {
+                    seen.add(value);
                     result.push(arrayLike[i]);
                 }
             }
@@ -1080,7 +1125,14 @@
      * @returns {Array}
      */
     function difference (arrayLike, other) {
-        var isNotInOther = partial(not(isIn), [other]);
+        if (isNil(other)) {
+            throw _makeTypeErrorFor(other, "array");
+        }
+
+        var toExclude = new _LookupHelper(other);
+        var isNotInOther = function (v) {
+            return !toExclude.has(v);
+        };
 
         return uniques(filter(arrayLike, isNotInOther));
     }
@@ -2100,11 +2152,18 @@
      */
     function intersection (a, b) {
         var result = [];
+        var resultLookup = new _LookupHelper();
+        var bLookup = new _LookupHelper(b);
         var lenA = a.length;
 
         if (lenA && b.length) {
-            for (var i = 0; i < lenA; i++) {
-                !isIn(result, a[i]) && isIn(b, a[i]) && result.push(a[i]);
+            for (var i = 0, v; i < lenA; i++) {
+                v = a[i];
+
+                if (!resultLookup.has(v) && bLookup.has(v)) {
+                    resultLookup.add(v);
+                    result.push(v);
+                }
             }
         }
 
@@ -3281,18 +3340,6 @@
         }
 
         return result;
-    }
-
-    /**
-     * Builds a TypeError stating that it's not possible to convert the given value to the
-     * desired type.
-     * @private
-     * @param {*} value
-     * @param {String} desiredType
-     * @returns {TypeError}
-     */
-    function _makeTypeErrorFor (value, desiredType) {
-        return new TypeError("Cannot convert " + type(value).toLowerCase() + " to " + desiredType);
     }
 
     /**
@@ -4620,6 +4667,27 @@
      * @returns {Function}
      */
     var isLTE = _curry2(lte, true);
+
+    /**
+     * Returns a predicate that negates the given one.
+     * @example
+     * const isEven = n => n % 2 === 0;
+     * const isOdd = _.not(isEven);
+     *
+     * isOdd(5) // => true
+     * isOdd(4) // => false
+     *
+     * @memberof module:lamb
+     * @category Logic
+     * @since 0.1.0
+     * @param {Function} predicate
+     * @returns {Function}
+     */
+    function not (predicate) {
+        return function () {
+            return !predicate.apply(this, arguments);
+        };
+    }
 
     /**
      * Builds a unary function that will check its argument against the given predicate.

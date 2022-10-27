@@ -1,7 +1,7 @@
-import partial from "../core/partial";
+import _LookupHelper from "../privates/_LookupHelper";
+import _makeTypeErrorFor from "../privates/_makeTypeErrorFor";
 import filter from "./filter";
-import isIn from "./isIn";
-import not from "../logic/not";
+import isNil from "../core/isNil";
 import uniques from "./uniques";
 
 /**
@@ -29,7 +29,14 @@ import uniques from "./uniques";
  * @returns {Array}
  */
 function difference (arrayLike, other) {
-    var isNotInOther = partial(not(isIn), [other]);
+    if (isNil(other)) {
+        throw _makeTypeErrorFor(other, "array");
+    }
+
+    var toExclude = new _LookupHelper(other);
+    var isNotInOther = function (v) {
+        return !toExclude.has(v);
+    };
 
     return uniques(filter(arrayLike, isNotInOther));
 }
