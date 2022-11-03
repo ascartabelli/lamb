@@ -1,14 +1,14 @@
-import * as lamb from "../..";
+import identity from "../identity";
 
-describe("identity", function () {
-    it("should return the value received as argument", function () {
-        expect(lamb.identity(0)).toBe(0);
-        expect(lamb.identity("foo")).toBe("foo");
-        expect(lamb.identity(null)).toBe(null);
-        expect(lamb.identity()).toBeUndefined();
+describe("identity", () => {
+    it("should return the value received as argument", () => {
+        expect(identity(0)).toBe(0);
+        expect(identity("foo")).toBe("foo");
+        expect(identity(null)).toBe(null);
+        expect(identity()).toBeUndefined();
 
-        var someRefType = { foo: 5 };
+        const someRefType = { foo: 5 };
 
-        expect(lamb.identity(someRefType)).toBe(someRefType);
+        expect(identity(someRefType)).toBe(someRefType);
     });
 });

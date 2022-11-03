@@ -1,54 +1,54 @@
-import * as lamb from "../..";
+import always from "../../core/always";
+import invokeOn from "../invokeOn";
 import {
     nonStrings,
     nonStringsAsStrings,
     wannabeEmptyObjects
 } from "../../__tests__/commons";
 
-describe("invokeOn", function () {
-    var arr = [1, 2, 3, 4, 5];
-    var callOnArr = lamb.invokeOn(arr);
+describe("invokeOn", () => {
+    const arr = [1, 2, 3, 4, 5];
+    const callOnArr = invokeOn(arr);
+    const sliceSpy = jest.spyOn(arr, "slice");
+    const joinSpy = jest.spyOn(arr, "join");
 
-    var sliceSpy = jest.spyOn(arr, "slice");
-    var joinSpy = jest.spyOn(arr, "join");
-
-    afterEach(function () {
+    afterEach(() => {
         sliceSpy.mockClear();
         joinSpy.mockClear();
     });
 
-    it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", function () {
-        var s = "foo bar";
-        var callOnS = lamb.invokeOn(s);
+    it("should accept an object and build a function expecting a method name to be called on such object with the given parameters", () => {
+        const s = "foo bar";
+        const callOnS = invokeOn(s);
 
-        expect(callOnArr("slice", 1, 3)).toEqual([2, 3]);
-        expect(arr.slice).toHaveBeenCalledTimes(1);
-        expect(arr.slice.mock.calls[0]).toEqual([1, 3]);
+        expect(callOnArr("slice", 1, 3)).toStrictEqual([2, 3]);
+        expect(sliceSpy).toHaveBeenCalledTimes(1);
+        expect(sliceSpy).toHaveBeenCalledWith(1, 3);
 
         expect(callOnArr("join", "")).toBe("12345");
-        expect(arr.join).toHaveBeenCalledTimes(1);
-        expect(arr.join.mock.calls[0]).toEqual([""]);
+        expect(joinSpy).toHaveBeenCalledTimes(1);
+        expect(joinSpy).toHaveBeenCalledWith("");
 
         expect(callOnS("slice", 1, 3)).toBe("oo");
         expect(callOnS("toUpperCase")).toBe("FOO BAR");
     });
 
-    it("should build a function returning `undefined` if the given method doesn't exist on the received object", function () {
+    it("should build a function returning `undefined` if the given method doesn't exist on the received object", () => {
         expect(callOnArr("foo")).toBeUndefined();
     });
 
-    it("should accept an empty string as a method name", function () {
-        var obj = { "": function () { return 99; } };
+    it("should accept an empty string as a method name", () => {
+        const obj = { "": () => 99 };
 
-        expect(lamb.invokeOn(obj)("")).toBe(99);
+        expect(invokeOn(obj)("")).toBe(99);
     });
 
-    it("should convert to string every value received as a method name", function () {
-        var obj = {};
-        var callOnObj = lamb.invokeOn(obj);
+    it("should convert to string every value received as a method name", () => {
+        const obj = {};
+        const callOnObj = invokeOn(obj);
 
-        nonStringsAsStrings.forEach(function (method, idx) {
-            obj[method] = lamb.always(method);
+        nonStringsAsStrings.forEach((method, idx) => {
+            obj[method] = always(method);
 
             expect(callOnObj(nonStrings[idx])).toBe(method);
         });
@@ -56,15 +56,15 @@ describe("invokeOn", function () {
         expect(callOnObj()).toBe("undefined");
     });
 
-    it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", function () {
-        expect(lamb.invokeOn(null)).toThrow();
-        expect(lamb.invokeOn(void 0)).toThrow();
-        expect(lamb.invokeOn()).toThrow();
+    it("should build a function throwing an exception if the received object is `null`, `undefined` or is missing", () => {
+        expect(invokeOn(null)).toThrow();
+        expect(invokeOn(void 0)).toThrow();
+        expect(invokeOn()).toThrow();
     });
 
-    it("should build a function that converts to object every other value", function () {
-        wannabeEmptyObjects.forEach(function (value) {
-            expect(lamb.invokeOn(value)("someMethod")).toBeUndefined();
+    it("should build a function that converts to object every other value", () => {
+        wannabeEmptyObjects.forEach(value => {
+            expect(invokeOn(value)("someMethod")).toBeUndefined();
         });
     });
 });

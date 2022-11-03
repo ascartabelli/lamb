@@ -1,4 +1,8 @@
-import * as lamb from "../..";
+import getKey from "../../object/getKey";
+import identity from "../../core/identity";
+import invoke from "../../function/invoke";
+import uniques from "../uniques";
+import uniquesBy from "../uniquesBy";
 import { nonFunctions, wannabeEmptyArrays } from "../../__tests__/commons";
 import "../../__tests__/custom_matchers";
 
@@ -18,17 +22,17 @@ describe("uniques / uniquesBy", () => {
         { id: "3", name: "baz" }
     ];
 
-    const uniquesByIdentity = lamb.uniquesBy(lamb.identity);
+    const uniquesByIdentity = uniquesBy(identity);
 
     describe("uniques", () => {
         it("should return the unique elements of an array of simple values", () => {
-            expect(lamb.uniques([0, 2, 3, 4, 0, 4, 3, 5, 2, 1, 1])).toStrictEqual([0, 2, 3, 4, 5, 1]);
-            expect(lamb.uniques(["foo", "bar", "bar", "baz"])).toStrictEqual(["foo", "bar", "baz"]);
-            expect(lamb.uniques(Array(3))).toStrictEqual([void 0]);
+            expect(uniques([0, 2, 3, 4, 0, 4, 3, 5, 2, 1, 1])).toStrictEqual([0, 2, 3, 4, 5, 1]);
+            expect(uniques(["foo", "bar", "bar", "baz"])).toStrictEqual(["foo", "bar", "baz"]);
+            expect(uniques(Array(3))).toStrictEqual([void 0]);
         });
 
         it("should throw an exception if called without arguments", () => {
-            expect(lamb.uniques).toThrow();
+            expect(uniques).toThrow();
         });
     });
 
@@ -36,28 +40,28 @@ describe("uniques / uniquesBy", () => {
         it("should use the provided iteratee to extract the values to compare", () => {
             const chars = ["b", "A", "r", "B", "a", "z"];
 
-            expect(lamb.uniquesBy(lamb.invoke("toUpperCase"))(chars)).toStrictEqual(["b", "A", "r", "z"]);
-            expect(lamb.uniquesBy(lamb.getKey("id"))(data)).toStrictEqual(dataUniques);
+            expect(uniquesBy(invoke("toUpperCase"))(chars)).toStrictEqual(["b", "A", "r", "z"]);
+            expect(uniquesBy(getKey("id"))(data)).toStrictEqual(dataUniques);
         });
 
         it("should build a function throwing an exception if the itereatee isn't a function or if is missing", () => {
             nonFunctions.forEach(value => {
-                expect(() => { lamb.uniquesBy(value)([1, 2, 3]); }).toThrow();
+                expect(() => { uniquesBy(value)([1, 2, 3]); }).toThrow();
             });
 
-            expect(() => { lamb.uniquesBy()([1, 2, 3]); }).toThrow();
+            expect(() => { uniquesBy()([1, 2, 3]); }).toThrow();
         });
     });
 
     it("should use the SameValueZero comparison", () => {
-        expect(lamb.uniques([0, 1, 2, NaN, 1, 2, -0, NaN])).toStrictEqual([0, 1, 2, NaN]);
+        expect(uniques([0, 1, 2, NaN, 1, 2, -0, NaN])).toStrictEqual([0, 1, 2, NaN]);
     });
 
     it("should return a copy of the source array if it's empty or already contains unique values", () => {
         const a1 = [];
-        const r1 = lamb.uniques(a1);
+        const r1 = uniques(a1);
         const a2 = [1, 2, 3, 4, 5];
-        const r2 = lamb.uniques(a2);
+        const r2 = uniques(a2);
 
         expect(r1).toStrictEqual([]);
         expect(r1).not.toBe(a1);
@@ -69,15 +73,15 @@ describe("uniques / uniquesBy", () => {
         const s = "hello world";
         const r = ["h", "e", "l", "o", " ", "w", "r", "d"];
 
-        expect(lamb.uniques(s)).toStrictEqual(r);
+        expect(uniques(s)).toStrictEqual(r);
         expect(uniquesByIdentity(s)).toStrictEqual(r);
     });
 
     it("should prefer the first encountered value if two values are considered equal", () => {
-        expect(Object.is(0, lamb.uniques([0, -0])[0])).toBe(true);
-        expect(lamb.uniques([2, -0, 3, 3, 0, 1])).toStrictEqual([2, -0, 3, 1]);
+        expect(Object.is(0, uniques([0, -0])[0])).toBe(true);
+        expect(uniques([2, -0, 3, 3, 0, 1])).toStrictEqual([2, -0, 3, 1]);
 
-        const r = lamb.uniquesBy(lamb.getKey("id"))(data);
+        const r = uniquesBy(getKey("id"))(data);
 
         expect(r).toStrictEqual(dataUniques);
         expect(r[0]).toBe(data[0]);
@@ -92,22 +96,22 @@ describe("uniques / uniquesBy", () => {
 
         const r = [1, void 0, 3];
 
-        expect(lamb.uniques(a1)).toStrictArrayEqual(r);
-        expect(lamb.uniques(a2)).toStrictArrayEqual(r);
+        expect(uniques(a1)).toStrictArrayEqual(r);
+        expect(uniques(a2)).toStrictArrayEqual(r);
         expect(uniquesByIdentity(a1)).toStrictArrayEqual(r);
         expect(uniquesByIdentity(a2)).toStrictArrayEqual(r);
     });
 
     it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", () => {
-        expect(() => { lamb.uniques(null); }).toThrow();
-        expect(() => { lamb.uniques(void 0); }).toThrow();
+        expect(() => { uniques(null); }).toThrow();
+        expect(() => { uniques(void 0); }).toThrow();
         expect(() => { uniquesByIdentity(null); }).toThrow();
         expect(() => { uniquesByIdentity(void 0); }).toThrow();
     });
 
     it("should treat every other value as an empty array", () => {
         wannabeEmptyArrays.forEach(value => {
-            expect(lamb.uniques(value)).toStrictEqual([]);
+            expect(uniques(value)).toStrictEqual([]);
             expect(uniquesByIdentity(value)).toStrictEqual([]);
         });
     });

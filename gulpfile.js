@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
 
 const gulp = require("gulp");
-const eslint = require("gulp-eslint");
-const jest = require("gulp-jest-acierto").default;
+const eslint = require("gulp-eslint-new");
+const jest = require("gulp-jest").default;
 const rename = require("gulp-rename");
 const rollup = require("rollup");
 const shell = require("gulp-shell");

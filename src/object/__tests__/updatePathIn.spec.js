@@ -1,4 +1,13 @@
-import * as lamb from "../..";
+import add from "../../math/add";
+import always from "../../core/always";
+import invoke from "../../function/invoke";
+import make from "../make";
+import mapWith from "../../core/mapWith";
+import merge from "../merge";
+import multiplyBy from "../../math/multiplyBy";
+import setKey from "../setKey";
+import updatePath from "../updatePath";
+import updatePathIn from "../updatePathIn";
 import {
     nonFunctions,
     nonStrings,
@@ -7,8 +16,8 @@ import {
 } from "../../__tests__/commons";
 import "../../__tests__/custom_matchers";
 
-describe("updatePath / updatePathIn", function () {
-    var obj = {
+describe("updatePath / updatePathIn", () => {
+    const obj = {
         a: 2,
         b: {
             a: { g: 10, h: 11 },
@@ -18,7 +27,7 @@ describe("updatePath / updatePathIn", function () {
         "c.d": { "e.f": 6 }
     };
 
-    var sparseArr = Object.freeze([, 55, ,]); // eslint-disable-line comma-spacing, no-sparse-arrays
+    const sparseArr = Object.freeze([, 55, ,]); // eslint-disable-line comma-spacing, no-sparse-arrays
 
     obj.b.d = sparseArr;
 
@@ -29,24 +38,24 @@ describe("updatePath / updatePathIn", function () {
         }
     });
 
-    var objCopy = JSON.parse(JSON.stringify(obj));
+    const objCopy = JSON.parse(JSON.stringify(obj));
 
     objCopy.b.d = sparseArr;
 
-    var double = lamb.multiplyBy(2);
-    var inc = lamb.add(1);
-    var toUpperCase = lamb.invoke("toUpperCase");
+    const double = multiplyBy(2);
+    const inc = add(1);
+    const toUpperCase = invoke("toUpperCase");
 
-    afterEach(function () {
-        expect(obj).toEqual(objCopy);
+    afterEach(() => {
+        expect(obj).toStrictEqual(objCopy);
         expect(obj.b.d).toStrictArrayEqual(objCopy.b.d);
     });
 
-    it("should allow to update a nested property in a copy of the given object using the provided function", function () {
-        var makeDoubles = jest.fn(lamb.mapWith(double));
-        var newObjA = lamb.updatePathIn(obj, "b.b", makeDoubles, ".");
-        var newObjB = lamb.updatePath("b.b", makeDoubles, ".")(obj);
-        var r1 = {
+    it("should allow to update a nested property in a copy of the given object using the provided function", () => {
+        const makeDoubles = jest.fn(mapWith(double));
+        const newObjA = updatePathIn(obj, "b.b", makeDoubles, ".");
+        const newObjB = updatePath("b.b", makeDoubles, ".")(obj);
+        const r1 = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -57,13 +66,11 @@ describe("updatePath / updatePathIn", function () {
             "c.d": { "e.f": 6 }
         };
 
-        expect(newObjA).toEqual(r1);
-        expect(newObjB).toEqual(r1);
+        expect(newObjA).toStrictEqual(r1);
+        expect(newObjB).toStrictEqual(r1);
         expect(makeDoubles).toHaveBeenCalledTimes(2);
-        expect(makeDoubles.mock.calls[0].length).toBe(1);
-        expect(makeDoubles.mock.calls[0][0]).toBe(obj.b.b);
-        expect(makeDoubles.mock.calls[1].length).toBe(1);
-        expect(makeDoubles.mock.calls[1][0]).toBe(obj.b.b);
+        expect(makeDoubles).toHaveBeenNthCalledWith(1, obj.b.b);
+        expect(makeDoubles).toHaveBeenNthCalledWith(2, obj.b.b);
 
         expect(newObjA.b.a).toBe(obj.b.a);
         expect(newObjA["c.d"]).toBe(obj["c.d"]);
@@ -71,7 +78,7 @@ describe("updatePath / updatePathIn", function () {
         expect(newObjA.b.d).toStrictArrayEqual(r1.b.d);
         expect(newObjB.b.d).toStrictArrayEqual(r1.b.d);
 
-        var r2 = {
+        const r2 = {
             a: 3,
             b: {
                 a: { g: 10, h: 11 },
@@ -82,14 +89,14 @@ describe("updatePath / updatePathIn", function () {
             "c.d": { "e.f": 6 }
         };
 
-        expect(lamb.updatePathIn(obj, "a", inc, ".")).toEqual(r2);
-        expect(lamb.updatePath("a", inc, ".")(obj)).toEqual(r2);
+        expect(updatePathIn(obj, "a", inc, ".")).toStrictEqual(r2);
+        expect(updatePath("a", inc, ".")(obj)).toStrictEqual(r2);
     });
 
-    it("should use the dot as the default separator", function () {
-        var r = lamb.updatePath("b.a.g", double)(obj);
+    it("should use the dot as the default separator", () => {
+        const r = updatePath("b.a.g", double)(obj);
 
-        expect(r).toEqual({
+        expect(r).toStrictEqual({
             a: 2,
             b: {
                 a: { g: 20, h: 11 },
@@ -101,13 +108,13 @@ describe("updatePath / updatePathIn", function () {
         });
         expect(r.b.b).toBe(obj.b.b);
         expect(r["c.d"]).toBe(obj["c.d"]);
-        expect(lamb.updatePathIn(obj, "b.a.g", double)).toEqual(r);
+        expect(updatePathIn(obj, "b.a.g", double)).toStrictEqual(r);
     });
 
-    it("should ignore extra arguments passed to the built function in its partially applied form", function () {
-        var r = lamb.updatePath("b.a.h", double)(obj, {});
+    it("should ignore extra arguments passed to the built function in its partially applied form", () => {
+        const r = updatePath("b.a.h", double)(obj, {});
 
-        expect(r).toEqual({
+        expect(r).toStrictEqual({
             a: 2,
             b: {
                 a: { g: 10, h: 22 },
@@ -119,10 +126,10 @@ describe("updatePath / updatePathIn", function () {
         });
     });
 
-    it("should allow custom separators", function () {
-        var r = lamb.updatePath("c.d->e.f", double, "->")(obj);
+    it("should allow custom separators", () => {
+        const r = updatePath("c.d->e.f", double, "->")(obj);
 
-        expect(r).toEqual({
+        expect(r).toStrictEqual({
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -134,21 +141,21 @@ describe("updatePath / updatePathIn", function () {
         });
 
         expect(r.b).toBe(obj.b);
-        expect(lamb.updatePathIn(obj, "c.d->e.f", double, "->")).toEqual(r);
+        expect(updatePathIn(obj, "c.d->e.f", double, "->")).toStrictEqual(r);
     });
 
-    it("should be possible to use a path with a single key", function () {
-        var arr = [1, 2, 3];
-        var o = { a: 1, b: 2 };
+    it("should be possible to use a path with a single key", () => {
+        const arr = [1, 2, 3];
+        const o = { a: 1, b: 2 };
 
-        expect(lamb.updatePathIn(arr, "1", inc)).toEqual([1, 3, 3]);
-        expect(lamb.updatePath("-1", inc)(arr)).toEqual([1, 2, 4]);
-        expect(lamb.updatePathIn(o, "b", inc)).toEqual({ a: 1, b: 3 });
-        expect(lamb.updatePath("a", inc)(o)).toEqual({ a: 2, b: 2 });
+        expect(updatePathIn(arr, "1", inc)).toStrictEqual([1, 3, 3]);
+        expect(updatePath("-1", inc)(arr)).toStrictEqual([1, 2, 4]);
+        expect(updatePathIn(o, "b", inc)).toStrictEqual({ a: 1, b: 3 });
+        expect(updatePath("a", inc)(o)).toStrictEqual({ a: 2, b: 2 });
     });
 
-    it("should replace indexes when an array is found and the key is a string containing an integer", function () {
-        var r = {
+    it("should replace indexes when an array is found and the key is a string containing an integer", () => {
+        const r = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -159,15 +166,15 @@ describe("updatePath / updatePathIn", function () {
             "c.d": { "e.f": 6 }
         };
 
-        expect(lamb.updatePath("b.b.1", double)(obj)).toEqual(r);
-        expect(lamb.updatePathIn(obj, "b.b.1", double)).toEqual(r);
-        expect(lamb.updatePath("1", double)([1, 2, 3])).toEqual([1, 4, 3]);
-        expect(lamb.updatePathIn([1, 2, 3], "1", double)).toEqual([1, 4, 3]);
+        expect(updatePath("b.b.1", double)(obj)).toStrictEqual(r);
+        expect(updatePathIn(obj, "b.b.1", double)).toStrictEqual(r);
+        expect(updatePath("1", double)([1, 2, 3])).toStrictEqual([1, 4, 3]);
+        expect(updatePathIn([1, 2, 3], "1", double)).toStrictEqual([1, 4, 3]);
     });
 
-    it("should allow using negative array indexes in path parts", function () {
-        var arr = [1, 2, 3];
-        var r1 = {
+    it("should allow using negative array indexes in path parts", () => {
+        const arr = [1, 2, 3];
+        const r1 = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -177,27 +184,27 @@ describe("updatePath / updatePathIn", function () {
             },
             "c.d": { "e.f": 6 }
         };
-        var r2 = [1, 4, 3];
+        const r2 = [1, 4, 3];
 
-        expect(lamb.updatePath("b.b.-2", double)(obj)).toEqual(r1);
-        expect(lamb.updatePath("b.b.-3", double)(obj)).toEqual(obj);
-        expect(lamb.updatePath("-2", double)(arr)).toEqual(r2);
-        expect(lamb.updatePath("-4", double)(arr)).toEqual(arr);
-        expect(lamb.updatePathIn(obj, "b.b.-2", double)).toEqual(r1);
-        expect(lamb.updatePathIn(obj, "b.b.-3", double)).toEqual(obj);
-        expect(lamb.updatePathIn(arr, "-2", double)).toEqual(r2);
-        expect(lamb.updatePathIn(arr, "-4", double)).toEqual(arr);
+        expect(updatePath("b.b.-2", double)(obj)).toStrictEqual(r1);
+        expect(updatePath("b.b.-3", double)(obj)).toStrictEqual(obj);
+        expect(updatePath("-2", double)(arr)).toStrictEqual(r2);
+        expect(updatePath("-4", double)(arr)).toStrictEqual(arr);
+        expect(updatePathIn(obj, "b.b.-2", double)).toStrictEqual(r1);
+        expect(updatePathIn(obj, "b.b.-3", double)).toStrictEqual(obj);
+        expect(updatePathIn(arr, "-2", double)).toStrictEqual(r2);
+        expect(updatePathIn(arr, "-4", double)).toStrictEqual(arr);
     });
 
-    it("should allow to change values nested in an array", function () {
-        var o = {
+    it("should allow to change values nested in an array", () => {
+        const o = {
             data: [
                 { id: 1, value: 10 },
                 { id: 2, value: 20 },
                 { id: 3, value: 30 }
             ]
         };
-        var r = {
+        const r = {
             data: [
                 { id: 1, value: 10 },
                 { id: 2, value: 21 },
@@ -205,14 +212,14 @@ describe("updatePath / updatePathIn", function () {
             ]
         };
 
-        expect(lamb.updatePath("data.1.value", inc)(o)).toEqual(r);
-        expect(lamb.updatePathIn(o, "data.1.value", inc)).toEqual(r);
-        expect(lamb.updatePath("data.-2.value", inc)(o)).toEqual(r);
-        expect(lamb.updatePathIn(o, "data.-2.value", inc)).toEqual(r);
+        expect(updatePath("data.1.value", inc)(o)).toStrictEqual(r);
+        expect(updatePathIn(o, "data.1.value", inc)).toStrictEqual(r);
+        expect(updatePath("data.-2.value", inc)(o)).toStrictEqual(r);
+        expect(updatePathIn(o, "data.-2.value", inc)).toStrictEqual(r);
     });
 
-    it("should build dense arrays when the path target is a sparse array index", function () {
-        var expected1 = {
+    it("should build dense arrays when the path target is a sparse array index", () => {
+        const expected1 = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -222,7 +229,7 @@ describe("updatePath / updatePathIn", function () {
             },
             "c.d": { "e.f": 6 }
         };
-        var expected2 = {
+        const expected2 = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -232,23 +239,23 @@ describe("updatePath / updatePathIn", function () {
             },
             "c.d": { "e.f": 6 }
         };
-        var fn99 = lamb.always(99);
+        const fn99 = always(99);
 
-        ["b.d.1", "b.d.-2", "b.d.-1", "b.d.2"].forEach(function (path, idx) {
-            var r1 = lamb.updatePathIn(obj, path, fn99);
-            var r2 = lamb.updatePath(path, fn99)(obj);
-            var expected = idx < 2 ? expected1 : expected2;
+        ["b.d.1", "b.d.-2", "b.d.-1", "b.d.2"].forEach((path, idx) => {
+            const r1 = updatePathIn(obj, path, fn99);
+            const r2 = updatePath(path, fn99)(obj);
+            const expected = idx < 2 ? expected1 : expected2;
 
-            expect(r1).toEqual(expected);
+            expect(r1).toStrictEqual(expected);
             expect(r1.b.d).toStrictArrayEqual(expected.b.d);
 
-            expect(r2).toEqual(expected);
+            expect(r2).toStrictEqual(expected);
             expect(r2.b.d).toStrictArrayEqual(expected.b.d);
         });
     });
 
-    it("should build an object with numbered keys when an array-like object is found", function () {
-        var r = {
+    it("should build an object with numbered keys when an array-like object is found", () => {
+        const r = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -259,12 +266,12 @@ describe("updatePath / updatePathIn", function () {
             "c.d": { "e.f": 6 }
         };
 
-        expect(lamb.updatePath("b.c.0", lamb.always("m"))(obj)).toEqual(r);
-        expect(lamb.updatePathIn(obj, "b.c.0", lamb.always("m"))).toEqual(r);
+        expect(updatePath("b.c.0", always("m"))(obj)).toStrictEqual(r);
+        expect(updatePathIn(obj, "b.c.0", always("m"))).toStrictEqual(r);
     });
 
-    it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", function () {
-        var r = {
+    it("should build an object with numbered keys when an array is found and the key is not a string containing an integer", () => {
+        const r = {
             a: 2,
             b: {
                 a: { g: 10, h: 11 },
@@ -276,147 +283,147 @@ describe("updatePath / updatePathIn", function () {
 
         obj.b.b.z = 1;
 
-        expect(lamb.updatePath("b.b.z", lamb.always(99))(obj)).toEqual(r);
-        expect(lamb.updatePathIn(obj, "b.b.z", lamb.always(99))).toEqual(r);
+        expect(updatePath("b.b.z", always(99))(obj)).toStrictEqual(r);
+        expect(updatePathIn(obj, "b.b.z", always(99))).toStrictEqual(r);
         delete obj.b.b.z;
     });
 
-    it("should not add a new property if the given path doesn't exist on the source, and return a copy of the source instead", function () {
-        var arr = [1];
-        var newObjA = lamb.updatePathIn(obj, "b.a.z", lamb.always(99));
-        var newObjB = lamb.updatePathIn(obj, "b.b.1.z", lamb.always(99));
-        var newObjC = lamb.updatePath("xyz", lamb.always(99))(obj);
-        var newObjD = lamb.updatePathIn(obj, "b.b.-10", lamb.always(99));
-        var newObjE = lamb.updatePath("xyz", lamb.always(99))(arr);
-        var newObjF = lamb.updatePath("x.y.z", lamb.always(99))(arr);
-        var newObjG = lamb.updatePath("1", lamb.always(99))(arr);
-        var newObjH = lamb.updatePath("-10", lamb.always(99))(arr);
+    it("should not add a new property if the given path doesn't exist on the source, and return a copy of the source instead", () => {
+        const arr = [1];
+        const newObjA = updatePathIn(obj, "b.a.z", always(99));
+        const newObjB = updatePathIn(obj, "b.b.1.z", always(99));
+        const newObjC = updatePath("xyz", always(99))(obj);
+        const newObjD = updatePathIn(obj, "b.b.-10", always(99));
+        const newObjE = updatePath("xyz", always(99))(arr);
+        const newObjF = updatePath("x.y.z", always(99))(arr);
+        const newObjG = updatePath("1", always(99))(arr);
+        const newObjH = updatePath("-10", always(99))(arr);
 
-        expect(newObjA).toEqual(obj);
+        expect(newObjA).toStrictEqual(obj);
         expect(newObjA).not.toBe(obj);
-        expect(newObjB).toEqual(obj);
+        expect(newObjB).toStrictEqual(obj);
         expect(newObjB).not.toBe(obj);
-        expect(newObjC).toEqual(obj);
+        expect(newObjC).toStrictEqual(obj);
         expect(newObjC).not.toBe(obj);
-        expect(newObjD).toEqual(obj);
+        expect(newObjD).toStrictEqual(obj);
         expect(newObjD).not.toBe(obj);
-        expect(newObjE).toEqual(arr);
+        expect(newObjE).toStrictEqual(arr);
         expect(newObjE).not.toBe(arr);
-        expect(newObjF).toEqual(arr);
+        expect(newObjF).toStrictEqual(arr);
         expect(newObjF).not.toBe(arr);
-        expect(newObjG).toEqual(arr);
+        expect(newObjG).toStrictEqual(arr);
         expect(newObjG).not.toBe(arr);
-        expect(newObjH).toEqual(arr);
+        expect(newObjH).toStrictEqual(arr);
         expect(newObjH).not.toBe(arr);
 
-        var o = { a: null };
+        const o = { a: null };
 
-        var newObjI = lamb.updatePath("a.b.c", lamb.always(99))(o);
-        var newObjJ = lamb.updatePathIn(o, "a.b.c", lamb.always(99));
+        const newObjI = updatePath("a.b.c", always(99))(o);
+        const newObjJ = updatePathIn(o, "a.b.c", always(99));
 
-        expect(newObjI).toEqual(o);
+        expect(newObjI).toStrictEqual(o);
         expect(newObjI).not.toBe(o);
-        expect(newObjJ).toEqual(o);
+        expect(newObjJ).toStrictEqual(o);
         expect(newObjJ).not.toBe(o);
     });
 
-    it("should not see a non-existing path when the target is undefined", function () {
-        var fooObj = { a: { b: { c: 2, d: void 0 } } };
-        var r = { a: { b: { c: 2, d: 99 } } };
-        var fn99 = lamb.always(99);
+    it("should not see a non-existing path when the target is undefined", () => {
+        const fooObj = { a: { b: { c: 2, d: void 0 } } };
+        const r = { a: { b: { c: 2, d: 99 } } };
+        const fn99 = always(99);
 
-        expect(lamb.updatePathIn(fooObj, "a.b.d", fn99)).toStrictEqual(r);
-        expect(lamb.updatePath("a.b.d", fn99)(fooObj)).toStrictEqual(r);
+        expect(updatePathIn(fooObj, "a.b.d", fn99)).toStrictEqual(r);
+        expect(updatePath("a.b.d", fn99)(fooObj)).toStrictEqual(r);
     });
 
-    it("should return a copy of the source object when a non enumerable property is part of the path or its target", function () {
-        var fooObj = Object.create({}, {
+    it("should return a copy of the source object when a non enumerable property is part of the path or its target", () => {
+        const fooObj = Object.create({}, {
             a: { enumerable: true, value: 1 },
             b: { value: { c: 2, d: { e: 3 } } }
         });
 
-        expect(lamb.updatePathIn(fooObj, "b", lamb.setKey("c", 99))).toEqual({ a: 1 });
-        expect(lamb.updatePath("b", lamb.setKey("c", 99))(fooObj)).toEqual({ a: 1 });
-        expect(lamb.updatePathIn(fooObj, "b.c", lamb.always(99))).toEqual({ a: 1 });
-        expect(lamb.updatePath("b.d.e", lamb.always(99))(fooObj)).toEqual({ a: 1 });
+        expect(updatePathIn(fooObj, "b", setKey("c", 99))).toStrictEqual({ a: 1 });
+        expect(updatePath("b", setKey("c", 99))(fooObj)).toStrictEqual({ a: 1 });
+        expect(updatePathIn(fooObj, "b.c", always(99))).toStrictEqual({ a: 1 });
+        expect(updatePath("b.d.e", always(99))(fooObj)).toStrictEqual({ a: 1 });
     });
 
-    it("should accept integers as paths containing a single key", function () {
-        expect(lamb.updatePath(1, lamb.always(99))([1, 2, 3])).toEqual([1, 99, 3]);
-        expect(lamb.updatePathIn([1, 2, 3], -1, lamb.always(99))).toEqual([1, 2, 99]);
-        expect(lamb.updatePath(2, lamb.always(99))([1, 2])).toEqual([1, 2]);
+    it("should accept integers as paths containing a single key", () => {
+        expect(updatePath(1, always(99))([1, 2, 3])).toStrictEqual([1, 99, 3]);
+        expect(updatePathIn([1, 2, 3], -1, always(99))).toStrictEqual([1, 2, 99]);
+        expect(updatePath(2, always(99))([1, 2])).toStrictEqual([1, 2]);
     });
 
-    it("should give priority to object keys over array indexes when a negative index is encountered", function () {
-        var o = { a: ["abc", "def", "ghi"] };
+    it("should give priority to object keys over array indexes when a negative index is encountered", () => {
+        const o = { a: ["abc", "def", "ghi"] };
 
         o.a["-1"] = "foo";
 
-        var r = { a: { 0: "abc", 1: "def", 2: "ghi", "-1": 99 } };
+        const r = { a: { 0: "abc", 1: "def", 2: "ghi", "-1": 99 } };
 
-        expect(lamb.updatePath("a.-1", lamb.always(99))(o)).toEqual(r);
-        expect(lamb.updatePathIn(o, "a.-1", lamb.always(99))).toEqual(r);
+        expect(updatePath("a.-1", always(99))(o)).toStrictEqual(r);
+        expect(updatePathIn(o, "a.-1", always(99))).toStrictEqual(r);
     });
 
-    it("should consider a negative integer to be an index if the property exists but it's not enumerable", function () {
-        var o = { a: ["abc", "def", "ghi"] };
+    it("should consider a negative integer to be an index if the property exists but it's not enumerable", () => {
+        const o = { a: ["abc", "def", "ghi"] };
 
         Object.defineProperty(o.a, "-1", { value: 99 });
 
-        var r = { a: ["abc", "def", "GHI"] };
+        const r = { a: ["abc", "def", "GHI"] };
 
-        expect(lamb.updatePath("a.-1", toUpperCase)(o)).toEqual(r);
-        expect(lamb.updatePathIn(o, "a.-1", toUpperCase)).toEqual(r);
+        expect(updatePath("a.-1", toUpperCase)(o)).toStrictEqual(r);
+        expect(updatePathIn(o, "a.-1", toUpperCase)).toStrictEqual(r);
     });
 
-    it("should convert other values for the `path` parameter to string", function () {
-        var values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        var testObj = lamb.make(nonStringsAsStrings, values);
+    it("should convert other values for the `path` parameter to string", () => {
+        const values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        const testObj = make(nonStringsAsStrings, values);
 
-        nonStrings.forEach(function (key) {
-            var expected = lamb.merge(testObj, {});
+        nonStrings.forEach(key => {
+            const expected = merge(testObj, {});
 
             expected[String(key)] = 99;
 
-            expect(lamb.updatePathIn(testObj, key, lamb.always(99), "_")).toEqual(expected);
-            expect(lamb.updatePath(key, lamb.always(99), "_")(testObj)).toEqual(expected);
+            expect(updatePathIn(testObj, key, always(99), "_")).toStrictEqual(expected);
+            expect(updatePath(key, always(99), "_")(testObj)).toStrictEqual(expected);
         });
 
-        var fooObj = { a: 2, 1: { 5: 3 }, undefined: 4 };
-        var r = { a: 2, 1: { 5: 99 }, undefined: 4 };
+        const fooObj = { a: 2, 1: { 5: 3 }, undefined: 4 };
+        const r = { a: 2, 1: { 5: 99 }, undefined: 4 };
 
-        expect(lamb.updatePathIn(fooObj, 1.5, lamb.always(99))).toEqual(r);
-        expect(lamb.updatePath(1.5, lamb.always(99))(fooObj)).toEqual(r);
+        expect(updatePathIn(fooObj, 1.5, always(99))).toStrictEqual(r);
+        expect(updatePath(1.5, always(99))(fooObj)).toStrictEqual(r);
     });
 
-    it("should throw an exception if the `updater` isn't a function or if is missing", function () {
-        nonFunctions.forEach(function (value) {
-            expect(function () { lamb.updatePathIn({ a: 2 }, "a", value); }).toThrow();
-            expect(function () { lamb.updatePath("a", value)({ a: 2 }); }).toThrow();
+    it("should throw an exception if the `updater` isn't a function or if is missing", () => {
+        nonFunctions.forEach(value => {
+            expect(() => { updatePathIn({ a: 2 }, "a", value); }).toThrow();
+            expect(() => { updatePath("a", value)({ a: 2 }); }).toThrow();
         });
 
-        expect(function () { lamb.updatePathIn({ a: 2 }, "a"); }).toThrow();
-        expect(function () { lamb.updatePath("a")({ a: 2 }); }).toThrow();
+        expect(() => { updatePathIn({ a: 2 }, "a"); }).toThrow();
+        expect(() => { updatePath("a")({ a: 2 }); }).toThrow();
     });
 
-    it("should throw an exception if called without arguments", function () {
-        expect(lamb.updatePathIn).toThrow();
-        expect(lamb.updatePath()).toThrow();
+    it("should throw an exception if called without arguments", () => {
+        expect(updatePathIn).toThrow();
+        expect(updatePath()).toThrow();
     });
 
-    it("should throw an exception if supplied with `null` or `undefined` instead of an object", function () {
-        expect(function () { lamb.updatePathIn(null, "a", lamb.always(99)); }).toThrow();
-        expect(function () { lamb.updatePathIn(void 0, "a", lamb.always(99)); }).toThrow();
-        expect(function () { lamb.updatePath("a", lamb.always(99))(null); }).toThrow();
-        expect(function () { lamb.updatePath("a", lamb.always(99))(void 0); }).toThrow();
+    it("should throw an exception if supplied with `null` or `undefined` instead of an object", () => {
+        expect(() => { updatePathIn(null, "a", always(99)); }).toThrow();
+        expect(() => { updatePathIn(void 0, "a", always(99)); }).toThrow();
+        expect(() => { updatePath("a", always(99))(null); }).toThrow();
+        expect(() => { updatePath("a", always(99))(void 0); }).toThrow();
     });
 
-    it("should convert to object every other value", function () {
-        wannabeEmptyObjects.forEach(function (value) {
-            expect(lamb.updatePathIn(value, "a", lamb.always(99))).toEqual({});
-            expect(lamb.updatePath("a", lamb.always(99))(value)).toEqual({});
-            expect(lamb.updatePathIn(value, "a.b.c", lamb.always(99))).toEqual({});
-            expect(lamb.updatePath("a.b.c", lamb.always(99))(value)).toEqual({});
+    it("should convert to object every other value", () => {
+        wannabeEmptyObjects.forEach(value => {
+            expect(updatePathIn(value, "a", always(99))).toStrictEqual({});
+            expect(updatePath("a", always(99))(value)).toStrictEqual({});
+            expect(updatePathIn(value, "a.b.c", always(99))).toStrictEqual({});
+            expect(updatePath("a.b.c", always(99))(value)).toStrictEqual({});
         });
     });
 });

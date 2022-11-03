@@ -1,7 +1,11 @@
-import * as lamb from "../..";
+import areSame from "../../logic/areSame";
+import checker from "../checker";
+import findIndex from "../../array/findIndex";
+import validate from "../validate";
+import validateWith from "../validateWith";
 
-describe("Object validation", function () {
-    var persons = [
+describe("Object validation", () => {
+    const persons = [
         { name: "Jane", surname: "Doe", age: 12, city: "New York", email: "jane@doe" },
         { name: "John", surname: "Doe", age: 40, city: "London", email: "john@doe" },
         { name: "Mario", surname: "Rossi", age: 18, city: "Rome", email: "mario@rossi.it" },
@@ -10,90 +14,89 @@ describe("Object validation", function () {
 
     persons[0].login = { "user.name": "", password: "jane", passwordConfirm: "janE" };
 
-    var isAdult = function (age) { return age >= 18; };
-    var isRequired = function (v) { return v.length > 0; };
-    var isValidMail = function (mail) {
-        // eslint-disable-next-line max-len
-        return /^[A-Za-z0-9](([_.-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/.test(mail);
-    };
-    var isValidPassword = function (pwd) { return pwd.length > 5; };
+    const isAdult = age => age >= 18;
+    const isRequired = value => value.length > 0;
 
-    var mailCheck = lamb.checker(isValidMail, "Must have a valid mail", ["email"]);
-    var ageCheck = lamb.checker(isAdult, "Must be at least 18 years old", ["age"]);
-    var pwdCheck = lamb.checker(
+    // eslint-disable-next-line max-len
+    const isValidMail = mail => /^[A-Za-z0-9](([_.-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/.test(mail);
+    const isValidPassword = pwd => pwd.length > 5;
+
+    const mailCheck = checker(isValidMail, "Must have a valid mail", ["email"]);
+    const ageCheck = checker(isAdult, "Must be at least 18 years old", ["age"]);
+    const pwdCheck = checker(
         isValidPassword,
         "Passwords must have at least six characters",
         ["login.password"]
     );
-    var userNameCheck = lamb.checker(
+    const userNameCheck = checker(
         isRequired,
         "The username is a required field",
         ["login/user.name"],
         "/"
     );
-    var pwdConfirmCheck = lamb.checker(
-        lamb.areSame,
+    const pwdConfirmCheck = checker(
+        areSame,
         "Passwords don't match",
         ["login.password", "login.passwordConfirm"]
     );
 
-    describe("checker", function () {
-        it("should build a function to validate the given properties of an object", function () {
-            expect(mailCheck(persons[0])).toEqual(["Must have a valid mail", ["email"]]);
-            expect(mailCheck(persons[2])).toEqual([]);
+    describe("checker", () => {
+        it("should build a function to validate the given properties of an object", () => {
+            expect(mailCheck(persons[0])).toStrictEqual(["Must have a valid mail", ["email"]]);
+            expect(mailCheck(persons[2])).toStrictEqual([]);
         });
 
-        it("should accept string paths as property names", function () {
-            expect(pwdCheck(persons[0])).toEqual(
+        it("should accept string paths as property names", () => {
+            expect(pwdCheck(persons[0])).toStrictEqual(
                 ["Passwords must have at least six characters", ["login.password"]]
             );
-            expect(userNameCheck(persons[0])).toEqual(
+            expect(userNameCheck(persons[0])).toStrictEqual(
                 ["The username is a required field", ["login/user.name"]]
             );
         });
 
-        it("should be possible to make a checker involving more than one property", function () {
-            expect(pwdConfirmCheck(persons[0])).toEqual(
+        it("should be possible to make a checker involving more than one property", () => {
+            expect(pwdConfirmCheck(persons[0])).toStrictEqual(
                 ["Passwords don't match", ["login.password", "login.passwordConfirm"]]
             );
         });
 
-        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-            var isEven = function (n) { return n % 2 === 0; };
-            var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
-            var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
-            var o = { a: [1, 3, 5, 6, 7], b: [1, 3, 5, 7], c: "a", d: "b" };
+        it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", () => {
+            const isEven = n => n % 2 === 0;
+            const hasEvens = array => ~findIndex(array, isEven);
+            const isVowel = char => ~"aeiouAEIOU".indexOf(char);
+            const o = { a: [1, 3, 5, 6, 7], b: [1, 3, 5, 7], c: "a", d: "b" };
 
-            var checker1 = lamb.checker(hasEvens, "error", ["a"]);
-            var checker2 = lamb.checker(hasEvens, "error", ["b"]);
-            var checker3 = lamb.checker(isVowel, "error", ["c"]);
-            var checker4 = lamb.checker(isVowel, "error", ["d"]);
+            const checker1 = checker(hasEvens, "error", ["a"]);
+            const checker2 = checker(hasEvens, "error", ["b"]);
+            const checker3 = checker(isVowel, "error", ["c"]);
+            const checker4 = checker(isVowel, "error", ["d"]);
 
-            expect(checker1(o)).toEqual([]);
-            expect(checker2(o)).toEqual(["error", ["b"]]);
-            expect(checker3(o)).toEqual([]);
-            expect(checker4(o)).toEqual(["error", ["d"]]);
+            expect(checker1(o)).toStrictEqual([]);
+            expect(checker2(o)).toStrictEqual(["error", ["b"]]);
+            expect(checker3(o)).toStrictEqual([]);
+            expect(checker4(o)).toStrictEqual(["error", ["d"]]);
         });
     });
 
-    describe("validate", function () {
-        it("should validate an object with the given set of checkers", function () {
-            expect(lamb.validate(persons[0], [mailCheck, ageCheck])).toEqual([
+    describe("validate", () => {
+        it("should validate an object with the given set of checkers", () => {
+            expect(validate(persons[0], [mailCheck, ageCheck])).toStrictEqual([
                 ["Must have a valid mail", ["email"]],
                 ["Must be at least 18 years old", ["age"]]
             ]);
-            expect(lamb.validate(persons[1], [mailCheck, ageCheck])).toEqual([
+            expect(validate(persons[1], [mailCheck, ageCheck])).toStrictEqual([
                 ["Must have a valid mail", ["email"]]
             ]);
-            expect(lamb.validate(persons[2], [mailCheck, ageCheck])).toEqual([]);
+            expect(validate(persons[2], [mailCheck, ageCheck])).toStrictEqual([]);
         });
     });
 
-    describe("validateWith", function () {
-        it("should build a validator to be reused with different objects", function () {
-            var personValidator = lamb.validateWith([mailCheck, ageCheck]);
+    describe("validateWith", () => {
+        it("should build a validator to be reused with different objects", () => {
+            const personValidator = validateWith([mailCheck, ageCheck]);
 
-            expect(persons.map(personValidator)).toEqual([
+            expect(persons.map(personValidator)).toStrictEqual([
                 [
                     ["Must have a valid mail", ["email"]],
                     ["Must be at least 18 years old", ["age"]]

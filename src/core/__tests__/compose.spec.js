@@ -1,43 +1,43 @@
-import * as lamb from "../..";
+import compose from "../compose";
+import identity from "../identity";
 import { nonFunctions } from "../../__tests__/commons";
 
-describe("compose", function () {
-    var double = function (n) { return n * 2; };
-    var cube = function (n) { return Math.pow(n, 3); };
-    var changeSign = function (n) { return -n; };
+describe("compose", () => {
+    const double = n => n * 2;
+    const cube = n => n ** 3;
+    const changeSign = n => -n;
+    const cubeAndDouble = compose(double, cube);
+    const doubleAndCube = compose(cube, double);
 
-    var cubeAndDouble = lamb.compose(double, cube);
-    var doubleAndCube = lamb.compose(cube, double);
-
-    it("should return a function that is the composition of the given functions; the first one consuming the return value of the function that follows", function () {
+    it("should return a function that is the composition of the given functions; the first one consuming the return value of the function that follows", () => {
         expect(cubeAndDouble(5)).toBe(250);
         expect(doubleAndCube(5)).toBe(1000);
     });
 
-    it("should be possible to reuse composed functions", function () {
-        var changeSignCubeAndDouble = lamb.compose(cubeAndDouble, changeSign);
+    it("should be possible to reuse composed functions", () => {
+        const changeSignCubeAndDouble = compose(cubeAndDouble, changeSign);
 
         expect(changeSignCubeAndDouble(2)).toBe(-16);
     });
 
-    it("should behave like `identity` if no functions are passed", function () {
-        var obj = {};
+    it("should behave like `identity` if no functions are passed", () => {
+        const obj = {};
 
-        expect(lamb.compose()(obj)).toBe(obj);
-        expect(lamb.compose()()).toBeUndefined();
-        expect(lamb.compose()(2, 3, 4)).toBe(2);
+        expect(compose()(obj)).toBe(obj);
+        expect(compose()()).toBeUndefined();
+        expect(compose()(2, 3, 4)).toBe(2);
     });
 
-    it("should ignore extra arguments", function () {
-        expect(lamb.compose(double, cube, changeSign)(5)).toBe(250);
+    it("should ignore extra arguments", () => {
+        expect(compose(double, cube, changeSign)(5)).toBe(250);
     });
 
-    it("should build a function throwing an exception if any parameter is not a function", function () {
-        nonFunctions.forEach(function (value) {
-            expect(lamb.compose(lamb.identity, value)).toThrow();
-            expect(lamb.compose(value, lamb.identity)).toThrow();
+    it("should build a function throwing an exception if any parameter is not a function", () => {
+        nonFunctions.forEach(value => {
+            expect(compose(identity, value)).toThrow();
+            expect(compose(value, identity)).toThrow();
         });
 
-        expect(lamb.compose(lamb.identity)).toThrow();
+        expect(compose(identity)).toThrow();
     });
 });

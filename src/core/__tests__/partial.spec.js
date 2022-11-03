@@ -1,25 +1,30 @@
-import * as lamb from "../..";
+import __ from "../__";
+import divide from "../../math/divide";
+import getIn from "../../object/getIn";
+import list from "../../array/list";
+import partial from "../partial";
+import partialRight from "../partialRight";
+import unary from "../../function/unary";
 import { nonArrayLikes, nonFunctions } from "../../__tests__/commons";
 
-describe("partial / partialRight", function () {
-    var foo = function (a, b, c, d, e) {
+describe("partial / partialRight", () => {
+    function sumOfFive (a, b, c, d, e) {
         return a + b + c + d + e;
-    };
-    var __ = lamb.__;
+    }
 
-    it("should return a partially applied function using the given arguments", function () {
-        var f1 = lamb.partial(foo, ["a", "b", "c"]);
-        var f2 = lamb.partialRight(foo, ["a", "b", "c"]);
+    it("should return a partially applied function using the given arguments", () => {
+        const f1 = partial(sumOfFive, ["a", "b", "c"]);
+        const f2 = partialRight(sumOfFive, ["a", "b", "c"]);
 
         expect(f1("d", "e")).toBe("abcde");
         expect(f2("d", "e")).toBe("deabc");
     });
 
-    it("should accept placeholders as arguments", function () {
-        var f1 = lamb.partial(foo, [__, __, "c", __, "e"]);
-        var f2 = lamb.partialRight(foo, [__, __, "c", __, "e"]);
-        var f3 = lamb.partial(foo, [__, "c", __, "e"]);
-        var f4 = lamb.partialRight(foo, [__, "c", __, "e"]);
+    it("should accept placeholders as arguments", () => {
+        const f1 = partial(sumOfFive, [__, __, "c", __, "e"]);
+        const f2 = partialRight(sumOfFive, [__, __, "c", __, "e"]);
+        const f3 = partial(sumOfFive, [__, "c", __, "e"]);
+        const f4 = partialRight(sumOfFive, [__, "c", __, "e"]);
 
         expect(f1("a", "b", "d")).toBe("abcde");
         expect(f2("a", "b", "d")).toBe("abcde");
@@ -27,86 +32,86 @@ describe("partial / partialRight", function () {
         expect(f4("a", "b", "d")).toBe("abcde");
     });
 
-    it("should be possible to create a partial application from another partial application", function () {
-        var f1 = lamb.partial(foo, [__, "b", __, "d"]);
-        var f2 = lamb.partialRight(foo, [__, "b", __, "d"]);
+    it("should be possible to create a partial application from another partial application", () => {
+        const f1 = partial(sumOfFive, [__, "b", __, "d"]);
+        const f2 = partialRight(sumOfFive, [__, "b", __, "d"]);
 
-        expect(lamb.partial(f1, ["a", __, "e"])("c")).toBe("abcde");
-        expect(lamb.partial(f2, ["a", __, "e"])("c")).toBe("acbed");
+        expect(partial(f1, ["a", __, "e"])("c")).toBe("abcde");
+        expect(partial(f2, ["a", __, "e"])("c")).toBe("acbed");
     });
 
-    it("should give an `undefined` value to unfilled placeholders", function () {
-        var f1 = lamb.partial(lamb.list, [__, 2, __, 3, __, 5, __]);
-        var f2 = lamb.partialRight(lamb.list, [__, 2, __, 3, __, 5, __]);
+    it("should give an `undefined` value to unfilled placeholders", () => {
+        const f1 = partial(list, [__, 2, __, 3, __, 5, __]);
+        const f2 = partialRight(list, [__, 2, __, 3, __, 5, __]);
 
-        expect(f1(99)).toEqual([99, 2, void 0, 3, void 0, 5, void 0]);
-        expect(f1(98, 99)).toEqual([98, 2, 99, 3, void 0, 5, void 0]);
-        expect(f2(99)).toEqual([void 0, 2, void 0, 3, void 0, 5, 99]);
-        expect(f2(98, 99)).toEqual([void 0, 2, void 0, 3, 98, 5, 99]);
+        expect(f1(99)).toStrictEqual([99, 2, void 0, 3, void 0, 5, void 0]);
+        expect(f1(98, 99)).toStrictEqual([98, 2, 99, 3, void 0, 5, void 0]);
+        expect(f2(99)).toStrictEqual([void 0, 2, void 0, 3, void 0, 5, 99]);
+        expect(f2(98, 99)).toStrictEqual([void 0, 2, void 0, 3, 98, 5, 99]);
     });
 
-    it("should be safe to call the partial application multiple times with different values for unfilled placeholders", function () {
-        var list = [{ id: "foo" }, { id: "bar" }, { id: "baz" }];
-        var getID1 = lamb.partial(lamb.getIn, [__, "id"]);
-        var getID2 = lamb.unary(lamb.partialRight(lamb.getIn, [__, "id"]));
+    it("should be safe to call the partial application multiple times with different values for unfilled placeholders", () => {
+        const arr = [{ id: "foo" }, { id: "bar" }, { id: "baz" }];
+        const getID1 = partial(getIn, [__, "id"]);
+        const getID2 = unary(partialRight(getIn, [__, "id"]));
 
-        expect(list.map(getID1)).toEqual(["foo", "bar", "baz"]);
-        expect(list.map(getID2)).toEqual(["foo", "bar", "baz"]);
+        expect(arr.map(getID1)).toStrictEqual(["foo", "bar", "baz"]);
+        expect(arr.map(getID2)).toStrictEqual(["foo", "bar", "baz"]);
     });
 
-    it("should pass all the received arguments to the partially applied function, even if they exceed the original function's arity", function () {
+    it("should pass all the received arguments to the partially applied function, even if they exceed the original function's arity", () => {
         function binaryFoo (a, b) {
             return a + b + arguments[2] + arguments[3] + arguments[4];
         }
 
-        expect(lamb.partial(binaryFoo, ["a", __, __, "d"])("b", "c", "e")).toBe("abcde");
-        expect(lamb.partialRight(binaryFoo, ["a", __, __, "d"])("b", "c", "e")).toBe("baced");
+        expect(partial(binaryFoo, ["a", __, __, "d"])("b", "c", "e")).toBe("abcde");
+        expect(partialRight(binaryFoo, ["a", __, __, "d"])("b", "c", "e")).toBe("baced");
     });
 
-    it("should preserve the function's context", function () {
-        var fn = function (a, b) {
+    it("should preserve the function's context", () => {
+        function fn (a, b) {
             this.values.push(a - b);
-        };
+        }
 
-        var obj = {
+        const obj = {
             values: [1, 2, 3],
-            foo: lamb.partial(fn, [4, __]),
-            bar: lamb.partialRight(fn, [__, 4])
+            foo: partial(fn, [4, __]),
+            bar: partialRight(fn, [__, 4])
         };
 
         obj.foo(5);
-        expect(obj.values).toEqual([1, 2, 3, -1]);
+        expect(obj.values).toStrictEqual([1, 2, 3, -1]);
 
         obj.bar(5);
-        expect(obj.values).toEqual([1, 2, 3, -1, 1]);
+        expect(obj.values).toStrictEqual([1, 2, 3, -1, 1]);
     });
 
-    it("should consider non-arrays received as the `args` parameter as empty arrays", function () {
-        var divideSpy = jest.fn(lamb.divide);
+    it("should consider non-arrays received as the `args` parameter as empty arrays", () => {
+        const divideSpy = jest.fn(divide);
 
-        nonArrayLikes.forEach(function (value, idx) {
-            expect(lamb.partial(divideSpy, value)(5, 4)).toBe(1.25);
-            expect(lamb.partialRight(divideSpy, value)(5, 4)).toBe(1.25);
-            expect(divideSpy.mock.calls[idx * 2]).toEqual([5, 4]);
-            expect(divideSpy.mock.calls[idx * 2 + 1]).toEqual([5, 4]);
+        nonArrayLikes.forEach((value, idx) => {
+            expect(partial(divideSpy, value)(5, 4)).toBe(1.25);
+            expect(partialRight(divideSpy, value)(5, 4)).toBe(1.25);
+            expect(divideSpy).toHaveBeenNthCalledWith(idx * 2 + 1, 5, 4);
+            expect(divideSpy).toHaveBeenNthCalledWith(idx * 2 + 2, 5, 4);
         });
 
-        expect(lamb.partial(divideSpy)(5, 4)).toBe(1.25);
-        expect(lamb.partialRight(divideSpy)(5, 4)).toBe(1.25);
-        expect(divideSpy.mock.calls[nonArrayLikes.length * 2]).toEqual([5, 4]);
-        expect(divideSpy.mock.calls[nonArrayLikes.length * 2 + 1]).toEqual([5, 4]);
+        expect(partial(divideSpy)(5, 4)).toBe(1.25);
+        expect(partialRight(divideSpy)(5, 4)).toBe(1.25);
         expect(divideSpy).toHaveBeenCalledTimes(nonArrayLikes.length * 2 + 2);
+        expect(divideSpy).toHaveBeenNthCalledWith(nonArrayLikes.length * 2 + 1, 5, 4);
+        expect(divideSpy).toHaveBeenNthCalledWith(nonArrayLikes.length * 2 + 2, 5, 4);
 
         divideSpy.mockRestore();
     });
 
-    it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", function () {
-        nonFunctions.forEach(function (value) {
-            expect(lamb.partial(value)).toThrow();
-            expect(lamb.partialRight(value)).toThrow();
+    it("should build a function throwing an exception if called without arguments or if `fn` isn't a function", () => {
+        nonFunctions.forEach(value => {
+            expect(partial(value)).toThrow();
+            expect(partialRight(value)).toThrow();
         });
 
-        expect(lamb.partial()).toThrow();
-        expect(lamb.partialRight()).toThrow();
+        expect(partial()).toThrow();
+        expect(partialRight()).toThrow();
     });
 });

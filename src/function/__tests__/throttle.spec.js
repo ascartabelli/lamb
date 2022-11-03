@@ -1,41 +1,32 @@
-import * as lamb from "../..";
+import throttle from "../throttle";
 
-describe("throttle", function () {
-    var value = 0;
-    var foo = jest.fn(function () {
-        ++value;
-    });
-    var now = Date.now();
+jest.useFakeTimers();
 
-    jest.spyOn(Date, "now")
-        .mockReturnValueOnce(now)
-        .mockReturnValueOnce(now + 10)
-        .mockReturnValueOnce(now + 50)
-        .mockReturnValueOnce(now + 101)
-        .mockReturnValueOnce(now + 151)
-        .mockReturnValueOnce(now + 201);
+describe("throttle", () => {
+    const fn = jest.fn();
+    const throttledFn = throttle(fn, 100);
 
-    it("should return a function that will invoke the passed function at most once in the given timespan", function () {
-        var throttledFoo = lamb.throttle(foo, 100);
+    it("should return a function that will invoke the passed function at most once in the given timespan", () => {
+        throttledFn();
+        throttledFn();
+        throttledFn();
 
-        throttledFoo();
-        throttledFoo();
-        throttledFoo();
+        expect(fn).toHaveBeenCalledTimes(1);
 
-        expect(foo).toHaveBeenCalledTimes(1);
-        expect(value).toBe(1);
+        jest.advanceTimersByTime(50);
 
-        foo.mockClear();
+        throttledFn();
+        throttledFn();
+        throttledFn();
 
-        throttledFoo();
-        throttledFoo();
+        expect(fn).toHaveBeenCalledTimes(1);
 
-        expect(foo).toHaveBeenCalledTimes(1);
-        expect(value).toBe(2);
+        jest.advanceTimersByTime(51);
 
-        throttledFoo();
+        throttledFn();
+        throttledFn();
+        throttledFn();
 
-        expect(foo).toHaveBeenCalledTimes(2);
-        expect(value).toBe(3);
+        expect(fn).toHaveBeenCalledTimes(2);
     });
 });

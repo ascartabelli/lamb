@@ -1,8 +1,9 @@
-import * as lamb from "../..";
+import deduct from "../deduct";
+import subtract from "../subtract";
 
-describe("subtract / deduct", function () {
-    it("should subtract two numbers", function () {
-        expect(lamb.subtract(5, 7)).toBe(-2);
-        expect(lamb.deduct(7)(5)).toBe(-2);
+describe("subtract / deduct", () => {
+    it("should subtract two numbers", () => {
+        expect(subtract(5, 7)).toBe(-2);
+        expect(deduct(7)(5)).toBe(-2);
     });
 });

@@ -1,69 +1,70 @@
-import * as lamb from "../..";
+import getKey from "../../object/getKey";
+import identity from "../../core/identity";
+import sorter from "../sorter";
+import sorterDesc from "../sorterDesc";
 import { nonFunctions } from "../../__tests__/commons";
 
-describe("sorter / sorterDesc", function () {
-    var myComparer = jest.fn().mockReturnValue("foo");
-    var myReader = jest.fn(lamb.getKey("a"));
-    var foo = { a: 1 };
-    var bar = { a: 2 };
+describe("sorter / sorterDesc", () => {
+    const myComparer = jest.fn().mockReturnValue("foo");
+    const myReader = jest.fn(getKey("a"));
+    const foo = { a: 1 };
+    const bar = { a: 2 };
 
-    afterEach(function () {
+    afterEach(() => {
         myComparer.mockClear();
         myReader.mockClear();
     });
 
-    it("should build a sorting criterion", function () {
-        var sorterAsc = lamb.sorter();
-        var sorterDesc = lamb.sorterDesc();
+    it("should build a sorting criterion", () => {
+        const ascSorter = sorter();
+        const descSorter = sorterDesc();
 
-        expect(sorterAsc.isDescending).toBe(false);
-        expect(sorterDesc.isDescending).toBe(true);
-        expect(typeof sorterAsc.compare).toBe("function");
-        expect(typeof sorterDesc.compare).toBe("function");
-        expect(sorterAsc.compare.length).toBe(2);
-        expect(sorterDesc.compare.length).toBe(2);
-        expect(sorterAsc.compare("a", "b")).toBe(-1);
-        expect(sorterDesc.compare("a", "b")).toBe(-1);
+        expect(ascSorter.isDescending).toBe(false);
+        expect(descSorter.isDescending).toBe(true);
+        expect(typeof ascSorter.compare).toBe("function");
+        expect(typeof descSorter.compare).toBe("function");
+        expect(ascSorter.compare.length).toBe(2);
+        expect(descSorter.compare.length).toBe(2);
+        expect(ascSorter.compare("a", "b")).toBe(-1);
+        expect(descSorter.compare("a", "b")).toBe(-1);
     });
 
-    it("should use a custom comparer if supplied with one", function () {
-        expect(lamb.sorter(null, myComparer).compare(foo, bar)).toBe("foo");
+    it("should use a custom comparer if supplied with one", () => {
+        expect(sorter(null, myComparer).compare(foo, bar)).toBe("foo");
     });
 
-    it("should use a custom reader if supplied with one", function () {
-        lamb.sorter(myReader, myComparer).compare(foo, bar);
+    it("should use a custom reader if supplied with one", () => {
+        sorter(myReader, myComparer).compare(foo, bar);
 
         expect(myReader).toHaveBeenCalledTimes(2);
-        expect(myReader.mock.calls[0][0]).toBe(foo);
-        expect(myReader.mock.calls[1][0]).toBe(bar);
+        expect(myReader).toHaveBeenNthCalledWith(1, foo);
+        expect(myReader).toHaveBeenNthCalledWith(2, bar);
         expect(myComparer).toHaveBeenCalledTimes(1);
-        expect(myComparer.mock.calls[0]).toEqual([1, 2]);
+        expect(myComparer).toHaveBeenCalledWith(1, 2);
     });
 
-    it("should pass values directly to the comparer if there's no reader function or if the reader is the identity function", function () {
-        lamb.sorter(lamb.identity, myComparer).compare(foo, bar);
-        lamb.sorterDesc(null, myComparer).compare(foo, bar);
+    it("should pass values directly to the comparer if there's no reader function or if the reader is the identity function", () => {
+        sorter(identity, myComparer).compare(foo, bar);
+        sorterDesc(null, myComparer).compare(foo, bar);
 
         expect(myComparer).toHaveBeenCalledTimes(2);
-        expect(myComparer.mock.calls[0][0]).toBe(foo);
-        expect(myComparer.mock.calls[0][1]).toBe(bar);
-        expect(myComparer.mock.calls[1][0]).toBe(foo);
-        expect(myComparer.mock.calls[1][1]).toBe(bar);
+        expect(myComparer).toHaveBeenNthCalledWith(1, foo, bar);
+        expect(myComparer).toHaveBeenNthCalledWith(2, foo, bar);
     });
 
-    it("should build a default sorting criterion if the comparer isn't a function", function () {
-        nonFunctions.forEach(function (value) {
-            var sorterAsc = lamb.sorter(lamb.identity, value);
-            var sorterDesc = lamb.sorterDesc(lamb.identity, value);
+    it("should build a default sorting criterion if the comparer isn't a function", () => {
+        nonFunctions.forEach(value => {
+            const ascSorter = sorter(identity, value);
+            const descSorter = sorterDesc(identity, value);
 
-            expect(sorterAsc.isDescending).toBe(false);
-            expect(sorterDesc.isDescending).toBe(true);
-            expect(typeof sorterAsc.compare).toBe("function");
-            expect(typeof sorterDesc.compare).toBe("function");
-            expect(sorterAsc.compare.length).toBe(2);
-            expect(sorterDesc.compare.length).toBe(2);
-            expect(sorterAsc.compare("a", "b")).toBe(-1);
-            expect(sorterDesc.compare("a", "b")).toBe(-1);
+            expect(ascSorter.isDescending).toBe(false);
+            expect(descSorter.isDescending).toBe(true);
+            expect(typeof ascSorter.compare).toBe("function");
+            expect(typeof descSorter.compare).toBe("function");
+            expect(ascSorter.compare.length).toBe(2);
+            expect(descSorter.compare.length).toBe(2);
+            expect(ascSorter.compare("a", "b")).toBe(-1);
+            expect(descSorter.compare("a", "b")).toBe(-1);
         });
     });
 });

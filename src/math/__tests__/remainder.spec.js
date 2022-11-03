@@ -1,9 +1,9 @@
-import * as lamb from "../..";
+import remainder from "../remainder";
 
-describe("remainder", function () {
-    it("should calculate the remainder of the division of two numbers", function () {
-        expect(lamb.remainder(5, 3)).toBe(2);
-        expect(lamb.remainder(-5, 3)).toBe(-2);
-        expect(isNaN(lamb.remainder(-5, 0))).toBe(true);
+describe("remainder", () => {
+    it("should calculate the remainder of the division of two numbers", () => {
+        expect(remainder(5, 3)).toBe(2);
+        expect(remainder(-5, 3)).toBe(-2);
+        expect(isNaN(remainder(-5, 0))).toBe(true);
     });
 });

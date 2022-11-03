@@ -1,96 +1,101 @@
-import * as lamb from "../..";
+import identity from "../../core/identity";
+import reduceRight from "../reduceRight";
+import reduceRightWith from "../reduceRightWith";
+import subtract from "../../math/subtract";
+import sum from "../../math/sum";
+import tapArgs from "../../function/tapArgs";
 import { nonFunctions, wannabeEmptyArrays } from "../../__tests__/commons";
 
-describe("reduceRight / reduceRightWith", function () {
-    var arr = [1, 2, 3, 4, 5];
-    var s = "12345";
+describe("reduceRight / reduceRightWith", () => {
+    const arr = [1, 2, 3, 4, 5];
+    const s = "12345";
 
-    afterEach(function () {
-        expect(arr).toEqual([1, 2, 3, 4, 5]);
+    afterEach(() => {
+        expect(arr).toStrictEqual([1, 2, 3, 4, 5]);
     });
 
-    it("should fold or reduce the provided array with the given accumulator function starting from the last element", function () {
-        var subtract = jest.fn(function (prev, current, idx, list) {
+    it("should fold or reduce the provided array with the given accumulator function starting from the last element", () => {
+        const subtractMock = jest.fn((prev, current, idx, list) => {
             expect(list).toBe(arr);
             expect(list[idx]).toBe(current);
 
             return prev - current;
         });
 
-        var prevValues = [
+        const prevValues = [
             5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4,
             5, 1, -2, -4, 0, -5, -9, -12, -14, 10, 5, 1, -2, -4
         ];
 
-        expect(lamb.reduceRight(arr, subtract)).toBe(-5);
-        expect(lamb.reduceRight(arr, subtract, 0)).toBe(-15);
-        expect(lamb.reduceRight(arr, subtract, 10)).toBe(-5);
-        expect(lamb.reduceRightWith(subtract)(arr)).toBe(-5);
-        expect(lamb.reduceRightWith(subtract, 0)(arr)).toBe(-15);
-        expect(lamb.reduceRightWith(subtract, 10)(arr)).toBe(-5);
+        expect(reduceRight(arr, subtractMock)).toBe(-5);
+        expect(reduceRight(arr, subtractMock, 0)).toBe(-15);
+        expect(reduceRight(arr, subtractMock, 10)).toBe(-5);
+        expect(reduceRightWith(subtractMock)(arr)).toBe(-5);
+        expect(reduceRightWith(subtractMock, 0)(arr)).toBe(-15);
+        expect(reduceRightWith(subtractMock, 10)(arr)).toBe(-5);
 
-        expect(subtract).toHaveBeenCalledTimes(prevValues.length);
+        expect(subtractMock).toHaveBeenCalledTimes(prevValues.length);
 
-        prevValues.forEach(function (prevValue, idx) {
-            expect(subtract.mock.calls[idx][0]).toEqual(prevValue);
+        prevValues.forEach((prevValue, idx) => {
+            expect(subtractMock.mock.calls[idx][0]).toStrictEqual(prevValue);
         });
     });
 
-    it("should work with array-like objects", function () {
-        var fn = lamb.tapArgs(lamb.subtract, [lamb.identity, Number]);
+    it("should work with array-like objects", () => {
+        const fn = tapArgs(subtract, [identity, Number]);
 
-        expect(lamb.reduceRight(s, fn)).toBe(-5);
-        expect(lamb.reduceRight(s, fn, 0)).toBe(-15);
-        expect(lamb.reduceRight(s, fn, 10)).toBe(-5);
-        expect(lamb.reduceRightWith(fn)(s)).toBe(-5);
-        expect(lamb.reduceRightWith(fn, 0)(s)).toBe(-15);
-        expect(lamb.reduceRightWith(fn, 10)(s)).toBe(-5);
+        expect(reduceRight(s, fn)).toBe(-5);
+        expect(reduceRight(s, fn, 0)).toBe(-15);
+        expect(reduceRight(s, fn, 10)).toBe(-5);
+        expect(reduceRightWith(fn)(s)).toBe(-5);
+        expect(reduceRightWith(fn, 0)(s)).toBe(-15);
+        expect(reduceRightWith(fn, 10)(s)).toBe(-5);
     });
 
-    it("should not skip deleted or unassigned elements, unlike the native method", function () {
-        var sum = jest.fn(function (a, b) { return a + b; });
-        var sparseArr = Array(3);
+    it("should not skip deleted or unassigned elements, unlike the native method", () => {
+        const sumMock = jest.fn((a, b) => a + b);
+        const sparseArr = Array(3);
 
         sparseArr[1] = 3;
 
-        expect(lamb.reduceRight(sparseArr, sum, 0)).toEqual(NaN);
-        expect(lamb.reduceRightWith(sum, 0)(sparseArr)).toEqual(NaN);
-        expect(sum).toHaveBeenCalledTimes(6);
+        expect(reduceRight(sparseArr, sumMock, 0)).toStrictEqual(NaN);
+        expect(reduceRightWith(sumMock, 0)(sparseArr)).toStrictEqual(NaN);
+        expect(sumMock).toHaveBeenCalledTimes(6);
     });
 
-    it("should build a function throwing an exception if the accumulator isn't a function or is missing", function () {
-        nonFunctions.forEach(function (value) {
-            expect(function () { lamb.reduceRight(arr, value, 0); }).toThrow();
-            expect(function () { lamb.reduceRightWith(value, 0)(arr); }).toThrow();
+    it("should build a function throwing an exception if the accumulator isn't a function or is missing", () => {
+        nonFunctions.forEach(value => {
+            expect(() => { reduceRight(arr, value, 0); }).toThrow();
+            expect(() => { reduceRightWith(value, 0)(arr); }).toThrow();
         });
 
-        expect(function () { lamb.reduceRight(arr); }).toThrow();
-        expect(function () { lamb.reduceRightWith()(arr); }).toThrow();
+        expect(() => { reduceRight(arr); }).toThrow();
+        expect(() => { reduceRightWith()(arr); }).toThrow();
     });
 
-    it("should throw an exception if called without the data argument", function () {
-        expect(lamb.reduceRight).toThrow();
-        expect(lamb.reduceRightWith(lamb.sum, 0)).toThrow();
+    it("should throw an exception if called without the data argument", () => {
+        expect(reduceRight).toThrow();
+        expect(reduceRightWith(sum, 0)).toThrow();
     });
 
-    it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-        expect(function () { lamb.reduceRight(null, lamb.subtract, 0); }).toThrow();
-        expect(function () { lamb.reduceRight(void 0, lamb.subtract, 0); }).toThrow();
-        expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(null); }).toThrow();
-        expect(function () { lamb.reduceRightWith(lamb.subtract, 0)(void 0); }).toThrow();
+    it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", () => {
+        expect(() => { reduceRight(null, subtract, 0); }).toThrow();
+        expect(() => { reduceRight(void 0, subtract, 0); }).toThrow();
+        expect(() => { reduceRightWith(subtract, 0)(null); }).toThrow();
+        expect(() => { reduceRightWith(subtract, 0)(void 0); }).toThrow();
     });
 
-    it("should throw an exception when supplied with an empty array-like without an initial value", function () {
-        expect(function () { lamb.reduceRight([], lamb.subtract); }).toThrow();
-        expect(function () { lamb.reduceRight("", lamb.subtract); }).toThrow();
-        expect(function () { lamb.reduceRightWith(lamb.subtract)([]); }).toThrow();
-        expect(function () { lamb.reduceRightWith(lamb.subtract)(""); }).toThrow();
+    it("should throw an exception when supplied with an empty array-like without an initial value", () => {
+        expect(() => { reduceRight([], subtract); }).toThrow();
+        expect(() => { reduceRight("", subtract); }).toThrow();
+        expect(() => { reduceRightWith(subtract)([]); }).toThrow();
+        expect(() => { reduceRightWith(subtract)(""); }).toThrow();
     });
 
-    it("should treat every other value as an empty array and return the initial value", function () {
-        wannabeEmptyArrays.forEach(function (value) {
-            expect(lamb.reduceRight(value, lamb.subtract, 99)).toEqual(99);
-            expect(lamb.reduceRightWith(lamb.subtract, 99)(value)).toEqual(99);
+    it("should treat every other value as an empty array and return the initial value", () => {
+        wannabeEmptyArrays.forEach(value => {
+            expect(reduceRight(value, subtract, 99)).toStrictEqual(99);
+            expect(reduceRightWith(subtract, 99)(value)).toStrictEqual(99);
         });
     });
 });

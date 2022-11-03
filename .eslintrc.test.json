@@ -1,6 +1,6 @@
 {
     "env": {
-        "es6": true,
+        "es2022": true,
         "jest" : true,
         "node": true
     },
@@ -8,7 +8,7 @@
         ".eslintrc.json"
     ],
     "parserOptions": {
-        "ecmaVersion": 9
+        "ecmaVersion": "latest"
     },
     "rules": {
         "brace-style": [
@@ -36,10 +36,17 @@
             }
         ],
         "no-array-constructor": 0,
+        "no-confusing-arrow": ["error", { "allowParens": true }],
         "no-empty-function": [
             "error",
             {"allow": ["functions"]}
         ],
+        "no-extra-parens": ["error", "all", {
+            "enforceForArrowConditionals": false,
+            "enforceForNewInMemberExpressions": false,
+            "nestedBinaryExpressions": false
+        }],
+        "no-var": "error",
         "object-curly-newline": [
             "error", {
                 "ObjectExpression": {

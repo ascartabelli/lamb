@@ -1,9 +1,10 @@
-import * as lamb from "../..";
+import split from "../split";
+import splitBy from "../splitBy";
 
-describe("split / splitBy", function () {
-    var s = "Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod , tempor incididunt";
-    var re = /\s*,\s*/;
-    var r1 = [
+describe("split / splitBy", () => {
+    const s = "Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod , tempor incididunt";
+    const re = /\s*,\s*/;
+    const r1 = [
         "Lorem",
         "ipsum",
         "dolor",
@@ -18,7 +19,7 @@ describe("split / splitBy", function () {
         "tempor",
         "incididunt"
     ];
-    var r2 = [
+    const r2 = [
         "Lorem ipsum dolor sit amet",
         "consectetur adipisicing elit",
         "sed do eiusmod",
@@ -26,43 +27,43 @@ describe("split / splitBy", function () {
     ];
 
     it("should split a string by the given separator", () => {
-        expect(lamb.split(s, " ")).toStrictEqual(r1);
-        expect(lamb.splitBy(" ")(s)).toStrictEqual(r1);
+        expect(split(s, " ")).toStrictEqual(r1);
+        expect(splitBy(" ")(s)).toStrictEqual(r1);
     });
 
-    it("should accept a regular expression as a separator", function () {
-        expect(lamb.split(s, re)).toStrictEqual(r2);
-        expect(lamb.splitBy(re)(s)).toStrictEqual(r2);
+    it("should accept a regular expression as a separator", () => {
+        expect(split(s, re)).toStrictEqual(r2);
+        expect(splitBy(re)(s)).toStrictEqual(r2);
     });
 
-    it("should convert to string other values received as separators", function () {
-        var testArray = ["Lorem", "ipsum", "dolor", "sit"];
-        var values = [{ a: 2 }, [1, 2], 1, function () {}, NaN, true, new Date()];
+    it("should convert to string other values received as separators", () => {
+        const values = [{ a: 2 }, [1, 2], 1, function () {}, NaN, true, new Date()];
+        const testArray = ["Lorem", "ipsum", "dolor", "sit"];
 
-        values.forEach(function (value) {
-            expect(lamb.split(testArray.join(String(value)), value)).toStrictEqual(testArray);
-            expect(lamb.splitBy(value)(testArray.join(String(value)))).toStrictEqual(testArray);
+        values.forEach(value => {
+            expect(split(testArray.join(String(value)), value)).toStrictEqual(testArray);
+            expect(splitBy(value)(testArray.join(String(value)))).toStrictEqual(testArray);
         });
     });
 
     it("should only accept two arguments, unlike the native `split` that has a `limit` parameter", () => {
-        expect(lamb.split(s, " ", 3)).toStrictEqual(r1);
-        expect(lamb.splitBy(" ", 3)(s)).toStrictEqual(r1);
+        expect(split(s, " ", 3)).toStrictEqual(r1);
+        expect(splitBy(" ", 3)(s)).toStrictEqual(r1);
     });
 
-    it("should throw an exception when the source is `null` or `undefined` and when it's called without arguments", function () {
-        expect(function () { lamb.split(null, "."); }).toThrow();
-        expect(function () { lamb.split(void 0, "."); }).toThrow();
-        expect(function () { lamb.splitBy(".")(null); }).toThrow();
-        expect(function () { lamb.splitBy(".")(void 0); }).toThrow();
-        expect(lamb.split).toThrow();
-        expect(lamb.splitBy(".")).toThrow();
+    it("should throw an exception when the source is `null` or `undefined` and when it's called without arguments", () => {
+        expect(() => { split(null, "."); }).toThrow();
+        expect(() => { split(void 0, "."); }).toThrow();
+        expect(() => { splitBy(".")(null); }).toThrow();
+        expect(() => { splitBy(".")(void 0); }).toThrow();
+        expect(split).toThrow();
+        expect(splitBy(".")).toThrow();
     });
 
-    it("should convert to string every other value passed as source", function () {
-        var d = new Date();
-        var values = [{ a: 2 }, [1, 2], /foo/, 1, function () {}, NaN, true, d];
-        var results = [
+    it("should convert to string every other value passed as source", () => {
+        const d = new Date();
+        const values = [{ a: 2 }, [1, 2], /foo/, 1, function () {}, NaN, true, d];
+        const results = [
             ["[object Object]"],
             ["1", "2"],
             ["/foo/"],
@@ -73,9 +74,9 @@ describe("split / splitBy", function () {
             [String(d)]
         ];
 
-        values.forEach(function (value, idx) {
-            expect(lamb.split(value, ",")).toStrictEqual(results[idx]);
-            expect(lamb.splitBy(",")(value)).toStrictEqual(results[idx]);
+        values.forEach((value, idx) => {
+            expect(split(value, ",")).toStrictEqual(results[idx]);
+            expect(splitBy(",")(value)).toStrictEqual(results[idx]);
         });
     });
 });

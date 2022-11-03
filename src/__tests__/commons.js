@@ -1,53 +1,49 @@
-var generic = Function.bind.bind(Function.call);
-var concat = generic(Array.prototype.concat);
+const generic = Function.bind.bind(Function.call);
+const concat = generic(Array.prototype.concat);
 
-var coupleWithWrapper = function (values) {
-    return values.reduce(function (result, value) {
-        var Ctor = Object.getPrototypeOf(value).constructor;
+const coupleWithWrapper = values => values.reduce((result, value) => {
+    const Ctor = Object.getPrototypeOf(value).constructor;
 
-        return result.concat(value, new Ctor(value));
-    }, []);
-};
+    return result.concat(value, new Ctor(value));
+}, []);
 
-var wrapInArray = function (value) {
-    return [value];
-};
+const wrapInArray = value => [value];
 
-var argsObject = (function () { return arguments; })();
+const argsObject = (function () { return arguments; })();
 
-var booleans = coupleWithWrapper([false, true]);
+const booleans = coupleWithWrapper([false, true]);
 
-var nils = [null, void 0];
+const nils = [null, void 0];
 
-var numbersList = [-0.5, -0, 0, 0.5, -2.5, 2.5, 3];
-var numbers = coupleWithWrapper(numbersList);
+const numbersList = [-0.5, -0, 0, 0.5, -2.5, 2.5, 3];
+const numbers = coupleWithWrapper(numbersList);
 
-var objects = [Object.create(null), {}, { a: 1, b: 2 }, argsObject];
+const objects = [Object.create(null), {}, { a: 1, b: 2 }, argsObject];
 
 // discarding the first element in `objects` because you can't extract the
 // primitive value of `Object.create(null)` and it's not worth adding checks for it
-var objectsWithPrimitiveValue = objects.slice(1);
+const objectsWithPrimitiveValue = objects.slice(1);
 
-var others = [function () {}, /foo/, NaN];
+const others = [function () {}, /foo/, NaN];
 
-var charStrings = coupleWithWrapper(["", "foo", "2a"]);
-var numberStrings = coupleWithWrapper(numbersList.map(String));
-var strings = concat(charStrings, numberStrings);
+const charStrings = coupleWithWrapper(["", "foo", "2a"]);
+const numberStrings = coupleWithWrapper(numbersList.map(String));
+const strings = concat(charStrings, numberStrings);
 
-var arraysCastableToNumber = concat(
+const arraysCastableToNumber = concat(
     [[]],
     numbers.map(wrapInArray),
     numberStrings.map(wrapInArray)
 );
 
 // values expected to be converted to empty objects
-var wannabeEmptyObjects = concat(booleans, others, numbers, new Date(), "");
+const wannabeEmptyObjects = concat(booleans, others, numbers, new Date(), "");
 
 // values expected to be converted to empty arrays
-var wannabeEmptyArrays = concat(wannabeEmptyObjects, objects);
+const wannabeEmptyArrays = concat(wannabeEmptyObjects, objects);
 
 // NaNs if converted to Number
-var wannabeNaNs = concat(
+const wannabeNaNs = concat(
     [[1, 2]],
     void 0,
     "2a",
@@ -57,7 +53,7 @@ var wannabeNaNs = concat(
 );
 
 // values that will be transformed to zeroes (even negative zeroes) if casted to numbers
-var zeroesAsNumbers = concat(
+const zeroesAsNumbers = concat(
     [[]],
     nils,
     others,
@@ -68,13 +64,13 @@ var zeroesAsNumbers = concat(
 
 // values that will be transformed to zeroes (even negative zeroes) if casted to integers
 // following this specification: https://www.ecma-international.org/ecma-262/7.0/#sec-tointeger
-var zeroesAsIntegers = concat(
+const zeroesAsIntegers = concat(
     zeroesAsNumbers,
     numbers.slice(0, 8),
     numberStrings.slice(0, 8)
 );
 
-var nonStrings = concat(
+const nonStrings = concat(
     [[1, 2]],
     new Date(),
     {},
@@ -84,11 +80,11 @@ var nonStrings = concat(
     nils,
     others
 );
-var nonStringsAsStrings = nonStrings.map(String);
+const nonStringsAsStrings = nonStrings.map(String);
 
-var nonArrayLikes = concat(nils, wannabeEmptyArrays);
+const nonArrayLikes = concat(nils, wannabeEmptyArrays);
 
-var nonFunctions = concat(
+const nonFunctions = concat(
     [[1, 2]],
     new Date(),
     nils,
@@ -99,7 +95,7 @@ var nonFunctions = concat(
     strings
 );
 
-var nonNils = concat(
+const nonNils = concat(
     [[1, 2]],
     new Date(),
     others,
@@ -108,10 +104,10 @@ var nonNils = concat(
     objects,
     strings
 );
-var nonNulls = concat([void 0], nonNils);
-var nonUndefineds = concat([null], nonNils);
+const nonNulls = concat([void 0], nonNils);
+const nonUndefineds = concat([null], nonNils);
 
-var nonNumbers = concat(
+const nonNumbers = concat(
     [[1, 2]],
     new Date(),
     arraysCastableToNumber,
@@ -122,7 +118,7 @@ var nonNumbers = concat(
     strings
 );
 
-var valuesList = concat(nils, nonNils);
+const valuesList = concat(nils, nonNils);
 
 export {
     nonStrings,

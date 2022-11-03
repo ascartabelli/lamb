@@ -1,47 +1,48 @@
-import * as lamb from "../..";
+import dropWhile from "../dropWhile";
+import isUndefined from "../../core/isUndefined";
 import { nonFunctions, wannabeEmptyArrays } from "../../__tests__/commons";
 import "../../__tests__/custom_matchers";
 
-describe("dropWhile", function () {
+describe("dropWhile", () => {
     // to check "truthy" and "falsy" values returned by predicates
-    var isVowel = function (char, idx, s) {
+    function isVowel (char, idx, s) {
         expect(s[idx]).toBe(char);
 
         return ~"aeiouAEIOU".indexOf(char);
-    };
+    }
 
-    var isEven = function (n, idx, list) {
+    function isEven (n, idx, list) {
         expect(list[idx]).toBe(n);
 
         return n % 2 === 0;
-    };
+    }
 
-    var dropWhileIsEven = lamb.dropWhile(isEven);
+    const dropWhileIsEven = dropWhile(isEven);
 
-    it("should build a function that drops the first elements satisfying a predicate from an array or array-like object", function () {
-        expect(dropWhileIsEven([])).toEqual([]);
-        expect(dropWhileIsEven([2, 4, 6, 8])).toEqual([]);
-        expect(dropWhileIsEven([2, 3, 4, 6, 8])).toEqual([3, 4, 6, 8]);
-        expect(dropWhileIsEven([2, 4, 6, 7, 8])).toEqual([7, 8]);
-        expect(dropWhileIsEven([1, 3, 5, 7])).toEqual([1, 3, 5, 7]);
+    it("should build a function that drops the first elements satisfying a predicate from an array or array-like object", () => {
+        expect(dropWhileIsEven([])).toStrictEqual([]);
+        expect(dropWhileIsEven([2, 4, 6, 8])).toStrictEqual([]);
+        expect(dropWhileIsEven([2, 3, 4, 6, 8])).toStrictEqual([3, 4, 6, 8]);
+        expect(dropWhileIsEven([2, 4, 6, 7, 8])).toStrictEqual([7, 8]);
+        expect(dropWhileIsEven([1, 3, 5, 7])).toStrictEqual([1, 3, 5, 7]);
     });
 
-    it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", function () {
-        var dropWhileisVowel = lamb.dropWhile(isVowel);
+    it("should treat \"truthy\" and \"falsy\" values returned by predicates as booleans", () => {
+        const dropWhileisVowel = dropWhile(isVowel);
 
-        expect(dropWhileisVowel("aiuola")).toEqual(["l", "a"]);
+        expect(dropWhileisVowel("aiuola")).toStrictEqual(["l", "a"]);
     });
 
-    it("should build a function throwing an exception if the predicate isn't a function", function () {
-        nonFunctions.forEach(function (value) {
-            expect(function () { lamb.dropWhile(value)([1, 2]); }).toThrow();
+    it("should build a function throwing an exception if the predicate isn't a function", () => {
+        nonFunctions.forEach(value => {
+            expect(() => { dropWhile(value)([1, 2]); }).toThrow();
         });
 
-        expect(function () { lamb.dropWhile()([1, 2]); }).toThrow();
+        expect(() => { dropWhile()([1, 2]); }).toThrow();
     });
 
-    it("should always return dense arrays", function () {
-        var dropWhileIsUndefined = lamb.dropWhile(lamb.isUndefined);
+    it("should always return dense arrays", () => {
+        const dropWhileIsUndefined = dropWhile(isUndefined);
 
         /* eslint-disable no-sparse-arrays */
         expect(dropWhileIsEven([2, 4, , , 5])).toStrictArrayEqual([void 0, void 0, 5]);
@@ -49,18 +50,18 @@ describe("dropWhile", function () {
         /* eslint-enable no-sparse-arrays */
     });
 
-    it("should throw an exception if called without the data argument", function () {
+    it("should throw an exception if called without the data argument", () => {
         expect(dropWhileIsEven).toThrow();
     });
 
-    it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", function () {
-        expect(function () { dropWhileIsEven(null); }).toThrow();
-        expect(function () { dropWhileIsEven(void 0); }).toThrow();
+    it("should throw an exception if supplied with `null` or `undefined` instead of an array-like", () => {
+        expect(() => { dropWhileIsEven(null); }).toThrow();
+        expect(() => { dropWhileIsEven(void 0); }).toThrow();
     });
 
-    it("should treat every other value as an empty array", function () {
-        wannabeEmptyArrays.forEach(function (value) {
-            expect(dropWhileIsEven(value)).toEqual([]);
+    it("should treat every other value as an empty array", () => {
+        wannabeEmptyArrays.forEach(value => {
+            expect(dropWhileIsEven(value)).toStrictEqual([]);
         });
     });
 });

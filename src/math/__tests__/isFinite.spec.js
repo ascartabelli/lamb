@@ -1,21 +1,21 @@
-import * as lamb from "../..";
+import isFinite from "../isFinite";
 import { nonNumbers } from "../../__tests__/commons";
 
-describe("isFinite", function () {
-    it("should verify whether the received value is a finite number", function () {
-        expect(lamb.isFinite(0)).toBe(true);
-        expect(lamb.isFinite(-2e64)).toBe(true);
-        expect(lamb.isFinite(new Number(5))).toBe(true);
-        expect(lamb.isFinite(Infinity)).toBe(false);
-        expect(lamb.isFinite(-Infinity)).toBe(false);
-        expect(lamb.isFinite(NaN)).toBe(false);
+describe("isFinite", () => {
+    it("should verify whether the received value is a finite number", () => {
+        expect(isFinite(0)).toBe(true);
+        expect(isFinite(-2e64)).toBe(true);
+        expect(isFinite(new Number(5))).toBe(true);
+        expect(isFinite(Infinity)).toBe(false);
+        expect(isFinite(-Infinity)).toBe(false);
+        expect(isFinite(NaN)).toBe(false);
     });
 
-    it("should return `false` for any non-number value and when it's called without arguments", function () {
-        nonNumbers.forEach(function (value) {
-            expect(lamb.isFinite(value)).toBe(false);
+    it("should return `false` for any non-number value and when it's called without arguments", () => {
+        nonNumbers.forEach(value => {
+            expect(isFinite(value)).toBe(false);
         });
 
-        expect(lamb.isFinite()).toBe(false);
+        expect(isFinite()).toBe(false);
     });
 });

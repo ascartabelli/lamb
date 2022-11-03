@@ -1,42 +1,45 @@
-import * as lamb from "../..";
+import binary from "../binary";
+import list from "../../array/list";
+import slice from "../slice";
 import { nonFunctions } from "../../__tests__/commons";
 
-describe("binary", function () {
-    var listSpy = jest.fn(lamb.list);
-    var binaryList = lamb.binary(listSpy);
+describe("binary", () => {
+    const listSpy = jest.fn(list);
+    const binaryList = binary(listSpy);
 
-    afterEach(function () {
+    afterEach(() => {
         listSpy.mockClear();
     });
 
-    it("should build a function that passes only two arguments to the given one", function () {
+    it("should build a function that passes only two arguments to the given one", () => {
         expect(binaryList.length).toBe(2);
-        expect(binaryList(1, 2, 3)).toEqual([1, 2]);
-        expect(listSpy.mock.calls[0]).toEqual([1, 2]);
+        expect(binaryList(1, 2, 3)).toStrictEqual([1, 2]);
+        expect(listSpy).toHaveBeenCalledTimes(1);
+        expect(listSpy).toHaveBeenCalledWith(1, 2);
     });
 
-    it("should add `undefined` arguments if the received parameters aren't two", function () {
-        expect(binaryList()).toEqual([void 0, void 0]);
-        expect(binaryList(1)).toEqual([1, void 0]);
+    it("should add `undefined` arguments if the received parameters aren't two", () => {
+        expect(binaryList()).toStrictEqual([void 0, void 0]);
+        expect(binaryList(1)).toStrictEqual([1, void 0]);
     });
 
-    it("should not modify the function's context", function () {
-        var fn = function () {
-            this.values = this.values.concat(lamb.slice(arguments, 0, arguments.length));
-        };
+    it("should not modify the function's context", () => {
+        function fn () {
+            this.values = this.values.concat(slice(arguments, 0, arguments.length));
+        }
 
-        var obj = { values: [1, 2, 3], addValues: lamb.binary(fn) };
+        const obj = { values: [1, 2, 3], addValues: binary(fn) };
 
         obj.addValues(4, 5, 6, 7);
 
-        expect(obj.values).toEqual([1, 2, 3, 4, 5]);
+        expect(obj.values).toStrictEqual([1, 2, 3, 4, 5]);
     });
 
-    it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", function () {
+    it("should build a function throwing an exception if the `fn` parameter isn't a function or is missing", () => {
         nonFunctions.forEach(function (value) {
-            expect(lamb.binary(value)).toThrow();
+            expect(binary(value)).toThrow();
         });
 
-        expect(lamb.binary()).toThrow();
+        expect(binary()).toThrow();
     });
 });

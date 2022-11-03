@@ -1,14 +1,14 @@
-import * as lamb from "../..";
+import list from "../list";
 
-describe("list", function () {
-    it("should build an array with the received arguments", function () {
-        expect(lamb.list(123)).toEqual([123]);
-        expect(lamb.list(1, 2, 3)).toEqual([1, 2, 3]);
-        expect(lamb.list(null, void 0)).toEqual([null, void 0]);
-        expect(lamb.list(void 0)).toEqual([void 0]);
+describe("list", () => {
+    it("should build an array with the received arguments", () => {
+        expect(list(123)).toStrictEqual([123]);
+        expect(list(1, 2, 3)).toStrictEqual([1, 2, 3]);
+        expect(list(null, void 0)).toStrictEqual([null, void 0]);
+        expect(list(void 0)).toStrictEqual([void 0]);
     });
 
-    it("should return an empty array if no arguments are supplied", function () {
-        expect(lamb.list()).toEqual([]);
+    it("should return an empty array if no arguments are supplied", () => {
+        expect(list()).toStrictEqual([]);
     });
 });

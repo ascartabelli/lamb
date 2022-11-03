@@ -1,9 +1,9 @@
-import * as lamb from "../..";
+import modulo from "../modulo";
 
-describe("modulo", function () {
-    it("should calculate the modulo of two numbers", function () {
-        expect(lamb.modulo(5, 3)).toBe(2);
-        expect(lamb.modulo(-5, 3)).toBe(1);
-        expect(isNaN(lamb.modulo(-5, 0))).toBe(true);
+describe("modulo", () => {
+    it("should calculate the modulo of two numbers", () => {
+        expect(modulo(5, 3)).toBe(2);
+        expect(modulo(-5, 3)).toBe(1);
+        expect(isNaN(modulo(-5, 0))).toBe(true);
     });
 });

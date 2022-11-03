@@ -1,15 +1,13 @@
-import * as lamb from "../..";
+import debounce from "../debounce";
 
 jest.useFakeTimers();
 
-describe("debounce", function () {
-    var value = 0;
-    var testFn = jest.fn(function (n) {
-        value += n;
-    });
+describe("debounce", () => {
+    let value = 0;
+    const testFn = jest.fn(n => { value += n; });
 
-    it("should return a function that will execute the given function only if it stops being called for the specified timespan", function () {
-        var debounced = lamb.debounce(testFn, 100);
+    it("should return a function that will execute the given function only if it stops being called for the specified timespan", () => {
+        const debounced = debounce(testFn, 100);
 
         debounced(1);
         debounced(2);

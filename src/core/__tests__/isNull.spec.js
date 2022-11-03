@@ -1,18 +1,18 @@
-import * as lamb from "../..";
+import isNull from "../isNull";
 import { nonNulls } from "../../__tests__/commons";
 
-describe("isNull", function () {
-    it("should verify if the given value is null", function () {
-        expect(lamb.isNull(null)).toBe(true);
+describe("isNull", () => {
+    it("should verify if the given value is null", () => {
+        expect(isNull(null)).toBe(true);
     });
 
-    it("should return false if called without arguments", function () {
-        expect(lamb.isNull()).toBe(false);
+    it("should return false if called without arguments", () => {
+        expect(isNull()).toBe(false);
     });
 
-    it("should return false for every other value", function () {
-        nonNulls.forEach(function (value) {
-            expect(lamb.isNull(value)).toBe(false);
+    it("should return false for every other value", () => {
+        nonNulls.forEach(value => {
+            expect(isNull(value)).toBe(false);
         });
     });
 });

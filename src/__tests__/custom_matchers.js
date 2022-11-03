@@ -1,7 +1,6 @@
 function isSparseArray (array) {
-    return Array.isArray(array) && Object.keys(array).filter(function (v) {
-        return String(v >>> 0) === v;
-    }).length !== array.length;
+    return Array.isArray(array)
+        && Object.keys(array).filter(v => String(v >>> 0) === v).length !== array.length;
 }
 
 function isSparseArrayCheckNeeded (a, b) {
@@ -10,14 +9,14 @@ function isSparseArrayCheckNeeded (a, b) {
 
 expect.extend({
     toStrictArrayEqual: function (a, b) {
-        var result = {
+        const result = {
             message: function () {
                 return "Expected " + a + " to strict array equal " + b;
             }
         };
 
         if (isSparseArrayCheckNeeded(a, b)) {
-            var aLen = a.length;
+            const aLen = a.length;
 
             if (aLen !== b.length) {
                 result.pass = false;
@@ -25,7 +24,7 @@ expect.extend({
                 return result;
             }
 
-            for (var i = 0; i < aLen; i++) {
+            for (let i = 0; i < aLen; i++) {
                 if (i in a ^ i in b) {
                     result.pass = false;
 

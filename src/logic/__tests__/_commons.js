@@ -1,12 +1,21 @@
-import * as lamb from "../..";
+import allOf from "../allOf";
+import anyOf from "../anyOf";
+import casus from "../casus";
+import condition from "../condition";
+import findIndex from "../../array/findIndex";
+import isGT from "../isGT";
+import isLT from "../isLT";
+import not from "../not";
+import unless from "../unless";
+import when from "../when";
 
-var isEven = function (n) { return n % 2 === 0; };
-var isGreaterThanTwo = lamb.isGT(2);
-var isLessThanTen = lamb.isLT(10);
+const isEven = n => n % 2 === 0;
+const isGreaterThanTwo = isGT(2);
+const isLessThanTen = isLT(10);
 
 // to check "truthy" and "falsy" values returned by predicates
-var hasEvens = function (array) { return ~lamb.findIndex(array, isEven); };
-var isVowel = function (char) { return ~"aeiouAEIOU".indexOf(char); };
+const hasEvens = array => ~findIndex(array, isEven);
+const isVowel = char => ~"aeiouAEIOU".indexOf(char);
 
 function Foo (value) {
     this.value = value;
@@ -28,18 +37,18 @@ Foo.prototype = {
         return this.value > 0;
     }
 };
-Foo.prototype.getIfPositiveOrGetSafe = lamb.condition(
+Foo.prototype.getIfPositiveOrGetSafe = condition(
     Foo.prototype.isPositive,
     Foo.prototype.getValue,
     Foo.prototype.getSafeValue
 );
-Foo.prototype.getIfPositiveOrUndefined = lamb.casus(Foo.prototype.isPositive, Foo.prototype.getValue);
+Foo.prototype.getIfPositiveOrUndefined = casus(Foo.prototype.isPositive, Foo.prototype.getValue);
 
-Foo.prototype.getWhenPositiveOrElse = lamb.when(Foo.prototype.isPositive, Foo.prototype.getValue);
-Foo.prototype.getUnlessIsPositiveOrElse = lamb.unless(Foo.prototype.isPositive, Foo.prototype.getValue);
-Foo.prototype.isOdd = lamb.not(Foo.prototype.isEven);
-Foo.prototype.isPositiveEven = lamb.allOf([Foo.prototype.isEven, Foo.prototype.isPositive]);
-Foo.prototype.isPositiveOrEven = lamb.anyOf([Foo.prototype.isEven, Foo.prototype.isPositive]);
+Foo.prototype.getWhenPositiveOrElse = when(Foo.prototype.isPositive, Foo.prototype.getValue);
+Foo.prototype.getUnlessIsPositiveOrElse = unless(Foo.prototype.isPositive, Foo.prototype.getValue);
+Foo.prototype.isOdd = not(Foo.prototype.isEven);
+Foo.prototype.isPositiveEven = allOf([Foo.prototype.isEven, Foo.prototype.isPositive]);
+Foo.prototype.isPositiveOrEven = anyOf([Foo.prototype.isEven, Foo.prototype.isPositive]);
 
 export {
     Foo,
