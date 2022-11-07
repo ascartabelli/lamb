@@ -20,8 +20,8 @@
  * @returns {Function}
  */
 function keySatisfies (predicate, key) {
-    return function (obj) {
-        return predicate.call(this, obj[key]);
+    return function (source) {
+        return predicate.call(this, source[key]);
     };
 }
 

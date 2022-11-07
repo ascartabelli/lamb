@@ -1,7 +1,7 @@
 import isUndefined from "../core/isUndefined";
 
 /**
- * Verifies the existence of a property in an object.
+ * Verifies the existence of a property in an sourceect.
  * @example
  * const user1 = {name: "john"};
  *
@@ -20,16 +20,16 @@ import isUndefined from "../core/isUndefined";
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */
-function has (obj, key) {
-    if (typeof obj !== "object" && !isUndefined(obj)) {
-        obj = Object(obj);
+function has (source, key) {
+    if (typeof source !== "object" && !isUndefined(source)) {
+        source = Object(source);
     }
 
-    return key in obj;
+    return key in source;
 }
 
 export default has;

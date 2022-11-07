@@ -25,14 +25,14 @@ import reduce from "../core/reduce";
  * @see {@link module:lamb.validateWith|validateWith}
  * @see {@link module:lamb.checker|checker}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {Function[]} checkers
  * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
  * {@link module:lamb.checker|checker}, or an empty array.
  */
-function validate (obj, checkers) {
+function validate (source, checkers) {
     return reduce(checkers, function (errors, _checker) {
-        var result = _checker(obj);
+        var result = _checker(source);
 
         result.length && errors.push(result);
 

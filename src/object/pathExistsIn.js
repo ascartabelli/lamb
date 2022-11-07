@@ -24,13 +24,13 @@ import _toPathParts from "../privates/_toPathParts";
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @since 0.43.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {Boolean}
  */
-function pathExistsIn (obj, path, separator) {
-    return _getPathInfo(obj, _toPathParts(path, separator), true).isValid;
+function pathExistsIn (source, path, separator) {
+    return _getPathInfo(source, _toPathParts(path, separator), true).isValid;
 }
 
 export default pathExistsIn;

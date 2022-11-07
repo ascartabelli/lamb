@@ -1,7 +1,7 @@
 /**
 * @overview lamb - A lightweight, and docile, JavaScript library to help embracing functional programming.
 * @author Andrea Scartabelli <andrea.scartabelli@gmail.com>
-* @version 0.61.0-beta.11
+* @version 0.61.0-beta.17
 * @module lamb
 * @license MIT
 */
@@ -251,7 +251,7 @@ function identity (value) {
  * The first function consumes the result of the function that follows.
  * @example
  * const sayHi = name => `Hi, ${name}`;
- * const capitalize = s => s[0].toUpperCase() + s.substr(1).toLowerCase();
+ * const capitalize = s => s[0].toUpperCase() + s.substring(1).toLowerCase();
  * const fixNameAndSayHi = _.compose(sayHi, capitalize);
  *
  * sayHi("bOb") // => "Hi, bOb"
@@ -1114,21 +1114,21 @@ var uniques = uniquesBy(identity);
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @see {@link module:lamb.pull|pull}, {@link module:lamb.pullFrom|pullFrom}
  * @since 0.6.0
- * @param {ArrayLike} arrayLike
- * @param {ArrayLike} other
+ * @param {ArrayLike} a
+ * @param {ArrayLike} b
  * @returns {Array}
  */
-function difference (arrayLike, other) {
-    if (isNil(other)) {
-        throw _makeTypeErrorFor(other, "array");
+function difference (a, b) {
+    if (isNil(b)) {
+        throw _makeTypeErrorFor(b, "array");
     }
 
-    var toExclude = new _LookupHelper(other);
-    var isNotInOther = function (v) {
+    var toExclude = new _LookupHelper(b);
+    var isNotInB = function (v) {
         return !toExclude.has(v);
     };
 
-    return uniques(filter(arrayLike, isNotInOther));
+    return uniques(filter(a, isNotInB));
 }
 
 /**
@@ -2353,12 +2353,12 @@ var partitionWith = _curry2(partition, true);
  * @see {@link module:lamb.getKey|getKey}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @since 0.18.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {*}
  */
-function getIn (obj, key) {
-    return obj[key];
+function getIn (source, key) {
+    return source[key];
 }
 
 /**
@@ -3158,12 +3158,12 @@ var sortWith = _curry2(sort, true);
  * @see {@link module:lamb.intersection|intersection}
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @since 0.61.0
- * @param {ArrayLike} arrayLike
- * @param {ArrayLike} other
+ * @param {ArrayLike} a
+ * @param {ArrayLike} b
  * @returns {Array}
  */
-function symmetricDifference (arrayLike, other) {
-    return difference(arrayLike, other).concat(difference(other, arrayLike));
+function symmetricDifference (a, b) {
+    return difference(a, b).concat(difference(b, a));
 }
 
 /**
@@ -4023,10 +4023,10 @@ function _invoke (methodName, boundArgs, target) {
  * polySlice("Hello world", 1, 3) // => "el"
  *
  * @example <caption>With bound arguments:</caption>
- * const substrFrom2 = _.invoke("substr", [2]);
+ * const substringFrom2 = _.invoke("substring", [2]);
  *
- * substrFrom2("Hello world") // => "llo world"
- * substrFrom2("Hello world", 5) // => "llo w"
+ * substringFrom2("Hello world") // => "llo world"
+ * substringFrom2("Hello world", 5) // => "llo"
  *
  * @memberof module:lamb
  * @category Function
@@ -5175,7 +5175,7 @@ function remainder (a, b) {
  * Checks whether the specified key is a own enumerable property of the given object or not.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */
@@ -5185,13 +5185,13 @@ var _isOwnEnumerable = generic(Object.prototype.propertyIsEnumerable);
  * Builds a list of the enumerable properties of an object.
  * The function is null-safe, unlike the public one.
  * @private
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
-function _safeEnumerables (obj) {
+function _safeEnumerables (source) {
     var result = [];
 
-    for (var key in obj) {
+    for (var key in source) {
         result.push(key);
     }
 
@@ -5201,12 +5201,12 @@ function _safeEnumerables (obj) {
 /**
  * Checks whether the specified key is an enumerable property of the given object or not.
  * @private
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */
-function _isEnumerable (obj, key) {
-    return key in Object(obj) && (_isOwnEnumerable(obj, key) || ~_safeEnumerables(obj).indexOf(key));
+function _isEnumerable (source, key) {
+    return key in Object(source) && (_isOwnEnumerable(source, key) || ~_safeEnumerables(source).indexOf(key));
 }
 
 /**
@@ -5231,17 +5231,17 @@ function _getPathKey (target, key, includeNonEnumerables) {
 /**
  * Checks if a path is valid in the given object and retrieves the path target.
  * @private
- * @param {Object} obj
+ * @param {Object} source
  * @param {String[]} parts
  * @param {Boolean} walkNonEnumerables
  * @returns {Object}
  */
-function _getPathInfo (obj, parts, walkNonEnumerables) {
-    if (isNil(obj)) {
-        throw _makeTypeErrorFor(obj, "object");
+function _getPathInfo (source, parts, walkNonEnumerables) {
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
     }
 
-    var target = obj;
+    var target = source;
     var i = -1;
     var len = parts.length;
     var key;
@@ -5317,13 +5317,13 @@ function _toPathParts (path, separator) {
  * @see {@link module:lamb.getPath|getPath}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
  * @since 0.19.0
- * @param {Object|ArrayLike} obj
+ * @param {Object|ArrayLike} source
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {*}
  */
-function getPathIn (obj, path, separator) {
-    return _getPathInfo(obj, _toPathParts(path, separator), true).target;
+function getPathIn (source, path, separator) {
+    return _getPathInfo(source, _toPathParts(path, separator), true).target;
 }
 
 /**
@@ -5382,12 +5382,12 @@ function checker (predicate, message, keyPaths, pathSeparator) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
-    if (isNil(obj)) {
-        throw _makeTypeErrorFor(obj, "object");
+var _unsafeKeyListFrom = _curry2(function (getKeys, source) {
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
     }
 
-    return getKeys(obj);
+    return getKeys(source);
 });
 
 /**
@@ -5407,7 +5407,7 @@ var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
  * @function
  * @see {@link module:lamb.keys|keys}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
 var enumerables = _unsafeKeyListFrom(_safeEnumerables);
@@ -5470,7 +5470,7 @@ function fromPairs (pairsList) {
 var getPath = _makePartial3(getPathIn);
 
 /**
- * Verifies the existence of a property in an object.
+ * Verifies the existence of a property in an sourceect.
  * @example
  * const user1 = {name: "john"};
  *
@@ -5489,16 +5489,16 @@ var getPath = _makePartial3(getPathIn);
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */
-function has (obj, key) {
-    if (typeof obj !== "object" && !isUndefined(obj)) {
-        obj = Object(obj);
+function has (source, key) {
+    if (typeof source !== "object" && !isUndefined(source)) {
+        source = Object(source);
     }
 
-    return key in obj;
+    return key in source;
 }
 
 /**
@@ -5545,7 +5545,7 @@ var hasKey = _curry2(has, true);
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */
@@ -5592,13 +5592,15 @@ var hasOwnKey = _curry2(hasOwn, true);
  * @returns {Function}
  */
 function hasKeyValue (key, value) {
-    return function (obj) {
-        return isUndefined(value) ? has(obj, key) && obj[key] === value : areSVZ(value, obj[key]);
+    return function (source) {
+        return isUndefined(value)
+            ? has(source, key) && source[key] === value
+            : areSVZ(value, source[key]);
     };
 }
 
 /**
- * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
+ * Builds a predicate to check if the given path exists in an sourceect and holds the desired value.<br/>
  * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
@@ -5634,8 +5636,8 @@ function hasKeyValue (key, value) {
  * @returns {Function}
  */
 function hasPathValue (path, value, separator) {
-    return function (obj) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+    return function (source) {
+        var pathInfo = _getPathInfo(source, _toPathParts(path, separator), true);
 
         return pathInfo.isValid && areSVZ(pathInfo.target, value);
     };
@@ -5645,7 +5647,7 @@ function hasPathValue (path, value, separator) {
  * A null-safe version of <code>Object.keys</code>.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
 var _safeKeys = compose(Object.keys, Object);
@@ -5672,7 +5674,7 @@ var _safeKeys = compose(Object.keys, Object);
  * @function
  * @see {@link module:lamb.enumerables|enumerables}
  * @since 0.25.1
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
 var keys = _unsafeKeyListFrom(_safeKeys);
@@ -5699,8 +5701,8 @@ var keys = _unsafeKeyListFrom(_safeKeys);
  * @returns {Function}
  */
 function keySatisfies (predicate, key) {
-    return function (obj) {
-        return predicate.call(this, obj[key]);
+    return function (source) {
+        return predicate.call(this, source[key]);
     };
 }
 
@@ -5873,11 +5875,11 @@ var mergeOwn = partial(_merge, [keys]);
  * and its value.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Function}
  */
-var _keyToPairIn = _curry2(function (obj, key) {
-    return [key, obj[key]];
+var _keyToPairIn = _curry2(function (source, key) {
+    return [key, source[key]];
 });
 
 /**
@@ -5888,8 +5890,8 @@ var _keyToPairIn = _curry2(function (obj, key) {
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _pairsFrom = _curry2(function (getKeys, obj) {
-    return map(getKeys(obj), _keyToPairIn(obj));
+var _pairsFrom = _curry2(function (getKeys, source) {
+    return map(getKeys(source), _keyToPairIn(source));
 });
 
 /**
@@ -5911,7 +5913,7 @@ var _pairsFrom = _curry2(function (getKeys, obj) {
  * @see {@link module:lamb.pairs|pairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<Array<String, *>>}
  */
 var ownPairs = _pairsFrom(keys);
@@ -5924,9 +5926,9 @@ var ownPairs = _pairsFrom(keys);
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _valuesFrom = _curry2(function (getKeys, obj) {
-    return map(getKeys(obj), function (key) {
-        return obj[key];
+var _valuesFrom = _curry2(function (getKeys, source) {
+    return map(getKeys(source), function (key) {
+        return source[key];
     });
 });
 
@@ -5947,7 +5949,7 @@ var _valuesFrom = _curry2(function (getKeys, obj) {
  * @function
  * @see {@link module:lamb.values|values}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array}
  */
 var ownValues = _valuesFrom(keys);
@@ -5965,7 +5967,7 @@ var ownValues = _valuesFrom(keys);
  * @see {@link module:lamb.ownPairs|ownPairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
  * @since 0.8.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<Array<String, *>>}
  */
 var pairs = _pairsFrom(enumerables);
@@ -5993,13 +5995,13 @@ var pairs = _pairsFrom(enumerables);
  * @see {@link module:lamb.hasOwn|hasOwn}, {@link module:lamb.hasOwnKey|hasOwnKey}
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @since 0.43.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {Boolean}
  */
-function pathExistsIn (obj, path, separator) {
-    return _getPathInfo(obj, _toPathParts(path, separator), true).isValid;
+function pathExistsIn (source, path, separator) {
+    return _getPathInfo(source, _toPathParts(path, separator), true).isValid;
 }
 
 /**
@@ -6067,8 +6069,8 @@ var pathExists = _makePartial3(pathExistsIn);
  * @returns {Function}
  */
 function pathSatisfies (predicate, path, separator) {
-    return function (obj) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+    return function (source) {
+        var pathInfo = _getPathInfo(source, _toPathParts(path, separator), true);
 
         return predicate.call(this, pathInfo.target);
     };
@@ -6386,12 +6388,12 @@ function _isArrayIndex (target, key) {
  * Sets the object's property targeted by the given path to the desired value.<br/>
  * Works with arrays and is able to set their indexes, even negative ones.
  * @private
- * @param {Object|Array} obj
+ * @param {Object|Array} source
  * @param {String[]} parts
  * @param {*} value
  * @returns {Object|Array}
  */
-function _setPathIn (obj, parts, value) {
+function _setPathIn (source, parts, value) {
     var key = parts[0];
     var partsLen = parts.length;
     var v;
@@ -6399,16 +6401,16 @@ function _setPathIn (obj, parts, value) {
     if (partsLen === 1) {
         v = value;
     } else {
-        var targetKey = _getPathKey(obj, key, false);
+        var targetKey = _getPathKey(source, key, false);
 
         v = _setPathIn(
-            isUndefined(targetKey) ? targetKey : obj[targetKey],
+            isUndefined(targetKey) ? targetKey : source[targetKey],
             slice(parts, 1, partsLen),
             value
         );
     }
 
-    return _isArrayIndex(obj, key) ? _setIndex(obj, key, v) : _setIn(obj, key, v);
+    return _isArrayIndex(source, key) ? _setIndex(source, key, v) : _setIn(source, key, v);
 }
 
 /**
@@ -6610,10 +6612,10 @@ var skipIf = compose(pickIf, not);
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _tearFrom = _curry2(function (getKeys, obj) {
-    return reduce(getKeys(obj), function (result, key) {
+var _tearFrom = _curry2(function (getKeys, source) {
+    return reduce(getKeys(source), function (result, key) {
         result[0].push(key);
-        result[1].push(obj[key]);
+        result[1].push(source[key]);
 
         return result;
     }, [[], []]);
@@ -6633,7 +6635,7 @@ var _tearFrom = _curry2(function (getKeys, obj) {
  * @see {@link module:lamb.tearOwn|tearOwn}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @since 0.8.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<String[], Array>}
  */
 var tear = _tearFrom(enumerables);
@@ -6656,7 +6658,7 @@ var tear = _tearFrom(enumerables);
  * @see {@link module:lamb.tear|tear}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<String[], Array>}
  */
 var tearOwn = _tearFrom(keys);
@@ -6837,14 +6839,14 @@ function updatePath (path, updater, separator) {
  * @see {@link module:lamb.validateWith|validateWith}
  * @see {@link module:lamb.checker|checker}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {Function[]} checkers
  * @returns {Array<Array<String, String[]>>} An array of errors in the form returned by
  * {@link module:lamb.checker|checker}, or an empty array.
  */
-function validate (obj, checkers) {
+function validate (source, checkers) {
     return reduce(checkers, function (errors, _checker) {
-        var result = _checker(obj);
+        var result = _checker(source);
 
         result.length && errors.push(result);
 
@@ -6898,7 +6900,7 @@ var validateWith = _curry2(validate, true);
  * @function
  * @see {@link module:lamb.ownValues|ownValues}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array}
  */
 var values = _valuesFrom(enumerables);

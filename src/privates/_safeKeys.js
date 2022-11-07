@@ -4,7 +4,7 @@ import compose from "../core/compose";
  * A null-safe version of <code>Object.keys</code>.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
 var _safeKeys = compose(Object.keys, Object);

@@ -11,12 +11,12 @@
  * @see {@link module:lamb.getKey|getKey}
  * @see {@link module:lamb.getPath|getPath}, {@link module:lamb.getPathIn|getPathIn}
  * @since 0.18.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {*}
  */
-function getIn (obj, key) {
-    return obj[key];
+function getIn (source, key) {
+    return source[key];
 }
 
 export default getIn;

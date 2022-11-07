@@ -9,9 +9,9 @@ import _curry2 from "./_curry2";
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _valuesFrom = _curry2(function (getKeys, obj) {
-    return map(getKeys(obj), function (key) {
-        return obj[key];
+var _valuesFrom = _curry2(function (getKeys, source) {
+    return map(getKeys(source), function (key) {
+        return source[key];
     });
 });
 

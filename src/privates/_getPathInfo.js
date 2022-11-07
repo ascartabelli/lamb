@@ -6,17 +6,17 @@ import _makeTypeErrorFor from "./_makeTypeErrorFor";
 /**
  * Checks if a path is valid in the given object and retrieves the path target.
  * @private
- * @param {Object} obj
+ * @param {Object} source
  * @param {String[]} parts
  * @param {Boolean} walkNonEnumerables
  * @returns {Object}
  */
-function _getPathInfo (obj, parts, walkNonEnumerables) {
-    if (isNil(obj)) {
-        throw _makeTypeErrorFor(obj, "object");
+function _getPathInfo (source, parts, walkNonEnumerables) {
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
     }
 
-    var target = obj;
+    var target = source;
     var i = -1;
     var len = parts.length;
     var key;

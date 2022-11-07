@@ -19,10 +19,10 @@ import partial from "../core/partial";
  * polySlice("Hello world", 1, 3) // => "el"
  *
  * @example <caption>With bound arguments:</caption>
- * const substrFrom2 = _.invoke("substr", [2]);
+ * const substringFrom2 = _.invoke("substring", [2]);
  *
- * substrFrom2("Hello world") // => "llo world"
- * substrFrom2("Hello world", 5) // => "llo w"
+ * substringFrom2("Hello world") // => "llo world"
+ * substringFrom2("Hello world", 5) // => "llo"
  *
  * @memberof module:lamb
  * @category Function

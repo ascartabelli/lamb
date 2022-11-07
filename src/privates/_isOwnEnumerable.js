@@ -4,7 +4,7 @@ import generic from "../core/generic";
  * Checks whether the specified key is a own enumerable property of the given object or not.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */

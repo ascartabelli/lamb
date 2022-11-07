@@ -20,7 +20,7 @@ import keys from "./keys";
  * @see {@link module:lamb.pairs|pairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<Array<String, *>>}
  */
 var ownPairs = _pairsFrom(keys);

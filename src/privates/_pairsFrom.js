@@ -10,8 +10,8 @@ import _keyToPairIn from "./_keyToPairIn";
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _pairsFrom = _curry2(function (getKeys, obj) {
-    return map(getKeys(obj), _keyToPairIn(obj));
+var _pairsFrom = _curry2(function (getKeys, source) {
+    return map(getKeys(source), _keyToPairIn(source));
 });
 
 export default _pairsFrom;

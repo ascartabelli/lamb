@@ -2,13 +2,13 @@
  * Builds a list of the enumerable properties of an object.
  * The function is null-safe, unlike the public one.
  * @private
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
-function _safeEnumerables (obj) {
+function _safeEnumerables (source) {
     var result = [];
 
-    for (var key in obj) {
+    for (var key in source) {
         result.push(key);
     }
 

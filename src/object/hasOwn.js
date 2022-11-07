@@ -21,7 +21,7 @@ import generic from "../core/generic";
  * @see {@link module:lamb.has|has}, {@link module:lamb.hasKey|hasKey}
  * @see {@link module:lamb.pathExistsIn|pathExistsIn}, {@link module:lamb.pathExists|pathExists}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @param {String} key
  * @returns {Boolean}
  */

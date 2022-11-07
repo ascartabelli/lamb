@@ -21,12 +21,12 @@ import difference from "./difference";
  * @see {@link module:lamb.intersection|intersection}
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @since 0.61.0
- * @param {ArrayLike} arrayLike
- * @param {ArrayLike} other
+ * @param {ArrayLike} a
+ * @param {ArrayLike} b
  * @returns {Array}
  */
-function symmetricDifference (arrayLike, other) {
-    return difference(arrayLike, other).concat(difference(other, arrayLike));
+function symmetricDifference (a, b) {
+    return difference(a, b).concat(difference(b, a));
 }
 
 export default symmetricDifference;

@@ -24,21 +24,21 @@ import uniques from "./uniques";
  * @see {@link module:lamb.union|union}, {@link module:lamb.unionBy|unionBy}
  * @see {@link module:lamb.pull|pull}, {@link module:lamb.pullFrom|pullFrom}
  * @since 0.6.0
- * @param {ArrayLike} arrayLike
- * @param {ArrayLike} other
+ * @param {ArrayLike} a
+ * @param {ArrayLike} b
  * @returns {Array}
  */
-function difference (arrayLike, other) {
-    if (isNil(other)) {
-        throw _makeTypeErrorFor(other, "array");
+function difference (a, b) {
+    if (isNil(b)) {
+        throw _makeTypeErrorFor(b, "array");
     }
 
-    var toExclude = new _LookupHelper(other);
-    var isNotInOther = function (v) {
+    var toExclude = new _LookupHelper(b);
+    var isNotInB = function (v) {
         return !toExclude.has(v);
     };
 
-    return uniques(filter(arrayLike, isNotInOther));
+    return uniques(filter(a, isNotInB));
 }
 
 export default difference;

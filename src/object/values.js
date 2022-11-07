@@ -14,7 +14,7 @@ import enumerables from "./enumerables";
  * @function
  * @see {@link module:lamb.ownValues|ownValues}
  * @since 0.1.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array}
  */
 var values = _valuesFrom(enumerables);

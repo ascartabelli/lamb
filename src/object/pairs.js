@@ -14,7 +14,7 @@ import enumerables from "./enumerables";
  * @see {@link module:lamb.ownPairs|ownPairs}
  * @see {@link module:lamb.fromPairs|fromPairs}
  * @since 0.8.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<Array<String, *>>}
  */
 var pairs = _pairsFrom(enumerables);

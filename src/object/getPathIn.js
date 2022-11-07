@@ -47,13 +47,13 @@ import _toPathParts from "../privates/_toPathParts";
  * @see {@link module:lamb.getPath|getPath}
  * @see {@link module:lamb.getIn|getIn}, {@link module:lamb.getKey|getKey}
  * @since 0.19.0
- * @param {Object|ArrayLike} obj
+ * @param {Object|ArrayLike} source
  * @param {String} path
  * @param {String} [separator="."]
  * @returns {*}
  */
-function getPathIn (obj, path, separator) {
-    return _getPathInfo(obj, _toPathParts(path, separator), true).target;
+function getPathIn (source, path, separator) {
+    return _getPathInfo(source, _toPathParts(path, separator), true).target;
 }
 
 export default getPathIn;

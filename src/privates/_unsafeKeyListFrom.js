@@ -9,12 +9,12 @@ import _makeTypeErrorFor from "./_makeTypeErrorFor";
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _unsafeKeyListFrom = _curry2(function (getKeys, obj) {
-    if (isNil(obj)) {
-        throw _makeTypeErrorFor(obj, "object");
+var _unsafeKeyListFrom = _curry2(function (getKeys, source) {
+    if (isNil(source)) {
+        throw _makeTypeErrorFor(source, "object");
     }
 
-    return getKeys(obj);
+    return getKeys(source);
 });
 
 export default _unsafeKeyListFrom;

@@ -31,8 +31,8 @@ import _toPathParts from "../privates/_toPathParts";
  * @returns {Function}
  */
 function pathSatisfies (predicate, path, separator) {
-    return function (obj) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+    return function (source) {
+        var pathInfo = _getPathInfo(source, _toPathParts(path, separator), true);
 
         return predicate.call(this, pathInfo.target);
     };

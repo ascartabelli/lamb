@@ -5,11 +5,11 @@ import _curry2 from "./_curry2";
  * and its value.
  * @private
  * @function
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Function}
  */
-var _keyToPairIn = _curry2(function (obj, key) {
-    return [key, obj[key]];
+var _keyToPairIn = _curry2(function (source, key) {
+    return [key, source[key]];
 });
 
 export default _keyToPairIn;

@@ -20,8 +20,10 @@ import has from "./has";
  * @returns {Function}
  */
 function hasKeyValue (key, value) {
-    return function (obj) {
-        return isUndefined(value) ? has(obj, key) && obj[key] === value : areSVZ(value, obj[key]);
+    return function (source) {
+        return isUndefined(value)
+            ? has(source, key) && source[key] === value
+            : areSVZ(value, source[key]);
     };
 }
 

@@ -9,12 +9,12 @@ import _setIndex from "./_setIndex";
  * Sets the object's property targeted by the given path to the desired value.<br/>
  * Works with arrays and is able to set their indexes, even negative ones.
  * @private
- * @param {Object|Array} obj
+ * @param {Object|Array} source
  * @param {String[]} parts
  * @param {*} value
  * @returns {Object|Array}
  */
-function _setPathIn (obj, parts, value) {
+function _setPathIn (source, parts, value) {
     var key = parts[0];
     var partsLen = parts.length;
     var v;
@@ -22,16 +22,16 @@ function _setPathIn (obj, parts, value) {
     if (partsLen === 1) {
         v = value;
     } else {
-        var targetKey = _getPathKey(obj, key, false);
+        var targetKey = _getPathKey(source, key, false);
 
         v = _setPathIn(
-            isUndefined(targetKey) ? targetKey : obj[targetKey],
+            isUndefined(targetKey) ? targetKey : source[targetKey],
             slice(parts, 1, partsLen),
             value
         );
     }
 
-    return _isArrayIndex(obj, key) ? _setIndex(obj, key, v) : _setIn(obj, key, v);
+    return _isArrayIndex(source, key) ? _setIndex(source, key, v) : _setIn(source, key, v);
 }
 
 export default _setPathIn;

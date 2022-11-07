@@ -11,10 +11,10 @@ import _curry2 from "./_curry2";
  * @param {Function} getKeys
  * @returns {Function}
  */
-var _tearFrom = _curry2(function (getKeys, obj) {
-    return reduce(getKeys(obj), function (result, key) {
+var _tearFrom = _curry2(function (getKeys, source) {
+    return reduce(getKeys(source), function (result, key) {
         result[0].push(key);
-        result[1].push(obj[key]);
+        result[1].push(source[key]);
 
         return result;
     }, [[], []]);

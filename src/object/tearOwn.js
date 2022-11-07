@@ -19,7 +19,7 @@ import keys from "./keys";
  * @see {@link module:lamb.tear|tear}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<String[], Array>}
  */
 var tearOwn = _tearFrom(keys);

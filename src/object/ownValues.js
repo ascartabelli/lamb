@@ -18,7 +18,7 @@ import keys from "./keys";
  * @function
  * @see {@link module:lamb.values|values}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array}
  */
 var ownValues = _valuesFrom(keys);

@@ -5,7 +5,7 @@ import identity from "./identity";
  * The first function consumes the result of the function that follows.
  * @example
  * const sayHi = name => `Hi, ${name}`;
- * const capitalize = s => s[0].toUpperCase() + s.substr(1).toLowerCase();
+ * const capitalize = s => s[0].toUpperCase() + s.substring(1).toLowerCase();
  * const fixNameAndSayHi = _.compose(sayHi, capitalize);
  *
  * sayHi("bOb") // => "Hi, bOb"

@@ -15,7 +15,7 @@ import enumerables from "./enumerables";
  * @see {@link module:lamb.tearOwn|tearOwn}
  * @see {@link module:lamb.make|make} for the reverse operation
  * @since 0.8.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {Array<String[], Array>}
  */
 var tear = _tearFrom(enumerables);

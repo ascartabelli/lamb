@@ -18,7 +18,7 @@ import _unsafeKeyListFrom from "../privates/_unsafeKeyListFrom";
  * @function
  * @see {@link module:lamb.keys|keys}
  * @since 0.12.0
- * @param {Object} obj
+ * @param {Object} source
  * @returns {String[]}
  */
 var enumerables = _unsafeKeyListFrom(_safeEnumerables);

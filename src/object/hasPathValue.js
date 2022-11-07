@@ -3,7 +3,7 @@ import _getPathInfo from "../privates/_getPathInfo";
 import _toPathParts from "../privates/_toPathParts";
 
 /**
- * Builds a predicate to check if the given path exists in an object and holds the desired value.<br/>
+ * Builds a predicate to check if the given path exists in an sourceect and holds the desired value.<br/>
  * The value check is made with the ["SameValueZero" comparison]{@link module:lamb.areSVZ|areSVZ}.<br/>
  * Note that the function will check even non-enumerable properties.
  * @example
@@ -39,8 +39,8 @@ import _toPathParts from "../privates/_toPathParts";
  * @returns {Function}
  */
 function hasPathValue (path, value, separator) {
-    return function (obj) {
-        var pathInfo = _getPathInfo(obj, _toPathParts(path, separator), true);
+    return function (source) {
+        var pathInfo = _getPathInfo(source, _toPathParts(path, separator), true);
 
         return pathInfo.isValid && areSVZ(pathInfo.target, value);
     };
