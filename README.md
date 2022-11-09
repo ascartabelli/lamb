@@ -56,15 +56,15 @@ Since version 0.58.0 there is also a one file ES modules build, always in the `d
 Lamb it's also delivered on a CDN, courtesy of [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.60.0/lamb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamb/0.61.0/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lamb@0.60.0/dist/lamb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamb@0.61.0/dist/lamb.min.js"></script>
 ```
 
 ```html
-<script src="https://unpkg.com/lamb@0.60.0/dist/lamb.min.js"></script>
+<script src="https://unpkg.com/lamb@0.61.0/dist/lamb.min.js"></script>
 ```
 
 Please note that Lamb is served by jsDelivr since version 0.42.0.
@@ -115,8 +115,16 @@ You can check the [recent](#recent_changes) or the [full](https://ascartabelli.g
 ## <a name="recent_changes"></a> Recent changes
 You can also check the [full changelog](https://ascartabelli.github.io/lamb/changelog.html).
 
+- **v0.61.0 - *2022/11/09***
+  - **Fully compatible with versions down to 0.59.0**
+  - Added `symmetricDifference`
+  - Big performance improvements to the following functions in ES6 aware environments: `difference`, `intersection`, `symmetricDifference`, `union`, `unionBy`, `uniques` and `uniquesBy`
+  - Gave a new coat of paint to all tests
+  - Updated doc comments and streamlined some parameter names
+  - Dropped TravisCI for Github actions
+
 - **v0.60.0 - *2021/03/08***
-  - **Fully compatible with version 0.59.0**
+  - **Fully compatible with versions down to 0.59.0**
   - Added `mean`, `median` and `replace`
 
 - **v0.59.2 - *2020/07/17***
@@ -145,9 +153,3 @@ You can also check the [full changelog](https://ascartabelli.github.io/lamb/chan
   - Added `dropLastWhile` and `takeLastWhile`
   - Switched from uglify-js to terser
   - Updated docs, linting and tests
-
-- **v0.57.0 - *2019/02/12***
-  - Splitted the library into ES modules
-  - **API change**: `sort`, `sortWith` and `sortedInsert` now accept an array of sorters
-  - **API change**: removed `@@lamb/placeholder` property as now the placeholder is exported as `__`
-  - Switched to Jest as a test suite
