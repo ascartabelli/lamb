@@ -48,15 +48,9 @@ var scrollToHash = function (hashTarget) {
     } else {
         document.getElementById("main").scrollTop = 0;
     }
-
-    sendToGA();
 };
 
 var scrollToCurrentHash = _.compose(scrollToHash, getHashTarget);
-
-var sendToGA = function () {
-    ga("send", "pageview", {page: location.pathname + location.search + location.hash});
-};
 
 function onLoad () {
     var mainContainer = document.getElementById("main");

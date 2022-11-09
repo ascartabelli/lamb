@@ -1,3 +1,7 @@
+pre.param-desc > .hljs {
+    display: inline-block;
+}
+
 .hljs {
     display: block;
     overflow-x: auto;
