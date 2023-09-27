@@ -64,20 +64,20 @@
     "unpkg": "dist/lamb.min.js",
     "sideEffects": false,
     "tonicExample": "var _ = require('lamb');",
-    "version": "0.61.0",
+    "version": "0.61.1-beta.1",
     "devDependencies": {
-        "@babel/core": "^7.20.2",
-        "@babel/preset-env": "^7.20.2",
+        "@babel/core": "^7.23.3",
+        "@babel/preset-env": "^7.23.3",
         "@jsdevtools/version-bump-prompt": "^6.1.0",
-        "eslint-plugin-jsdoc": "^39.6.2",
+        "eslint-plugin-jsdoc": "^46.9.0",
         "gulp": "^4.0.2",
-        "gulp-eslint-new": "^1.7.0",
+        "gulp-eslint-new": "^1.8.4",
         "gulp-jest": "^4.0.4",
         "gulp-rename": "^2.0.0",
         "gulp-shell": "^0.8.0",
         "gulp-sourcemaps": "^3.0.0",
         "gulp-terser": "^2.1.0",
-        "jest": "^29.3.1",
-        "rollup": "^3.2.5"
+        "jest": "^29.7.0",
+        "rollup": "^4.4.1"
     }
 }
