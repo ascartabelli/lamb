@@ -1,4 +1,5 @@
 import identity from "../identity";
+import mapValuesWith from "../../object/mapValuesWith";
 import reduce from "../reduce";
 import reduceWith from "../reduceWith";
 import subtract from "../../math/subtract";
@@ -61,6 +62,13 @@ describe("reduce / reduceWith", () => {
         expect(reduce(sparseArr, sumMock, 0)).toBe(NaN);
         expect(reduceWith(sumMock, 0)(sparseArr)).toBe(NaN);
         expect(sumMock).toHaveBeenCalledTimes(6);
+    });
+
+    it("should use all the necessary arguments even if reduce is called with more than three arguements", () => {
+        // causes reduce to be called with five arguments
+        const f = mapValuesWith(reduceWith(sum, 7));
+
+        expect(f({ a: [...arr] }).a).toBe(22);
     });
 
     it("should build a function throwing an exception if the accumulator isn't a function or is missing", () => {

@@ -580,10 +580,7 @@
             var nCalls;
             var result;
 
-            if (arguments.length === 3) {
-                nCalls = len;
-                result = initialValue;
-            } else {
+            if (arguments.length < 3) {
                 if (len === 0) {
                     throw new TypeError("Reduce of empty array-like with no initial value");
                 }
@@ -591,6 +588,9 @@
                 result = arrayLike[idx];
                 idx += step;
                 nCalls = len - 1;
+            } else {
+                nCalls = len;
+                result = initialValue;
             }
 
             for (; nCalls--; idx += step) {

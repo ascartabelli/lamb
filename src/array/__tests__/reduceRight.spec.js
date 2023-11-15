@@ -1,4 +1,5 @@
 import identity from "../../core/identity";
+import mapValuesWith from "../../object/mapValuesWith";
 import reduceRight from "../reduceRight";
 import reduceRightWith from "../reduceRightWith";
 import subtract from "../../math/subtract";
@@ -61,6 +62,13 @@ describe("reduceRight / reduceRightWith", () => {
         expect(reduceRight(sparseArr, sumMock, 0)).toStrictEqual(NaN);
         expect(reduceRightWith(sumMock, 0)(sparseArr)).toStrictEqual(NaN);
         expect(sumMock).toHaveBeenCalledTimes(6);
+    });
+
+    it("should use all the necessary arguments even if reduce is called with more than three arguements", () => {
+        // causes reduce to be called with five arguments
+        const f = mapValuesWith(reduceRightWith(sum, 7));
+
+        expect(f({ a: [...arr] }).a).toBe(22);
     });
 
     it("should build a function throwing an exception if the accumulator isn't a function or is missing", () => {
