@@ -1,3 +1,7 @@
+- **v0.61.1 - *2023/11/15***
+  - **Fully compatible with versions down to 0.59.0**
+  - Fixed `reduceWith` and `reduceRightWith` not using the initial value when `reduce` was called with more than three arguments
+
 - **v0.61.0 - *2022/11/09***
   - **Fully compatible with versions down to 0.59.0**
   - Added `symmetricDifference`
